@@ -1,0 +1,157 @@
+\chapter{Introduction}\label{chap:Introduction}
+
+%\pagenumbering{arabic}
+%\setcounter{page}{1}
+
+\section{Definition of the problem}\label{sec:Problem}
+
+\paragraph{Set packing and $k$-set packing} Set packing is one of Karp's 21 NP-complete problems \cite{Karp} and it has received a lot of attention during the past years. A lot of progress has been made on the complexity of this problem, even though under standard complexity assumptions algorithms for this problem require at least superpolynomial or perhaps even exponential running time. Set packing is a fundamental problem that generalises some well-known problems and thus knows a lot of applications. There has been a long line of research on this problem. In this thesis we will consider $k$-set packing, which is the following problem.
+%
+\begin{quote}
+\begin{bf}$k$-Set Packing ($k$-SP)\end{bf}\\
+Given: a universe $\mathcal{U}$ of $N$ elements and a collection $\mathcal{C} \subseteq 2^\mathcal{U}$ of $n$ subsets over $\mathcal{U}$, each of cardinality $k$ \\
+Find: a maximum collection of mutually disjoint subsets in $\mathcal{C}$.
+\end{quote}
+%
+Any collection of mutually disjoint subsets in $\mathcal{C}$ is called a packing and the goal is to find the largest packing. In $k$-set packing every subset in $\mathcal{C}$ contains at most $k$ elements. Without loss of generality assume every subset contains exactly $k$ elements: add some unique dummy elements to the subsets of less than $k$ elements.
+
+$k$-set packing is a special case of the optimization version of the set packing problem, where there is no restriction on the cardinality of every subset in $\mathcal{C}$.
+%
+\begin{quote}
+\begin{bf}(Maximum) Set Packing (SP)\end{bf}\\
+Given: a universe $\mathcal{U}$ of $N$ elements and a collection $\mathcal{C} \subseteq 2^\mathcal{U}$ of $n$ subsets over $\mathcal{U}$ \\
+Find: a maximum collection of mutually disjoint subsets in $\mathcal{C}$.
+\end{quote}
+%
+%
+%\begin{quote}
+%\begin{bf}Set Packing\end{bf}\\
+%Given: a universe $\mathcal{U}$ of $N$ elements, a collection $\mathcal{C} \subseteq 2^\mathcal{U}$ of $n$ subsets over $\mathcal{U}$ and a parameter $t$ \\
+%Find: a collection of $t$ mutually disjoint subsets in $\mathcal{C}$ or report that it does not exist.
+%\end{quote}
+%%
+%This is the decision version of the problem. The optimization version of the problem is officially called maximum set packing, but from now on we will refer to the following optimization problem as set packing.
+%
+%\begin{quote}
+%\begin{bf}(Maximum) Set Packing (SP)\end{bf}\\
+%Given: a universe $\mathcal{U}$ of $N$ elements and a collection $\mathcal{C} \subseteq 2^\mathcal{U}$ of $n$ subsets over $\mathcal{U}$ \\
+%Find: a maximum collection of mutually disjoint subsets in $\mathcal{C}$.
+%\end{quote}
+%
+%We define any collection of mutually disjoint subsets in $\mathcal{C}$ to be a packing. In set packing one needs to find the largest packing. This problem can be approximated within a factor of $\sqrt{N}$ \cite{GeneralSP} and H{\aa}stad showed this is the best possible unless $\mathcal{NP} = \mathcal{ZPP}$ \cite{CliqueIsHard}. In $k$-set packing every subset in $\mathcal{C}$ contains at most $k$ elements. Without loss of generality we can assume every subset contains exactly $k$ elements: we can just add some dummy elements and add them to the subsets of less than $k$ elements. We can thus succinctly define $k$-set packing as follows.
+%%
+%\begin{quote}
+%\begin{bf}$k$-Set Packing ($k$-SP)\end{bf}\\
+%Given: a universe $\mathcal{U}$ of $N$ elements and a collection $\mathcal{C} \subseteq 2^\mathcal{U}$ of $n$ subsets over $\mathcal{U}$, each of cardinality $k$ \\
+%Find: a maximum collection of mutually disjoint subsets in $\mathcal{C}$.
+%\end{quote}
+
+%\paragraph{Clique and triangle packing} Instead of studying the set packing problem with a bound on the cardinality of every subset, it is also possible to study the problem with certain given structures on the given sets, such as in the clique packing problem. Here one is given some graph $G$. A packing of $G$ is a collection of pairwise vertex-disjoint subgraphs of $G$, each of which is isomorphic to a clique. A packing is said to cover an edge of $G$ if one of the subgraphs contains that edge. In the clique packing problem, one tries to maximize the number of covered edges \cite{CliquePacking}. The special case where every clique is of size 3 is called the triangle packing problem \cite{TrianglePacking2,TrianglePacking1}. The set packing problem generalizes these problems.
+
+%Set packing and $k$-set packing are NP-complete, but $k$-set packing is fixed parameter tractable. There are quite some approximation algorithms for $k$-set packing, the best of which currently achieve an approximation guarantee of $\frac{k+1}{3} + \varepsilon$. On the other hand, the problem cannot be approximated within a factor of $\Omega(\frac{k}{\log k})$. For weighted $k$-set packing there is a $\frac{k+1}{2}$-approximation. There exists both a polynomially sized LP and a polynomially sized SDP for $k$-set packing with integrality gap at most $\frac{k}{3} + 1 + \varepsilon$ as we will show in this paper, where the previous bound on the integrality gap was $\frac{k+1}{2}$.
+
+\section{Terminology}\label{sec:Terminology}
+
+%Let $G = (V,E)$ be a graph and define for a vertex $v \in V$ its open neighbourhood (or just its neighbourhood) $N_G(v) = \{ w \in V \mid \{v,w\} \in E \}$ and its closed neighbourhood $N_G[v] = N_G(v) \cup \{v\}$. For a subset of the vertices $W \subseteq V$ we define its closed neighbourhood $N_G[W] = \bigcup_{w \in W} N_G[w]$ and we write $N_G(W) = N_G[W] \setminus W$ for the (open) neighbourhood of $W$. For two given subsets of the vertices $X$ and $Y$ we write $N_G(X,Y) = N(X) \cap Y$, i.e. the neighbourhood of $X$ in $Y$. We write $N_G(x,Y)$ for $N_G(\{x\},Y)$ for some vertex $x$ and some subset of the vertices $Y$. When the context allows it, we will drop the subscript $G$ and just use $N(v)$, $N[v]$, $N[W]$, $N(W)$, $N(X,Y)$ and $N(x,Y)$.
+
+We proceed with some notational conventions and definitions to make sure no confusion may arise.
+By $\mathcal{U}$ we mean the universe of elements over which the $k$-set system $\mathcal{C} \subseteq 2^{\mathcal{U}}$ has been defined. We write $|\mathcal{U}| = N$ and $|\mathcal{C}| = n$. By $I = (\mathcal{U},\mathcal{C})$ a given instance for $k$-set packing is denoted in which the objective is to find the largest packing. %Then define the following.
+%
+\begin{defn}
+\textbf{(Conflict graph)} Let an instance $I = (\mathcal{U},\mathcal{C})$ for the $k$-set packing problem be given. The conflict graph of $I$ is the graph $G$ where every subset in $\mathcal{C}$ is represented by a vertex. Two vertices %$S,T \in V(G)$
+are adjacent if and only if %$\mathcal{S} \cap \mathcal{T} \neq \emptyset$, i.e. when the two sets $\mathcal{S}, \mathcal{T} \in \mathcal{C}$ these vertices correspond to are in conflict.
+the subsets in $\mathcal{C}$ these vertices correspond to intersect each other.
+\end{defn}
+%
+Now let $\mathcal{A}$ be some solution to this instance, i.e. a collection of subsets in $\mathcal{C}$ that are mutually disjoint.
+%
+\begin{defn}
+\textbf{(Intersection graph)} Let an instance $I$ for the $k$-set packing problem be given and let $\mathcal{A}$ and $\mathcal{B}$ be two packings. The intersection graph of $\mathcal{A}$ and $\mathcal{B}$ is the induced subgraph of their vertices in the conflict graph of $I$.
+\end{defn}
+%
+The bipartite intersection graph of $\mathcal{A}$ and $\mathcal{B}$ thus contains a vertex for every set in $\mathcal{A}$ and $\mathcal{B}$ and two vertices %$a \in A$ and $b \in B$
+are adjacent % in $G$
+if and only if %$a \cap b \neq \emptyset$
+the subsets in the set packing instance are in conflict. Throughout this thesis calligraphic letters $\mathcal{A}$ will be used to denote collections of subsets and normal letters $A$ to denote the set of vertices corresponding to $\mathcal{A}$ in the conflict or intersection graph. Denote $N_G(B,A) = N(B) \cap A$, the neighbours of $B$ in $A$ in their intersection graph $G$. Sometimes for brevity we just write $N(G,A)$ if the graph $G$ is clear from the context. We can now succinctly define an improving set.
+%
+\begin{defn}
+\textbf{(Improving set)} Let $\mathcal{A}$ and $\mathcal{B}$ be two packings. $\mathcal{B}$ is called an improving set for $\mathcal{A}$ when $\left| A \cup B \setminus N_G(B,A) \right| > |A|$, i.e. when adding the sets of $\mathcal{B}$ to the current solution $\mathcal{A}$ and removing the sets of $\mathcal{A}$ that they intersect, leads to a solution of larger cardinality.
+\end{defn}
+%
+%Let $\mathcal{B}$ be a collection of mutually disjoint subsets in $\mathcal{C}$ for now as well and consider the conflict graph $G$ of the instance $I$, in which $\mathcal{A}$ and $\mathcal{B}$ are subsets of the vertices called $A$ and $B$. We say that $\mathcal{B}$ improves $\mathcal{A}$ or that $\mathcal{B}$ is an improving set for $\mathcal{A}$ when $\left| A \cup B \setminus N_G(B,A) \right| > |A|$, i.e. when adding the sets of $\mathcal{B}$ to the current solution $\mathcal{A}$ and removing the sets of $\mathcal{A}$ that they intersect, leads to a solution of larger cardinality.
+The removal of the neighbourhood of $B$ in $A$ ensures that the new solution is also mutually disjoint. %By adding an improving set $\mathcal{B}$ to $\mathcal{A}$ we mean replacing $A$ by the sets corresponding to $A \cup B \setminus N_G(B,A)$ in $G$.
+Now define the following.
+
+\begin{defn}
+\textbf{($t$-locally optimal solution)} Let $\mathcal{A}$ be a packing. $\mathcal{A}$ is said to be $t$-locally optimal when for every collection of mutually disjoint subsets $\mathcal{B}$ with $|\mathcal{B}| \leq t$ we have $\left| A \cup B \setminus N_G(B,A) \right| \leq |A|$. In other words, a solution is a $t$-locally optimal solution when there does not exist an improving set of size at most $t$.
+\end{defn}
+
+Finally, an algorithm is said to approximate a maximization problem within a factor $\rho>1$ if for every instance of the problem $\frac{v(OPT)}{v(A)} \leq \rho$, where $v(A)$ is the objective value of the output of the algorithm and $v(OPT)$ is the best achievable objective value for that instance. We call $\rho$ its approximation guarantee.
+
+%We say a solution $\mathcal{A}$ is $t$-local optimal when for every collection of mutually disjoint subsets $\mathcal{B} \subseteq \mathcal{C}$ with $|\mathcal{B}| \leq t$ we have $\left| A \cup B \setminus N_G(B,A) \right| \leq |A|$. In other words, a solution is a $t$-local optimal solution when there does not exist an improving set of size at most $t$.
+
+\section{Contribution}\label{sec:Contribution}
+
+%Set packing and $k$-set packing are NP-complete, but $k$-set packing is fixed parameter tractable. There are quite some approximation algorithms for $k$-set packing, the best of which currently achieve an approximation guarantee of $\frac{k+1}{3} + \varepsilon$. On the other hand, the problem cannot be approximated within a factor of $\Omega(\frac{k}{\log k})$. For weighted $k$-set packing there is a $\frac{k+1}{2}$-approximation. There exists both a polynomially sized LP and a polynomially sized SDP for $k$-set packing with integrality gap at most $\frac{k}{3} + 1 + \varepsilon$ as we will show in this paper, where the previous bound on the integrality gap was $\frac{k+1}{2}$.
+
+%\subsection{Applications and related problems}
+
+
+
+%\subsection{Current results}
+
+
+
+\subsection{Improved integrality gap}\label{subsec:IntroGap}
+
+In this thesis we improve the integrality gap of a linear program of $k$-set packing called the intersecting family LP (see Section \ref{sec:IntersectingLP}).
+%
+\begin{theorem}\label{thm:IntegralityGap1}
+Let $\varepsilon > 0$. The integrality gap of the intersecting family LP is at most $\frac{k}{3} + 1 + \varepsilon$.
+\end{theorem}
+%
+Following the results from \cite{LapChiLau}, this immediately implies the following two theorems.
+%
+\begin{theorem}\label{thm:LP1}
+Let $\varepsilon > 0$. There is a polynomially sized LP for $k$-set packing with integrality gap at most $\frac{k}{3} + 1 + \varepsilon$.
+\end{theorem}
+%
+\begin{theorem}\label{thm:SDP1}
+Let $\varepsilon > 0$. There is a polynomially sized SDP for $k$-set packing with integrality gap at most $\frac{k}{3} + 1 + \varepsilon$.
+\end{theorem}
+%
+The previous bound on this integrality gap was $\frac{k+1}{2}$ \cite{LapChiLau}. This was a continuation of the work on the standard linear programming relaxation for $k$-set packing. We treat these results on the linear programs in Chapter \ref{chap:LP}. The result on the semidefinite programming relaxation is treated in Chapter \ref{chap:SDP}, along with some background.
+
+\subsection{Simplified proof}\label{subsec:IntroBerman}
+
+We simplify the proof of the main lemma of the currently best weighted approximation algorithm from Berman \cite[Lemma 2]{Berman}. The current proof is very clever but also very algebraic. We make the observation that the squared weight function somehow captures both the maximum weight and the sum of the weights of the neighbourhood of a vertex in the conflict graph of the instance. This allows us to avoid the algebraic proof and simplify it.
+
+We treat this result in Chapter \ref{chap:Weighted}.
+
+\section{Outline of the thesis}\label{sec:Outline}
+
+\paragraph{Chapter 2} Set packing is one of the fundamental optimization problems and therefore there are numerous applications within mathematics and real life. It is highly related to some other well-known problems such as the hypergraph matching problem and the maximum independent set problem. In Chapter \ref{chap:Applications} these applications and related problems are considered.
+
+\paragraph{Chapter 3} In Chapter \ref{chap:Results} the current results on the $k$-set packing problem are discussed. First the unweighted approximation algorithms and the weighted approximation algorithms are considered in Sections \ref{sec:Unweighted} and \ref{sec:Weighted}. For the unweighted problem the best approximation algorithm currently achieves an approximation guarantee of $\frac{k+1}{3} + \varepsilon$ \cite{Cygan,FurerYu} and for the weighted problem the best result is a $\frac{k+1}{2}$-approximation \cite{Berman}.
+
+Then Section \ref{sec:Parameterized} continues with the parameterized algorithms for $k$-set packing, as this problem is fixed parameter tractable. There has been a long line of research in this area and Appendix \ref{app:Parameterized} contains an overview of these algorithms.
+
+Chapter \ref{chap:Results} ends with some results on the inherent hardness of the problem in Section \ref{sec:Hardness}. Subsection \ref{subsec:Hardness0} starts with some hardness results that apply to the general set packing problem. Subsections \ref{subsec:Hardness1}, \ref{subsec:Hardness2} and \ref{subsec:Hardness3} contain theorems on $k$-set packing specifically. It is NP-hard to approximate within a factor of $\Omega\left(\frac{k}{\log k}\right)$ \cite{Hazan} and three other results on the limits of local search techniques for the problem are mentioned \cite{Cygan,FurerYu,Sviridenko}.
+
+\paragraph{Chapter 4} Chapter 4 treats the results on the standard linear programming relaxation and the intersecting family LP and contains the proofs of Theorems \ref{thm:IntegralityGap1} and \ref{thm:LP1}.
+
+\paragraph{Chapter 5} The proof of Theorem \ref{thm:SDP1} is given in Chapter \ref{chap:SDP} along with some background about semidefinite programming and the Lov\'{a}sz Theta function.
+
+\paragraph{Chapter 6} The topic of Chapter \ref{chap:Weighted} is weighted $k$-set packing. Currently the best result is a $\frac{k+1}{2}$-approximation from Berman \cite{Berman}. He provides two algorithms. One is called \textsc{SquareImp} which uses a local search technique using the squared weight function. The second is called \textsc{WishfulThinking} which searches locally for structures which he calls nice claws (definitions are in Chapter \ref{chap:Weighted}). He links these two algorithms in a shrewd way, allowing him to proof both the approximation guarantee and the polynomial running time. At the end we give a simplified proof of the main lemma.
+
+\paragraph{Chapter 7} Finally there is an extended discussion in Chapter \ref{chap:Discussion} about possible improvements. The results on the LP and the SDP relaxation are discussed in Section \ref{sec:DiscLP} and whether these can be extended to the weighted case. We see why changing Berman's \cite{Berman} weighted $\frac{k+1}{2}$-approximation algorithm a bit does not yield an improvement in Section \ref{sec:DiscBerman}. In Section \ref{sec:IS} the strong relation between set packing and the independent set problem (on bounded degree graphs) is considered and it is argued why the results for independent set are better. We discuss why the weighted problem asks for such different algorithms compared to the unweighted version of the problem in Section \ref{sec:WeightedVSUnweighted}. Several suggestions for future research are given. %and why the unweighted $\frac{k+2}{3}$-approximations are so considerably easier than the $\frac{k+1}{3}$-approximations.
+
+%The topic of Chapter \ref{chap:Weighted} is weighted $k$-set packing. Currently the best result is a $\frac{k+1}{2}$-approximation from Berman \cite{Berman}. He provides two algorithms. One is called \textsc{SquareImp} which uses a local search technique using the squared weight function. The second is called \textsc{WishfulThinking} which searches locally for structures which he calls nice claws (definitions are in Chapter \ref{chap:Weighted}). He links these two algorithms in a shrewd way, allowing him to proof both the approximation guarantee and the polynomial running time.
+
+%In Chapter \ref{chap:Weighted} we go over the details and give a simplified proof of the main lemma that every nice claw improves the squared weight function. The current proof is very clever but also very algebraic. We make the observation that the squared weight function somehow captures both the maximum weight and the sum of the weights of the neighbourhood of a vertex in the conflict graph of the instance. This allows us to avoid the algebraic proof and simplify it.
+
+%In Chapter \ref{chap:Weighted} we look at weighted $k$-set packing. Currently the best result is a $\frac{k+1}{2}$-approximation from Berman \cite{Berman}. He provides us with two algorithms. One is called \textsc{SquareImp} which uses a local search technique using the squared weight function. The second is called \textsc{WishfulThinking} which searches locally for structures that he calls nice claws (definitions are in Chapter \ref{chap:Weighted}). He shows that under the assumption that \textsc{WishfulThinking} terminates, its approximation guarantee is $\frac{k+1}{2}$. Then he argues why every nice claw improves the squared weight function, which is the main lemma. Consequently, \textsc{WishfulThinking} cannot make more iterations than \textsc{SquareImp}. When \textsc{SquareImp} terminates with some independent set, there is no more claw that improves its squared weight, and hence there is no more nice claw. So \textsc{WishfulThinking} terminates and hence the approximation guarantee has been proved.
+
+%\subsection{Discussion}
+
+%Finally there is an extended discussion in Chapter \ref{chap:Discussion} about possible improvements. The results on the LP and the SDP relaxation are discussed in Section \ref{sec:DiscLP} and whether these can be extended to the weighted case. We see why changing Berman's \cite{Berman} weighted $\frac{k+1}{2}$-approximation algorithm a bit does not yield an improvement in Section \ref{sec:DiscBerman}. In Section \ref{sec:IS} the strong relation between set packing and independent set is considered and it is argued why the results for independent set are better. We discuss why the weighted problem asks for such different algorithms compared to the unweighted version of the problem in Section \ref{sec:WeightedVSUnweighted}. Several suggestions for future research are given. %and why the unweighted $\frac{k+2}{3}$-approximations are so considerably easier than the $\frac{k+1}{3}$-approximations. 

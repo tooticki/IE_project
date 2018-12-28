@@ -1,0 +1,155 @@
+% TeX programming:
+%   Sigitas Tolusis, VTeX, Lithuania, 2009
+% E-mail: sigitas@vtex.lt
+% Changes:
+%   20090622 - alfa versija
+%   20101030 - idedu pranesima del seno tex'o (LS).
+%
+\def\get@CVSdate#1Id: #2,v #3 #4 #5 #6 #7${#4}%$
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{fileinfo}[\get@CVSdate$Id: fileinfo.sty,v 1.4 2013/10/30 09:55:03 lstonys Exp $]
+
+\bgroup
+\@ifundefined{eTeXversion}{%
+  \@latex@warning{fileinfo.sty failo krauti negaliu. Tex variklis yra per senas.}%
+  \global\let\getFileInfo\relax
+  \aftergroup\endinput
+  }{}
+\egroup
+
+\edef\comment@other{\expandafter\@gobble\string\%}
+\edef\begin@@info{\comment@other\detokenize{BeginFileInfo}}
+\edef\dbl@@comment{\comment@other\comment@other}
+\edef\eq@@other{\detokenize{=}}%
+\edef\end@@info{\comment@other\detokenize{EndFileInfo}}
+\edef\begin@@preambule{\string\documentclass}%
+\newcount\info@@status
+\newtoks\readline@@tokens
+\newtoks\readline@@key@tokens
+\newtoks\readline@@value@tokens
+\newcount\readline@@offset
+\def\get@@rest@@tokens#1\relax{} % max tokens
+\def\get@@tokens#1#2#3{%
+  \readline@@tokens={}\readline@@key@tokens={}\readline@@value@tokens={}%
+  \readline@@offset=0\def\readline@@maxlength{#1}\edef\readline@@splitchar{\detokenize{#3}}%%
+  \expandafter\futurelet\expandafter\next@@token\expandafter\get@@next@@token#2\relax\relax
+  \edef\input@@tokens{\the\readline@@tokens}%
+  }
+\def\get@@next@@token#1{%
+  \let\next@@action\get@@rest@@tokens
+  \if\next@@token\relax
+  % all tokens  
+  \else
+    \ifnum\number\readline@@maxlength>\z@
+      \ifnum\readline@@offset<\number\readline@@maxlength
+        \readline@@tokens=\expandafter{\the\readline@@tokens#1}%
+        \def\next@@action{\futurelet\next@@token\get@@next@@token}%
+      \fi
+    \else
+     \ifnum\readline@@offset>\@ne
+       \if\next@@token\readline@@splitchar
+          \let\cur@tokens@list\readline@@value@tokens
+        \else
+          \cur@tokens@list=\expandafter{\the\cur@tokens@list#1}%
+       \fi
+      \else
+        \let\cur@tokens@list\readline@@key@tokens
+      \fi
+    \fi
+    \def\next@@action{\futurelet\next@@token\get@@next@@token}%
+    \advance\readline@@offset\@ne
+  \fi
+ \next@@action
+  }
+\newif\if@start@with@dblcomment
+\def\check@for@dblcomments@prefix#1#2#3\relax{\@start@with@dblcommentfalse\if#1\comment@other\if#2\comment@other\@start@with@dblcommenttrue\fi\fi}
+\def\check@for@begin{\ifx\input@@line\begin@@info \info@@status=\@ne\readline\tex@@fd to\input@@line \fi}
+\def\check@for@end{%
+  \ifx\input@@line\end@@info
+    \info@@status=\tw@
+  \else
+    \expandafter\check@for@dblcomments@prefix\input@@line\relax\relax\relax
+    \if@start@with@dblcomment
+      \get@@tokens{0}\input@@line{=}\relax
+      \edef\@tempa@{\the\readline@@value@tokens}%
+      \ifx\@tempa@\@empty\else\expandafter\xdef\csname fileinfo@\the\readline@@key@tokens\endcsname{\the\readline@@value@tokens}\fi
+    \else
+      \get@@tokens{14}\input@@line{}\relax
+      \ifx\input@@tokens\begin@@preambule
+        \info@@status=\tw@
+      \fi
+    \fi
+  \fi
+  \ifeof\tex@@fd \info@@status=\tw@ \fi
+  }
+\def\parse@fileinfo@history#1{%
+  \expandafter\edef\expandafter\history@@info\expandafter{\csname fileinfo@History#1\endcsname}%
+  \if\history@@info\relax\reset@history@settings{history}\else\expandafter\get@history@info\history@@info\relax\fi
+  }
+\def\get@history@datetime#1.#2.#3#4#5#6:#7\relax{\xdef\history@date@info{#1#2#3#4}%
+  \bgroup
+    \@tempcnta#5#6\relax\multiply\@tempcnta by60\relax\advance\@tempcnta by#7\relax
+    \xdef\history@time@info{\the\@tempcnta}
+  \egroup
+  }
+
+\def\get@history@info#1\relax{\in@{,}{#1}\ifin@\get@@history@@info#1\relax\else\get@history@datetime#1\relax\fi}
+\def\get@@history@@info#1:#2,#3:#4,#5\relax{\def\history@Computer@info{#2}\def\history@User@info{#4}\get@history@datetime#5\relax}
+\def\set@month@number#1=#2\relax{\expandafter\def\csname month@#1@number\endcsname{#2}}
+\@for\curr@option:={JAN=01,FEB=02,MAR=03,APR=04,MAY=05,JUN=06,JUL=07,AUG=08,SEP=09,OCT=10,NOV=11,DEC=12}%
+  \do{\expandafter\set@month@number\curr@option\relax}%
+\def\parse@year@time#1#2#3#4#5#6 #7:#8\relax{\xdef\logfile@date@info{#3#4#5#6#2#1}%
+  \bgroup
+    \@tempcnta#7\relax\multiply\@tempcnta by60\relax\advance\@tempcnta by#8\relax
+    \xdef\logfile@time@info{\the\@tempcnta}
+  \egroup
+  }
+\def\parse@logfile@info#1=#2) #3#4 #5#6#7 #8\relax{\parse@year@time{#3#4}{\csname month@#5#6#7@number\endcsname}#8\relax}
+\def\reset@history@settings#1{%
+  \expandafter\gdef\csname#1@date@info\endcsname{0}%
+  \expandafter\gdef\csname#1@time@info\endcsname{0}%
+  }
+\def\read@first@logfile@line{%
+  \immediate\openin\tex@@fd=\jobname.log\relax
+  \readline\tex@@fd to\input@@line
+  \if\input@@line\relax\reset@history@settings{logfile}\else\expandafter\parse@logfile@info\input@@line\relax\fi
+  \immediate\closein\tex@@fd
+  }
+\newread\tex@@fd
+\def\getFileInfo{%
+  \bgroup
+    \info@@status=0\endlinechar=\m@ne
+    \immediate\openin\tex@@fd=\jobname\relax
+    \loop
+      \readline\tex@@fd to\input@@line \check@for@begin \check@for@end
+    \ifnum\number\info@@status<\tw@
+    \repeat
+    \immediate\closein\tex@@fd
+  \egroup
+  \get@jobstart@datetime
+  }
+\def\get@current@time{%
+  \bgroup
+    \@tempcnta\number\year\relax
+    \multiply\@tempcnta100\relax
+    \advance\@tempcnta by\number\month\relax
+    \multiply\@tempcnta100\relax
+    \advance\@tempcnta by\number\day\relax
+    \xdef\current@date@info{\the\@tempcnta}%
+    \xdef\current@time@info{\the\time}%
+  \egroup
+  }
+\def\get@jobstart@datetime{%
+  \bgroup
+    \get@current@time
+    \parse@fileinfo@history{1}%
+    \ifnum\history@date@info>\z@
+      \xdef\jobstart@date@info{\history@date@info}%
+      \xdef\jobstart@time@info{\history@time@info}%
+   \else
+      \xdef\jobstart@date@info{\current@date@info}%
+      \xdef\jobstart@time@info{\current@time@info}%
+    \fi    
+ \egroup
+ }
+\endinput

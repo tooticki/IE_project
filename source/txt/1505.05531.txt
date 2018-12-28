@@ -1,0 +1,951 @@
+arXiv:1505.05531v1 [math.LO] 20 May 2015
+
+Short Proofs of the
+Kneser-Lovász Coloring Principle
+James Aisenberg1,⋆ , Maria Luisa Bonet2,⋆⋆ , Sam Buss1,⋆ ⋆ ⋆ , Adrian
+Crãciun3,† , and Gabriel Istrate3,†
+1
+
+2
+
+3
+
+Department of Mathematics, University of California, San Diego, La Jolla, CA
+92093-0112, USA jaisenberg@math.ucsd.edu, sbuss@ucsd.edu
+Computer Science Department, Universidad Politécnica de Cataluña, Barcelona,
+Spain bonet@cs.upc.edu
+West University of Timişoara, and the e-Austria Research Institute, Timişoara,
+RO-300223, Romania acraciun@ieat.ro, gabrielistrate@acm.org
+
+Abstract. We prove that the propositional translations of the KneserLovász theorem have polynomial size extended Frege proofs and quasipolynomial size Frege proofs. We present a new counting-based combinatorial proof of the Kneser-Lovász theorem that avoids the topological
+arguments of prior proofs for all but finitely many cases for each k. We
+introduce a miniaturization of the octahedral Tucker lemma, called the
+truncated Tucker lemma: it is open whether its propositional translations
+have (quasi-)polynomial size Frege or extended Frege proofs.
+
+1
+
+Introduction
+
+This paper discusses proofs of Lovász’s theorem about the chromatic number
+of Kneser graphs, and the proof complexity of propositional translations of the
+Kneser-Lovász theorem. We give a new proof of the Kneser-Lovász theorem that
+uses a simple counting argument instead of the topological arguments used in
+prior proofs, for all but finitely many cases. Our arguments can be formalized
+in propositional logic to give polynomial size extended Frege proofs and quasipolynomial size Frege proofs.
+Frege systems are sound and complete proof systems for propositional logic
+with a finite schema of axioms and inference rules. The typical example is a
+“textbook style” propositional proof system using modus ponens as its only rule
+of inference, and all Frege systems are polynomially equivalent to this system [7].
+Extended Frege systems are Frege systems augmented with the extension rule,
+which allows variables to abbreviate complex formulas. The size of a Frege or
+⋆
+⋆⋆
+⋆⋆⋆
+
+†
+
+Supported in part by NSF grants DMS-1101228 and CCF-1213151.
+Supported in part by grant TIN2013-48031-C4-1.
+Supported in part by NSF grants DMS-1101228 and CCF-1213151, and Simons
+Foundation award 306202.
+Supported in part by IDEI grant PN-II-ID-PCE-2011-3-0981“Structure and computational difficulty in combinatorial optimization: an interdisciplinary approach”.
+
+extended Frege proof is measured by counting the number of symbols in the proof
+[7]. Frege proofs are able to reason using Boolean formulas; whereas extended
+Frege proofs can reason using Boolean circuits (see [9]). Boolean formulas are
+conjectured to require exponential size to simulate Boolean circuits; there is no
+known direct connection, but by analogy, it is generally conjectured that there is
+an exponential separation between the sizes of Frege proofs and extended Frege
+proofs. This is one of the important open questions in proof complexity; for more
+on proof complexity see e.g. [2,4,5,7,10,13].
+As discussed by Bonet, Buss and Pitassi [2] and more recently by [1,6],
+we have hardly any examples of combinatorial tautologies, apart from consistency statements, that are conjectured to exponentially separate Frege and extended Frege proof size. These prior works discussed a number of combinatorial
+principles, including the pigeonhole principle and Frankl’s theorem. Istrate and
+Crãciun [8] recently proposed the Kneser-Lovász principle as a candidate for
+exponentially separating Frege and extended Frege proof size. In this paper we
+give quasi-polynomial size Frege proofs of the propositional translations of the
+Kneser-Lovász theorem for all fixed k. Thus they do not provide an exponential
+separation of Frege and extended Frege proof size.
+Our proof is also interesting because it gives a new method of proving the
+Kneser-Lovász theorem. Prior proofs use (at least implicitly) a topological fixedpoint lemma. The most combinatorial proof is by Matoušek [12] and is inspired
+by the octahedral Tucker lemma; see also Ziegler [14]. Our new proofs mostly
+avoid topological arguments and use a counting argument instead. These counting arguments can be formalized with Frege proofs. Indeed, one of the important
+strengths of Frege proofs is that they can reason about integer arithmetic. These
+techniques originated in polynomial size Frege proofs of the pigeonhole principle [3] which used carry-save-addition representations for vector addition and
+multiplication in order to express and prove properties about integer operations
+in polynomial size. For the Kneser-Lovász theorem, the counting arguments reduce the general case to “small” instances of size n ≤ 2k 4 . For fixed k, there are
+only finitely many small instances, and they can be verified by exhaustive enumeration. As we shall see, this leads to polynomial size extended Frege proofs,
+and quasi-polynomial size Frege proofs, for the Kneser-Lovász principles.
+It is surprising that the topological arguments can be largely eliminated from
+the proof of the Kneser-Lovász theorem. The only remaining use of topological
+arguments is to establish the “small instances”. It would be interesting to give
+an additional argument that avoids having to prove the small instances separately. One possibility for this would be to adapt the proof based on the octahedral Tucker lemma to quasi-polynomial size Frege proofs. The first difficulty
+with this is that the octahedral Tucker lemma has exponentially large propositional translations. To circumvent this, we present a miniaturized version of
+the octahedral Tucker lemma called the truncated Tucker lemma. The truncated
+Tucker lemma has polynomial size propositional translations. We prove that the
+Kneser-Lovász tautologies have polynomial size constant depth Frege proofs if
+the propositional formulas for the truncated Tucker lemma are given as addi-
+
+tional hypotheses. However, it remains open whether these truncated Tucker
+lemma principles have (quasi-)polynomial size Frege or extended Frege proofs.
+The (n, k)-Kneser graph is defined to be the undirected graph whose vertices
+are the k-subsets of {1, . . . , n}; there is an edge between two vertices iff those
+vertices have empty intersection. The Kneser-Lovász theorem states that Kneser
+graphs have a large chromatic number:
+Theorem 1 (Lovász [11]). Let n ≥ 2k > 1. The (n, k)-Kneser graph has no
+coloring with n − 2k + 1 colors.
+It is well-known that the (n, k)-Kneser graph has a coloring with n − 2k + 2
+colors (see e.g. the appendix to the arXiv version of this paper), so the bound
+n−2k+1 is optimal. For k = 1, the Kneser-Lovász theorem is just the pigeonhole
+principle.
+Istrate and Crãciun [8] noted that, for fixed values of k, the propositional
+translations of the Kneser-Lovász theorem have polynomial size in n. They presented arguments that can be formalized by polynomial size Frege proofs for
+k = 2, and by polynomial size extended Frege proofs for k = 3. This left open
+the possibility that the k = 3 case could exponentially separate the Frege and
+extended Frege systems. It was also left open whether the k > 3 case of the
+Kneser-Lovász theorem gave tautologies that require exponential size extended
+Frege proofs. As discussed above, the present paper refutes these possibilities.
+Theorems 4 and 5 summarize these results.
+ Let [n] be the set {1, . . . , n}; members of [n] are called nodes. We identify
+n
+k with the set of k-subsets of [n], the vertices of the (n, k)-Kneser graph.
+
+Definition 2. An m-coloringof the (n, k)-Kneser graph is a map c from nk
+to [m], such that for S, T ∈ nk , if S ∩ T = ∅, then c(S) 6= c(T ). If ℓ ∈ [m], then
+the color class Pℓ is the set of vertices assigned the color ℓ by c.
+
+The formulas Knesernk are the natural propositional translations of the statement that there is no (n − 2k + 1)-coloring of the (n, k)-Kneser graph:
+
+Definition 3. Let n ≥ 2k > 1, and m = n−2k +1. For S ∈ nk and i ∈ [m], the
+propositional variable pS,i has the intended meaning that vertex S of the Kneser
+graph is assigned the color i. The formula Knesernk is
+_
+_
+^ _
+(pS,i ∧ pT,i ) .
+pS,i →
+n i∈[m]
+n i∈[m]
+S,T ∈( k )
+S∈( k )
+S∩T =∅
+
+Theorem 4. For fixed parameter k ≥ 1, the propositional translations Knesernk
+of the Kneser-Lovász theorem have polynomial size extended Frege proofs.
+Theorem 5. For fixed parameter k ≥ 1, the propositional translations Knesernk
+of the Kneser-Lovász theorem have quasi-polynomial size Frege proofs.
+When both k and n are allowed to vary, it is open whether the Knesernk
+tautologies have quasi-polynomial size (extended) Frege proofs, or equivalently,
+have proofs with size quasi-polynomially bounded in terms of nk .
+
+2
+
+Mathematical Arguments
+
+Section 2.1 gives the new proof of the Kneser-Lovász theorem; this is later shown
+to be formalizable with polynomial size extended Frege proofs. Section 2.2 gives a
+slightly more complicated but more efficient proof, later shown to be formalizable
+with quasi-polynomial size Frege proofs. The next definition and lemma are
+crucial for Sects. 2.1 and 2.2.
+Any two vertices in a color class Pℓ have non-empty intersection. One way
+this can happen is for the color class to be “star-shaped”:
+T
+Definition 6. A color class
+T Pℓ is star-shaped if Pℓ is non-empty. If Pℓ is
+star-shaped, then any i ∈ Pℓ is called a central element of Pℓ .
+
+The next lemma bounds the size of color classes that are not star-shaped. It
+will be used in our proof of the Kneser-Lovász theorem to establish the existence
+of star-shaped color classes.
+The idea is that non-star-shaped color classes are
+
+too small to cover all nk vertices.
+
+Lemma 7. Let c be a coloring of
+
+n
+k
+
+
+. If Pℓ is not star-shaped, then
+
+|Pℓ | ≤ k 2
+
+
+
+n−2
+.
+k−2
+
+Proof. Suppose Pℓ is not star-shaped. If Pℓ is empty, the claim is trivial. So
+suppose Pℓ 6= ∅, and let S0 = {a1 , . . . , ak } be some element of Pℓ . Since Pℓ is not
+star-shaped, there must be sets S1 , . . . , Sk ∈ Pℓ with ai ∈
+/ Si for i = 1, . . . , k.
+To specify an arbitrary element S of Pℓ , we do the following. Since S and
+S0 have the same color, S ∩ S0 is non-empty. We first specify some ai ∈ S ∩ S0 .
+Likewise, S ∩ Si is non-empty; we second specify some aj ∈ S ∩ Si . By construction, ai 6= aj , so S is fully specified
+by the k possible values for ai , the k possible
+
+values for aj , and the n−2
+possible values for the remaining members of S.
+k−2
+
+Therefore, |Pℓ | ≤ k 2 n−2
+⊓
+⊔
+k−2 .
+2.1
+
+Argument for Extended Frege Proofs
+
+Let k > 1 be fixed. We prove the Kneser-Lovász theorem by induction on n. The
+base cases for the induction are n = 2k, . . . , N (k) where N (k) is the constant
+depending on k specified in Lemma 8. We shall show that N (k) is no greater
+than k 4 . Since k is fixed, there are only finitely many base cases. Since the
+Kneser-Lovász theorem is true, these base cases can all be proved by a fixed
+Frege proof of finite size (depending on k). Therefore, in our proof below, we
+only show the induction step.
+Lemma 8. Fix
+ k > 1. There is an N (k) so that, for n > N (k), any (n−2k +1)coloring of nk has at least one star-shaped color class.
+
+Proof. Suppose that a coloring c has no star-shaped color class. Since there are
+n − 2k + 1 many color classes, Lemma 7 implies that
+
+
+ 
+n−2
+n
+≥
+(n − 2k + 1) · k 2
+.
+(1)
+k−2
+k
+For fixed k, the left-hand side of (1) is Θ(nk−1 ) and the right-hand side is
+Θ(nk ). Thus, there exists an N (k) such that (1) fails for all n > N (k). Hence
+for n > N (k), there must be at least one star-shaped color class.
+⊓
+⊔
+To obtain an upper bound on the value of N (k), note that (1) is equivalent
+to
+(n − 2k + 1)k 3 (k − 1) ≥ n(n − 1).
+
+(2)
+
+4
+
+Since 2k − 1 ≥ 1, (2) implies that (n − 1)k > n(n − 1) and thus that n < k 4 .
+Thus, (1) will be false if n ≥ k 4 ; so N (k) < k 4 .
+We are now ready to give our first proof of the Kneser-Lovász theorem.
+Proof (of Theorem 1, except for base cases). Fix k > 1. By Lemma 8, there
+is
+
+some N (k) such that for n > N (k), any (n − 2k + 1)-coloring c of nk has a
+star-shaped color class. As discussed above, the cases of n ≤ N (k) cases are
+handled by exhaustive search and the truth of the Kneser-Lovász theorem. For
+n > N (k), we prove the claim by infinite descent. In other words, we show
+that if c is an (n − 2k + 1)-coloring of nk , then there is some c′ which is an
+
+((n − 1) − 2k + 1)-coloring of n−1
+k .
+By Lemma 8, the coloring c has some star-shaped color class Pℓ with central
+element i. Without loss of generality, i = n and ℓ = n − 2k + 1. Let
+
+c′ = c ↾ n−1
+k
+
+be the restriction of c to the domain n−1
+k . This discards the central element n
+of Pℓ , and thus all vertices with color ℓ. Therefore, c′ is an ((n − 1) − 2k + 1)coloring of n−1
+⊓
+⊔
+k . This completes the proof.
+2.2
+
+Argument for Frege Proofs
+
+We now give a second proof of the Kneser-Lovász theorem. The proof above
+required n − N (k) rounds of infinite descent to transform a Kneser graph on n
+nodes to one on N (k) nodes. Our second proof replaces this with only O(log n)
+many rounds, and this efficiency will be key for formalizing this proof with quasipolynomial size Frege proofs in Sect. 3.2.
+We refine Lemma 8 to show that for n sufficiently large, there are many (i.e.,
+a constant fraction) star-shaped color classes. The idea is to combine the upper
+bound of Lemma 7 on
+ the size of non-star-shaped color classes with the trivial
+upper bound of n−1
+k−1 on the size of star-shaped color classes.
+Lemma 9. Fix k > 1 and 0 < β < 1. Then there exists
+ an N (k, β) such that
+for n > N (k, β), if c is an (n − 2k + 1)-coloring of nk , then c has at least nk β
+many star-shaped color classes.
+
+3
+
+3
+
+(k−β)
+(k−β)
+. Let n > k 1−β
+, and
+Proof. The value of N (k, β) can be set equal to k 1−β
+
+n
+suppose c is an (n − 2k + 1)-coloring of k . Let α be the number of star-shaped
+color classes of c. It
+ is clear that an upper bound on the size of each star-shaped
+color class is n−1
+k−1 . There are n − α −2k + 1 many non-star-shaped classes, and
+Lemma 7 bounds their size by k 2 n−2
+k−2 . This implies that
+
+
+
+ 
+
+
+n
+n−1
+2 n−2
+(n − α − 2k + 1) ≥
+.
+α+k
+k−2
+k
+k−1
+
+(3)
+
+3
+
+(k−β)
+Assume for a contradiction that α < nk β. Since n > k 1−β
+, 0 < β < 1, and
+
+
+n−1
+3
+2
+k ≥ 2, we have n − 1 > k (k − 1) > k (k − 1). Therefore, k−1 > k 2 n−2
+k−2 , and
+if α is replaced by the larger value nk β, the left hand side of (3) increases. Thus,
+
+
+
+
+ 
+
+n−1 n
+n
+n−2 
+n
+n − β − 2k + 1 >
+β + k2
+.
+k−1 k
+k
+k−2
+k
+
+n
+n
+k−β
+n
+Since n−1
+k−1 k = k and n − k β − 2k + 1 = k n − 2k + 1,
+
+k2
+
+We have
+
+k−β
+k (n
+
+
+
+ 
+
+n − 2 k − β
+n
+n − 2k + 1 > (1 − β)
+.
+k−2
+k
+k
+
+− 1) >
+
+k−β
+k n
+
+k 3 (k − 1)
+
+(4)
+
+− 2k + 1. Therefore, (4) gives
+
+k−β
+(n − 1) > (1 − β)n(n − 1).
+k
+
+Dividing by n − 1 gives k 3 (k − β) > (1 − β)n, contradicting n >
+
+k3 (k−β)
+1−β .
+
+⊓
+⊔
+
+We now give our second proof of the Kneser-Lovász theorem.
+Proof (of Theorem 1, except for base cases). Fix k > 1. By Lemma 9 with
+β = 1/2, if n > N (k, 1/2) and c is an (n − 2k + 1)-coloring of nk , then c has at
+least n/2k many star-shaped color classes. We prove the Kneser-Lovász theorem
+by induction on n. The base cases are for 2k ≤ n ≤ N (k, 1/2), and there are
+only finitely of these, so they can be exhaustively proven. For n > N (k, 1/2),
+we structure the induction proof as an infinite
+ descent. In other words, we show
+that if c is an (n − 2k + 1)-coloring of nk , then there is some c′ that is an
+n 
+n
+n
+) − 2k + 1)-coloring of n−k2k . For simplicity of notation, we assume 2k
+((n − 2k
+is an integer. If this is not the case, we really mean to round up to the nearest
+n
+⌉.
+integer ⌈ 2k
+By permuting the color classes and the nodes, we can assume w.l.o.g. that
+n
+n
+color classes Pℓ for ℓ = n − 2k
+− 2k + 2, . . . , n − 2k + 1 are star-shaped,
+the 2k
+n
+many color
+and each such Pℓ has central element ℓ + 2k − 1. That is, the last 2k
+n
+classes are star-shaped and their central elements are the last 2k nodes in [n].
+(It is possible that some star-shaped color classes share central nodes; in this
+case, additional nodes can be discarded so that n/2k are discarded in all.)
+
+Define c′ to be the coloring of
+
+n−n/2k
+k
+
+
+
+which assigns the same colors as c.
+ 2k−1 
+2k−1
+′
+2k n , since n − n = 2k−1 n.
+The map c is a ( 2k n − 2k + 1)-coloring of
+2k
+2k
+k
+This completes the proof of the induction step.
+⊓
+⊔
+When formalizing the above argument with quasi-polynomial size Frege proofs,
+it will be important to know how many iterations of the procedure are required
+to reach the base cases, so let us calculate this.
+s
+After s iterations of this procedure, we have a (( 2k−1
+2k ) n − 2k + 1)-coloring
+ 2k−1 s 
+( 2k ) n
+s
+of
+. We pick s large enough so that ( 2k−1
+2k ) n is less than N (k, 1/2).
+k
+In other words, since k is constant,
+
+
+n
+= O(log n)
+s = log 2k
+2k−1
+k 3 (2k − 1)
+
+will suffice, and only O(log n) many rounds of the procedure are required.
+We do not know if the bound in Lemma 9 is optimal or close to optimal. An
+appendix in the arXiv version of this paper will discuss the best examples we
+know of colorings with large numbers of non-star-shaped color classes.
+
+3
+3.1
+
+Formalization in Propositional Logic
+Polynomial Size Extended Frege Proofs
+
+We sketch the formalization of the argument in Sect. 2.1 as a polynomial size
+extended Frege proof, establishing Theorem 4. We concentrate on showing how
+to express concepts such as “star-shaped color class” with polynomial size propositional formulas. For space reasons, we omit the straightforward details of how
+(extended) Frege proofs can prove properties of these concepts.
+Fix values for k and n with n > N (k). We describe an extended Frege proof
+of Knesernk . We have variables pS,j (recall Definition 3), collectively denoted just
+p~ . The proof assumes Knesernk (~
+p ) is false, and proceeds by contradiction. The
+main step is to define new variables p~ ′ and prove that Kneserkn−1 (~
+p ′ ) fails. This
+will be repeated until reaching a Kneser graph over only N (k) nodes.
+For this, let Star(i, ℓ) be a formula that is true when i ∈ [n] is a central
+element of the color class Pℓ ; namely,
+^
+Star(i, ℓ) :=
+¬pS,ℓ .
+n
+/
+S∈( k ), i∈S
+W
+We use Star(ℓ) := i Star(i, ℓ) to express that Pℓ is star-shaped.
+The extended Frege proof defines the instance of the Kneser-Lovasz principle
+Kneserkn−1 by discarding one node and one color. The first star-shaped color
+class Pℓ is discarded; accordingly, we let
+^
+DiscardColor(ℓ) := Star(ℓ) ∧
+¬Star(ℓ′ ).
+ℓ′ <ℓ
+
+The node to be discarded is the least central element of the discarded Pℓ :
+i
+_h
+^
+DiscardNode(i) :=
+DiscardColor(ℓ) ∧ Star(i, ℓ) ∧
+¬Star(i′ , ℓ) .
+ℓ
+
+i′ <i
+
+After discarding the node i and color class Pℓ , the remaining nodes and colors
+are renumbered to the ranges [n − 1] and [n − 2k], respectively. In particular,
+the “new” color j (in the instance of Kneserkn−1 ) corresponds to the “old” color
+j −ℓ (in the instance of Knesernk ) where
+(
+j
+if j < ℓ
+−ℓ
+j =
+j + 1 if j ≥ ℓ.
+
+n−1
+And, if S = {i1 , . . . , ik } ∈ n−1
+is a “new” vertex
+k
+ (for the Kneserk instance),
+n
+−i
+then it corresponds to the “old” vertex S ∈ k (for the instance of Knesernk ),
+where S −i = {i′1 , i′2 , . . . , i′k } with
+(
+it
+if it < i
+′
+it =
+it + 1 if it ≥ i.
+
+For each S ∈ n−1
+and j ∈ [n − 1], the extended Frege proof uses the extension
+k
+rule to introduce a new variable p′S,j defined as follows
+p′S,j ≡
+
+_
+i,ℓ
+
+
+DiscardNode(i) ∧ DiscardColor(ℓ) ∧ pS −i ,j −ℓ .
+
+As seen in the definition by extension, p′S,j is defined by cases, one for each
+possible pair i, ℓ of nodes and colors such that the node i is the least central
+element of the Pℓ color class, where Pℓ is the first star-shaped color class. The
+extended Frege proof then shows that ¬Knesernk (~
+p ) implies ¬Kneserkn−1 (~
+p ′ ), i.e.,
+′
+that if the variables pS,j define a coloring, then the variables pS,j also define a
+coloring. For this, it is necessary to show that there is at least one star-shaped
+color class; this is provable with a polynomial size extended Frege proof (even
+a Frege proof) using the construction of Lemma 8 and the counting techniques
+of [3].
+The extended Frege proof iterates this process of removing
+one node and one
+
+color until it is shown that there is a coloring of Nk(k) . This is then refuted by
+exhaustively considering all graphs with ≤ N (k) nodes.
+⊓
+⊔
+3.2
+
+Quasi-polynomial Size Frege Proofs
+
+This section discusses some of the details of the formalization of the argument
+in Sect. 2.2 as quasi-polynomial size Frege proofs, establishing Theorem 5. First
+we will form an extended Frege proof, then modify it to become a Frege proof.
+As before, the proof starts with the assumption that Knesernk (~
+p ) is false. As we
+describe next, the extended Frege proof then introduces variables p~ ′ by extension
+
+n−n/2k
+
+so that Kneserk
+is false. This process will be repeated O(log n) times. The
+final Frege proof is obtained by unwinding the definitions by extension.
+For a set X of formulas and t > 0, let “|X| < t” denote a formula that is
+true when the number of true formulas in X is less than t. “|X| < t” can be
+expressed by a formula of size polynomially bounded by the total size of the
+formulas in X, using the construction in [3]. “|X| = t” is defined similarly.
+The formulas Star(i, ℓ) and Star(ℓ) are the same as in Sect. 3.1. A color ℓ is
+now discarded if it is among the least n/2k star-shaped color classes.
+DiscardColor(ℓ) := Star(ℓ) ∧ (|{Star(ℓ′ ) : ℓ′ ≤ ℓ}| ≤ n/2k)
+The discarded nodes are the least central elements of the discarded color classes.
+i
+_h
+^
+DiscardNode(i) :=
+DiscardColor(ℓ) ∧ Star(i, ℓ) ∧
+¬Star(i′ , ℓ) .
+i′ <i
+
+ℓ
+
+The remaining, non-discarded colors and nodes are renumbered to form an inn−n/2k
+stance of Kneserk
+. For this, the formula RenumNode(i′ , i) is true when the
+′
+node i is the ith node that is not discarded; similarly RenumColor(j ′ , j) is true
+when the color j ′ is the jth color that is not discarded.
+RenumNode(i′ , i):= (|{¬DiscardNode(i′′ ) : i′′ <i′ }| = i−1) ∧ ¬DiscardNode(i′ )
+RenumColor(j ′ , j):= (|{¬DiscardColor(j ′′ ) : j ′′ <j ′ }| = j−1) ∧ ¬DiscardColor(j ′ )
+For each S = {i1 , . . . , ik } ∈
+by extension
+p′S,j ≡
+
+_
+
+i′1 ,...i′k ,j ′
+
+k
+^
+
+n−n/2k
+k
+
+
+
+and j ∈ [(n − n/2k) − 2k + 1], we define
+
+(RenumNode(i′t , it )) ∧ RenumColor(j ′ , j) ∧ p{i′1 ,...,i′k },j ′
+
+t=1
+
+!
+
+.
+
+The Frege proof then argues that if the variables pS,j define a coloring, then
+n−n/2k
+the variables p′S,j define a coloring, i.e., that ¬Knesernk (~
+p ) → ¬Kneserk
+(~
+p ′ ).
+The main step for this is proving there are at least n/2k star-shaped color classes
+by formalizing the proof of Lemma 9; this can be done with polynomial size Frege
+proofs using the counting techniques from [3]. After that, it is straightforward to
+
+prove that, for each S ∈ n−n/2k
+and j ∈ [(n − n/2k) − 2k + 1], the variable p′S,j
+k
+n−n/2k
+
+is well-defined; and that the p~ ′ collectively falsify Kneserk
+.
+This is iterated O(log n) times until fewer than N (k, 1/2) nodes remain. The
+proof concludes with a hard-coded proof that there are no such colorings of the
+finitely many small Kneser graphs.
+To form the quasi-polynomial size Frege proof, we unwind the definitions by
+extension. Each definition by extension was polynomial size; they are nested to
+a depth of O(log n). So the resulting Frege proof is quasi-polynomial size.
+⊓
+⊔
+
+4
+
+The Truncated Tucker Lemma
+
+This section introduces the truncated Tucker lemma. The usual (octahedral)
+Tucker lemma implies the truncated Tucker lemma and the truncated Tucker
+lemma implies the Kneser-Lovász theorem. The truncated Tucker lemma is of
+particular interest, since its propositional translations are only polynomial size;
+in contrast, the propositional translations of the usual Tucker lemma are of
+exponential size. Additionally, there are polynomial size constant depth Frege
+proofs of the Kneser-Lovász tautologies from the truncated Tucker tautologies.
+Our definition and proof of the truncated Tucker lemma borrows techniques
+and notation from Matoušek [12].
+Definition 10. Let n ≥ 1. The octahedral ball B n is:
+B n := {(A, B) : A, B ⊆ [n] and A ∩ B = ∅}.
+Let 1 ≤ k ≤ n. The truncated octahedral ball Bkn is:
+ 
+n
+o
+n
+n
+Bk := (A, B) : A, B ∈
+∪ {∅}, A ∩ B = ∅, and (A, B) 6= (∅, ∅) .
+k
+
+Definition 11. Let n > 1. A mapping λ : B n → {1, ±2, . . . , ±n} is antipodal if
+λ(∅, ∅) = 1, and for all other pairs (A, B) ∈ B n , λ(A, B) = −λ(B, A).
+Let n ≥ 2k > 1. A mapping λ : Bkn → {±2k, . . . , ±n} is antipodal if for all
+(A, B) ∈ Bkn , λ(A, B) = −λ(B, A).
+Note that −1 is not in the range of λ, and (∅, ∅) is the only member of B n that
+is mapped to 1 by λ.
+For A ⊆ [n], let A≤k denote the least k elements of A. By convention ∅≤k = ∅,
+but otherwise the notation is used only when |A| ≥ k.
+The Tucker lemma uses the subset relation ⊆ on [n],
+ but the truncated Tucker
+lemma uses instead a stronger partial order  on nk .
+
+Definition 12. Let  be the partial order on sets in nk ∪{∅} defined by A1  A2
+iff (A1 ∪ A2 )≤k = A2 .
+Lemma 13. The relation  is a partial order with ∅ its least element.
+Proof. It is clearly reflexive. For anti-symmetry, A1  A2 and A2  A1 imply
+that A1 = (A1 ∪ A2 )≤k = (A2 ∪ A1 )≤k = A2 . For transitivity: Suppose A1  A2
+and A2  A3 . Then (A1 ∪ A2 )≤k = A2 and (A2 ∪ A3 )≤k = A3 . This implies that
+A3 = (A2 ∪A3 )≤k = ((A1 ∪A2 )≤k ∪A3 )≤k = (A1 ∪(A2 ∪A3 )≤k )≤k = (A1 ∪A3 )≤k .
+Therefore A1  A3 . That ∅ is the least element is clear from the definition.
+n
+
+⊓
+⊔
+
+Definition 14. Two pairs (A1 , B1 ) and (A2 , B2 ) in B are complementary w.r.t.
+an antipodal map λ on B n if A1 ⊆ A2 , B1 ⊆ B2 and λ(A1 , B1 ) = −λ(A2 , B2 ).
+For (A1 , B1 ) and (A2 , B2 ) in Bkn , write (A1 , B1 )  (A2 , B2 ) when A1  A2 ,
+B1  B2 , and Ai ∩ Bj = ∅ for i, j ∈ {1, 2}. The pairs (A1 , B1 ) and (A2 , B2 ) are
+k-complementary w.r.t. an antipodal map λ on Bkn if (A1 , B1 )  (A2 , B2 ) and
+λ(A1 , B1 ) = −λ(A2 , B2 ).
+
+Theorem 15 (Tucker lemma). If λ : B n → {1, ±2, . . . , ±n} is antipodal, then
+there are two elements in B n that are complementary.
+Theorem 16 (Truncated Tucker). Let n ≥ 2k > 1. If λ : Bkn → {±2k . . . , ±n}
+is antipodal, then there are two elements in Bkn that are k-complementary.
+For a proof of Theorem 15, see [12]. An appendix to the arXiv version of this
+paper proves Theorem 16 from Theorem 15.
+The truncated Tucker lemma has polynomial size propositional translations.
+For each (A, B) ∈ Bkn , and for each i ∈ {±2k, . . . , ±n}, let pA,B,i be a propositional variable with the intended meaning that pA,B,i is true when λ(A, B) = i.
+The following formula Ant(~
+p ) states that the map is total and antipodal:
+^
+_
+(pA,B,i ∧ pB,A,−i ).
+n i∈{±2k,...,±n}
+(A,B)∈Bk
+
+The following formula Comp(~
+p ) states that there exists two elements in Bkn that
+are k-complementary:
+_
+(pA1 ,B1 ,i ∧ pA2 ,B2 ,−i ) .
+n
+(A1 ,B1 ),(A2 ,B2 )∈Bk
+,
+(A1 ,B1 )(A2 ,B2 )
+i∈{±2k,...,±n}
+
+The truncated Tucker tautologies are defined to be Ant(~
+p ) → Comp(~
+p ). (We
+could add an additional hypothesis, that for each A, B there is at most one i such
+that pA,B,i , but this is not needed for the Tucker tautologies to be valid.) There
+are < n2k members (A, B) in Bkn . Hence, for fixed k, there are only polynomially
+many variables pA,B,i , and the truncated Tucker tautologies have size polynomially bounded by n. On the other hand, the propositional translation of the
+usual Tucker lemma requires an exponential number of propositional variables
+in n, since the cardinality of B n is exponential in n.
+
+n
+Proof (Theorem 1 from the truncated
+Tucker
+lemma).
+Let
+c
+:
+→ {2k, . . . , n}
+k
+
+n
+be a (n−2k+1)-coloring of k . We show that this implies the existence of an
+antipodal
+map λ on Bkn that has no k-complementary pairs. Let ≤ be a total order
+
+n
+on k ∪ {∅} that refines the partial order . Define λ(A, B) to be c(A) if A > B
+and −c(B) if B > A. We argue that there are no k-complementary pairs in Bkn
+with respect to λ. Suppose there are, say (A1 , B1 ) and (A2 , B2 ). Since λ must
+assign these opposite signs, either A1 < B1 ≤ B2 < A2 or B1 < A1 ≤ A2 < B2 .
+In the former case it must be that, c(B1 ) = c(A2 ) and in the latter case that
+c(A1 ) = c(B2 ). Since B1 ∩ A2 and A1 ∩ B2 are empty in either case we have a
+contradiction, since c was assumed to be a coloring.
+⊓
+⊔
+The above proof of the Kneser-Lovász theorem from the truncated Tucker
+lemma can be readily translated into polynomial size constant depth Frege
+proofs.
+Question 17. Do the propositional translations of the Truncated Tucker lemma
+have short (extended) Frege proofs?
+
+References
+1. Aisenberg, J., Bonet, M.L., Buss, S.R.: Quasi-polynomial size Frege proofs of
+Frankl’s theorem on the trace of finite sets (201?), to appear in Journal of Symbolic
+Logic
+2. Bonet, M.L., Buss, S.R., Pitassi, T.: Are there hard examples for Frege systems?
+In: Clote, P., Remmel, J. (eds.) Feasible Mathematics II. pp. 30–56. Birkhäuser,
+Boston (1995)
+3. Buss, S.R.: Polynomial size proofs of the propositional pigeonhole principle. Journal
+of Symbolic Logic 52, 916–927 (1987)
+4. Buss, S.R.: Propositional proof complexity: An introduction. In: Berger, U.,
+Schwichtenberg, H. (eds.) Computational Logic, pp. 127–178. Springer-Verlag,
+Berlin (1999)
+5. Buss, S.R.: Towards NP-P via proof complexity and proof search. Annals of Pure
+and Applied Logic 163(9), 1163–1182 (2012)
+6. Buss, S.R.: Quasipolynomial size proofs of the propositional pigeonhole principle
+(2014), submitted for publication
+7. Cook, S.A., Reckhow, R.A.: The relative efficiency of propositional proof systems.
+Journal of Symbolic Logic 44, 36–50 (1979)
+8. Istrate, G., Crãciun, A.: Proof complexity and the Kneser-Lovász theorem. In: Theory and Applications of Satisfiability Testing (SAT). pp. 138–153. Lecture Notes
+in Computer Science 8561, Springer Verlag (2014)
+9. Jeřábek, E.: Dual weak pigeonhole principle, boolean complexity, and derandomization. Annals of Pure and Applied Logic 124, 1–37 (2004)
+10. Krajı́ček, J.: Bounded Arithmetic, Propositional Calculus and Complexity Theory.
+Cambridge University Press, Heidelberg (1995)
+11. Lovász, L.: Kneser’s conjecture, chromatic number, and homotopy. Journal of Combinatorial Theory, Series A 25(3), 319 – 324 (1978)
+12. Matoušek, J.: A combinatorial proof of Kneser’s conjecture. Combinatorica 24(1),
+163–170 (2004)
+13. Segerlind, N.: The complexity of propositional proofs. Bulletin of Symbolic Logic
+13(4), 417–481 (2007)
+14. Ziegler, G.M.: Generalized Kneser coloring theorems with combinatorial proofs.
+Inventiones Mathematicae 147(3), 671–691 (2002)
+
+5
+
+Appendix: Proof of the Truncated Tucker Lemma
+
+We prove the truncated Tucker lemma from the Tucker lemma:
+Proof (of Theorem 16 from Theorem 15). We show the contrapositive. Suppose Theorem 16 is false. In other words, there is some antipodal λ : Bkn →
+{±2k, . . . , ±n} and there are no k-complementary pairs of elements in Bkn with
+respect to λ. We will define an antipodal map λ′ : B n → {1, ±2, . . . , ±n} that
+has no complementary pairs of elements in B n with respect to λ′ , in violation of
+Theorem 15.
+Let ≤ be a total order on the subsets of [n] that respects cardinalities and
+refines  on elements in nk ∪ {∅}. In other words, if |A| < |B| or if A  B then
+A ≤ B. Similarly to a construction in [12], λ′ (A, B) is defined by cases:
+
+Case I: If |A| < k and |B| < k, then
+(
+1 + |A| + |B|
+′
+λ (A, B) =
+−(1 + |A| + |B|)
+
+if A ≥ B
+if B > A.
+
+Case II: If |A| = k and |B| < k, then λ′ (A, B) = λ(A, ∅). Similarly, if |A| < k
+and |B| = k, then λ′ (A, B) = λ(∅, B).
+Case III: If |A| ≥ k and |B| ≥ k, then λ′ (A, B) = λ(A≤k , B≤k ).
+The map λ′ is clearly antipodal since λ is. Let (A1 , B1 ) and (A2 , B2 ) be
+members of B n with A1 ⊆ A2 , B1 ⊆ B2 . We wish to show they are not a complementary pair for λ′ , namely that λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ). The argument
+splits into cases.
+1. λ′ (A1 , B1 ) and λ′ (A2 , B2 ) are assigned by Case I. If A1 = A2 and B1 =
+B2 , then clearly λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ). Otherwise, at least one of the
+inclusions A1 ⊆ A2 and B1 ⊆ B2 is proper, so |A1 | + |B1 | < |A2 | + |B2 |.
+But |λ′ (A1 , B1 )| = 1 + |A1 | + |B1 | and |λ′ (A2 , B2 )| = 1 + |A2 | + |B2 |, so
+λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ).
+2. λ′ (A1 , B1 ) and λ′ (A2 , B2 ) are assigned by Case II. Without loss of generality,
+|A1 | = k and |B1 | < k. So then A2 = A1 and |B2 | < k. But then λ′ (A1 , B1 ) =
+λ(A1 , ∅) and λ′ (A2 , B2 ) = λ(A1 , ∅), so λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ).
+3. λ′ (A1 , B1 ) and λ′ (A2 , B2 ) are both assigned by Case III. It is clear that
+Ai,≤k ∩ Bj,≤k = ∅ for i, j ∈ {1, 2}, since A2 ∩ B2 = ∅. We claim that
+A1,≤k  A2,≤k and B1,≤k  B2,≤k . This is because A1 ⊆ A2 , so
+(A1,≤k ∪ A2,≤k )≤k = (A1 ∪ A2 )≤k = A2,≤k .
+Therefore A1,≤k  A2,≤k . The same argument shows that B1,≤k  B2,≤k .
+Since there are no k-complementary pairs with respect to λ, it must be that
+λ(A1,≤k , B1,≤k ) 6= −λ(A2,≤k , B2,≤k ). Also, λ′ (A1 , B1 ) = λ(A1,≤k , B1,≤k )
+and λ′ (A2 , B2 ) = λ(A2,≤k , B2,≤k ). Hence λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ).
+4. λ′ (A1 , B1 ), and λ′ (A2 , B2 ) are assigned by Cases II and III. If this happens,
+it must be that (A1 , B1 ) is assigned as in Case II, and (A2 , B2 ) is assigned
+as in Case III. Without loss of generality, say |A1 | = k, and |B1 | < k. We
+show that (A1 , ∅)  (A2 , B2,≤k ). By the same argument as the previous
+case, A1,≤k  A2,≤k . As remarked earlier, ∅  B2,≤k , since the empty set
+is the least element in the  partial order. Also, the four sets A1,≤k ∩ ∅,
+A1,≤k ∩ B2,≤k , ∅ ∩ B2,≤k , and A2,≤k ∩ B2,≤k are empty.
+Since there are no k-complementary pairs with respect to λ, it must be that
+λ(A1,≤k , ∅) 6= −λ(A2,≤k , B2,≤k ). By definition, λ′ (A1 , B1 ) = λ(A1,≤k , ∅) and
+λ′ (A2 , B2 ) = λ(A2,≤k , B2,≤k ). Hence λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ).
+5. The only remaining case is when one of λ′ (A1 , B1 ) and λ′ (A2 , B2 ) is assigned
+by Case I, and the other is assigned by Case II or III. It must be that
+λ′ (A1 , B1 ) is assigned by Case I and λ′ (A2 , B2 ) by Case II or III. Observe
+that |λ′ (A1 , B1 )| = 1 + |A1 | + |B1 | ≤ 2k − 1, and that |λ′ (A2 , B2 )| ≥ 2k.
+Therefore λ′ (A1 , B1 ) 6= −λ′ (A2 , B2 ).
+This establishes that λ′ is an antipodal map with no complementary pairs,
+hence Theorem 15 is false. This completes the proof of the contrapositive.
+⊓
+⊔
+
+6
+
+Appendix: Optimal Colorings of Kneser Graphs
+
+
+It is well-known that nk has an (n − 2k + 2)-coloring [11]. A simple construction
+of such a coloring,
+which we call c1 , is given here for completeness as follows.
+
+For S ∈ nk , define c1 (S) by:
+
+(1) If S 6⊆ [2k − 1], let c1 (S) = max(S)− (2k − 2). Clearly 1 < c1 (S) ≤ n− 2k + 2.
+(2) Otherwise, let c1 (S) = 1.
+We claim that c1 defines a proper coloring. By construction, if c1 (S) > 1, then
+c1 (S) + (2k − 2) ∈ S. Thus, if c1 (S) = c1 (S ′ ) > 1, then S ∩ S ′ 6= ∅ and S
+and S ′ are not joined by an edge in the Kneser graph. On the other hand, if
+c1 (S) = 1, then S contains k elements from the set [2k − 1]. Any two such
+subsets have nonempty intersection, and therefore if c1 (S) = c1 (S ′ ) = 1, then
+again S ∩S ′ 6= ∅. Note that c1 contains n−2k +1 many star-shaped color classes,
+and only one non-star-shaped color class.
+In view of Lemma 9, it is interesting to ask whether it is possible to give
+(n − 2k + 2)-colorings with fewer star-shaped color classes and more non-starshaped color classes. The next theorem gives the best construction we know.
+Theorem
+18. Let k ≥ 1 and n ≥ 3k + 3. There is an (n−2k+2) coloring ck−1
+
+of nk which has k − 1 many non-star-shaped color classes and only n − 3k + 3
+many star-shaped color classes.
+Proof. To construct ck−1 , partition the set [n] into n − 2k + 2 many subsets
+T1 , . . . , Tn−2k+2 as follows. For i ≤ n − 3k + 3, Ti is chosen to be a singleton set,
+say Ti = {n − i + 1}. The remaining k − 1 many Ti ’s are subsets of size 3, say
+Ti = {j − 2, j − 1, j} where j = i − (n − 3k + 3). Since n = (n − 3k + 3) + 3(k − 1),
+the sets Ti partition [n], and each Ti has cardinality either 1 or 3. For S a subset
+of n of cardinality k, define the color ck−1 (S) to equal the least i such that
+|S ∩ Ti | >
+
+1
+|Ti |.
+2
+
+We claim there must exist such an i. If not, then S contains no members of the
+singleton subsets Ti and at most one member of each of the subsets Ti of size
+three. But there are only k − 1 many subsets of size three, contradicting |S| = k.
+It is easy to check that if ck−1 (S) = ck−1 (S ′ ) then S ∩ S ′ 6= ∅. Thus ck−1
+is a coloring. Furthermore, ck−1 has k − 1 many non-star-shaped classes and
+n − 3k + 3 many star-shaped classes.
+⊓
+⊔
+Theorem 18 can be extended to show that when n < 3k + 3, there is a
+n − 2k + 2 coloring with no star-shaped color class. The proof construction uses
+a similar idea, based on the fact that [n] can be partitioned into n − 2k + 2 many
+subsets, each of odd cardinality ≥ 3. We leave the details to the reader.
+Question 19. Do there exist (n − 2k + 2)-colorings of the (n, k)-Kneser graphs
+with more than k − 1 many non-star-shaped color classes?
+
+

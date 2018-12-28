@@ -1,0 +1,596 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amsthm,amssymb,xcolor,verbatim,graphicx,fullpage,url,cleveref,soul,stackengine}
+\newcommand{\remove}[1]{}
+\sloppy
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\hr}{\textup{h}}
+\newcommand{\vr}{\textup{v}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\FF}{\mathcal{F}}
+\newcommand{\s}{\mathbf{s}}
+
+\newcommand{\Img}{\text{Im}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsminus}[1]{\stackanchor[1pt]{$-$}{#1} }
+\newcommand{\Ker}{\text{Ker}}
+\newcommand{\codim}{\text{co-dim}}
+\newcommand{\proj}{\textrm{Proj}}
+
+\newcommand{\poly}{\textrm{poly}}
+
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Snote}[1]{{\color{red}{Shachar: #1}}}
+\newcommand{\new}[1]{{\color{blue}{#1}}}
+\newcommand{\brown}[1]{{\color{brown}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+
+
+\title{A bilinear Bogolyubov-Ruzsa lemma with poly-logarithmic bounds}
+\author{
+Kaave Hosseini\thanks{Supported by NSF grant CCF-1614023.}\\
+University of California, San Diego\\
+\texttt{skhossei@ucsd.edu}
+\and
+Shachar Lovett\thanks{Supported by NSF grant CCF-1614023.}\\
+University of California, San Diego\\
+\texttt{slovett@ucsd.edu}
+}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+The Bogolyubov-Ruzsa lemma, in particular the quantitative bounds obtained by Sanders, plays a central role
+in obtaining effective bounds for the inverse $U^3$ theorem for the Gowers norms. Recently, Gowers and Mili\'cevi\'c
+applied a bilinear Bogolyubov-Ruzsa lemma as part of a proof of the inverse $U^4$ theorem
+with effective bounds.
+The goal of this note is to obtain quantitative bounds for the bilinear Bogolyubov-Ruzsa lemma which are similar to
+	those obtained by Sanders for the Bogolyubov-Ruzsa lemma.
+
+We show that if a set $A \subset \F^n \times \F^n$
+has density $\alpha$, then after a constant number of horizontal and vertical sums, the set $A$ would contain a bilinear
+structure of co-dimension $r=\log^{O(1)} \alpha^{-1}$. This improves
+the results of Gowers and Mili\'cevi\'c which obtained similar results with a weaker bound of
+ $r=\exp(\exp(\log^{O(1)} \alpha^{-1}))$ and by Bienvenu and L\^e which obtained $r=\exp(\exp(\exp(\log^{O(1)} \alpha^{-1})))$.
+\end{abstract}
+
+\section{Introduction}
+
+One of the key ingredients in the proof of quantitative inverse theorem for Gowers $U^3$ norm over finite fields, due to Green and Tao~\cite{green2008inverse} and Samorodnitsky~\cite{samorodnitsky2007low}, is an inverse theorem on the structure of sumsets. More concretely, the tool that gives the best bounds is the improved Bogolyubov-Ruzsa lemma due to Sanders~\cite{sanders2012bogolyubov}.
+Before introducing it, we set some common notation.
+We assume that $\F=\F_p$ is a prime field where $p$ is a fixed constant, and suppress the exact dependence on $p$ in the bounds. Given
+a subset $A \subset \F^n$ its density is $\alpha = |A|/|\F|^n$. The sumset of $A$ is $2A=A+A=\{a+a': a,a' \in A\}$ and its difference set
+is $A-A=\{a-a': a,a' \in A\}$.
+
+
+\begin{theorem}(\cite{sanders2012bogolyubov})\label{theorem:sanders}
+Let $A \subset \F^n $ be a subset of density $\alpha$. Then there exists a subspace $V\subset 2A-2A$ of co-dimension $O(\log^4 \alpha^{-1})$.
+\end{theorem}
+
+In fact the link between the inverse $U^3$ theorem and inverse sumset theorems is deeper. It was shown in \cite{green2010equivalence,lovett2012equivalence} that an inverse $U^3$ conjecture with polynomial bounds is equivalent to the polynomial Freiman-Ruzsa conjecture, one of the central open problems in additive combinatorics.
+Given this, one can not help but wonder whether there is a more general inverse sumset phenomena that would naturally correspond to quantitative inverse theorems for $U^k$ norms. In a recent breakthrough, Gowers and Mili\'cevi\'c~\cite{gowers2017quantitative} showed that this is indeed the case, at least for the $U^4$ norm. They used a \textit{bilinear} generalization of \Cref{theorem:sanders} to obtain a quantitative inverse $U^4$ theorem.
+
+To be able to explain this result we need to introduce some notation. Let $A \subset \F^n \times \F^n$. Define two operators, capturing subtraction on horizontal and vertical fibers as follows:
+\begin{align*}
+&\phi_\hr(A) := \{(x_1-x_2, y): (x_1,y),(x_2,y) \in A\},\\
+&\phi_\vr(A) := \{(x, y_1-y_2): (x,y_1),(x,y_2) \in A\}.
+\end{align*}
+Given a word $w \in \{\hr,\vr\}^k$ define $\phi_w = \phi_{w_1} \circ \ldots \circ \phi_{w_k}$ to be their composition.
+A \emph{bilinear variety} $B \subset \F^n \times \F^n$ of co-dimension $r=r_1+r_2+r_3$ is a set defined as follows:
+$$
+B = \{(x,y) \in V \times W: b_1(x,y)=\ldots=b_{r_3}(x,y)=0\},
+$$
+where $V, W \subset \F^n$ are subspaces of co-dimension $r_1,r_2$, respectively,
+and $b_1,\ldots,b_{r_3}:\F^n \times \F^n \to \F$ are bilinear forms.
+
+Gowers and Mili\'cevi\'c~\cite{gowers2017bilinear} and independently Bienvenu and L\^e~\cite{bienvenu2017bilinear} proved the following, although~\cite{bienvenu2017bilinear} obtained a weaker bound of $r = \exp(\exp(\exp(\log^{O(1)}\alpha^{-1})))$.
+
+
+\begin{theorem}[\cite{gowers2017bilinear,bienvenu2017bilinear}]
+\label{theorem:gowersbilinear}
+Let $A \subset \F^n \times \F^n$ be of density $\alpha$ and let $w = \hr\hr\vr\vr\hr\hr$. Then there exists a bilinear variety $B \subset \phi_w(A)$
+of co-dimension $r=\exp(\exp(\log^{O(1)}\alpha^{-1}))$.
+\end{theorem}
+
+To be fair, it was not \Cref{theorem:gowersbilinear} directly but a more analytic variant of it that was used (combined with many other ideas) to prove the inverse $U^4$ theorem in \cite{gowers2017quantitative}. However, we will not discuss that analytical variant here.
+
+The purpose of this note is to improve the bound in \Cref{theorem:gowersbilinear} to $r=  \log^{O(1)} \alpha^{-1}$. Our proof is arguably simpler and is obtained only by invoking \Cref{theorem:sanders} a few times, without doing any extra Fourier analysis. The motivation behind this work --- other than obtaining the right form of bound --- is to employ this result in a more algebraic framework to obtain a modular and simpler proof of an inverse $U^4$ theorem.
+
+One more remark before explaining the result is that \Cref{theorem:gowersbilinear} generalizes \Cref{theorem:sanders} because given a set $A\subset\F^n$, one can apply \Cref{theorem:gowersbilinear} to the set $A' = \F^n\times A$ and find $\{x\}\times V \subset \phi_w(A')$ where $x$ is arbitrary, and $V$ a subspace of co-dimension $3r$. This implies $V\subset 2A-2A$.
+
+\begin{theorem}[\textbf{Main theorem}]\label{theorem:main}
+Let $A \subset \F^n \times \F^n$ be of density $\alpha$ and let $w = \hr\vr\vr\hr\vr\vr\vr\hr\hr$. Then there exists a bilinear variety $B \subset \phi_w(A)$
+of co-dimension $r=O(\log^{80}\alpha^{-1})$.
+\end{theorem}
+Note that the choice of the word $w$ in \Cref{theorem:main} is $w = \hr\vr\vr\hr\vr\vr\vr\hr\hr$ which is slightly longer than in \Cref{theorem:gowersbilinear} being $\hr\hr\vr\vr\hr\hr$. However, for applications this usually does not matter and any constant length $w$ would do the job. In fact allowing $w$ to be longer is what enables us to obtain a result with a stronger bound.
+
+\subsection{A robust analog of \Cref{theorem:main}}
+Going back to the theorem of Sanders, there is a more powerful variant of \Cref{theorem:sanders} which guarantees that $V$ enjoys a stronger property rather than just being a subset of $2A-2A$. The stronger property is that every element $y\in V$ can be written in many ways as $y = a_1+a_2-a_3-a_4$, with  $a_1,a_2,a_3,a_4 \in A$. This stronger property of $V$ has a number of applications such as obtaining upper bounds for Roth theorem in four variables. We refer the reader to \cite{schoen2016roth} where Theorem 3.2 is similarly obtained from \Cref{theorem:sanders} and also for the noted application.
+
+\begin{theorem}[\cite{sanders2012bogolyubov,schoen2016roth}]
+\label{theorem:statsanders}
+Let $A \subset \F^n $ be a subset of density $\alpha$. Then there exists a subspace $V\subset 2A-2A$ of co-dimension $O(\log^4 \alpha^{-1})$ such that the following holds. Every $y \in V$ can be expressed as $y=a_1+a_2-a_3-a_4$ with $a_1,a_2,a_3,a_4 \in A$ in at
+least $\alpha^{O(1)} |\F|^{3n}$ many ways.
+\end{theorem}
+
+In \Cref{section:main2} we also prove a statistical analog of \Cref{theorem:statsanders} by slightly modifying the proof of \Cref{theorem:main}. To explain it, we need just a bit more notation.
+
+ Fix an arbitrary $(x,y)\in \F^n\times \F^n$, and note that $(x,y)$ can be written as $(x,y) = \phi_\hr((x+x_1,y),(x_1,y))$ for any $x_1\in \F^n$. Moreover, for any fixed $x_1$, each of the points $(x+x_1,y), (x_1,y)$ can be written as $(x+x_1,y) = \phi_\vr((x+x_1,y+y_1),(x+x_1,y_1))$ and $(x_1,y) = \phi_\vr((x_1,y+y_2),(x_1,y_2))$ for arbitrary $y_1,y_2\in \F^n$. So over all, the point $(x,y)$ can be written  using the operation $\phi_{\vr\hr}$ in exactly $|\F^n|^3$ many ways, namely,  the total number of two-dimensional parallelograms $(x+x_1,y+y_1),(x+x_1,y_1),(x_1,y+y_2),(x_1,y_2)$ where $(x,y)$ is fixed. We can continue this and consider an arbitrary word $w\in \{\hr,\vr\}^k$. Then $(x,y)$ can be written using the operation $\phi_w$ in exactly $|\F^n|^{2^k-1}$ many ways.
+
+ Now, we have a set $A\subset \F^n \times \F^n$ and fix a word $w\in \{\hr,\vr\}^k$. Define $\phi_w^\eps(A)$ to be the set of all elements $(x,y)\in  \F^n\times \F^n$ that can be obtained in at least $\eps|\F^n|^{2^k-1}$ many ways by applying the operation $\phi_w(A)$.
+
+%Let $A = \cup_{y\in \F^n} A_y\times \{y\}\subset \F^n\times \F^n$. We consider the set of all popular elements of $\phi_\hr(A)$, that is, elements $(x,y)$ that can be written as $(x_1-x_2,y)$, for many choices of pairs $x_1,x_2\in A_y$. More precisely, let $0 \le \eps \leq 1$ be a parameter and define
+%$$
+%\phi_\hr^\eps (A) := \left\{(x,y): \frac{|A_y+x\cap A_y|}{|\F^n|} > \frac{\eps|A|}{|\F^n\times \F^n|}\right\}.
+%$$
+%Note that $\phi_\hr^\eps(A) \subseteq \phi_\hr(A)$ for any $0 \le \eps \leq 1$, and that $\phi_\hr^0(A)=\phi_\hr(A)$.
+% Define $\phi_\vr^\eps(A)$ analogously. Given a word $w \in \{\hr,\vr\}^k$ define $\phi^\eps_w = \phi^\eps_{w_1} \circ \ldots \circ \phi^\eps_{w_k}$.
+
+The following is an extension of \Cref{theorem:main} similar in spirit to \Cref{theorem:statsanders}.
+\begin{theorem}\label{theorem:main2}
+	Let $A \subset \F^n \times \F^n$ be of density $\alpha$ and let $w = \hr\vr\vr\hr\vr\vr\vr\hr\hr$ and $\eps = \exp(-O(\log^{20}\alpha^{-1}))$. Then there exists a bilinear variety $B \subset \phi^{\eps}_w(A)$
+of co-dimension $r=O(\log^{80}\alpha^{-1})$.
+\end{theorem}
+
+
+
+As a final comment, we remark that if one keeps track of dependence on the field size in the proofs, then the bound in \Cref{theorem:main} and \Cref{theorem:main2}
+is  $r = O(\log^{80}\alpha^{-1} \cdot \log^{O(1)} |\F|)$.
+
+\paragraph*{Paper organization.} We prove \Cref{theorem:main} in \Cref{section:main} and \Cref{theorem:main2} in \Cref{section:main2}.
+
+\section{Proof of \Cref{theorem:main}}
+\label{section:main}
+
+We prove \Cref{theorem:main} in six steps. It corresponds to applying chain of operators $\phi_{\hr} \circ \phi_{\vr\vr} \circ \phi_\hr \circ \phi_\vr \circ \phi_{\vr\vr}\circ \phi_{\hr\hr}$ to $A$. In the proof, we invoke \Cref{theorem:sanders} (or \Cref{theorem:statsanders}, or the Freiman-Ruzsa theorem which is a corollary of \Cref{theorem:sanders}), four times in total, in steps 1,2,4, and 5.
+
+We will assume that $A \subset \F^m \times \F^n$, where initially $m=n$ but where throughout the proof we update $m,n$ independently when we restrict $x$ or $y$ to large subspaces. It also helps readability, as we will always have that $x$ and related sets or subspaces are in $\F^m$,
+while $y$ and related sets or subspace are in $\F^n$.
+
+We use three variables $r_1,r_2,r_3$ that hold the total number of linear forms on $x$, linear forms on $y$, and bilinear forms on $(x,y)$ that are being fixed throughout the proof, respectively. Initially, $r_1=r_2=r_3=0$, but their values will be updated as we go along and at the end, $r = \max(r_1,r_2,r_3)$ will be the codimension of the final bilinear variety.
+
+\paragraph{Step 1.}
+Decompose $A = \bigcup_{y \in \F^n} A_y \times \{y\}$ with $A_y \subset \F^m$. Define $A^1 := \phi_{\hr\hr}(A)$, so that
+$$
+A^1 = \bigcup_{y \in \F^n} (2A_y - 2A_y) \times \{y\}.
+$$
+Let $\alpha_y$ denote the density of $A_y$. By \Cref{theorem:sanders},
+there exists a linear subspace $V'_y \subset 2 A_y - 2A_y$ of co-dimension $ O(\log^4\alpha_y^{-1})$.
+Let $S:=\{y: \alpha_y \ge \alpha/2\}$, where by averaging $S$ has density $\ge \alpha/2$.
+Note that for every $y \in S$ the co-dimension of each $V'_y$ is $O(\log^4\alpha^{-1})$.
+We have
+$$
+B^1 := \bigcup_{y \in S} V'_y \times \{y\} \subset A^1.
+$$
+
+\paragraph{Step 2.}
+Consider $A^2:=\phi_{\vr\vr}(B^1)$. It satisfies
+$$
+A^2=\bigcup_{y_1,y_2,y_3,y_4 \in S} \left( V'_{y_1} \cap V'_{y_2} \cap V'_{y_3} \cap V'_{y_4} \right) \times \{y_1+y_2-y_3-y_4\}.
+$$
+By \Cref{theorem:sanders}, there is a subspace $W' \subset 2S - 2S$ of co-dimension $O(\log^4\alpha^{-1})$. Note that the co-dimension
+of $W'$, as well as the co-dimension of each $V'_{y_1} \cap V'_{y_2} \cap V'_{y_3} \cap V'_{y_4}$, is at most $O(\log^4\alpha^{-1})$.
+We thus have
+$$
+B^2:=\bigcup_{y \in W'} V_y \times \{y\} \subset A^2,
+$$
+where $V_y = V'_{y_1} \cap V'_{y_2} \cap V'_{y_3} \cap V'_{y_4}$ for some $y_1,y_2,y_3,y_4 \in S$ which satisfy $y=y_1+y_2-y_3-y_4$.
+
+Update $r_2 := \codim(W')$, where we restrict $y \in W'$. To simplify notations, identify $W' \cong \F^{n-\codim(W')}$
+and update $n := n - \codim(W')$. Thus we assume from now that
+$$
+B^2:=\bigcup_{y \in \F^n} V_y \times \{y\},
+$$
+where each $V_y$ has co-dimension $d=O(\log^4\alpha^{-1})$.
+
+\paragraph{Step 3.}
+Consider $A^3:=\phi_{\vr}(B^2)$. It satisfies
+$$
+A^3=\bigcup_{y,z \in \F^n} \left( V_{z} \cap V_{y+z} \right) \times \{y\}.
+$$
+
+\paragraph{Step 4.}
+Consider $A^4 := \phi_{\hr}(A^3)$. It satisfies
+$$
+A^4=\bigcup_{y,z,w\in \F^n}\left( \left( V_{z} \cap V_{y+z} \right) + \left( V_{w} \cap V_{y+w} \right) \right ) \times \{y\}.
+$$
+Define $U_y := V_y^\perp$, so that $\dim(U_y)=d$ and
+$$
+A^4=\bigcup_{y,z,w \in \F^n} \left( \left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \right )^{\perp} \times \{y\}.
+$$
+
+Next, observe that if $\left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right)=\{0\}$ for some $z,w$, then
+$\F^m \times \{y\} \subset A^4$. If this is true for a typical $y$, then $A^4$ has constant density in $\F^m \times \F^n$. Our goal is to get to that situation by fixing a few linear forms on $x$ and bi-linear forms on $(x,y)$.	
+
+The following lemma identifies common structure in the subspaces $U_y$ in the case that for a typical $y,z,w$,
+$\left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \ne \{0\}$.
+We recall that an affine map $L:\F^n \to \F^m$ is $L(y)=My+b$ where $M \in \F^{m \times n}, b \in \F^m$.
+
+\begin{lemma}
+\label{lemma:intersect}
+For each $y \in \F^n$ let $U_y \subset \F^m$ be a subspace of dimension $d$. Assume that
+$$
+\Pr_{y,z,w \in \F^n} \left [ \left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \ne \{0\} \right] \ge  \frac{1}{2}.
+$$
+Then there exists an affine function $L:\F^n \to \F^m$ such that
+$$
+	\Pr_{y \in \F^n} \left[L(y) \in U_y\setminus\{0\}\right] \ge \exp(-O(d^4)).
+$$
+\end{lemma}
+To prove \Cref{lemma:intersect}, we use the Freiman-Ruzsa theorem, being a consequence of \Cref{theorem:sanders}, which we quote below. We refer the reader to \cite{green2005notes} for details on how it is derived from \Cref{theorem:sanders}.
+
+
+\begin{theorem}\label{theorem:sanders2}
+Let $f:\F^n \rightarrow \F^m$ be a function such that
+$$
+\Pr_{y,z,w \in \F^n} \left[ f(z) + f(y+z) = f(w) + f(y+w) \right] \ge \alpha.
+$$
+Then there exists an affine map $L:\F^n\rightarrow \F^m$ so that
+$$
+\Pr_{y \in \F^n} \left[ f(y) = L(y)\right] \ge \exp(-O(\log^4 \alpha^{-1})).
+$$
+\end{theorem}
+
+\begin{proof}[Proof of \Cref{lemma:intersect}]
+ First assume that
+	\begin{equation}\label{equation:first}
+	\Pr_{y,z,w \in \F^n} \left [ \left( U_{z}\setminus\{0\}+ U_{y+z}\setminus\{0\}\right) \cap \left( U_{w}\setminus\{0\}+ U_{y+w}\setminus\{0\} \right) \ne \{0\} \right] \ge \frac{1}{4}.
+	\end{equation}
+
+	Choose $f:\F^n \to \F^m$ by picking $f(y) \in U_y\setminus\{0\}$ uniformly and independently
+for each $y \in \F^n$. Then
+$$
+\Pr_{y,z,w \in \F^n, f} \left[ f(z) + f(y+z) = f(w) + f(y+w) \right] \ge \frac{1}{4} \cdot |\F|^{-4d}.
+$$
+Fix $f$ where the above bound holds. By \Cref{theorem:sanders2}, there exists an affine function $L:\F^n \to \F^m$ such that
+$$
+\Pr_{y \in \F^n} \left[ f(y) = L(y) \right] \ge \exp(-O(d^4)).
+$$
+This concludes the proof, assuming \Cref{equation:first} holds.
+Otherwise, if \Cref{equation:first} does not hold, then we have
+\begin{equation*}
+\Pr_{y,z,w \in \F^n} \left [ U_{z}  \cap \left( U_{w} + U_{y} \right) \ne \{0\} \right] \ge \frac{1}{4}.
+\end{equation*}
+This implies that either
+\begin{equation*}
+	\Pr_{y,z,w \in \F^n} \left [ (U_{z}\setminus\{0\})  \cap \left( U_{w}\setminus\{0\} + U_{y}\setminus\{0\} \right) \ne \{0\} \right] \ge \frac{1}{8}
+\end{equation*}
+or that
+\begin{equation*}
+	\Pr_{y,w \in \F^n} \left [ (U_{z}\setminus\{0\})  \cap ( U_{w}\setminus\{0\})  \right] \ge \frac{1}{8}.
+\end{equation*}
+
+In the first case, choose the most popular $w,y$ and then elements of $U_w\setminus\{0\},U_y\setminus\{0\}$ to obtain a constant map $L \equiv b$ that satisfies the lemma. The second case is similar.
+\end{proof}
+
+Next, we proceed as follows. As long as
+$$
+\Pr_{y,z,w \in \F^n}\left [ \left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \ne \{0\} \right] \ge  \frac{1}{2},
+$$
+apply \Cref{lemma:intersect} to find an affine function $L:\F^n \to \F^m$. For each
+$y$ that satisfies $L(y) \in U_y$ replace $U_y$ with $U'_y = U_y / \left< L(y) \right>$, which
+is a subspace of co-dimension $1$ in $U_y$. By \Cref{lemma:intersect}, this process needs to stop after $t=\exp(O(d^4))$ many steps.
+Let $L_1,\ldots,L_t:\F^n \to \F^m$ be the affine maps obtained in this process.
+
+We pause for a moment to introduce one useful notation.
+Given a set of maps $\FF = \{f_i:\F^n\rightarrow \F^m, i\in [k]\}$ and $y\in \F^n$, let $\FF(y) = \{ f_1(y),\dots,f_k(y)\} \subset \F^m$, and also let $\overline{\FF}(y)$ denote the linear span of $\FF(y)$.
+
+
+Using this notation, set $\FF = \{L_1,\ldots,L_t\}$ and note that $\overline{\FF}(y) $ is a subspace of dimension at most $t$ for each $y\in \F^n$.
+%Then we have
+%$$
+%\Pr_{y,z,w \in \F^n} \left[ \left( U_{z} + U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \subset\overline{\FF}(y)  \right] \ge  \frac{1}{2}.
+%$$
+%
+For every subspace $U_y$ there is a set $\FF_y \subset \FF$ with $|\FF_y| \leq d$ such that
+the final subspace obtained in the process is $U_y / \overline{\FF_{y}}(y)$.
+This implies that
+$$
+\Pr_{y,z,w \in \F^n} \bigg[ \left( U_{z}/\overline{\FF_{z}}(z) + U_{y+z}/\overline{\FF_{y+z}}(y+z)   \right) \cap \left( U_{w}/\overline{\FF_{w}}(w)    + U_{y+w}/\overline{\FF_{y+w}}(y+w)     \right) = \{0\} \bigg] \ge  \frac{1}{2}.
+$$	
+Consider the most popular quadruple $\FF_1,\FF_2,\FF_3,\FF_4\subset \FF$ so that
+$$
+\Pr_{y,z,w \in \F^n} \bigg[ \left( U_{z}/\overline{\FF_{1}}(z) + U_{y+z}/\overline{\FF_{2}}(y+z)   \right) \cap \left( U_{w}/\overline{\FF_{3}}(w) + U_{y+w}/\overline{\FF_{4}}(y+w)   \right) = \{0\} \bigg] \ge \frac{1}{2} \times {t \choose d}^{-4}.
+$$
+Let $\LL := \FF_1 \cup \FF_2 \cup \FF_3 \cup \FF_4$. Recall that $t=\exp(O(d^4))$ so that ${t \choose d} = \exp(O(d^5))$.
+We have
+$$
+\Pr_{y,z,w\in \F^n} \bigg[ \left( U_{z}+ U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \subset \overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w)   \bigg] \ge \exp(-O(d^5)).
+$$
+By averaging, there is some choice of $z,w$ such that
+$$
+\Pr_{y\in \F^n} \bigg[ \left( U_{z}+ U_{y+z} \right) \cap \left( U_{w} + U_{y+w} \right) \subset\overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w)   \bigg]   \ge \exp(-O(d^5)).
+$$
+Recall that each $L_i$ is an affine map and that $|\LL|\leq 4d$. Thus, $\overline{\LL}(z) , \overline{\LL}(y+z) , \overline{\LL}(w) ,\overline{\LL}(y+w)\subset \overline{\LL}(y)+ Q$
+where $Q \subset \F^m$ is a linear subspace of dimension $O(d)$. We thus have
+$$
+B^4 := \bigcup_{y\in T} (\overline{\LL}(y)+Q)^\perp \times \{y\} \subset A^4,
+$$
+where $T \subset \F^n$ has density $\exp(-O(d^5))$.
+
+To simplify the presentation, we would like to assume that the maps in $\LL$ are linear maps instead of affine maps,
+that is, that they do not have a constant term. This can be obtained by restricting $x$ to the subspace orthogonal
+to $Q$ and to the constant term in the affine maps in $\LL$. Correspondingly, we update
+$r_1 := r_1 + \dim(Q)+|\LL| = O(d)$.
+
+So, from now we assume that $\LL$ is defined by $4d$ linear maps, and that
+$$
+B^4 := \bigcup_{y\in T} {\overline{\LL}(y)}^\perp \times \{y\} \subset A^4,
+$$
+where $T \subset \F^n$ has density $\exp(-O(d^5))$.
+
+\paragraph{Step 5.}
+Consider $A^5 := \phi_{\vr\vr}(B^4)$ so that
+\begin{align*}
+	A^5 & =\bigcup_{y_1,y_2,y_3,y_4 \in T} \left( {\overline{\LL}(y_1)}^\perp \cap{\overline{\LL}(y_2)}^\perp \cap {\overline{\LL}(y_3)}^\perp \cap {\overline{\LL}(y_4)}^\perp \right) \times \{y_1+y_2-y_3-y_4\}.
+\end{align*}
+
+
+
+ By \Cref{theorem:sanders}  there exists a subspace $W\subset 2T-2T$ with co-dimension $O(d^{20})$.
+However, this time, this is not enough for us. We need to use \Cref{theorem:statsanders} instead.
+The following equivalent formulation of \Cref{theorem:statsanders} will be more convenient for us: there is a subspace $W \subset \F^n$ of co-dimension $O(\log^4{\alpha^{-1}})$ such that, for each $y \in W$ there is
+a set $S_y\subset (\F^n)^3$ of density $\alpha^{O(1)}$, for which
+$$
+\forall (a_1,a_2,a_3)\in S_y: \quad a_1,a_2,a_3,a_1+a_2-a_3-y \in A.
+$$
+
+Apply \Cref{theorem:statsanders} to the set $T$ to obtain the subspace $W$ and the sets $S_y$. We have
+\begin{align*}
+	B^5 :=& \bigcup_{y\in W}\left( \bigcup_{(y_1,y_2,y_3)\in S_y} \left(\overline{\LL}(y_1)+ \overline{\LL}(y_2)+ \overline{\LL}(y_3) + \overline{\LL}(y_1+y_2-y_3-y)\right)^\perp  \right) \times \{y\} \subset A^5.
+\end{align*}
+To simplify the presentation we introduce the notation $\overline{\LL}(y_1,y_2,y_3) := \overline{\LL}(y_1)+ \overline{\LL}(y_2)+ \overline{\LL}(y_3)$.
+Next, observe that for any $y,y'\in \F^n$, $\overline{\LL}(y')+\overline{\LL}(y+y')\subset \overline{\LL}(y')+\overline{\LL}(y)$.
+Thus we can simplify the expression of $B^5$ to
+\begin{align*}
+	B^5 =& \bigcup_{y\in W}\left( \bigcup_{(y_1,y_2,y_3)\in S_y} \left(\overline{\LL}(y_1,y_2,y_3) + \overline{\LL}(y) \right)^\perp \right) \times \{y\},
+\end{align*}
+which can be re-written as
+\begin{align*}
+	B^5 =& \bigcup_{y\in W}\left( \bigcup_{(y_1,y_2,y_3)\in S_y} \overline{\LL}(y_1,y_2,y_3) ^\perp \cap  {\overline{\LL}(y)}^\perp \right) \times \{y\}.
+\end{align*}
+
+%This is still not quite enough, so we need one more horizonal operation.
+
+\paragraph{Step 6.} Consider $A^6:= \phi_\hr(B^5)$. It satisfies
+\begin{align*}
+	A^6 = \bigcup_{y\in W}\left( \left( \bigcup_{\substack{(y_1,y_2,y_3) \in S_y \\(y'_1,y'_2,y'_3) \in S_y}}\overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3)^\perp  \right) \cap {\overline{\LL}(y)}^\perp \right) \times \{y\}
+\end{align*}
+In order to complete the proof, we will find a large subspace $V$ such that for every $y\in W $,
+$$V \subset \bigcup_{\substack{(y_1,y_2,y_3) \in S_y \\(y'_1,y'_2,y'_3) \in S_y}}\overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3)^\perp  .$$
+In fact, we will prove something stronger: there is a large subspace $V$ such that for each $y\in W$, there is a choice of $(y_1,y_2,y_3),(y'_1,y'_2,y'_3) \in S_y$ for which
+$$V\subset  \overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3)^\perp .$$
+
+The following lemma is key.
+Given a set $\LL$ of linear maps from $\F^n$ to $\F^m$, let $\dim(\overline{\LL})$ denote the dimension of linear span of $\LL$ as a vector space over $\F$.
+\begin{lemma}\label{lemma:mapsubspace}
+	Fix $\delta>0$. Let $\LL$ be a set of linear maps from $\F^n$ to $\F^m$ with $\dim(\overline{\LL})=k$.
+Then there is a subspace $V\subset \F^m$ of co-dimension at most $(k+1)^2\log \delta^{-1}$ such that the following holds.
+For every subset $S\subset \F^n$ of density at least $\delta$, at least half the pairs $y,y'\in S$ satisfy that
+	$$V \subset  \overline{\LL}(y)^{\perp} + \overline{\LL}(y')^{\perp}. $$
+\end{lemma}
+\begin{proof}
+	The proof is by induction on $\dim(\overline{\LL})$. Consider first the base case of $\dim(\overline{\LL})=1$. Take some $ M\in \overline{\LL}\setminus\{0\}$. If $\text{rank}(M) \leq  \log \delta^{-1}+3$, then set $V = \Img(M)^\perp$ and notice that $ \Img(M)^\perp \subset \overline{\LL}(y)^{\perp}$ for any $y \in \F^n$.
+	Otherwise do as follows. Fix arbitrary $L,L'\in \overline{\LL}\setminus \{0\}$ and observe that
+	$$\Pr_{y,y'\in S} \left[ L(y) = L'(y')\right] \le |\F|^{-(\log \delta^{-1}+3)}\delta^{-1}.$$
+	By applying the union bound over all pairs of $L,L'\in  \overline{\LL}\setminus \{0\}$, we obtain that
+
+	$$\Pr_{y,y'\in S} \left[  \overline{\LL}(y) \cap \overline{\LL}(y') \neq \{0\}\right] \le |\F|^2|\F|^{-(\log \delta^{-1}+3)}\delta^{-1}\leq \frac{1}{2}.$$
+The claim then holds for $V=\F^m$.
+
+
+	Now suppose $\dim(\overline{\LL}) = k$. Again, if there is some $M\in \overline{\LL}\setminus \{0\}$ with rank at most $ 2k+\log\delta^{-1} + 1$, then project every map down to $\Img(M)^\perp$. That is, consider the new family of maps
+	$$\LL' =\{\proj_{\Img(M)^\perp}L: L\in \LL\}.$$
+	Note that $\overline{\LL'}$ has dimension $k-1$ and so by induction hypothesis, there exists
+a subspace $V'$ of co-dimension at most $k^2\log \delta^{-1}$ such that, for at least half the pairs $y,y'\in S$ it holds that
+	$$V'\subset \overline{\LL'}(y)^{\perp}+\overline{\LL'}(y')^{\perp}.$$
+	The claim then holds for $V = V' \cap \Img(M)^\perp$.
+
+Otherwise, similar to the base case, observe that
+	$$\Pr_{y,y'\in S} \left[  \overline{\LL}(y) \cap \overline{\LL}(y') \neq \{0\}\right] \le |\overline{\LL}|^2|\F|^{-(2k+\log\delta^{-1} + 1)}\delta^{-1}\leq |\F|^{2k}|\F|^{-(2k+\log\delta^{-1} + 1)}\delta^{-1}\leq \frac{1}{2}.$$
+In this case the claim holds for $V=\F^m$.
+
+\end{proof}
+
+We note that for \Cref{theorem:main} we only need a weaker form of \Cref{lemma:mapsubspace}, which states that at least one pair $y,y' \in S$ exists; however, we would need the stronger version for \Cref{theorem:main2}.
+
+We apply \Cref{lemma:mapsubspace} as follows. Define a new family of linear maps $\LL^*$ from $\F^{3n}$ to $\F^m$
+as follows.
+	For each $L \in \LL$ define three linear maps $L_i$, $i\in\{1,2,3\}$ by:
+$$L_i:(\F^{n})^3\rightarrow\F^{m}, L_i(y_1,y_2,y_3) = L(y_i)$$
+	and let $$\LL^* := \{L_i : L\in \LL, i\in [3]\}.$$
+	Apply \Cref{lemma:mapsubspace} to the family $\LL^*$ with $\delta  = \exp(-O(d^5))$ and obtain a subspace $V\subset \F^m$ of codimension $O(d^2\log(\exp(-O(d^5)))=O(d^7)$ so that, for every $S_y\subset (\F^n)^3$ with $y\in W$, there exist $(y_1,y_2,y_3),(y'_1,y'_2,y'_3)\in S_y$ for which
+$$V\subset  \overline{\LL^*}((y_1,y_2,y_3))^\perp + \overline{\LL^*}((y'_1,y'_2,y'_3))^\perp.$$
+This directly implies that
+$$V\subset  \overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3) ^\perp.$$
+Define
+$$
+B^6:= \bigcup_{y\in W}\left( V \cap {\overline{\LL}(y)}^\perp \right) \times \{y\} \subset A^6.
+$$
+Observe that $B^6$ is a bilinear variety defined by $\codim(V)$ linear equations on $x$, $\codim(W)$ linear equations on $y$
+and $|\LL|$ bilinear equations on $(x,y)$.
+
+To complete the proof we calculate the quantitative bounds obtained. We have $d = O(\log^4 \alpha^{-1})$ where $\alpha$ was the density of the original set $A$, and
+\begin{align*}
+&r_1 = O(d)+ \codim(V) = O(d^7),\\
+&r_2 = O(d) + \codim(W) = O(d^{20}),\\
+&r_3 = |\LL| = O(d).
+\end{align*}
+Together these give the final bound of $r = \max(r_1,r_2,r_3) = O(\log^{80}\alpha^{-1})$.
+
+
+\section{Proof of \Cref{theorem:main2}}\label{section:main2}
+
+In this section we prove \Cref{theorem:main2} by slightly modifying the proof of \Cref{theorem:main}.
+%Now, here, we have a specific word $w = \hr\vr\vr\hr\vr\vr\vr\hr\hr$ of length 9, and a set $A\subset \F^n\times\F^n$ of density $\alpha$. We would like to find a bilinear structure $B$ such that every $(x,y)\in B$ can be written in $\eps|\F^n|^{2^9-1}$ many ways by applying the operation $\phi_{w}$  to elements of $A$, where $\eps$ is the parameter guaranteed in \Cref{theorem:main2}.
+%Let us continue with the proof.
+We point out the necessary modifications to proof of \Cref{theorem:main}.
+
+\paragraph{Step 1.}
+	In this step, we use \Cref{theorem:statsanders} instead of \Cref{theorem:sanders} and directly obtain
+\begin{equation}\label{equation:firststep}
+	B^1 \subset \phi^{\eps_1}_{\hr\hr}(A)
+\end{equation}
+	for $\eps_1 = \alpha^{O(1)}$.
+\paragraph{Step 2.}
+	Similarly in this step as well, using \Cref{theorem:statsanders} instead of \Cref{theorem:sanders} gives
+\begin{equation}\label{equation:secondstep}	
+	B^2 \subset \phi^{\eps_2}_{\vr\vr}(B^1)
+\end{equation}
+    with $\eps_2 = \alpha^{O(1)}$.
+	To recall, we assume for simplicity of exposition from now on that $B^2 = \bigcup_{y \in \F^n} V_y \times \{y\}$.
+\paragraph{Steps 3 and 4.}
+This step is slightly different than steps 1 and 2. Here, we are not able to directly produce some set $B^4$ that would satisfy $B^4 \subset \phi_{\hr\vr}^{\eps_4}(B^2)$. But what we can do is to apply the remaining operation $\phi_{\hr\vr\vr\hr\vr}$ altogether to $B^2$ and obtain the final bilinear structure $B^6$ that satisfies what we want, which is
+\begin{equation}\label{equation:thirdstep}	
+	B^6 \subset \phi_{\hr\vr\vr\hr\vr}^{\eps_6}(B^2)
+\end{equation}
+for $\eps_6 = \exp(-\poly \log\alpha^{-1})$.
+Combining  \Cref{equation:firststep,equation:secondstep,equation:thirdstep} gives
+$$B^6\subset  \phi_{\hr\vr\vr\hr\vr\vr\vr\hr\hr}^{\eps}(A)$$
+for $\eps = \exp(-\poly \log\alpha^{-1})$.
+
+We establish \Cref{equation:thirdstep} in the rest of the proof.
+Recall that previously we showed that the following holds: there is a set of affine maps $\LL$, with $|\LL|= O(d)$, such that
+$$
+\Pr_{y,w,z\in \F^n} \bigg[ \left( \overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w) \right)^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) + \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5))
+$$
+and consequently
+$$
+\Pr_{y,w,z\in \F^n} \bigg[ \left( \overline{\LL}(y) + \overline{\LL}(z) + \overline{\LL}(w)  \right)^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) + \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5)).
+$$
+Remember that $d = O(\log^4 \alpha^{-1})$.
+Furthermore, we may assume the maps in $\LL$ are linear (instead of affine) after we update $r_1:= r_1+|\LL| = O(d)$.
+
+Then what we did in the proof of \Cref{theorem:main} was to fix one popular choice of $w,z$. However, here we can't do that, as we need many pairs of $w,z$.
+Let $T$ be the set of $y$'s that satisfy
+\begin{equation}\label{equation:step4prob}
+\Pr_{w,z\in \F^n} \bigg[ \left( \overline{\LL}(y) + \overline{\LL}(z) + \overline{\LL}(w)  \right)^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) + \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5)),
+\end{equation}
+and so $T$ has density $\exp(-O(d^5))$.
+We deduce something stronger from \Cref{equation:step4prob} but we need to introduce some notation first.
+
+For $A,B\subset\F^n$ let $A-_\eta B$ denote the set of all elements $c\in A-B$ that can be written in at least $\eta|\F^n|$ many ways as $c = a-b$ for $a\in A,b\in B$.
+To use this notation, note that if $A,B$ are two subspaces of co-dimension $k$, then $A - B = A -_\eta B$ for $\eta =\exp(-O(k))$. This is because every element $c\in A-B$ can be written as $c = (a+v)-(b+v)$ where $v$ is an arbitrary element in the subspace $A\cap B$ of codimension at most $2k$. So we can improve the \Cref{equation:step4prob} to
+\begin{equation}\label{equation:step4probconv}
+\Pr_{w,z\in \F^n} \bigg[ \left( \overline{\LL}(y) + \overline{\LL}(z) + \overline{\LL}(w)  \right)^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) -_\eta \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5)),
+\end{equation}
+for $\eta = \exp{(-O(d))} $
+\paragraph{Step 5.}
+Similar to before, consider the subspace $W\subset 2T-2T$ of co-dimension $O(d^{20})$ that is given by \Cref{theorem:statsanders}. This subspace $W$ has the following property: fix arbitrary $y\in W$. Sample $y_1,y_2,y_3\in \F^n$ uniformly and independently, and set $y_4 = -y + y_1 + y_2 - y_3$. Then with probability at least $\exp(-O(d^5))$ we have $y_1,y_2,y_3,y_4 \in T$. This means that if we furthermore sample  $w_1,w_2,w_3,w_4,z_1,z_2,z_3,z_4\in \F^n$ uniformly and independently, then, with probability at least $\exp(-O(d^5))$, the following four equations simultaneously hold:
+$$	\left( \overline{\LL}(y_i) + \overline{\LL}(z_i) + \overline{\LL}(w_i)  \right)^\perp \subset \left( V^\perp_{z_i}\cap V^\perp_{y_i+z_i} \right) -_\eta  \left( V^\perp_{w_i} \cap V^\perp_{y_i+w_i} \right) \qquad \forall i=1,\ldots,4.
+$$
+By computing the intersection of the left hand sides and the right hand sides we obtain
+that with probability at least $\exp(-O(d^5))$, it holds that
+\begin{equation}\label{equation:allintersections}
+\left( \overline{\LL}(y) + \sum_{i=1}^3 \overline{\LL}(y_i)+ \sum_{i=1}^4 \overline{\LL}(z_i)+ \sum_{i=1}^4 \overline{\LL}(w_i)\right)^\perp  \subset  \bigcap_{i=1}^4 \left( \left( V^\perp_{z_i}\cap V^\perp_{y_i+z_i} \right) -_\eta  \left( V^\perp_{w_i} \cap V^\perp_{y_i+w_i} \right)  \right).
+\end{equation}
+
+For a given $y \in \F^n, \s = (y_1,y_2,y_3,w_1,w_2,w_3,w_4,z_1,z_2,z_3,z_4) \in (\F^n)^{11}$, let
+$$\mathcal{V}_{y,\s} =  \bigcap_{i=1}^4 \left( \left( V^\perp_{z_i}\cap V^\perp_{y_i+z_i} \right) -_\eta  \left( V^\perp_{w_i} \cap V^\perp_{y_i+w_i} \right)  \right),$$
+where to recall $y_4 = -y + y_1 + y_2 - y_3$. Observe that for any $\s$,
+$$
+\bigcup_{y \in W} \mathcal{V}_{y,\s} \times \{y\} \subset \phi_{\vr\vr\hr\vr}(B^2).
+$$
+We rewrite \Cref{equation:allintersections} more compactly as
+\begin{equation}\label{equation:allintersectionscompact}
+\Pr_{\s} \left[ \left( \overline{\LL}(y) +\overline{\LL}(\s)\right)^\perp  \subset \mathcal{V}_{y,\s} \right] \ge \exp(-O(d^5)),
+\end{equation}
+where we use the notation $\overline{\LL}(\s) =  \sum_{i=1}^3 \overline{\LL}(y_i)+ \sum_{i=1}^4 \overline{\LL}(z_i)+ \sum_{i=1}^4 \overline{\LL}(w_i)$.
+
+\paragraph{Step 6.}
+Now we consider applying the operation $\hr\vr\vr\hr\vr$ altogether to $B^2$. Only the last operation $\hr$ remains to be applied, which after doing so, we will find a subspace $V\subset\F^m$ of co-dimension $O(d^7)$ that satisfies the following: for any $y\in W$,  choose  $\mathbf{s_1}, \mathbf{s_2}\in(\F^n)^{11}$ uniformly and randomly. Then with probability $\exp(-O(d^5))$,
+$$V\cap \overline{\LL}(y)^\perp \subset \mathcal{V}_{y,\mathbf{s_1}}-_\eta \mathcal{V}_{y,\mathbf{s_2}}.$$
+where to recall $\eta = \exp(-O(d))$.
+
+To do so, fix $y\in W$ and let $S_y$ be the set of all tuples $\s = (y_1,y_2,y_3,w_1,w_2,w_3,w_4,z_1,z_2,z_3,z_4)\in (\F^n)^{11}$ that satisfy \Cref{equation:allintersectionscompact}. Note that the density of each $S_y$ is at least $\exp(-O(d^5))$. To simplify notation denote $\s = (s_1,\ldots,s_{11})$.
+We call up \Cref{lemma:mapsubspace} in a similar way as we did before.  Define a family $\LL^*$ of linear maps, containing linear maps $L_i$ for each $L\in \LL$ and $i=1,\ldots,11$, where
+$$
+L_i:(\F^{n})^{11}\rightarrow\F^{m}, L_i(\s) = L(s_i).
+$$
+Apply \Cref{lemma:mapsubspace} to $\LL^*$ and density parameter $\exp(-O(d^5))$. So, we obtain a subspace $V \subset \F^m$ of co-dimension $O(d^7)$ such that for each $y \in W$,
+\begin{equation}\label{equation:final}
+	\Pr_{\mathbf{s_1},\mathbf{s_2}\in S_y}\left[V\subset \overline{\LL}(\mathbf{s_1})^\perp+\overline{\LL}(\mathbf{s_2})^\perp\right]\geq \frac{1}{2},
+\end{equation}
+which implies
+\begin{equation}\label{equation:afterfinal}
+	\Pr_{\mathbf{s_1},\mathbf{s_2}\in (\F^n)^{11}}\left[V\cap  \overline{\LL}(y)^\perp \subset  \mathcal{V}_{y,\mathbf{s_1}}-_\eta \mathcal{V}_{y,\mathbf{s_2}} \right]\geq \exp(-O(d^5)).
+\end{equation}
+Define the final bilinear structure as
+$$
+B^6:= \bigcup_{y\in W}\left( V \cap {\overline{\LL}(y)}^\perp \right) \times \{y\}.
+$$
+It satisfies
+$$
+B^6\subset \phi_{\hr\vr\vr\hr\vr}^{\eps_6}(B^2)
+$$
+for $\eps_6 = \exp(-O(d^5))$
+and so over all
+$$B^6 \subset \phi_{\hr\vr\vr\hr\vr\vr\vr\hr\hr}^\eps(A)$$
+for $\eps = \exp(-O(d^5))$.
+
+
+
+
+
+
+
+
+
+
+%
+%Consider a subset $H\subset\F^n\times \F^n$ of density $\exp(-O(d^5))$ that satisfies $\forall (w,z)\in H$
+%$$
+%\Pr_{y\in \F^n} \bigg[ \left( \overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w) \right)^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) + \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5)).
+%$$
+%This gives us a large fraction of pairs $(w,z)$. However, the left hand side which is $\left( \overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w) \right)^\perp $ might be different for different pairs of $(w,z)\in H$, but we want --- after updating $r_1$ --- all of them to be the same as $\LL(y)^\perp$.
+%To achieve this, let $Z_\circ \subset \F^n$ be a subspace of codimension $|\LL|$ such that for all $z\in Z_\circ$,
+%$$\overline{\LL}(z) = \{0\}.$$
+%Note that for all $w,z\in Z_\circ, y\in \F^n$
+%$$\overline{\LL}(y)^\perp = \left(\overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w)\right)^\perp. $$
+%There is a coset $(Z_\circ+w')\times (Z_\circ + z')$ for some $w',z'\in \F^n$ which has a large intersection with $H$, namely, if we set $H' = H\cap ((Z_\circ+w')\times (Z_\circ+z'))$, then
+%$$|H'| \geq \exp(O(d^5))|\F^n\times \F^n|.$$
+%If we just update $r_1$ by $r_1:=r_1+ O(|\LL|)$, we can assume that
+%$$\forall (w,z)\in H', \ \LL(y)^\perp =\left( \overline{\LL}(z) + \overline{\LL}(y+z) + \overline{\LL}(w) +\overline{\LL}(y+w)\right)^\perp.$$
+%So overall, what we've obtained is that
+%$$
+%\Pr_{y,z,w\in \F^n} \bigg[  \overline{\LL}(y) ^\perp \subset \left( V^\perp_{z}\cap V^\perp_{y+z} \right) + \left( V^\perp_{w} \cap V^\perp_{y+w} \right)    \bigg] \ge \exp(-O(d^5)).
+%$$
+%In other words, there is a  set $T\subset \F^n$ of density $ \exp(-O(d^5))$ such that
+%$$
+%B^4 := \bigcup_{y\in T} {\overline{\LL}(y)}^\perp \times \{y\} \subset \phi_{\hr\vr}^{\eps_3}(B^2)
+%$$
+%for $\eps_3 = \exp(-O(d^5))$.
+%\paragraph{Steps 5 and 6. }
+%
+%In step 6, we were dealing with the set
+%
+%\begin{align*}
+%	A^6 = \bigcup_{y\in W}\left( \left( \bigcup_{\substack{(y_1,y_2,y_3) \in S_y \\(y'_1,y'_2,y'_3) \in S_y}}\overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3)^\perp  \right) \cap {\overline{\LL}(y)}^\perp \right) \times \{y\}
+%\end{align*}
+%
+%Following the exact same proof as before, the subspace $V$ that we had satisfies that for all $y\in W$,
+%$$
+%\Pr_{{\substack{(y_1,y_2,y_3) \in S_y \\(y'_1,y'_2,y'_3) \in S_y}}} \left[ V\subset \overline{\LL}(y_1,y_2,y_3)^\perp + \overline{\LL}(y'_1,y'_2,y'_3)^\perp  \right] \geq \frac{1}{2}.
+%$$
+%This directly implies that the set
+%$$B^6 =  \bigcup_{y\in W}\left( V \cap {\overline{\LL}(y)}^\perp \right) \times \{y\} \subset \phi_{\hr\vr\vr}^{\eps_4}(B^3)$$
+%for $\eps_4 = \exp(-O(d^5))$.
+%So overall, we have obtained that
+%$$B^6 \subset \phi^{\eps_5}_{\hr\vr\vr\hr\vr\vr\vr\hr\hr}(A)$$
+%for $\eps_5 = \exp(-O(d^5))$.
+
+\bibliographystyle{alpha}
+\bibliography{bilinear}
+\end{document}

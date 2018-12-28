@@ -1,0 +1,4879 @@
+Submitted to the Annals of Probability
+arXiv: arXiv:1608.07347
+
+arXiv:1608.07347v5 [math.PR] 18 May 2018
+
+LOWER BOUNDS FOR THE SMALLEST SINGULAR
+VALUE OF STRUCTURED RANDOM MATRICES
+By Nicholas Cook∗
+University of California, Los Angeles
+We obtain lower tail estimates for the smallest singular value of
+random matrices with independent but non-identically distributed
+entries. Specifically, we consider n × n matrices with complex entries
+of the form
+M = A ◦ X + B = (aij ξij + bij )
+
+where X = (ξij ) has iid centered entries of unit variance and A and B
+are fixed matrices. In our main result we obtain polynomial bounds
+on the smallest singular value of M for the case that A has bounded
+√
+(possibly zero) entries, and B = Z n where Z is a diagonal matrix
+with entries bounded away from zero. As a byproduct of our methods
+we can also handle general perturbations B under additional hypotheses on A, which translate to connectivity hypotheses on an associated
+graph. In particular, we extend a result of Rudelson and Zeitouni for
+Gaussian matrices to allow for general entry distributions satisfying
+some moment hypotheses. Our proofs make use of tools which (to
+our knowledge) were previously unexploited in random matrix theory, in particular Szemerédi’s Regularity Lemma, and a version of the
+Restricted Invertibility Theorem due to Spielman and Srivastava.
+
+1. Introduction. Throughout the article we make use of the following standard asymptotic notation: f = O(g), f ≪ g, g ≫ f all mean that
+|f | ≤ Cg for some absolute constant C < ∞. We indicate dependence of
+the implied constant on parameters with subscripts, e.g. f ≪α g. C, c, c′ , c0 ,
+etc. denote unspeciﬁed constants whose value may be diﬀerent at each occurence, and are understood to be absolute if no dependence on parameters
+is indicated.
+1.1. Background. Recall that the singular√values of an n × n matrix M
+with complex entries are the eigenvalues of M ∗ M , which we arrange in
+non-increasing order:
+kM k = s1 (M ) ≥ · · · ≥ sn (M ) ≥ 0.
+∗
+
+Partially supported by NSF postdoctoral fellowship DMS-1266164.
+MSC 2010 subject classifications: Primary 60B20; secondary 15B52
+Keywords and phrases: Random matrices, condition number, regularity lemma, metric
+entropy
+
+1
+
+2
+
+N. COOK
+
+(throughout we write k · k for the ℓn2 → ℓn2 operator norm). M is invertible if
+and only if sn (M ) > 0, in which case sn (M ) = kM −1 k−1 . We (informally)
+say that M is “well-invertible” if sn (M ) is well-separated from zero.
+The largest and smallest singular values of random matrices with independent entries have been intensely studied, in part due to applications in
+theoretical computer science. Motivated by their work on the ﬁrst electronic
+computers, von Neumann and Goldstine sought upper bounds on the condition number κ(M ) = s1 (M )/sn (M ) of a large matrix M with iid entries [43].
+More recently, bounds on the condition number of non-centered random matrices have been important in the theory of smoothed analysis of algorithms
+developed by Spielman and Teng [31]. The smallest singular value has also
+received attention due to its connection with proving convergence of the
+empirical spectral distribution – see [6, 36].
+Much is known about the largest singular value for random matrices with
+independent entries. First we review the iid case: we denote by X = Xn an
+n × n matrix whose entries ξij are iid copies of a centered complex random
+variable with unit variance, and refer to such X as an “iid matrix”. From
+the works [4, 44] it is known that √1n s1 (Xn ) ∈ (2 − ε, 2 + ε) with probability
+tending to one as n → ∞ for any ﬁxed ε > 0. In connection with problems in computer science and the theory of Banach spaces there has been
+considerable interest in obtaining non-asymptotic bounds for matrices with
+independent but non-identically distributed entries; see the recent works [5]
+and [41] and references therein for an overview.
+The picture is far less complete for the smallest singular value of random
+matrices; however, recent years have seen much progress for the case of
+√
+the iid matrix X. The limiting distribution of nsn (X) was obtained by
+Edelman for the case of Gaussian entries [11], and this law was shown by
+Tao and Vu to hold for all iid matrices with entries ξij having a suﬃciently
+large ﬁnite moment [35].
+Quantitative lower tail estimates for sn (X) proved to be considerably
+more challenging than bounding the operator norm. The ﬁrst breakthrough
+was made by Rudelson [27], who showed that if X has iid real-valued subGaussian entries, that is
+
+(1.1)
+E exp |ξ|2 /K0 ≤ 2
+for some K0 < ∞, then
+
+
+(1.2)
+P sn (X) ≤ tn−3/2 ≪K0 t + n−1/2
+
+for all t ≥ 0.
+
+Around the same time, in [37] Tao and Vu used methods from additive
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+3
+
+combinatorics to obtain bounds of the form
+
+
+(1.3)
+P sn (X) ≤ n−β ≪ n−α
+
+for any ﬁxed α > 0 and β suﬃciently large depending on α, for the case that
+the entries of X take values in {−1, 0, 1}. Roughly speaking, their approach
+was to classify potential almost-null vectors v according to the amount of additive structure present in the multi-set of coordinate values {vj }nj=1 . They
+extended (1.3) to uncentered matrices with general entry distributions having ﬁnite second moment in [36] (see Theorem 1.6 below), which was instrumental for their proof of the celebrated circular law for the limiting spectral
+distribution of √1n X.
+Motivated by these developments, in [28] Rudelson and Vershynin found
+a diﬀerent way to quantify the additive structure of a vector v called the essential least common denominator, and obtained the following improvement
+of (1.2), (1.3) for matrices with sub-Gaussian entries:
+
+
+(1.4)
+P sn (X) ≤ tn−1/2 ≪K0 t + e−cn .
+
+This estimate is optimal up to the implied constant and c = c(K0 ) > 0 (with
+K0 as in (1.1)).
+Finally, we mention that there has also been work on upper tail bounds
+for the smallest singular value – see in particular [24, 29] – but we do not
+consider this problem further in the present work.
+1.2. A general class of non-iid matrices. In this paper we are concerned
+with bounds for the smallest singular value of random matrices with independent but non-identically distributed entries. The following deﬁnition
+allows us to quantify the dependence of our bounds on the distribution of
+the matrix entries.
+
+Definition 1.1 (Spread random variable). Let ξ be a complex random
+variable and let κ ≥ 1. We say that ξ is κ-spread if
+(1.5)
+
+ 1
+
+Var ξ 1(|ξ − E ξ| ≤ κ) ≥ .
+κ
+
+Remark 1.2. It follows from the monotone convergence theorem that
+any random variable ξ with non-zero second moment is κ-spread for some
+κ < ∞. Furthermore, if ξ is centered with unit variance and ﬁnite pth
+moment µp for some p > 2, then it is routine to verify that ξ is κ-spread
+with κ = 3(3µpp )1/(p−2) , say.
+
+4
+
+N. COOK
+
+Our results concern the following general class of matrices:
+Definition 1.3 (Structured random matrix). Let A = (aij ) and B =
+(bij ) be deterministic n × m matrices with aij ∈ [0, 1] and bij ∈ C for all i, j.
+Let X = (ξij ) be an n × m matrix with independent entries, all identically
+distributed to a complex random variable ξ with mean zero and variance
+one. Put
+(1.6)
+
+M = A ◦ X + B = (aij ξij + bij )ni,j=1
+
+where ◦ denotes the matrix Hadamard product. We refer to A, B and ξ as
+the standard deviation profile, mean profile and atom variable, respectively.
+We denote the Lp norm of the atom variable by
+(1.7)
+
+µp := (E |ξ|p )1/p .
+
+Without loss of generality, we assume throughout that ξ is κ0 -spread for
+some ﬁxed κ0 ≥ 1.
+(While all of our results are for square matrices, we give the deﬁnition for
+the general rectangular case as we will often need to consider rectangular
+submatrices in the proofs.)
+Remark 1.4. The assumption that the entries of M are shifted scalings
+of random variables ξij having a common distribution is made for convenience, as it allows us to access some standard anti-concentration estimates
+(see Section 2.2). We expect the proofs can be modiﬁed to cover general matrices with independent entries having speciﬁed means and variances (possibly with additional moment hypotheses), but we do not pursue this here.
+As a concrete example one can consider a centered non-Hermitian band
+matrix, where one sets aij ≡ 0 for |i − j| exceeding some bandwidth parameter w ∈ [n − 1] – see Corollary 1.16.
+The singular value distributions for structured random matrices have been
+studied in connection with wireless MIMO networks [13, 40]. The limiting
+spectral distributions and spectral radius for certain structured random matrices have been used to model the dynamical properties of neural networks
+[1, 25]. In the recent work [10] with Hachem, Najim and Renfrew, the limiting spectral distribution was determined for a general class of centered
+structured random matrices. That work required bounds on the smallest singular value for shifts of centered matrices by scalar multiples of the identity,
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+5
+
+which was the original motivation for the results in this paper (in particular,
+Corollary 1.21 below is a key input for the proofs in [10]).
+The picture for the smallest singular value of structured random matrices
+is far less complete than for the largest singular value. Here we content
+ourselves with identifying suﬃcient conditions on the matrices A, B and the
+distribution of ξ for a structured random matrix M to be well-invertible
+with high probability. Speciﬁcally, we seek to address the following:
+Question A. Let M be an n × n random matrix as in Deﬁnition 1.3. Under
+what assumptions on the standard deviation and mean proﬁles A, B and the
+distribution of the atom variable ξ do we have
+
+(1.8)
+P sn (M ) ≤ n−β = O(n−α )
+for some constants α, β > 0?
+√
+The case that B = −z nI for some ﬁxed z ∈ C (where I denotes the
+n×n identity matrix) is of particular interest for applications to the limiting
+spectral distribution of centered random matrices. As we shall see in the next
+subsection, existing results in the literature give lower tail bounds for sn (M )
+that are uniform in the shift B under the size constraint kBk = nO(1) , i.e.
+
+P sn (A ◦ X + B) ≤ n−β = O(n−α ).
+(1.9)
+sup
+B∈Mn (C): kBk≤nC
+
+for some constant C > 0 (results stated for centered matrices generally ex√
+tend in a routine manner to allow a perturbation of size kBk = O( n)). Such
+bounds can be viewed as matrix analogues of classical anti-concentration (or
+“small ball”) bounds of the form
+(1.10)
+
+sup P(|Sn − z| ≤ r) ≤ f (r) + o(1)
+z∈C
+
+for a sequence of scalar random variables Sn (such as the normalized partial
+sums of an inﬁnite sequence of iid variables), where f : R+ → R+ is some
+continuous function such that f (r) → 0 as r → 0. In fact, bounds of the
+form (1.10) are a central ingredient in the proofs of estimates (1.9). Roughly
+speaking, the translation invariance of (1.10) causes the uniformity in the
+shift B in (1.9) to come for free once one can handle the centered case B = 0
+(the assumption kBk = nO(1) is needed to have some continuity of the map
+u 7→ kM uk on the unit sphere in order to apply a discretization argument).
+In light of this we may pose the following:
+Question B. Let M be an n × n random matrix as in Deﬁnition 1.3, and
+let γ > 0. Under what assumptions on the standard deviation proﬁle A and
+
+6
+
+N. COOK
+
+the distribution of the atom variable ξ do we have
+
+(1.11)
+sup
+P sn (M ) ≤ n−β = O(n−α )
+B∈Mn (C): kBk≤nγ
+
+for some constants α, β > 0?
+
+The following simple observation puts a clear limitation on the standard
+deviation proﬁles A for which we can expect to have (1.11).
+Observation 1.5. Suppose that A = (aij ) has a k × m submatrix of
+zeros for some k, m with k + m > n. Then A ◦ X is singular with probability
+1. Thus, (1.11) fails (by taking B = 0) for any fixed α, β > 0.
+Theorem 1.12 below (see also Theorem 1.10 for the Gaussian case) shows
+that the above is in some sense the only obstruction to obtaining (1.11).
+1.3. Previous results. Before stating our main results on Questions A
+and B we give an overview of what is currently in the literature.
+For the case of a constant standard deviation proﬁle A and essentially
+arbitrary mean proﬁle B we have the following result of Tao and Vu:
+Theorem 1.6 (Shifted iid matrix [36]). Let X be an n × n matrix with
+iid entries ξij ∈ C having mean zero and variance one. For any α, γ > 0
+there exists β > 0 such that for any fixed (deterministic) n × n matrix B
+with kBk ≤ nγ ,
+
+(1.12)
+P sn (X + B) ≤ n−β = Oα,γ (n−α ).
+
+A stronger version of the above bound was established earlier by Sankar,
+Spielman and Teng for the case that X has iid standard Gaussian entries
+[31]. For the case that B = 0, the bound (1.4) of Rudelson and Vershynin
+gives the optimal dependence β = α+1/2 for the exponents, but requires the
+stronger assumption that the entries are real-valued and sub-Gaussian (we
+remark that their proof extends in a routine manner to allow an arbitrary
+√
+shift B with kBk = O( n)). Recently, the sub-Gaussian assumption for
+(1.4) was relaxed by Rebrova and Tikhomirov to only assume a ﬁnite second
+moment [26].
+When the entries of M have bounded density the problem is much simpler.
+The following is easily obtained by the argument in [6, Section 4.4].
+Proposition 1.7 (Matrix with entries having bounded density [6]). Let
+M be an n × n random matrix with independent entries having density on C
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+7
+
+or R uniformly bounded by ϕ > 1. For every α > 0 there is a β = β(α, ϕ) > 0
+such that
+
+(1.13)
+P sn (M ) ≤ n−β = O(n−α ).
+
+Note that above we make no assumptions on the moments of the entries
+of M – in particular, they may have heavy tails. The following result of Bordenave and Chafaı̈ (Lemma A.1 in [6]) relaxes the hypothesis of continuous
+distributions from Proposition 1.7 while still allowing for heavy tails, but
+comes at the cost of a worse probability bound.
+Proposition 1.8 (Heavy-tailed matrix with non-degenerate entries [6]).
+Let Y be an n × n random matrix with independent entries ηij ∈ C. Suppose
+that for some p, r, σ0 > 0 we have that for all i, j ∈ [n],
+(1.14)
+
+P(|ηij | ≤ r) ≥ p,
+
+Var(ηij 1(|ηij | ≤ r)) ≥ σ02 .
+
+For any s ≥ 1, t ≥ 0, and any fixed n × n matrix B we have
+
+
+
+
+p
+t
+1
+2
+(1.15) P sn (Y + B) ≤ √ , kY + Bk ≤ s ≪p,r,σ0 log s ts + √ .
+n
+n
+The non-degeneracy conditions (1.14) do not allow for some entries to
+be deterministic. Litvak and Rivasplata [22] obtained a lower tail estimate
+of the form (1.8) for centered random matrices having a suﬃciently small
+constant proportion of entries equal to zero deterministically. Below we give
+new results (Theorems 1.12 and 1.24) allowing all but an arbitrarily small
+(ﬁxed) proportion of entries to be deterministic.
+Finally, we recall a theorem of Rudelson and Zeitouni [30] for Gaussian
+matrices, showing that Observation 1.5 is essentially the only obstruction to
+obtaining (1.11). To state their result we need to set up some graph theoretic
+notation, which will be used repeatedly throughout the paper.
+To a non-negative n × m matrix A = (aij ) we associate a bipartite graph
+ΓA = ([n], [m], EA ), with (i, j) ∈ EA if and only if aij > 0. For a row index
+i ∈ [n] we denote by
+(1.16)
+
+NA (i) = {j ∈ [m] : aij > 0}
+
+its neighborhood in ΓA . Thus, the neighborhood of a column index j ∈ [m]
+is denoted NAT (j). Given sets of row and column indices I ⊂ [n], J ⊂ [m],
+we deﬁne the associated edge count
+(1.17)
+
+eA (I, J) := |{(i, j) ∈ [n] × [m] : aij > 0}|.
+
+8
+
+N. COOK
+
+We will generally work with the graph that only puts an edge (i, j) when
+aij exceeds some ﬁxed cutoﬀ parameter σ0 > 0. Thus, we denote by
+(1.18)
+
+A(σ0 ) = (aij 1aij ≥σ0 )
+
+the matrix which thresholds out entries smaller than σ0 .
+Rudelson and Zeitouni work with Gaussian matrices whose matrix of standard deviations A = (aij ) satisﬁes the following expansion-type condition.
+Definition 1.9 (Broad connectivity). Let A = (aij ) be an n×m matrix
+with non-negative entries. For I ⊂ [n] and δ ∈ (0, 1), deﬁne the set of δbroadly connected neighbors of I as
+(δ)
+
+NA (I) = {j ∈ [m] : |NAT (j) ∩ I| ≥ δ|I|}.
+
+(1.19)
+
+For δ, ν ∈ (0, 1), we say that A is (δ, ν)-broadly connected if
+(1) |NA (i)| ≥ δm for all i ∈ [n];
+(2) |NAT (j)| ≥ δn for all j ∈ [m];
+(δ)
+
+(3) |NAT (J)| ≥ min(n, (1 + ν)|J|) for all J ⊂ [m].
+Theorem 1.10 (Gaussian matrix with broadly connected proﬁle [30]).
+Let G be an n×n matrix with iid standard real Gaussian entries, and let A be
+an n×n matrix with entries aij ∈ [0, 1] for all i, j. With notation as in (1.18),
+assume that A(σ0 ) is (δ, ν)-broadly connected for some σ0 , δ, ν ∈ (0, 1). Let
+√
+K ≥ 1, and let B be a fixed n × n matrix with kBk ≤ K n. Then for any
+t ≥ 0,
+
+(1.20)
+P sn (A ◦ G + B) ≤ tn−1/2 ≪δ,ν,σ0 K O(1) t + e−cn
+
+for some c = c(δ, ν, σ0 ) > 0.
+
+Note that the assumption of broad connectivity gives us an “epsilon of
+separation” from the bad example of Observation 1.5. Thus, Theorem 1.10
+provides a near-optimal answer to Question B for Gaussian matrices.
+Remark 1.11. Since the dependence of the bound (1.20) on the parameters δ and ν is not quantiﬁed, Theorem 1.10 only addresses Question B for
+dense standard deviation proﬁles, i.e. when A has a non-vanishing proportion of large entries. While it would not be diﬃcult to quantify the steps in
+[30], the resulting dependence on parameters is not likely to be optimal.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+9
+
+1.4. New results. Our ﬁrst result removes the Gaussian assumption from
+Theorem 1.10, though at the cost of a worse probability bound. Recall the
+parameter κ0 from Deﬁnition 1.3.
+Theorem 1.12 (General matrix with broadly connected proﬁle). Let
+M = A ◦ X + B be an n × n matrix as in Definition 1.3, and assume that
+A(σ0 ) is (δ, ν)-broadly connected for some σ0 , δ, ν ∈ (0, 1). Let K ≥ 1. For
+any t ≥ 0,
+
+
+√
+t
+1
+(1.21)
+P sn (M ) ≤ √ , kM k ≤ K n ≪K,δ,ν,σ0,κ0 t + √ .
+n
+n
+Remark 1.13. While we have stated no moment assumptions on the
+atom variable ξ over the standing assumption of unit variance, the restric√
+tion to the event {kM k ≤ K n} requires us to assume at least four ﬁnite
+√
+moments to deduce P(sn (M ) ≤ t/ n) ≪ t + o(1). Here we give a lower tail
+estimate at the optimal scale sn (M ) ∼ n−1/2 ; however, the arguments in
+this paper can be used to establish a polynomial lower bound on sn (M ) of
+non-optimal order under larger perturbations B (similar to (1.28) below).
+Remark 1.14 (Improving the probability bound). We expect that the
+probability bound in (1.21) can be improved by making use of more advanced
+tools of Littlewood–Oﬀord theory introduced in [28, 36], though it appears
+these tools cannot be applied in a straightforward manner. In the interest
+of keeping the paper of reasonable length we do not pursue this here.
+Remark 1.15 (Bounds on moderately small singular values). The methods used to prove Theorem 1.12 together with an idea of Tao and Vu
+from [38] can be used to give lower bounds of optimal order on sn−k (M )
+with nε ≤ k ≤ cn for any ε > 0 and a suﬃciently small constant c =
+c(κ0 , σ0 , δ, ν, K) > 0; see [9, Theorem 4.5.1]. Such bounds are of interest for
+proving convergence of the empirical spectral distribution; see [6, 38].
+In light of Observation 1.5, Theorem 1.12 gives an essentially optimal
+answer to Question B for dense random matrices (see Remark 1.11). It
+would be interesting to establish a version of this result that allows for only
+a proportion o(1) of the entries to be random. Indeed, we expect a version
+of the above theorem to hold when A has density as small (logO(1) n)/n.
+(Quantifying the dependence on δ, ν in (1.21) would only allow a slight
+polynomial decay in the density.)
+We note that they broad connectivity hypothesis includes many standard
+deviation proﬁles of interest, such as band matrices:
+
+10
+
+N. COOK
+
+Corollary 1.16 (Shifted non-Hermitian band matrices). Let M = A ◦
+X + B be an n × n matrix as in Definition 1.3, and assume that for some
+fixed σ0 , ε ∈ (0, 1), aij ≥ σ0 for all i, j with min(|i − j|, n − |i − j|) ≤ εn. Let
+K ≥ 1. Then (1.21) holds for any t ≥ 0 (with implied constant depending
+on K, σ0 , ε and κ0 ).
+We defer the proof to Appendix A.
+Remark 1.17. It is possible to modify our argument for the above corollary to treat a band proﬁle that does not “wrap around”, i.e. only enforcing
+aij ≥ σ0 for i, j with |i − j| ≤ εn.
+Having addressed Question B, we now ask whether we can further relax
+the assumptions on the standard deviation proﬁle A by assuming more about
+the mean proﬁle B. In particular, can we make assumptions on B that give
+(1.8) while allowing A ◦ X to be singular deterministically?
+Of course, a trivial example is to take A = 0 and B any invertible matrix.
+Another easy example is to take take B to be very well-invertible, with
+√
+√
+sn (B) ≥ K n for a large constant K > 0 (for instance, take B = K nI,
+where I is the identity matrix). Indeed, standard estimates for the operator
+norm of random matrices with centered entries (cf. Section 5.2) give kA ◦
+√
+Xk = O( n) with high probability provided the atom variable ξ satisﬁes
+some additional moment hypotheses. From the triangle inequality
+sn (M ) =
+
+inf
+
+u∈S n−1
+
+k(A ◦ X + B)uk ≥ sn (B) − kA ◦ Xk,
+
+√
+so sn (M ) ≫ n with high probability if K is suﬃciently large.
+The problem becomes non-trivial when we allow B to have singular values
+√
+of size ε n for small ε > 0 and A as in Observation 1.5. In this case any
+proof of a lower tail estimate of the form (1.8) must depart signiﬁcantly from
+the proofs of the results in the previous section by making use of arguments
+which are not translation invariant.
+Our main result shows that when the mean proﬁle B is a diagonal matrix
+√
+with smallest entry at least an arbitrarily small (ﬁxed) multiple of n, then
+we do not need to assume anything further about the standard deviation
+proﬁle A.
+Theorem 1.18 (Main result). Fix arbitrary r0 ∈ (0, 12 ], K0 ≥ 1, and let
+Z be a (deterministic) diagonal matrix with diagonal entries z1 , . . . , zn ∈ C
+satisfying
+(1.22)
+
+|zi | ∈ [r0 , K0 ]
+
+∀i ∈ [n].
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+11
+
+√
+Let M be an n × n random matrix as in Definition 1.3 with B = Z n,
+and assume µ4+η < ∞ for some fixed η > 0. There are α(η) > 0 and
+β(r0 , η, µ4+η ) > 0 such that
+
+(1.23)
+P sn (M ) ≤ n−β = Or0 ,K0 ,η,µ4+η (n−α ).
+
+Remark 1.19 (Moment assumption). The assumption of 4+ η moments
+is due to our use of a result of Vershynin, Theorem 5.8 below, on the operator
+norm of products of random matrices. Apart from this, at many points in our
+√
+argument we use that an m × m submatrix of M has operator norm O( m)
+with high probability (assuming m grows with n), which requires at least
+four ﬁnite moments. Under certain additional assumptions on the standard
+deviation proﬁle we only need to assume two moments – see Remark 5.12.
+
+Remark 1.20 (Dependence of α, β on parameters). The proof gives
+α(η) = 19 min(1, η). If we were to assume ξ has ﬁnite pth moment for a
+suﬃciently large constant p then we could take any ﬁxed α < 1/2 in (1.23).
+The dependence of β on µ4+η and r0 given by our proof is very bad, of the
+form
+
+(1.24)
+β = twr Oη (1) exp((µ4+η /r0 )O(1) )
+..
+
+.
+
+2
+
+of height x. (The factor Oη (1)
+where twr(x) is a tower exponential 22
+comes from Vershynin’s bound mentioned in the previous remark – we do
+not know the precise dependence on η, but we expect it is relatively mild.)
+This is due to our use of Szemerédi’s regularity lemma (speciﬁcally, a version
+for directed graphs due to Alon and Shapira – see Lemma 5.2). It would be
+interesting to obtain a version of Theorem 1.18 with a better dependence of
+β on the parameters.
+As we remarked above, the case of a diagonal mean proﬁle is of special
+interest for the problem of proving convergence of the empirical spectral
+distribution of centered random matrices with a variance proﬁle.
+Corollary 1.21 (Scalar shift of a centered random matrix). Let X =
+(ξij ) be an n × n matrix whose entries are iid copies of a centered complex
+random variable ξ having unit variance and (4 + η)-th moment µ4+η < ∞
+for some fixed η > 0. Let A = (aij ) be a fixed n × n non-negative matrix
+with entries uniformly bounded by σmax < ∞. Put Y = √1n A ◦ X, and fix
+an arbitrary z ∈ C \ {0}. There are constants α = α(η) > 0 and β =
+β(|z|, η, µ4+η , σmax ) > 0 such that
+
+(1.25)
+P sn (Y − zI) ≤ n−β = O|z|,σmax ,µ4+η (n−α ).
+
+12
+
+N. COOK
+
+While our main motivation was to handle diagonal perturbations of centered random matrices, we conjecture that Theorem 1.18 extends to matrices
+as in Deﬁnition 1.3 with more general mean proﬁles B:
+Conjecture 1.22. Theorem 1.18 continues to hold for B ∈ Mn (C) not
+necessarily diagonal, where the constraint (1.22) is replaced with √1n si (B) ∈
+[r0 , K0 ] for all 1 ≤ i ≤ n.
+1.5. Ideas of the proof. Here we give an informal discussion of the main
+ideas in the proof of Theorem 1.18.
+Regular partitions of graphs. As with Theorem 1.12, the key is to associate the standard deviation proﬁle A with a graph. Since we want the
+diagonal of M to be preserved under relabeling of vertices will will associate
+A with a directed graph (digraph) which puts an edge i → j whenever aij
+exceeds some small threshold σ0 > 0. Since A has no special connectivity
+structure a priori, we will apply a version of Szemerédi’s regularity lemma for
+digraphs (Lemma 5.2) to partition the vertex set [n] into a bounded number
+of parts of equal size I1 , . . . , Im , together with a small set of “bad” vertices
+Ibad , such that for most (k, l) ∈ [m]2 the subgraph on Ik ∪ Il enjoys certain
+“pseudorandomness” properties. These properties will not be quite strong
+enough to control the smallest singular value of the corresponding submatrix
+MIk ,Il of M , but we can apply a “cleaning” procedure (as it is called in the
+extremal combinatorics literature) to remove a small number of bad vertices
+from each part in the partition (which we add to Ibad ), after which we will
+be able to control smin (MIk ,Il ) for most (k, l) ∈ [m]2 . We defer the precise
+formulation of the pseudorandomness properties and corresponding bound
+on the smallest singular value to Deﬁnition 1.23 and Theorem 1.24 below.
+Schur complement formula. The task will then be to lift this control on
+the invertibility of submatrices to the whole matrix M . The key tool here is
+the Schur complement formula (see Lemma 5.4) which allows us to control
+the smallest singular value of a block matrix
+
+
+M11 M12
+(1.26)
+M21 M22
+assuming some control on the smallest singular values of (perturbations
+of) the diagonal block submatrices M11 , M22 and on the operator norm of
+the oﬀ-diagonal submatrices M12 , M21 . The control on the smallest singular
+value of the whole matrix is somewhat degraded, but this is acceptable as
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+13
+
+we will only apply Lemma 5.4 a bounded number of times. If we can ﬁnd
+a generalized diagonal of “good” block submatrices that are well-invertible
+under additive perturbations, then after permuting the blocks to lie on the
+main diagonal we can apply the Schur complement bound along a nested
+sequence of submatrices partitioned as in (1.26), where M11 is a “good” matrix and M22 is well-invertible by the induction hypothesis. We remark that
+the strategy of leveraging properties of a small submatrix using the Schur
+complement formula was recently applied in a somewhat diﬀerent manner
+in [7] to prove the universality of spectral statistics of random Hermitian
+band matrices.
+Decomposition of the reduced digraph. At this point it is best to think of
+the regular partition I1 , . . . , Im as inducing a “macroscopic scale” digraph
+R = ([m], E) (often called the reduced digraph in extremal combinatorics)
+that puts an edge (k, l) ∈ E whenever the corresponding submatrix AIk ,Il
+is pseudorandom and suﬃciently dense. If we can cover the vertices of R
+with vertex-disjoint directed cycles, then we will have found a generalized
+diagonal of submatrices of M with the desired properties, and we can ﬁnish
+with a bounded number of applications of the Schur complement formula as
+described above.
+Of course, it may be the case that R cannot be covered by disjoint cycles.
+For instance, if A were to have all ones in the ﬁrst n/2 columns and all
+zeros in the last n/2 columns then roughly half of the vertices of R would
+have no incoming edges. This is where we make crucial use of the diagonal
+√
+perturbation Z n (indeed, without this perturbation M would be singular
+in this example). The top left n/2 × n/2 submatrix of M is dense, and we
+can apply Theorem 1.24 to control its smallest singular vale. The bottom
+right n/2 × n/2 submatrix is a diagonal matrix with diagonal entries of size
+√
+√
+at least r0 n, and hence its smallest singular value is at least r0 n. This
+argument even allows for the bottom right submatrix of A to be nonzero but
+suﬃciently sparse: we can use the triangle inequality and standard bounds
+on the operator norm of sparse random matrices to argue that the smallest
+√
+singular value of the bottom right submatrix is still of order ≫ r0 n.
+We handle the general case as follows. We greedily cover as many of
+the vertices of R as we can with disjoint cycles – call this set of vertices
+Ucyc ⊂ [m]. At this point we have either covered the whole graph (and we are
+done) or the graph on the remaining vertices Ufree is cycle-free. This means
+that the vertices of R can be relabeled so that
+is upperS
+S its adjacency matrix
+triangular on Ufree × Ufree . Write Jcyc = k∈Ucyc Ik , Jfree = k∈Ufree Ik and
+denote the corresponding submatrices of A on the diagonal by Acyc , Afree ,
+
+14
+
+N. COOK
+
+and likewise for M . We thus have a relabeling of [n] under which Afree is
+close to upper triangular (there may be some entries of Afree below the
+diagonal of size less than σ0 , or which are contained in a small number of
+exceptional pairs from the regular partition). Crucially, this relabeling has
+preserved the diagonal, so the submatrix Mfree is a diagonal perturbation
+of an (almost) upper-triangular random matrix. We then show that such a
+√
+matrix has smallest singular value of order ≫r0 n with high probability.
+With another application of the Schur complement bound we can combine
+the control on the submatrices Mcyc , Mfree (along with standard bounds
+on the operator norm for the oﬀ-diagonal blocks) to conclude the proof.
+(Actually, the bad set Ibad of rows and columns requires some additional
+arguments, but we do not discuss these here.)
+This concludes the high level description of the proof of Theorem 1.18.
+We only remark that the above partitioning and cleaning procedures will
+generate various error terms and residual submatrices (such as the vertices
+in Ibad , or the small proportion of pairs (Ik , Il ) which are not suﬃciently
+pseudorandom). As the smallest singular value is notoriously sensitive to
+perturbations, it will take some care to control these terms. We will use some
+high-powered tools such as bounds on the operator norm of sparse random
+matrices and products of random matrices due to Latala and Vershynin –
+see Section 5.2.
+Invertibility from connectivity assumptions. Now we state the speciﬁc
+pseudorandomness condition on a standard deviation proﬁle under which
+we have good control on the smallest singular value. While “pseudorandom”
+generally means that the edge distribution in a graph is close to uniform on
+a range of scales, we will only need control from below on the edge densities
+(morally speaking, we want the matrix A to be as far as possible from
+the zero matrix, the most poorly invertible matrix). The following one-sided
+condition is taken from the combinatorics literature (see [17, Deﬁnition 1.6]).
+The reader should recall the notation introduced in (1.16)–(1.18).
+Definition 1.23 (Super-regularity). Let A be an n × m matrix with
+non-negative entries. For δ, ε ∈ (0, 1), we say that A is (δ, ε)-super-regular if
+the following hold:
+(1) |NA (i)| ≥ δm for all i ∈ [n];
+(2) |NAT (j)| ≥ δn for all j ∈ [m];
+(3) eA (I, J) ≥ δ|I||J| for all I ⊂ [n], J ⊂ [m] with |I| ≥ εn and |J| ≥ εm.
+The reader should compare this condition with Deﬁnition 1.9. Conditions
+(1) and (2) are are the same in both deﬁnitions, while it is not hard to see
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+15
+
+that condition (3) above implies
+(1.27)
+
+(δ)
+
+|NAT (J)| ≥ (1 − ε)n
+
+whenever |J| ≥ εn (with notation as in (1.19)), which is stronger than
+condition (3) in Deﬁnition
+1.9 for such J. On the other hand, conditions (1)
+√
+( δ/2)
+
+(J)| ≥ 12 δn for any J ⊂ [m] (see Lemma 3.4),
+and (2) imply that |NAT
+so super-regularity is stronger than broad connectivity for ε, η suﬃciently
+small depending on δ.
+Theorem 1.24 (Matrix with super-regular proﬁle). Let M = A ◦ X + B
+be an n × n matrix as in Definition 1.3. Assume that A(σ0 ) (as defined in
+(1.18)) is (δ, ε)-super-regular for some δ, σ0 ∈ (0, 1) and 0 < ε < c1 δσ02 with
+c1 > 0 a sufficiently small constant. For any γ ≥ 1/2 there exists β = O(γ 2 )
+such that
+r
+
+log n
+−β
+γ
+.
+(1.28)
+P sn (M ) ≤ n , kM k ≤ n ≪γ,δ,σ0 ,κ0
+n
+
+Note that Theorem 1.24 allows for a mean proﬁle B of arbitrary polynomial size in operator norm, whereas in Theorem 1.12 we only allowed
+√
+kBk = O( n). The ability to handle such large perturbations will be crucial in the proof of Theorem 1.18, as the iterative application of the Schur
+complement bound discussed above will lead to perturbations of increasingly
+large polynomial order.
+We defer discussion of the key technical ideas for Theorem 1.12 and Theorem 1.24 to Sections 3 and 4. We only mention here that our proof of
+Theorem 1.24 makes crucial use of a new “entropy reduction” argument,
+which allows us to control the event that kM uk is small for some u in certain portions of the sphere S n−1 by the event that this holds for some u in
+a random net of relatively low cardinality. The argument uses an improvement by Spielman and Srivastava [32] of the classic Restricted Invertibility
+Theorem due to Bourgain and Tzafriri [8] – see Section 3 for details.
+
+1.6. Organization of the paper. The rest of the paper is organized as
+follows. Sections 2, 3 and 4 are devoted to the proofs of Theorems 1.12
+and 1.24. We prove these theorems in parallel as they involve many similar
+ideas. In Section 2 we collect some standard lemmas on anti-concentration
+for random walks and products of random matrices with ﬁxed vectors, along
+with some facts about nets in Euclidean space. In Section 3 we show that
+random matrices as in Theorems 1.12 and 1.24 are well-invertible over sets
+of “compressible” vectors in the unit sphere, and in Section 4 we establish
+
+16
+
+N. COOK
+
+control over the complementary set of “incompressible” vectors. Theorem
+1.18 is proved in Section 5.
+1.7. Notation. In addition to the asymptotic notation deﬁned at the beginning of the article, we will occasionally use the notation f = o(g) to
+mean that f /g → 0 as n → ∞, where the parameter n will be the size of
+the matrix under consideration (this will only be for the sake of brevity, as
+all of our arguments are quantitative).
+Mn,m (C) denotes the set of n × m matrices with complex entries. When
+m = n we will write Mn (C). For a matrix A = (aij ) ∈ Mn,m (C) we will
+sometimes use the notation A(i, j) = aij . For I ⊂ [n], J ⊂ [m], AI,J denotes
+the |I| × |J| submatrix with entries indexed by I × J. We abbreviate AJ :=
+AJ,J .
+n
+k·k denotes the Euclidean norm when applied to vectors, and the ℓm
+2 → ℓ2
+operator norm when applied to an n×m matrix. kAkHS denotes the Hilbert–
+Schmidt (or Frobenius) norm of a matrix A. We will sometimes denote the
+smallest singular value of a square matrix M by smin (M ) (in situations where
+M is a submatrix of a larger matrix this will often be clearer than writing
+the dimension).
+We denote the unit sphere in Cn by S n−1 . For J ⊂ [n], we denote by
+J
+C ⊂ Cn (resp. S J ⊂ S n−1 ) the set of vectors (resp. unit vectors) in Cn
+supported on J. Given a vector v ∈ Cn , we denote by vJ ∈ Cn the
+projection
+[m]
+J
+of v to the coordinate subspace C . For m ∈ N, x ∈ R, x denotes the
+family of subsets of [m] of size ⌊x⌋.
+When considering a random matrix M as in Deﬁnition 1.3, we use Ri to
+denote the ith row of M , and write
+(1.29)
+
+FI,J := h{ξij }i∈I,j∈J i
+
+for the sigma algebra of events generated by the entries {ξij }i∈I,j∈J of X.
+For I ⊂ [n] we write PI (·) for probability conditional on F[n]\I,[n] .
+Acknowledgements. The author thanks David Renfrew and Terence Tao
+for useful conversations, and also thanks David Renfrew for providing helpful
+comments on a preliminary version of the manuscript.
+2. Preliminaries.
+2.1. Partitioning and discretizing the sphere. For the proofs of Theorems
+1.12 and 1.24 we make heavy use of ideas and notation developed in [20, 21,
+27, 28] and related ideas from geometric functional analysis. In particular,
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+17
+
+in order to lower bound
+sn (M ) =
+
+inf
+
+u∈S n−1
+
+kM uk
+
+we partition the sphere into sets of vectors of diﬀerent levels of “compressibility”, which we presently deﬁne, and separately obtain control on the
+inﬁmum of kM uk over each set.
+Recall from Section 1.7 our notation CJ ⊂ Cm for the set of vectors
+supported on J ⊂ [m]. For a set T ⊂ Cn and ρ > 0 we write Tρ for the
+set of points within Euclidean distance ρ of T . We recall also the following
+deﬁnitions from [30]. For θ, ρ ∈ (0, 1), we deﬁne the set of compressible
+vectors
+[
+(2.1)
+Comp(θ, ρ) := S m−1 ∩
+(CJ )ρ
+J∈([m]
+θm )
+
+and the complementary set of incompressible vectors
+(2.2)
+
+Incomp(θ, ρ) := S m−1 \ Comp(θ, ρ).
+
+That is, Comp(θ, ρ) is the set of unit vectors within (Euclidean) distance
+ρ of a vector supported on at most θm coordinates. On the other hand,
+incompressible vectors enjoy the following property which will lead to good
+anti-concentration properties for an associated random walk.
+Lemma 2.1 (Incompressible vectors are spread, cf. [28, Lemma 3.4]). Fix
+θ, ρ ∈ (0, 1) and let v ∈ Incomp(θ, ρ). There is a set L+ ⊂ [m] with |L+ | ≥
+√
+θm such that |vj | ≥ ρ/ m for all j ∈ L+ . Moreover, for all λ ≥ 1 there is
+a set L ⊂ [m] with |L| ≥ (1 − λ12 )θm such that for all j ∈ L,
+λ
+ρ
+√ ≤ |vj | ≤ √ .
+m
+θm
+√
+Proof. Take L+ = {j : |vj | ≥ ρ/ m} and denote L− = {j : |vj | ≤
+√
+λ/ θm}. Since v lies a distance at least ρ from any vector supported on
+at most θm coordinates we must have |L+ | ≥ θm, which gives the ﬁrst
+claim. On the other hand, since v ∈ S m−1 , by Markov’s inequality we have
+|(L− )c | ≤ θm/λ2 , so taking L = L+ ∩ L− we have |L| ≥ (1 − λ12 )θm.
+For ﬁxed choices of θ, ρ we informally refer to the coordinates of v ∈
+√
+Incomp(θ, ρ) where |vj | ≥ ρ/ n as the essential support of v.
+Now we recall a standard fact about nets of the sphere of controlled
+cardinality. For ρ > 0, recall that a ρ-net of a set T ⊂ Cm is a ﬁnite subset
+Σ ⊂ T such that for all v ∈ T there exists v ′ ∈ Σ with kv − v ′ k ≤ ρ.
+
+18
+
+N. COOK
+
+Lemma 2.2 (Metric entropy of the sphere). Let V ⊂ Cm be a subspace
+of (complex) dimension k, let T ⊂ V ∩ S m−1 , and let ρ ∈ (0, 1). Then T has
+a ρ-net Σ ⊂ T of cardinality |Σ| ≤ (3/ρ)2k .
+Proof. Let Σ ⊂ T be a ρ-separated (in Euclidean distance) subset that
+is maximal under set inclusion. It follows from maximality that Σ is a ρ-net
+of T . Let Σρ/2 denote the ρ/2 neighborhood of Σ in V . Noting that Σρ/2 is
+a disjoint union of k-dimensional Euclidean balls of radius ρ/2, we have
+|Σ|ck (ρ/2)2k ≤ volk (Σρ/2 ) ≤ ck (1 + ρ/2)2k
+where volk denotes the k-dimensional Lebesgue measure on V and ck is
+the volume of the Euclidean unit ball in Ck . The desired bound follows by
+rearranging.
+2.2. Anti-concentration for scalar random walks. In this subsection we
+collect some standard anti-concentration estimates for scalar random walks,
+which are perhaps the most central tool for proving that random matrices
+are (well-)invertible with high probability.
+Definition 2.3 (Concentration probability).
+random variable. For v ∈ Cn we let
+n
+X
+ξ j vj
+(2.3)
+Sξ (v) =
+
+Let ξ be a complex-valued
+
+j=1
+
+where ξ1 , . . . , ξn are iid copies of ξ. For r ≥ 0 we deﬁne the concentration
+probability
+
+(2.4)
+pξ,v (r) = sup P |Sξ (v) − z| ≤ r .
+z∈C
+
+Throughout this section we operate under the following distributional
+assumption on ξ.
+Definition 2.4 (Controlled second moment, cf. [36, Deﬁnition 2.2]). Let
+κ ≥ 1. A complex random variable ξ is said to have κ-controlled second
+moment if one has the upper bound
+E |ξ|2 ≤ κ
+
+(2.5)
+
+(in particular, | E ξ| ≤ κ1/2 ), and the lower bound
+(2.6)
+
+E[Re(zξ − w)]2 1(|ξ| ≤ κ) ≥
+
+for all z ∈ C, a ∈ R.
+
+1
+[Re(z)]2
+κ
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+19
+
+Roughly speaking, a complex random variable ξ has controlled second
+moment if its distribution has a one-(real-)dimensional marginal with fairly
+large variance on some compact set. The following is a quantitative version
+of [36, Lemma 2.4], and shows that by multiplying the matrices X and B in
+Deﬁnition 1.3 by a scalar phase (amounting to multiplying M by a phase,
+which does not aﬀect its singular values) we can assume the atom variable
+ξ has O(κ0 )-controlled second moment in all of our proofs with no loss of
+generality. The proof is deferred to Appendix B.
+Lemma 2.5. Let ξ be a centered complex random variable with unit variance, and assume ξ is κ0 -spread for some κ0 ≥ 1 (see Definition 1.1). Then
+there exists θ ∈ R such that eiθ ξ has κ-controlled second moment for some
+κ = O(κ0 ).
+Below we give two standard bounds on the concentration function pξ,v (r)
+when ξ is a κ-controlled random variable and v ∈ S n−1 . The ﬁrst gives a
+crude constant order bound that is uniform in v ∈ S n−1 :
+Lemma 2.6 (Crude anti-concentration, cf. [39, Corollary 6.3]). Let ξ be
+a complex random variable with κ-controlled second moment. There exists
+r0 > 0 depending only on κ such that pξ,v (r0 ) ≤ 1 − r0 for all v ∈ S n−1 .
+Note that Lemma 2.6 is sharp for the case that v is a standard basis
+vector. The following gives an improved bound when v has small ℓ∞ norm.
+Lemma 2.7 (Improved anti-concentration). Let ξ be a complex random
+variable that is κ-controlled for some κ > 0, and let v ∈ S n−1 . For all r ≥ 0,
+(2.7)
+
+pξ,v (r) ≪κ r + kvk∞ .
+
+Lemma 2.7 can be deduced from the Berry–Esséen theorem (which is the
+approach taken in [20], for instance), but this would require ξ to have ﬁnite
+third moment, which we do not assume. (Generally speaking, higher moment
+assumptions should only be necessary to prove concentration bounds as
+opposed to anti-concentration.) Since we could not locate a proof in the
+literature for the case that ξ and the coeﬃcients of v take values in C, we
+provide a proof in Appendix B.
+2.3. Anti-concentration for the image of a fixed vector. In this subsection
+we boost the anti-concentration bounds for scalar random variables from
+the previous sections to anti-concentration for the image of a ﬁxed vector
+under a random matrix. The following lemma of Rudelson and Vershynin is
+convenient for this task.
+
+20
+
+N. COOK
+
+Lemma 2.8 (Tensorization, cf. [28, Lemma 2.2]).
+pendent non-negative random variables.
+
+Let ζ1 , . . . , ζn be inde-
+
+(a) Suppose that for some ε0 , p0 > 0 and all j ∈ [n], P(ζj ≤ ε0 ) ≤ p0 . There
+are c1 , p1 ∈ (0, 1) depending only on p0 such that
+
+X
+n
+2
+2
+ζj ≤ c1 ε0 n ≤ pn1 .
+(2.8)
+P
+j=1
+
+(b) Suppose that for some K, ε0 ≥ 0 and all j ∈ [n], P(ζj ≤ ε) ≤ Kε for all
+ε ≥ ε0 . Then for all ε ≥ ε0 ,
+
+X
+n
+ζj2 ≤ ε2 n ≤ (CKε)n .
+(2.9)
+P
+j=1
+
+Note that in part (a) we have given more speciﬁc dependencies on the parameters than in [28]. For completeness we provide the proof of this modiﬁed
+version in Appendix B.
+Let M = A ◦ X + B be as in Deﬁnition 1.3. Recall that we denote by Ri
+the ith row of M . In the following lemmas we assume that the atom variable
+ξ has κ-controlled second moment for some ﬁxed κ ≥ 1. For v ∈ Cm and
+i ∈ [n] we write
+v i := (vj aij )m
+j=1
+
+(2.10)
+For α > 0 we denote
+
+Iα (v) := {i ∈ [n] : kv i k ≥ α}.
+
+(2.11)
+
+Lemma 2.9 (Crude anti-concentration for the image of a ﬁxed vector).
+Fix v ∈ Cm and let α > 0 such that Iα (v) 6= ∅. For all I0 ⊂ Iα (v),
+
+
+(2.12)
+sup PI0 kM v − wk ≤ c0 α|I0 |1/2 ≤ e−c0 |I0 |
+w∈Cn
+
+where c0 > 0 is a constant depending only on κ (recall our notation PI0 ( · )
+from Section 1.7).
+Proof. Fix w ∈ Cn arbitrarily. For any i ∈ Iα (v) and any t ≥ 0 we have
+P(|Ri · v − wi | ≤ t) ≤ pξ,vi (t) = pξ,vi /kvi k (t/kv i k) ≤ pξ,vi /kvi k (t/α).
+Taking t = αr0 , by Lemma 2.6 we have
+(2.13)
+
+P(|Ri · v − wi | ≤ αr0 ) ≤ 1 − r0
+
+21
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+where r0 > 0 depends only on κ.
+Fix I0 ⊂ Iα (v) arbitrarily. We may assume without loss of generality that
+I0 is non-empty. By Lemma 2.8(a) there exists c1 > 0 depending only on κ
+such that
+
+X
+2
+2 2
+|Ri · v − wi | ≤ c1 r0 α |I0 | ≤ e−c1 |I0 | .
+(2.14)
+PI0
+i∈I0
+
+Now for any τ ≥ 0,
+
+
+X
+n
+
+
+2
+2
+1/2
+|Ri · v − wi | ≤ τ |I0 |
+= PI0
+PI0 kM v − wk ≤ τ |I0 |
+i=1
+
+X
+
+≤ PI0
+
+i∈I0
+
+
+|Ri · v − wi | ≤ τ |I0 |
+2
+
+2
+
+1/2
+
+and the claim follows by taking τ = c1 r0 α =: c0 α and applying (2.14).
+By similar lines, using Lemmas 2.8(b) and 2.7 in place of Lemmas 2.8(a)
+and 2.6, respectively, one obtains the following, which is superior to Lemma
+2.9 for vectors v with small ℓ∞ norm. The details are omitted.
+Lemma 2.10 (Improved anti-concentration for the image of a ﬁxed vector). Fix v ∈ Cm . Let α > 0 such that Iα (v) 6= ∅ and fix I0 ⊂ Iα (v)
+nonempty. For all t ≥ 0,
+(2.15)
+
+
+
+1/2
+
+sup PI0 kM v − wk ≤ t|I0 |
+
+w∈Cn
+
+
+
+≤ Oκ
+
+
+
+
+1
+t + kvk∞
+α
+
+|I0 |
+
+.
+
+3. Invertibility from connectivity: Compressible vectors. In this
+section we combine the anti-concentration estimates from Section 2 with
+union bounds over ε-nets (as obtained for instance from Lemma 2.2) to
+prove that with high probability, a random matrix M as in Theorem 1.12 or
+Theorem 1.24 is well-invertible on the set of compressible vectors Comp(θ, ρ)
+(as deﬁned in (2.1)) for appropriate choices of θ, ρ. Hence, there will be a
+competition between the quality of the anti-concentration estimates and the
+cardinality of the ε-nets. For small values of θ we can use ε-nets of small
+cardinality, but only have poor anti-concentration bounds (namely, Lemma
+2.9), while for large θ the nets are very large, but we have access to the
+improved anti-concentration of Lemma 2.10.
+In both cases we start with a crude result, Lemma 3.3, giving control for
+the vectors in Comp(θ0 , ρ0 ) for some small value of θ0 (possibly depending
+
+22
+
+N. COOK
+
+on n). We then use an iterative argument argument to obtain control on
+Comp(θ, ρ) for larger values of θ while lowering the parameter ρ. For Theorem 1.12 we want to take θ close to 1, while for Theorem 1.24 a constant
+order value of θ will suﬃce.
+It turns out that that while the standard ε-net from Lemma 2.2 suﬃces
+to prove Lemma 3.3, it is insuﬃcient to obtain control on Comp(θ, ρ) for the
+desired values of θ. For the broadly connected case this is essentially due to
+working in Cn rather than Rn , which causes a factor 2 increase in metric
+entropies (this diﬃculty was not present in the proof of Theorem 1.10 in [30]
+as they worked in Rn ). The situation is worse for the case of Theorem 1.24,
+the main source of diﬃculty being that kBk can be of arbitrary polynomial
+order. As a consequence, the starting point θ0 for our iterative argument
+will be of size o(1). This prevents us from using the third condition of the
+super-regularity hypothesis (see Deﬁnition 1.23), which only “sees” vectors
+that are essentially supported on more than εn coordinates.
+We deal with this by reducing the entropy cost of the nets over which
+we take union bounds. In Section 3.2 we prove Lemma 3.5 which shows,
+roughly speaking, that if we have already established control on vectors in
+Comp(θ, ρ) for some θ, ρ, then we can control the vectors in Comp(θ + ∆, ρ′ )
+for some small ∆, ρ′ using a random net of signiﬁcantly smaller cardinality
+than the net provided by Lemma 2.2. We can then increment θ from θ0 up
+to size ≫ 1, taking steps of size ∆. For the broadly connected case we can
+continue and take θ as close to 1 as desired. The entropy reduction argument
+for Lemma 3.5 makes use of a strong version of the well-known Restricted
+Invertibility Theorem due to Spielman and Srivastava – see Theorem 3.7.
+We now state the main results of this section. For K ≥ 1 we denote the
+boundedness event
+
+√ 	
+(3.1)
+B(K) := kM k ≤ K n .
+With a ﬁxed choice of K we write
+
+√ 	
+(3.2)
+E(θ, ρ) := B(K) ∧ ∃u ∈ Comp(θ, ρ) : kM uk ≤ ρK n .
+
+Proposition 3.1 (Compressible vectors: broadly connected proﬁle). Let
+M = A ◦ X + B be as in Definition 1.3 with n/2 ≤ m ≤ 2n, and assume that ξ has κ-controlled second moment for some κ ≥ 1 (see Definition
+2.4). Let K ≥ 1 and σ0 , δ, ν ∈ (0, 1). There exist θ0 (κ, σ0 , δ, K) > 0 and
+ρ(κ, σ0 , δ, ν, K) > 0 such that the following holds. Assume
+(1) |NA(σ0 )T (j)| ≥ δn for all j ∈ [m];
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+(δ)
+
+(2) |NA(σ
+
+T
+0)
+
+(J)| ≥ min((1 + ν)|J|, n) for all J ⊂ [m] with |J| ≥ θ0 m.
+
+n
+, 1),
+Then for any 0 < θ ≤ (1 − δ4 ) min( m
+
+(3.3)
+
+23
+
+P(E(θ, ρ)) ≪κ,σ0 ,δ,ν,K exp −cκ δσ02 n
+
+where cκ > 0 depends only on κ.
+
+
+
+The following gives control of compressible vectors for more general proﬁles than in Proposition 3.1 (essentially removing the condition (2)). However, we have to take the parameter ρ much smaller, and we only cover
+vectors that are essentially supported on a small (linear) proportion of the
+coordinates, rather than a proportion close to one.
+Proposition 3.2 (Compressible vectors: general proﬁle with large perturbation). Let M = A◦X + B be as in Definition 1.3 with n/2 ≤ m ≤ 2n.
+Assume ξ has κ-controlled second moment for some κ ≥ 1, and that for some
+a0 > 0 we have
+(3.4)
+
+n
+X
+i=1
+
+a2ij ≥ a20 n
+
+for all j ∈ [m].
+
+Fix γ ≥ 1/2 and let 1 ≤ K = O(nγ−1/2 ). Then for some ρ = ρ(γ, a0 , κ, n) ≫γ,a0 ,κ
+2
+n−O(γ ) and a sufficiently small constant c0 > 0 we have
+
+
+(3.5)
+P E(c0 a20 , ρ) ≪γ,a0 ,κ exp −cκ a20 n
+
+where cκ > 0 depends only on κ.
+
+3.1. Highly compressible vectors. In this subsection we establish the following crude version of Proposition 3.2, giving control on vectors in Comp(θ0 , ρ0 )
+with θ0 suﬃciently small depending on a0 and K.
+Lemma 3.3 (Highly compressible vectors). Let M = A ◦ X + B be as in
+Definition 1.3 with m ≤ 2n. Assume that ξ has κ-controlled second moment
+for some κ ≥
+P1. Suppose also that there is a constant a0 > 0 such that for
+all j ∈ [m], ni=1 a2ij ≥ a20 n. Let K ≥ 1. Then with notation as in (3.2) we
+have
+(3.6)
+
+2
+
+P(E(θ0 , ρ0 )) ≤ e−cκ a0 n
+
+where θ0 = cκ a20 / log(K/a20 ) and ρ0 = cκ a20 /K for a sufficiently small cκ > 0
+depending only on κ.
+
+24
+
+N. COOK
+
+We will need the following lemma, which ensures that the set Iα (v) from
+(2.11) is reasonably large when the columns of A have large ℓ2 norm. A
+similar argument has been used in [22] and [30].
+Lemma 3.4 (Many good rows). Let A be an
+Pn×m matrix as in Definition
+1.3, and assume that for some a0 > 0 we have ni=1 a2ij ≥ a20 n for all j ∈ [m].
+Then for any v ∈ S m−1 we have |Ia0 /2 (v)| ≥ 21 a20 n.
+√
+Proof. Writing α = a0 / 2, we have
+a20 n ≤
+=
+
+≤
+
+m
+n X
+X
+i=1 j=1
+
+|vj |2 a2ij
+
+m
+X X
+
+i∈Iα (v) j=1
+m
+X X
+i∈Iα (v) j=1
+
+|vj |2 a2ij +
+|vj |2 +
+
+1
+≤ |Iα (v)| + a20 n
+2
+
+m
+X X
+
+i∈I
+/ α (v) j=1
+
+|vj |2 a2ij
+
+X 1
+a2
+2 0
+
+i∈I
+/ α (v)
+
+and rearranging gives the claim.
+Proof of Lemma 3.3. √
+Fix J ⊂ [m] of size ⌊θ0 m⌋ and let v ∈ S J be
+arbitrary. Writing α = a0 / 2, by Lemma 2.9 and our choice of ρ0 (with
+cκ > 0 suﬃciently small depending on κ),
+
+
+√ 
+P kM vk ≤ ρ0 K n ≤ P kM vk ≤ cκ a0 |Iα (v)|1/2 ≤ e−cκ |Iα (v)| .
+
+Applying Lemma 3.4, we obtain
+√ 
+2
+(3.7)
+P kM vk ≤ ρ0 K n ≤ e−cκ a0 n
+
+∀v ∈ S J
+
+(adjusting cκ ). By Lemma 2.2 we may ﬁx ΣJ ⊂ S J a ρ0 /4-net for S J such
+√
+√
+that |ΣJ | ≤ (12/ρ0 )2k . Suppose that kM k ≤ K n and that kM uk ≤ ρ0 K n
+for some u ∈ S m−1 ∩ (CJ )ρ0 /4 . Let u′ ∈ CJ with ku − u′ k ≤ ρ0 /4, and let
+′
+u′′ ∈ ΣJ with ku′′ − kuu′ k k ≤ ρ0 /4. By the triangle inequality,
+  ′
+
+
+
+ ′
+ u
+u′ 
+′′ 
+
+
+
+ku − u k ≤ ku − u k + u − ′  +  ′ − u  ≤ 3ρ0 /4
+ku k
+ku k
+′′
+
+′
+
+25
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+where the bound on the middle term follows from |ku′ k − 1| ≤ ρ0 /4 (also by
+the triangle inequality). We have
+√
+√
+√
+kM u′′ k ≤ kM uk + kM (u − u′′ )k ≤ ρ0 K n + K n · (3ρ0 /4) ≤ 2ρ0 K n.
+Applying the union bound and (3.7) (adjusting cκ to replace ρ0 by 2ρ0 ),
+√ 
+P ∃u ∈ S m−1 ∩ (CJ )ρ0 /8 : kM uk ≤ ρ0 K n
+√ 
+≤ P ∃u′′ ∈ ΣJ : kM u′′ k ≤ 2ρ0 K n
+2
+
+≤ O(1/ρ0 )2θ0 m e−cκ a0 n
+
+From (2.1) and applying the union bound over all choice of J ∈
+θ0 m
+
+P(E(θ0 , ρ0 /4)) ≤ O(1/θ0 )
+
+2θ0 m −cκ a20 n
+
+O(1/ρ0 )
+
+e
+
+≤O
+
+
+
+1
+θ0 ρ20
+
+[m] 
+θ0 m ,
+
+2θ0 n
+
+2
+
+e−cκ a0 n ,
+
+where we used our assumption m ≤ 2n. The desired bound now follows
+from substituting our choices of θ0 , ρ0 , and again adjusting the constant cκ
+to replace ρ0 /4 by ρ0 in the above.
+3.2. An entropy reduction lemma. The aim of this subsection is to establish the following:
+Lemma 3.5 (Control by a random net of small cardinality). For every
+I ⊂ [n], J ⊂ [m], ε > 0 there is a random finite set ΣI,J (ε) ⊂ S J , measurable
+with respect to FI.J = h{ξij }i∈I,j∈J i, such that the following holds. Let ρ ∈
+n
+. On B(K) ∧ E(θ, ρ)c , for all J ⊂ [m] with
+(0, 1), K > 0 and 0 < θ < m
+′
+|J| > θm and all β, ρ ∈ (0, 1), putting
+6ρ′
+ρ =
+βρ
+′′
+
+(3.8)
+
+
+
+n
+⌊θm⌋
+
+1/2
+
+there exists I ⊂ [n] with |I| = ⌊(1 − β)2 ⌊θm⌋⌋ such that
+
+(1) |ΣI,J (ρ′′ )| ≤ (C/ρ′′ )2(|J|−|I|) for an absolute constant C > 0, and
+√
+(2) for any u ∈ S m−1 ∩(CJ )ρ′ such that kM uk ≤ ρ′ K n, we have dist(u, ΣI,J (ρ′′ )) ≤
+3ρ′′ .
+Furthermore, writing
+(3.9)
+
+′′
+
+GI,J (ρ ) :=
+
+
+
+
+
+ΣI,J (ρ′′ ) ≤
+
+
+
+C
+ρ′′
+
+2(|J|−|I|)
+
+26
+
+N. COOK
+
+we have that for any θ ′ ∈ (θ, 1],
+E(θ, ρ)c ∧ E(θ ′ , ρ′ ) ⊂
+(3.10)
+
+_
+
+[m]
+
+_
+
+[n]
+(1−β)2 ⌊θm⌋
+
+J∈(θ′ m) I∈(
+
+)
+
+
+
+n
+√ o
+GI,J (ρ′′ ) ∧ ∃u ∈ ΣI,J (ρ′′ ) : kM uk ≤ 4ρ′′ K n .
+
+Remark 3.6. We obtain the random set ΣI,J (ε) as the intersection of
+the sphere S J with an ε-net of the kernel of the submatrix MI,J . However,
+for our purposes it only matters that it is ﬁxed by conditioning on the rows
+{Ri }i∈I , has small cardinality, and serves as a net for almost-null vectors of
+M that are supported on J.
+To prove Lemma 3.5 we use the following version of the Restricted Invertibility Theorem [32] (the version below is taken from [23, Theorem 3.1]).
+Theorem 3.7 (Restricted
+Invertibility Theorem). Suppose v1 , . . . , vn ∈
+Pn
+∗
+are such that
+i=1 vi vi = Im . For any β ∈ (0, 1), there is a subset
+I ⊂ [n] of size |I| = ⌊(1 − β)2 m⌋ for which
+
+X
+∗
+(3.11)
+λ|I|
+vi vi ≥ β 2 m/n
+Cm
+
+i∈I
+
+where λk (A) denotes the kth largest eigenvalue of a Hermitian matrix A.
+This has the following consequence, which can be seen as a robust quantitative version of the basic fact from linear algebra that the row rank of a
+matrix is equal to its column rank.
+Corollary 3.8. Let M be an n × m matrix with n ≥ m, and assume
+√
+sm (M ) ≥ ε0 n for some ε0 > 0. For any β ∈ (0, 1) there exists I ⊂ [n] with
+|I| = ⌊(1 − β)2 m⌋ such that
+√
+s|I| (MI,[m] ) ≥ βε0 m.
+Remark 3.9. The original Restricted Invertibility Theorem of Bourgain
+√
+and Tzafriri [8] only gives |I| ≥ cm and s|I| (MI,[m] ) ≥ cε0 m for some
+(small) absolute constant c > 0, while it will be important for our purposes
+to be able to take I of size close to m.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+27
+
+Proof of Corollary 3.8. By the singular value decomposition it sufﬁces to consider M of the form M = U Σ where U is an n × m matrix
+with orthonormal columns and Σ is an m × m diagonal matrix with entries
+√
+bounded below by ε0 n. Fix α ∈ (0, 1). Letting v1∗ , . . . , vn∗ ∈ Cm denote the
+rows of U , it follows from orthonormality that
+Im = U ∗ U =
+
+n
+X
+
+vi vi∗ .
+
+i=1
+
+Hence, we can apply Theorem 3.7 to obtain a subset I ⊂ [n] with |I| =
+⌊(1 − β)2 m⌋ such that
+
+X
+2
+∗
+s|I| (UI,[m] ) = λ|I|
+vi vi ≥ β 2 m/n.
+i∈I
+
+Now we have
+s|I|(MI,m ) ≥ s|I| (UI,m )sm (Σ) ≥ β
+
+r
+
+√
+m √
+ε0 n = βε0 m.
+n
+
+Proof of Lemma 3.5. Let I ⊂ [n], J ⊂ [m], and write VI,J = CJ ∩
+ker(MI,J ). Conditional on FI,J , for ε > 0 we let ΣI,J (ε) be an ε-net of
+S m−1 ∩ VI,J . By Lemma 2.2 we may take
+(3.12)
+
+|ΣI,J (ε)| = O(1/ε)2 dim(VI,J ) .
+
+n
+Let ρ, ρ′ ∈ (0, 1), K > 0 and 0 < θ < m
+. Fix β ∈ (0, 1) and J ⊂ [m] with
+c
+|J| > θm. On E(θ, ρ) , for all J0 ⊂ J with |J0 | = ⌊θm⌋ we have
+√
+s⌊θm⌋ (M[n],J0 ) ≥ ρK n.
+
+By Corollary 3.8 there exists I ⊂ [n] with |I| = ⌊(1 − β)2 ⌊θm⌋⌋ such that
+p
+s|I| (MI,J0 ) ≥ βρK ⌊θm⌋.
+
+By the Cauchy interlacing law,
+(3.13)
+
+s|I| (MI,J ) ≥ βρK
+
+p
+
+⌊θm⌋.
+
+In particular, the submatrix (yij )i∈I,j∈J has full row-rank, which implies
+dim(VI,J ) = |J| − |I|. From (3.12) we conclude
+(3.14)
+
+|ΣI,J (ε)| = O(1/ε)2(|J|−|I|)
+
+28
+
+N. COOK
+
+for any ε > 0.
+Now suppose there exists u ∈ S m−1 ∩ (CJ )ρ′ such that
+√
+(3.15)
+kM uk ≤ ρ′ K n.
+Letting v ′ ∈ CJ such that ku − v ′ k ≤ ρ′ , and putting v := v ′ /kv ′ k ∈ S J , by
+the triangle inequality we have ku − vk ≤ 2ρ′ and
+√
+(3.16)
+kM vk ≤ kM uk + kM kku − vk ≤ 3ρ′ K n.
+On the other hand,
+kM vk ≥ kMI,[m] vk = kMI,[m] (I −PVI,J )vk
+where PVI,J is the matrix for orthogonal projection to the subspace VI,J .
+Applying (3.13),
+p
+kM vk ≥ k(I −PVI,J )vkβρK ⌊θm⌋.
+Together with (3.16) this implies that v lies within distance
+√
+3ρ′ n
+p
+(3.17)
+= ρ′′ /2
+βρ ⌊θm⌋
+
+of the subspace VI,J . Since v is a unit vector we have dist(v, S m−1 ∩VI,J ) ≤ ρ′′
+by the triangle inequality, and
+dist(u, ΣI,J (ρ′′ )) ≤ ku − vk + ρ′′ + dist(v, S m−1 ∩ VI,J ) ≤ 2ρ′ + 2ρ′′ ≤ 3ρ′′
+
+as desired (that 2ρ′ ≤ ρ′′ follows from inspection of (3.8)).
+Now to prove (3.10), let θ ′ ∈ (θ, 1]. Intersecting with E(θ, ρ)c and applying
+the ﬁrst part of the lemma,
+E(θ, ρ)c ∧ E(θ ′ , ρ′ )
+
+= B(K) ∧ E(θ, ρ)c ∧
+
+(3.18)
+⊂
+
+_
+
+[m]
+
+_
+
+[m]
+
+J∈(θ′ m)
+
+[n]
+(1−β)2 ⌊θm⌋
+
+J∈(θ′ m) I∈(
+
+_
+
+)
+
+
+
+n
+
+√ o
+∃v ∈ (S J )ρ′ : kM vk ≤ ρ′ K n
+
+
+√ o
+GI,J (ρ ) ∧ ∃u ∈ ΣI,J (ρ ) : kM uk ≤ 4ρ K n
+′′
+
+n
+
+′′
+
+′′
+
+where in the last line we noted that for v ∈ (S J )ρ′ , u ∈ ΣI,J (ρ′′ ) such that
+ku − vk ≤ 3ρ′′ , we have
+√
+√
+√
+kM uk ≤ kM vk + 3ρ′′ K n ≤ (ρ′ + 3ρ′′ )K n ≤ 4ρ′′ K n.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+29
+
+3.3. Broadly connected profile: Proof of Proposition 3.1. We will obtain
+Proposition 3.1 from an iterative application of the following lemma:
+Lemma 3.10 (Incrementing compressibility: broadly connected proﬁle).
+Let M = A ◦ X + B be as in Definition 1.3 with m ≥ n/2. Assume ξ has
+κ-controlled second moment for some κ ≥ 1, and that for some σ0 , δ, ν, θ1 ∈
+(0, 1) we have
+(1) |NA(σ0 ) (j)| ≥ δn for all j ∈ [m];
+(δ)
+
+(2) |NA(σ0 ) (J)| ≥ min((1 + ν)|J|, n) for all J ⊂ [m] with |J| ≥ (θ1 /2)m.
+
+Let K ≥ 1, ρ ∈ (0, 1), and θ ∈ [θ1 , 1) such that (1 + ν2 )θm < n. There exists
+ρ′ = ρ′ (κ, σ0 , δ, ν, ρ, θ, K) > 0 such that
+
+
+ν  ′ 
+= Oκ,σ0 ,δ,ν,ρ,θ,K (e−n ).
+θ, ρ
+(3.19)
+P E(θ, ρ)c ∧ E 1 +
+10
+
+Proof. We mayassume n is suﬃciently large depending on κ, σ0 , δ, ν, ρ, θ, K.
+ν
+ν
+Write θ ′ = 1 + 10
+θ and take β = 10
+. Let ρ′ > 0 to be taken suﬃciently
+small depending on κ, σ0 , δ, ν, ρ, θ, K, and let ρ′′ be as in (3.8). Intersecting
+the right hand side of (3.10) with E(θ, ρ)c , we have
+E(θ, ρ)c ∧ E(θ ′ , ρ′ ) ⊂
+_
+_
+[m]
+
+[n]
+(1−β)2 ⌊θm⌋
+
+J∈(θ′ m) I∈(
+
+(3.20)
+_
+⊂
+
+[m]
+
+_
+
+)
+
+[n]
+(1−β)2 ⌊θm⌋
+
+J∈(θ′ m) I∈(
+
+)
+
+n
+√ o
+GI,J (ρ′′ ) ∧ E(θ, ρ)c ∧ ∃u ∈ ΣI,J (ρ′′ ) : kM uk ≤ 4ρ′′ K n
+n
+√ o
+GI,J (ρ′′ ) ∧ ∃u ∈ ΣI,J (ρ′′ ) \ Comp(θ, ρ) : kM uk ≤ 4ρ′′ K n
+
+where the second line follows by taking ρ′ small enough that 4ρ′′ < ρ.
+Fix J ⊂ [m] and I ⊂ [n] of sizes ⌊θ ′ m⌋, ⌊(1 − β)2 ⌊θm⌋⌋, respectively, and
+condition on FI,[n] (recall the notation (1.29)) to ﬁx ΣI,J (ρ′′ ). Consider an
+arbitrary element u ∈ ΣI,J (ρ′′ ) \ Comp(θ, ρ). By Lemma 2.1, there is a set
+L ⊂ [m] with |L| ≥ (1 − Cν2 )θm and
+0
+
+ρ
+C
+√ ≤ |uj | ≤ √ 0
+m
+νθm
+
+(3.21)
+
+for all j ∈ L, where C0 > 0 is an absolute constant to be taken suﬃciently
+large. For any i ∈ N (δ) (L), we have
+(3.22)
+
+k(uL )i k2 ≥
+
+X
+
+i∈L:aij ≥σ0
+
+|uj |2 a2ij ≥
+
+1
+ρ2 2
+σ0 δ|L| ≥ ρ2 σ02 δθ =: α2
+m
+2
+
+30
+
+N. COOK
+
+where in the last inequality we took C0 suﬃciently large. Hence,
+ 
+ν
+θm
+(3.23) |Iα (uL )| ≥ |N (δ) (L)| ≥ min n, (1 + ν)(1 − ν/C02 )θm ≥ 1 +
+2
+
+taking C0 larger if necessary, where in the second inequality we used our
+assumption θ ≥ θ1 , and in the third inequality we used our assumption
+(1 + ν2 )θm < n.
+Fix I0 ⊂ Iα (uL ) \ I of size n0 := ⌊(1 + ν2 )θm⌋ − |I|. In particular,
+
+ν
+ν
+(3.24)
+θm − (1 − 2β)θm ≤ νθm
+θm ≤ n0 ≤ 1 +
+2
+2
+and
+
+
+
+ν
+ν
+n0 + 2|I| − 2|J| ≥ 1 +
+θm + (1 − 2β)θm − 2 1 +
+θm − O(1)
+2
+10
+1
+= νθm − O(1).
+(3.25)
+10
+by our choice of β. By Lemma 2.10,
+(3.26)
+ ′′ n0
+n0
+  ′′ √
+
+1
+ρ K
+1 ρ K n
+′′ √
+p
+√
++
+≤ Oκ
+PI0 kM uk ≤ 4ρ K n ≤ Oκ
+α
+αθ 1/2
+νθm
+|I0 |
+
+where in the second inequality we applied the assumption m ≥ n/2 and
+√
+assumed that n is suﬃciently large that ρ′′ ≫ 1/K n (it follows from (3.8)
+and our assumption that ρ′ is independent of n that ρ′′ is bounded below
+independent of n).
+Suppose that GI,J (ρ′′ ) holds. Since the bound (3.26) is uniform in the
+choice of I0 , we can undo the conditioning and apply the union bound over
+elements of ΣI,J (ρ′′ ) \ Comp(θ, ρ) to ﬁnd
+
+√ 
+P ∃u ∈ ΣI,J (ρ′′ ) \ Comp(θ, ρ) : kM uk ≤ 4ρ′′ K n
+ 2(|J|−|I|)  ′′ n0
+1
+ρ K
+Oκ
+≤ O ′′
+ρ
+αθ 1/2
+n 0
+
+K
+O(ρ′′ )n0 +2|I|−2|J|
+= Oκ
+αθ 1/2
+
+νθm
+1
+K
+= Oκ
+O(ρ′′ ) 10 νθm−O(1)
+1/2
+αθ
+
+where in the last line we applied the bounds (3.24) and (3.25). Since this
+is uniform in I, J, we can undo the conditioning on FI,[n] and apply (3.20)
+
+31
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+with another union bound over the choices of I, J to obtain
+(3.27)
+νθm 
+ 1 νθm−O(1)
+
+10
+
+ρ′
+K
+c
+′ ′
+m+n
+O
+P E(θ, ρ) ∧ E(θ , ρ ) ≤ 2
+Oκ
+1/2
+1/2
+αθ
+νρθ
+
+where we have substituted the deﬁnition of ρ′′ . The result now follows by
+taking ρ′ suﬃciently small.
+Now we conclude the proof of Proposition
+3.1. From our assumptions it
+Pn
+2
+follows that for all j ∈ [m] we have i=1 aij ≥ δσ02 n. Together with our
+assumption m ≤ 2n, this means we can apply Lemma 3.3 to ﬁnd that
+2
+
+P(E(θ0 , ρ0 )) ≤ e−cκ δσ0 n
+
+(3.28)
+
+where θ0 = cκ δσ02 / log(K/δσ02 ) and ρ0 = cκ δσ02 /K.
+We may assume without loss of generality that ν ≤ δ/2. For l ≥ 1 set
+ν l
+θl = (1 + 10
+) θ0 , and let k be the smallest l such that θl ≥ θ. We have
+
+
+
+ν
+δ2 
+ν
+θk−1 m ≤ 1 +
+θm ≤ 1 −
+min(m, n) < n.
+1+
+2
+2
+16
+
+In particular, (1 + ν/10)k θ0 ≤ (1 + ν/10)θ ≤ 1, so
+(3.29)
+
+k≤
+
+log θ10
+log 1 +
+
+ν
+10
+
+ ≪κ,σ0 ,δ,ν,K 1.
+
+Applying Lemma 3.10 inductively, we have that for every 1 ≤ l ≤ k there is
+ρl > 0 depending only on κ, σ0 , δ, ν and K such that
+(3.30)
+
+P(E(θl , ρl ) \ E(θl−1 , ρl−1 )) = Oκ,σ0 ,δ,ν,K (e−n ).
+
+Together with (3.28) and the union bound,
+P(E(θ, ρ)) ≤ P(E(θ0 , ρ0 )) +
+2
+
+k
+X
+l=1
+
+P(E(θl , ρl ) \ E(θl−1 , ρl−1 ))
+2
+
+≤ e−cκ δσ0 n + Oκ,σ0 ,δ,ν,K (e−n ) = Oκ,σ0 ,δ,ν,K (e−cκ δσ0 n ).
+3.4. General profile: Proof of Proposition 3.2. For technical reasons (essentially due to the fact that we want to allow the operator norm to have
+arbitrary polynomial size) the anti-concentration argument from the previous section will not suﬃce here, and we will need the following substitute.
+Roughly speaking, while previously we argued by isolating a large set of
+
+32
+
+N. COOK
+
+coordinates on which the vector u is “ﬂat” (see (3.21)), here we will need
+to locate a set on which u is very flat, only ﬂuctuating by a constant factor.
+This is done by a simple dyadic decomposition of the range of u, which is
+responsible for the loss of a logarithmic factor in the probability bound. A
+similar argument will be used in Section 4.2.
+Lemma 3.11 (Anti-concentration for the image of an incompressible vector). Let M be as in Proposition 3.2. Let v ∈ Incomp(θ, ρ) for some
+√
+θ, ρ ∈ (0, 1), and fix I0 ⊂ [n] with |I0 | ≤ 41 a20 n. Then for all t ≥ a0 ρ/ m,
+(3.31)
+
+sup P[n]\I0
+
+w∈Cn
+
+
+
+ 1 a20 n
+
+√
+4
+m
+1/2
+
+t
+log
+(
+)
+√
+ρ 
+
+.
+kM v − wk ≤ t n = Oκ
+a20 ρθ 1/2
+
+Remark 3.12. Proceeding as in the proof of Lemma 3.10 would yield
+(3.32)
+ 1 a20 n
+
+
+4
+√ 
+t
+a0
+sup P[n]\I0 kM v−wk ≤ t n = Oκ
+for all t ≥ √ .
+2
+1/2
+a0 ρθ
+θm
+w∈Cn
+√
+The ability to take t down to the scale ∼ ρ/ m will be crucial in the proof
+of Lemma 3.13 below.
+Proof. We begin by ﬁnding a set of indices on which v varies by at most
+a factor of 2. For k ≥ 0 let Lk = {j ∈ [m] : 2−(k+1) < |vj | ≤ 2−k }. Since
+v ∈ Incomp(θ, ρ), we have
+√
+|L+ | := |{j ∈ [m] : |vj | ≥ ρ/ m}| ≥ θm.
+Indeed, were this not the case then v would be within distance ρ of the
+θm, implying v ∈ Comp(θ, ρ).
+vector vL+ whose support is smaller than
+√
+S
+Thus, L+ ⊂ ℓk=0 Lk for some ℓ ≪ log( ρm ). By the pigeonhole principle
+there exists k∗ ≤ ℓ such that L∗ := Lk∗ satisﬁes
+|L∗ | ≥
+
+(3.33)
+
+θn
+θm
+√
+.
+≫
+ℓ
+log( ρm )
+
+Denote I ∗ := I a0 kvL∗ k (vL∗ ). By Lemma 3.4,
+2
+
+(3.34)
+
+1
+|I ∗ | ≥ a20 n.
+2
+
+Fix i ∈ I ∗ . By deﬁnition of I ∗ ,
+(3.35)
+
+1
+k(v i )L∗ k ≥ a0 kvL∗ k
+2
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+33
+
+√
+and since |vj | ≫ ρ/ m on L∗ ,
+ρ
+kvL∗ k ≫ √ |L∗ |1/2 .
+m
+
+(3.36)
+
+Furthermore, since aij ≤ 1 for all j ∈ [m] and v varies by a factor at most 2
+on L∗ ,
+k(v i )L∗ k∞ ≤ kvL∗ k∞ ≤ 2
+
+(3.37)
+
+kvL∗ k
+.
+|L∗ |1/2
+
+Fix w ∈ Cn arbitrarily, and recall that Ri denotes the ith row of M . By
+Lemma 2.7 and the above estimates, for all t ≥ 0 we have
+t + k(v i )L∗ k∞
+k(v i )L∗ k
+
+
+1
+t
+k(v i )L∗ k∞
+≪
++
+a0 kvL∗ k
+kvL∗ k
+!
+
+1/2
+m
+1
+1 t
++ ∗ 1/2
+≪
+a0 ρ |L∗ |
+|L |
+
+1/2 
+
+m
+1
+t
+1
++√
+=
+.
+a0 |L∗ |
+ρ
+m
+
+P(|Ri · v − wi | ≤ t) ≪κ
+
+By Lemma 2.8,
+
+ X
+
+
+|Ri · v − wi |2 ≤ t2 |I ∗ \ I0 |
+PI ∗ \I0 kM v − wk ≤ t|I ∗ \ I0 |1/2 ≤ PI ∗ \I0
+= Oκ
+
+
+
+i∈I ∗ \I0
+
+|I ∗ \I0 |
+√
+t m
+a0 ρ|L∗ |1/2
+
+√
+for all t ≥ ρ/ m. Substituting the lower bounds (3.33), (3.34) on |L∗ | and
+|I ∗ | and our assumption |I0 | ≤ 41 a20 n,
+PI ∗ \I0
+
+
+
+ 1 a20 n
+
+√
+4
+
+m
+1/2
+)
+t
+log
+(
+1 √
+ρ 
+
+kM v − wk ≤ ta0 n = Oκ
+2
+a0 ρθ 1/2
+
+√
+for all t ≥ ρ/ m. The result now follows by replacing t with 2t/a0 as undoing
+the conditioning on the remaining rows in [n] \ I0 .
+Now we are ready to prove the analogue of Lemma 3.10 for general proﬁles.
+Whereas in the broadly connected case we obtained control on vectors in
+
+34
+
+N. COOK
+
+Comp((1 + β)θ, ρ′ ) after restricting to the event that we have control on
+Comp(θ, ρ), for small β > 0, here we will also need to assume control on
+Comp(θ0 , ρ0 ) for a ﬁxed small θ0 at each step. The control on Comp(θ, ρ)
+will be used to obtain a net of low cardinality using Lemma 3.5, while
+the control on Comp(θ0 , ρ0 ) will be used to obtain good anti-concentration
+estimates using Lemma 3.11. (In the broadly connected case the control on
+Comp(θ, ρ) was suﬃcient for both purposes.)
+Lemma 3.13 (Incrementing compressibility: general proﬁle). Let M be
+as in Proposition 3.2, fix γ > 1/2 and put K = nγ−1/2 . Let θ0 , ρ0 be as in
+Lemma 3.3, and fix θ ∈ [θ0 , c0 a20 ], where c0 is a sufficiently small constant
+(we may assume the constant c in Lemma 3.3 is sufficiently small so that
+this interval is non-empty). We have
+
+
+= Oγ,a0 ,κ (e−n )
+(3.38)
+P E(θ0 , ρ0 )c ∧ E(θ, ρ)c ∧ E(θ + βa20 , ρ′
+
+for some ρ′ ≫γ,a0 ,κ n−O(γ) ρ, where we set
+
+
+1
+(3.39)
+β = c1 min 1,
+γ − 1/2
+for a sufficiently small constant c1 > 0.
+
+Proof. Let ρ′ > 0 to be taken suﬃciently small, and let ρ′′ be as in (3.8).
+We denote θ ′ = θ + βa20 . Intersecting both sides of (3.10) with E(θ0 , ρ0 )c , we
+have
+E(θ0 , ρ0 )c ∧ E(θ, ρ)c ∧ E(θ ′ , ρ′ ) ⊂
+(3.40)
+_
+
+[m]
+
+_
+
+[n]
+(1−β)2 ⌊θm⌋
+
+J∈(θ′ m) I∈(
+
+)
+
+n
+√ o
+GI,J (ρ′′ ) ∧ ∃u ∈ ΣI,J (ρ′′ ) \ Comp(θ0 , ρ0 ) : kM uk ≤ 4ρ′′ K n
+
+where we have assumed ρ′ is small enough that 4ρ′′ < ρ0 .
+Fix J ⊂ [m] and I ⊂ [n] of size ⌊θ ′ m⌋, ⌊(1 − β)2 ⌊θm⌋⌋, respectively,
+and condition on FI,[n] to ﬁx ΣI,J (ρ′′ ). Fix an arbitrary u ∈ ΣI,J (ρ′′ ) \
+Comp(θ0 , ρ0 ). From Lemma 3.11 we have
+
+(3.41)
+
+
+√  1 a2 n
+′′ K log 1/2 ( n ) 4 0
+
+
+ρ
+√
+ρ0 
+P[n]\I kM uk ≤ 4ρ′′ K n = Oκ 
+1/2
+2
+a0 ρ0 θ0
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+35
+
+provided
+ρ′′ ≥
+
+(3.42)
+
+ca0 ρ0
+√
+K n
+
+for some small constant c > 0 (note that we used our assumption n/2 ≤
+m ≤ 2n).
+Applying the union bound over the choices of u ∈ ΣI,J (ρ′′ )\Comp(θ0 , ρ0 ),
+on the event GI,J (ρ′′ ) we have
+
+√ 
+P ∃u ∈ ΣI,J (ρ′′ ) \ Comp(θ0 , ρ0 ) : kM uk ≤ 4ρ′′ K n
+
+√  1 a20 n
+4
+ 2(|J|−|I|)
+1/2
+′′
+ρ K log ( ρ0n )
+1
+
+
+Oκ
+≤O
+1/2
+ρ′′
+a20 ρ0 θ0
+ 2(|J|−|I|)
+√  14 a20 n
+1
+′′ 2
+O
+ρ
+K
+log(K
+n)
+=O
+κ,a
+0
+ρ′′
+
+where in the second line we substituted the expressions for ρ0 , θ0 from
+Lemma 3.3. Denoting ε = ρ′′ K 2 , the above bound rearranges to
+(3.43)
+
+1 2
+
+Oκ,a0 (log n)n nO(γ) nO(γ−1/2)(|J|−|I|) ε 4 a0 n−2(|J|−|I|).
+
+We can bound
+|J| − |I| = θm + βa20 m − (1 − β)2 θm + O(1) ≤ βa20 m + 2βθm + O(1)
+= O(βa20 m) + O(1)
+
+where we used our assumption that θ ≤ c0 a20 . In particular, |J| − |I| ≤
+1 2
+8 a0 n + O(1) if the constant c1 in (3.39) is suﬃciently small, and (3.43) is
+bounded by
+(3.44)
+
+2
+
+1 2
+
+Oκ,a0 (log n)n nO(γ) nO(γ−1/2)βa0 m ε 8 a0 n−O(1) .
+
+Applying the union bound over the choices of I, J in (3.40), which incurs a
+harmless factor of 2m+n = O(1)n , and substituting the expression (3.39) for
+β we have
+(3.45)
+
+
+2
+P E(θ0 , ρ0 )c ∧ E(θ, ρ)c ∧ E(θ + βa20 , ρ′
+= Oκ,a0 (log n)n nO(γ) ε−O(1) (nO(c1 ) ε1/8 )a0 n .
+
+It only remains to check that we can take ε suﬃciently small to obtain (3.38).
+From (3.42) we are constrained to take
+ε = ρ′′ K 2 ≥
+
+c′ a3
+ca0 ρ0 K
+√
+= √0
+n
+n
+
+36
+
+N. COOK
+
+√
+for some constant c′ ∈ (0, 1) suﬃciently small. Taking ε = a30 / n and c1
+suﬃciently small we have
+
+
+2
+≤ Oκ,a0 (1)n nO(γ) n−.01a0 n
+(3.46) P E(θ0 , ρ0 )c ∧ E(θ, ρ)c ∧ E(θ + βa20 , ρ′
+
+which yields (3.38) as desired. With this choice of ε,
+
+ρ′ ≫ ρ′′ βρθ ≥ ρ′′ βρθ0 ≫κ,a0 ,γ ρn−2γ+1/2−o(1)
+as desired (recall that θ0 ≫κ a20 / log(K/a0 ) ≫γ,a0 ,κ 1/ log n).
+Now we conclude the proof of Proposition 3.2. Since the event B(K) is
+monotone under increasing K, by perturbing γ and assuming n is suﬃciently
+large we may take K = nγ−1/2 with γ > 1/2. Let ρ0 , θ0 be as in Lemma 3.3,
+and for l ≥ 1 we let θl = θ0 + lβa20 with β = β(γ) as in (3.39). By Lemma
+3.13 we can inductively deﬁne a sequence ρl such that for each l ≥ 1 such
+that θl ≤ c0 a20 ,
+ρl ≫γ,a0 ,κ n−O(γ) ρl−1
+and
+P(E(θ0 , ρ0 )c ∧ E(θl−1 , ρl−1 )c ∧ E(θl , ρl )) = Oγ,a0 ,κ (e−n ).
+Applying the union bound, for some k = O(γ) we have
+P
+
+
+
+E(c0 a20 , ρ)
+
+≤ P(E(θ0 , ρ0 )) +
+−cκ a20 n
+
+≤e
+
+k
+X
+l=1
+
+P(E(θ0 , ρ0 )c ∧ E(θl−1 , ρl−1 )c ∧ E(θl , ρl ))
+
++ Oγ,a0 ,κ (e−n )
+2
+
+= Oγ,a0 ,κ (e−cκ a0 n )
+2
+
+and ρ ≫γ,a0 ,κ n−O(γ ) . This concludes the proof of Proposition 3.2.
+4. Invertibility from connectivity: Incompressible vectors. In
+this section we conclude the proofs of Theorems 1.12 and 1.24 by bounding
+the event that kM uk is small for some incompressible vector u (recall the
+terminology from Section 2.1). We follow the (by now standard) approach
+of reducing to the event that a ﬁxed row Ri of M lies close to the span
+of the remaining rows, an idea which goes back to the work of Komlós on
+the singularity probability for Bernoulli matrices [14, 15, 16]. This can in
+turn be controlled by the event that a random walk Ri · v concentrates near
+a particular point, where v is a ﬁxed unit vector in the orthocomplement
+of the remaining rows. Independence of the rows allows us to condition on
+
+37
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+v, and our results from the previous section allow us to argue that v is
+incompressible.
+For the case that the entries of Ri have variances uniformly bounded below, we could then complete the proof by applying the anti-concentration
+estimate of Lemma 2.7. In the present setting, however, a proportion 1 − δ
+of the entries of Ri may have zero variance. For the case of broadly connected proﬁle we follow the argument of Rudelson and Zeitouni [30] and use
+Proposition 3.1 to show v has essential support of size (1 − δ/2)n, and hence
+has non-trivial overlap with the support of Ri .
+For the case of a super-regular proﬁle, Proposition 3.2 only gives that v
+has essential support of size ≫ δσ02 . In Lemma 4.1 we make use of a double counting argument to show that if we choose the row Ri at random, on
+average it will have good overlap with the corresponding normal vector v (i)
+(which also depends on i). Here is where we make crucial use of the superregularity hypothesis on A. Lemma 4.1 is a natural extension of a double
+counting argument used by Komlós in his work on the singularity probability for Bernoulli matrices, and which was applied to bound the smallest
+singular value of iid matrices by Rudelson and Vershynin in [28]. We were
+also inspired by a similar reﬁnement of the double counting argument from
+the recent paper [19] on the singularity probability for adjacency matrices
+of random regular digraphs.
+4.1. Proof of Theorem 1.12. By Lemma 2.5 and multiplying X and B
+by a phase (which does not aﬀect our hypotheses) we may assume that ξ has
+O(κ0 )-controlled second moment. Fix K ≥ 1, and let ρ = ρ(κ, σ0 , δ, ν, K)
+be as in Proposition 3.1. We may assume n is suﬃciently large depending
+on κ, σ0 , δ, ν, K. For the remainder of the proof we restrict to the event
+√
+B(K) = {kM k ≤ K n}.
+For j ∈ [n] let M (i) denote the n − 1 × n matrix obtained by removing
+the ith row from M . Deﬁne the good event
+n
+√ o
+(4.1) G = ∀i ∈ [n], ∀u ∈ Comp(1 − δ/2, ρ), ku∗ M k, kM (i) uk > ρK n .
+
+Applying Proposition 3.1 to M ∗ and M (i) for each i ∈ [n] (using our restriction to B(K)) and the union bound we have
+(4.2)
+
+2
+
+2
+
+P(G) = 1 − Oκ,σ0 ,δ,ν,K (ne−cκ δσ0 n ) = 1 − Oσ0 ,δ,ν,K (e−cκ δσ0 n )
+
+adjusting cκ slightly. Let t ≤ 1, and deﬁne the event
+
+√ 	
+(4.3)
+E(t) = G ∧ ∃u ∈ Incomp(1/10, ρ) : ku∗ M k ≤ t/ n .
+
+38
+
+N. COOK
+
+For n suﬃciently large (larger than 1/ρK) it suﬃces to show
+P(E(t)) ≪κ,σ0 ,δ,ν,K t + n−1/2 .
+
+(4.4)
+
+Recalling that Ri denotes the ith row of M , we denote
+R−i = span(Rj : j ∈ [n] \ {i})
+
+(4.5)
+and let
+(4.6)
+
+Ei (t) = G ∧ {dist(Ri , R−i ) ≤ t/ρ}.
+
+We now use a double counting argument of Rudelson and Vershynin from
+[28] to control E(t) in terms of the events Ei (t). Suppose that E(t) holds,
+√
+and let u ∈ Incomp(1/10, ρ) such that ku∗ M k ≤ t/ n. Then we must have
+√
+|ui | ≥ ρ/ n for at least n/10 elements i ∈ [n]. For each such i we have
+
+X
+ 
+
+n
+
+
+X
+ n
+ 
+
+t
+ρ
+
+
+∗
+
+
+
+√ ≥ ku M k = 
+uj Rj  ≥ PR⊥
+u j Rj 
+R
+=
+|u
+|
+⊥
+ ≥ √ dist(Ri , R−i )
+P
+i
+i
+R−i
+
+−i
+n
+n
+j=1
+
+j=1
+
+where we denote by PW the orthogonal projection to a subspace W . Thus,
+on E(t) we have that Ei (t) holds for at least n/10 values of i ∈ [n], so by
+double counting,
+n
+
+(4.7)
+
+P(E(t)) ≤
+
+10 X
+P(Ei (t)).
+n
+i=1
+
+Now it suﬃces to show that for arbitrary ﬁxed i ∈ [n],
+(4.8)
+
+P(Ei (t)) ≪κ,σ0 ,δ,ν,K t + n−1/2 .
+
+Fix i ∈ [n] and condition on {Rj : j ∈ [n] \ {i}}. Draw a unit vec⊥ independent of R , according to Haar measure (say). Since
+tor u ∈ R−i
+i
+dist(Ri , R−i ) ≤ |Ri · u|, it suﬃces to show
+(4.9)
+
+P(|Ri · u| ≤ t/ρ) ≪κ,σ0 ,δ,ν,K t + n−1/2 .
+
+Since u ∈ ker(M (i) ), on G we have that u ∈ Incomp(1 − 2δ , ρ). By Lemma
+2.1 there exists L ⊂ [n] of size |L| ≥ (1 − 43 δ)n such that
+ρ
+10
+√ ≤ |uj | ≤ √
+n
+δn
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+39
+
+for all j ∈ L. By assumption we have |NA(σ0 ) (i)| = |{j ∈ [n] : aij ≥ σ0 }| ≥
+δn, so letting J = NA(σ0 ) (i) ∩ L we have |J| ≥ δn/4. Denoting v = (ui )J =
+(aij uj 1j∈J )j , we have
+X
+kvk2 =
+a2ij |uj |2 ≥ |J|σ02 ρ2 /n ≥ δσ02 ρ2 /4
+j∈J
+
+and
+
+10
+kvk∞ ≤ kuJ k∞ ≤ √
+δn
+
+(recall that aij ≤ 1 for all i, j ∈ [n]). Conditioning on u and {ξij }j ∈J
+/ , we
+apply Lemma 2.7 to conclude
+
+
+
+
+t
+1
+1
+t
+1
++ kvk∞ ≪
++√
+P(|Ri · u| ≤ t/ρ) ≪κ
+kvk ρ
+ρσ0 δ1/2 ρ
+δn
+which gives (4.9) as desired.
+4.2. Proof of Theorem 1.24. By Lemma 2.5 and multiplying X and B
+by a phase (which does not aﬀect our hypotheses) we may assume that ξ has
+κ = O(κ0 )-controlled second moment. Fix γ ≥ 1/2 and let K = O(nγ−1/2 ).
+We will show that for all τ ≥ 0,
+r
+
+
+√
+log n
+τ
+O(γ 2 )
+(4.10)
+P sn (M ) ≤ √ , kM k ≤ K n ≪γ,σ0 ,δ,κ n
+τ+
+.
+n
+n
+For the remainder of the proof we restrict to the boundedness event
+√
+(4.11)
+B(K) = {kM k ≤ K n}.
+By the assumption that A(σ0 ) is (δ, ε)-super-regular we have
+n
+X
+i=1
+
+a2ij ≥ δσ02 n
+
+for all j ∈ [n]. Let a0 = δ1/2 σ0 , and let ρ = ρ(γ, a0 , κn) and c0 be as in
+Proposition 3.2. In particular,
+(4.12)
+
+2
+
+ρ ≫γ,δ,σ0 n−O(γ ) .
+
+Denoting θ = c0 δσ02 , for τ > 0 we deﬁne the good event
+n
+√ o
+(4.13)
+G(τ ) = ∀u ∈ Comp(θ, ρ), kM uk, ku∗ M k > τ / n .
+
+40
+
+N. COOK
+
+Applying Proposition 3.2 to M and M ∗ , along with the union bound, we
+have
+(4.14)
+
+2
+
+P(G(τ )) = 1 − Oγ,δ,σ0 ,κ (e−cκ δσ0 n )
+
+as long as τ ≤ ρKn.
+Let 0 < τ ≤ 1 to be chosen later. Recalling our notation M (i) from Section
+4.1, we deﬁne the sets
+
+
+τ
+n−1
+(i)
+(4.15)
+Si (τ ) = u ∈ S
+: kM uk ≤ √
+.
+n
+Informally, for small τ this is the set of unit almost-normal vectors to the
+subspace R−i spanned by the rows of M (i) . In Lemma 4.1 below we reduce
+our task to bounding the probability that a row Ri is nearly orthogonal to
+a vector u(i) ∈ Si (τ ) that is independent of Ri , and also has many large
+coordinates in the support of Ri . The reduction uses the super-regularity
+hypothesis together with a careful averaging argument. It turns out that
+for this argument to work it is important to consider almost-normal vectors
+rather than normal vectors (as in the proof of Theorem 1.12).
+Writing N (i) = NA(σ0 ) (i), we deﬁne the good overlap events
+
+	
+(4.16)
+Oi (τ ) = ∃u ∈ Si (τ ) : |N (i) ∩ L+ (u, ρ)| ≥ δθn
+where
+(4.17)
+
+√
+L+ (u) = {j ∈ [n] : |uj | ≥ ρ/ n}.
+
+On Oi (τ ) we ﬁx a vector u(i) = u(i) (M (i) , τ ) ∈ Si (τ ), chosen measurably
+with respect to M (i) , satisfying |N (i) ∩ L+ (u, ρ)| ≥ δθn.
+Lemma 4.1 (Good overlap on average). Recall the parameter ε from our
+super-regularity hypothesis (cf. Definition 1.23), and assume ε ≤ θ/2. Then
+(4.18)
+
+
+
+
+
+n
+n
+2τ
+2 X
+τ o
+(i)
+P Oi (τ ) ∧ |Ri · u | ≤
+.
+≤
+P G(τ ) ∧ sn (M ) ≤ √
+θn
+ρ
+n
+i=1
+
+√
+Proof. Suppose G(τ ) ∧ {sn (M ) ≤ τ / n} holds. Then there exist u, v ∈
+√
+S n−1 such that kM uk, kM ∗ vk ≤ τ / n. By our restriction to G(τ ) we must
+have u, v ∈ Incomp(θ, ρ). With notation as in (4.17) we have |L+ (u)|, |L+ (v)| ≥
+θn. In particular, |L+ (u)| ≥ εn, so
+(4.19)
+
+|N (i) ∩ L+ (u)| ≥ δ|L+ (u)| ≥ δθn
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+41
+
+for at least (1 − ε)n elements i ∈ [n]. Indeed, otherwise we would have
+X
+eA(σ0 ) (I, L+ (u)) =
+|N (i) ∩ L+ (u)| < δ|I||L+ (u)|
+i∈I
+
+for some I ⊂ [n] with |I| > εn, which contradicts our assumption that A(σ0 )
+is (δ, ε)-super-regular. Since kM (i) uk ≤ kM uk ≤ √τn for all i ∈ [n], we have
+that u ∈ Si (τ ) for all i ∈ [n]. Thus,
+
+	
+ i ∈ L+ (v) : Oi (τ ) holds  ≥ θn − εn ≥ θn/2.
+(4.20)
+Fix i ∈ L+ (v) such that Oi (τ ) holds. We have
+
+
+
+X
+
+τ
+√ ≥ kv ∗ M k ≥ |v ∗ M u(i) | ≥ |vi ||Ri · u(i) | − 
+vj Rj · u(i) .
+n
+j6=i
+
+The ﬁrst term on the right hand side is bounded below by √ρn |Ri · u(i) |
+since i ∈ L+ (v). By Cauchy–Schwarz the second term is bounded above by
+√
+kM (i) u(i) k ≤ τ / n, since u(i) ∈ Si (τ ). Rearranging we conclude |Ri · u(i) | ≤
+2τ /ρ for all i ∈ L+ (v) such that Oi (τ ) holds. Letting Ei (t) = {|Ri · u(i) | ≤
+√
+t}, we have shown that on the event G(τ ) ∧ {sn (M ) ≤ τ / n}, the event
+Oi (τ ) ∧ Ei (2τ /ρ) holds for at least θn/2 values of i ∈ [n] (from (4.20)). It
+follows that
+n
+X
+i=1
+
+1(Oi (τ ) ∧ Ei (2τ /ρ)) ≥
+
+√
+θn
+1(G(τ ) ∧ {sn (M ) ≤ τ / n}).
+2
+
+Taking expectations on each side and rearranging yields the claim.
+Fix i ∈ [n] arbitrarily, and suppose that Oi (τ ) holds. We condition on the
+rows {Rj }j∈[n]\{i} to ﬁx u(i) . We begin by ﬁnding a large set on which u(i)
+is ﬂat, following a similar dyadic pigeonholing argument as in the proof of
+(i)
+Lemma 3.11. Letting Lk = {j ∈ [n] : 2−(k+1) < |uj | ≤ 2−k , since
+[
+
+ ℓ
+
+δθn ≤ |N (i) ∩ L (u )| ≤ 
+N (i) ∩ Lk 
++
+
+(i)
+
+k=0
+
+√
+for some ℓ ≪ log( n/ρ), by the pigeonhole principle there exists k∗ ≤ ℓ
+such that J := N (i) ∩ Lk∗ satisﬁes
+(4.21)
+
+|J| ≥ δθn/ℓ ≫
+
+δθn
+√
+.
+log( n/ρ)
+
+42
+
+N. COOK
+(i)
+
+(i)
+
+Let us denote v = (aij uj 1j∈J )j . Since aij ≥ σ0 for j ∈ N (i) and |uj | ≫
+√
+ρ/ n for j ∈ Lk∗ ,
+(4.22)
+
+kvk ≥ σ0 k(u(i) )J k ≫ σ0 ρ(|J|/n)1/2
+
+and since u(i) varies by at most a factor of 2 on J,
+(4.23)
+
+kvk∞ ≤ ku(i) 1J k∞ ≤ 2ku(i) k/|J|1/2 .
+
+By further conditioning on the variables {ξij }j ∈J
+/ and applying Lemma 2.7
+along with the estimates (4.22), (4.23) we have
+
+
+τ /ρ + kvk∞
+P |Ri · u(i) | ≤ 2τ /ρ ≪κ
+kvk
+
+
+τ /ρ
+1
+1
+≪
++
+σ0 ρ(|J|/n)1/2
+|J|1/2
+ 1/2 
+
+n
+1
+τ
+1
++√
+=
+.
+σ0 |J|
+ρ2
+n
+
+Inserting the bound (4.21) and undoing all of the conditioning, we have
+shown
+
+
+
+
+
+√
+τ
+2τ
+1
+1
+√
+P Oi (τ ) ∧ |Ri · u(i) | ≤
++
+≪κ √
+log1/2 ( n/ρ).
+2
+ρ
+n
+σ0 δθ ρ
+
+Since the right hand side is uniform in i, applying Lemma 4.1 (taking c1 =
+c0 /2) and substituting the expression for θ we have
+
+
+
+
+n
+√
+1
+1
+τ
+τ o
++√
+≪κ 4 2
+log1/2 ( n/ρ)
+(4.24) P G(τ ) ∧ sn (M ) ≤ √
+2
+n
+ρ
+n
+σ0 δ
+
+for all τ ≥ 0 (note that this bound is only nontrivial when τ ≤ ρ2 , in which
+case our constraint τ ≤ ρKn from (4.14) holds). The bound (4.10) now
+follows by substituting the lower bound (4.12) on ρ and the bound (4.14) on
+G(τ )c (which is dominated by the O(n−1/2 log1/2 n) term). This concludes
+the proof of Theorem 1.24.
+
+5. Invertibility under diagonal perturbation: Proof of main theorem. In this ﬁnal section we prove Theorem 1.18. See Section 1.5 for a
+high level discussion of the main ideas. In Sections 5.1 and 5.2 we collect
+the main tools of the proof: the regularity lemma, the Schur complement
+bound, and bounds on the operator norm of random matrices. In Section
+5.3 we apply the regularity lemma to decompose the standard deviation
+proﬁle A into a bounded number of submatrices enjoying various properties.
+In Section 5.4 we apply the decomposition to prove Theorem 1.18, on two
+technical lemmas, and in the ﬁnal sections we prove these lemmas.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+43
+
+5.1. Preliminary Tools. We begin by stating a version of the regularity
+lemma suitable for our purposes. Recall that in Theorem 1.12 we associated
+the standard deviation proﬁle A with a bipartite graph. Here it will be more
+convenient to associate A with a directed graph. That is, to a non-negative
+square matrix A = (aij )1≤i,j≤n we associate a directed graph ΓA on vertex
+set [n] having an edge i → j when aij > 0 (note that we allow ΓA to
+have self-loops, though the diagonal of A will have a negligible eﬀect on our
+arguments). The notation (1.16)–(1.17) extends to this setting. Additionally,
+we denote the density of the pair (I, J)
+ρA (I, J) :=
+
+eA (I, J)
+.
+|I||J|
+
+Definition 5.1 (Regular pair). Let A be an n × n matrix with nonnegative entries. For ε > 0, we say that a pair of vertex subsets I, J ⊂ [n] is
+ε-regular for A if for every I ′ ⊂ I, J ′ ⊂ J satisfying
+|I ′ | > ε|I|,
+
+|J ′ | > ε|J|
+
+we have
+|ρA (I ′ , J ′ ) − ρA (I, J)| < ε.
+The following is a version of the regularity lemma for directed graphs
+which follows quickly from a stronger result of Alon and Shapira [2, Lemma
+3.1]. Note that [2, Lemma 3.1] is stated for directed graphs without loops,
+which in the present setting means that it only applies to matrices A with
+diagonal entries equal to zero. However, Lemma 5.2 follows from applying
+[2, Lemma 3.1] to the matrix A′ formed be setting the diagonal entries of
+A to zero, and noting that the diagonal has a negligible impact on the edge
+densities ρA (I, J) when |I|, |J| ≫ n.
+Lemma 5.2 (Regularity Lemma). Let ε > 0. There exists m0 ∈ N with
+ε−1 ≤ m0 ≪ε 1 such that for all n sufficiently large depending on ε, for
+every n × n non-negative matrix A there is a partition of [n] into m0 + 1
+sets I0 , I1 , . . . , Im0 with the following properties:
+(1) |I0 | < εn;
+(2) |I1 | = |I2 | = · · · = |Im0 |;
+(3) all but at most εm20 of the pairs (Ik , Il ) are ε-regular for A.
+Remark 5.3. The dependence on ε of the bound m0 ≤ Oε (1) is very
+bad: a tower of exponentials of height O(ε−C ). Indeed, as in Szemerédi’s
+
+44
+
+N. COOK
+
+proof for the setting of bipartite graphs [33], the proof in [2] gives such a
+bound with C = 5. It was shown by Gowers that for undirected graphs one
+cannot do better than C = 1/16 in general [12]. As remarked in [2], his
+argument carries over to give a similar result for directed graphs.
+We will apply this in Section 5.3 to partition the standard deviation proﬁle
+into a bounded number of manageable submatrices. The following elementary fact from linear algebra will be used to lift the invertibility properties
+obtained for these submatrices back to the whole matrix.
+Lemma 5.4 (Schur complement bound). Let M ∈ MN +n (C), which we
+write in block form as
+
+
+A B
+M=
+C D
+for A ∈ MN (C), B ∈ MN,n (C), C ∈ Mn,N (C), D ∈ Mn (C). Assume that
+D is invertible. Then
+(5.1)
+ 
+
+
+
+
+kCk −1
+kBk −1
+min sn (D), sN (A−BD −1 C) .
+1+
+sN +n (M ) ≥ 1+
+sn (D)
+sn (D)
+Proof. From the identity
+
+
+
+ 
+
+A − BD −1 C 0
+A B
+IN
+0
+IN BD −1
+=
+0
+In
+0
+D
+C D
+D −1 C In
+we have
+
+
+−1 
+
+A B
+IN
+0
+(A − BD −1 C)−1
+0
+IN
+=
+C D
+−D −1 C In
+0
+0
+D −1
+
+
+−BD −1
+.
+In
+
+We can use the triangle inequality to bound the operator norm of the ﬁrst
+and third matrices on the right hand side by 1 + kBD −1 k and 1 + kCD −1 k,
+respectively. Now by sub-multiplicativity of the operator norm,
+kM −1 k ≤ (1 + kBD −1 k)(1 + kD −1 Ck) max(k(A − BD −1 C)−1 k, kD −1 k)
+
+
+
+kBk
+kCk
+≤ 1+
+1+
+max(k(A − BD −1 C)−1 k, kD −1 k).
+sn (D)
+sn (D)
+The bound (5.1) follows after taking reciprocals.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+45
+
+5.2. Control on the operator norm. The following lemma summarizes the
+control we will need on the operator norm of submatrices and products of
+submatrices of M .
+Lemma 5.5 (Control on the operator norm). Let ξ ∈ C be a centered
+random variable with E |ξ|4+η ≤ 1 for some η ∈ (0, 1). Let θ ∈ (0, 1). Then
+the following hold for all n ≥ 1:
+
+(a) (Control for sparse matrices) If A ∈ Mn ([0, 1]) is a fixed matrix and
+X = (ξij ) is an n × n matrix of iid copies of ξ, then
+√
+(5.2)
+kA ◦ Xk ≪ τ n
+
+except with probability Oτ (n−η/8 ), where τ = τ (A) ∈ [0, 1] is any number
+such that
+n
+n
+X
+X
+(5.3)
+a2ik ,
+a2kj ≤ τ 2 n
+k=1
+
+for all i, j ∈ [n], and
+(5.4)
+
+k=1
+
+n
+X
+
+i,j=1
+
+a4ij ≤ τ 4 n2 .
+
+(b) (Control for matrix products) Let m ∈ [θn, n]. If A ∈ Mn,m ([0, 1]) and
+D ∈ Mm,n (C) are fixed matrices with kDk ≤ 1, and X = (ξij ) is an
+n × m matrix of iid copies of ξ, then
+√
+(5.5)
+kD(A ◦ X)k ≪η m
+except with probability Oθ (n−η/8 ).
+
+Remark 5.6. The probability bounds in the above lemma can be improved under higher moment assumptions on ξ, and improve to exponential
+bounds under the assumption that ξ is sub-Gaussian (see (1.1)).
+We will use standard truncation arguments to deduce Lemma 5.5 from
+the following bounds on the expected operator norm of random matrices
+due to Latala and Vershynin.
+Theorem 5.7 (Latala [18]). Let n, m be sufficiently large and let Y be
+an n × m random matrix with independent, centered entries Yij ∈ R having
+finite fourth moment. Then
+(5.6)
+!1/4
+!1/2
+!1/2
+m
+n X
+n
+m
+X
+X
+X
+4
+2
+2
+.
+E Yij
++
+E Yij
++ max
+E Yij
+E kY k ≪ max
+i∈[n]
+
+j=1
+
+j∈[m]
+
+i=1
+
+i=1 j=1
+
+46
+
+N. COOK
+
+Theorem 5.8 (Vershynin [42]). Let η ∈ (0, 1) and n, m, N sufficiently
+large natural numbers. Let D ∈ Mm,N (R) be a deterministic matrix satisfying kDk ≤ 1 and Y ∈ MN,n (R) be a random matrix with independent
+centered entries Yij satisfying E |Yij |4+η ≤ 1. Then
+√
+√
+(5.7)
+E kDY k ≪η n + m.
+Proof of Lemma 5.5. We begin with (a). By splitting X into real and
+imaginary parts and applying the triangle inequality we may assume ξ is a
+real-valued random variable. Set η0 = min(1/4, η/32) and deﬁne the product
+event
+E=
+
+(5.8)
+
+n
+^
+
+i,j=1
+
+Eij ;
+
+
+	
+Eij = |ξij | ≤ n1/2−η0 .
+
+By Markov’s inequality,
+P(Eijc ) ≤ n−(4+η)(1/2−η0 ) ≤ n−1
+
+(5.9)
+
+for all i, j ∈ [n]. By the union bound,
+P(E c ) ≤ n2 n−(4+η)(1/2−η0 ) ≤ n−η/8 .
+
+(5.10)
+We denote
+
+′
+X ′ = (ξij
+) = (ξij − E ξij 1Eij ) = X − E(X 1E ).
+
+First we show
+(5.11)
+
+√
+kA ◦ E(X 1E )k ≪ τ n.
+
+Since the variables ξij are centered, | E(ξij 1Eij )| = | E(ξij 1Eijc )|. By two
+applications of Hölder’s inequality and (5.9),
+| E(ξij 1Eijc )| ≤ (E |ξij |4 )1/4 P(Eijc )3/4 ≤ n−3/4 .
+Thus,
+(5.12)
+
+kA ◦ E(X 1E )k ≤ kA ◦ E(X 1E )kHS ≤ n−3/4 kAkHS ≤ τ n1/4
+
+which yields (5.11) with room to spare.
+Now from (5.10), (5.11) and the triangle inequality it is enough to show
+
+√ 	
+(5.13)
+P E ∧ kA ◦ X ′ k ≥ Cτ n = Oτ (n−η/8 )
+
+47
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+for a suﬃciently large constant C > 0 (we will actually show an exponen′ 1
+tial bound). First note that the variables ξij
+Eij are centered and satisfy
+4
+′
+E |ξij 1Eij | = O(1). It follows from Theorem 5.7 that
+E 1E kA ◦ X k ≪ max
+′
+
+i∈[n]
+
+√
+
+≪ τ n.
+
+n
+X
+j=1
+
+a2ij
+
+!1/2
+
++ max
+j∈[n]
+
+n
+X
+i=1
+
+a2ij
+
+!1/2
+
++
+
+n
+X
+
+a4ij
+
+i,j=1
+
+!1/4
+
+Thus, (5.13) will follow if we can show
+(5.14)
+
+√ 
+P kA ◦ X ′ k 1E − E kA ◦ X ′ k 1E ≥ τ n = Oτ (n−η/8 ).
+
+This in turn follows in a routine manner from Talagrand’s inequality [34,
+Theorem 6.6] (see also [3, Corollary 4.4.11]): Observe that X 7→ kA ◦ Xk is
+a convex and 1-Lipschitz function on the space Mn (R) equipped with the
+(Euclidean) Hilbert–Schmidt metric. Since the matrix X ′ 1E has centered
+entries that are bounded by O(n1/2−η0 ), Talagrand’s inequality gives that
+the left hand side of (5.14) is bounded by
+
+
+(5.15)
+O exp(−cτ 2 n/(n1/2−η0 )2 ) = O exp(−cτ 2 n2η0 )
+
+which gives (5.14) with plenty of room.
+Now we turn to part (b). The proof follows a very similar truncation argument to the one in part (a), so we only indicate the necessary modiﬁcations.
+As before, by splitting D and X into real and imaginary parts and applying
+the triangle inequality wemay assume D and X
+	 are real matrices. We deﬁne
+√
+E as in (5.8), with Eij = |ξij | ≤ (n m)1/3−η1 and
+(5.16)
+
+η1 =
+
+1 η
+.
+44+η
+
+With this choice of η1 , Markov’s inequality and the union bound give P(E c ) =
+Oθ (n−η/8 ). Taking X ′ = X − E(X 1E ) as before, we can bound kD(A ◦
+E(X 1E ))k ≤ kA ◦ E(X 1E )k by submultiplicativity of the operator norm,
+and the same argument as before gives
+√
+√
+3
+(5.17) kA ◦ E(X 1E )k ≤ nm(n m)− 4 (4+η)(1/3−η1 ) = m1/2−η/32 = o( m).
+Since X ′ 1E has centered entries with ﬁnite moments of order 4 + η, by
+Theorem 5.8 we have
+√
+(5.18)
+E kD(A ◦ X ′ 1E )k ≪η m.
+
+48
+
+N. COOK
+
+The mapping X 7→ kD(A ◦ X)k is convex and 1-Lipschitz with respect to
+the Hilbert–Schmidt metric on Mn (R) (since kDk ≤ 1) so using Talagrand’s
+inequality as in part (a) we ﬁnd that
+
+
+√
+√ 
+P kD(A ◦ X ′ 1E )k − E kD(A ◦ X ′ 1E )k ≥ m ≪ exp −cm/(n m)2/3−2η1
+
+≤ exp −c′ (θ)ncη
+
+for some constant c > 0 and c′ (θ) > 0 suﬃciently small depending on θ.
+As the last line is bounded by Oθ (n−η/8 ), the result follows from the above,
+(5.17), (5.18) and the triangle inequality by the same argument as for part
+(a).
+5.3. Decomposition of the standard deviation profile. We now begin the
+proof of Theorem 1.18, which occupies the remainder of the paper. In the
+present subsection we prove Lemma 5.9 below, which shows that the standard deviation proﬁle A can be partitioned into a bounded collection of
+submatrices with certain nice properties. For the motivation behind this
+lemma (and the notation Jfree , Jcyc ) see Section 1.5.
+Lemma 5.9. Let A be an n × n matrix with entries aij ∈ [0, 1]. Let
+ε, δ, σ0 ∈ (0, 1), and assume ε is sufficiently small depending on δ. There
+exists 0 ≤ m ≪ε 1, a partition
+(5.19)
+
+[n] = Jbad ∪ Jfree ∪ Jcyc
+
+= Jbad ∪ Jfree ∪ J1 ∪ · · · ∪ Jm
+
+and a set F ⊂ [n]2 satisfying the following properties:
+
+(1) εn ≪ |Jbad | ≪ δ1/2 n.
+(2) |F | ≪ δn2 , and for all i ∈ Jfree ,
+(5.20)
+
+|{j ∈ Jfree : (i, j) ∈ F }|, |{j ∈ Jfree : (j, i) ∈ F }| ≤ δ1/2 n.
+
+(3) If Jfree 6= ∅ then there is a permutation τ : Jfree → Jfree such that for
+all (i, j) ∈ Jfree × Jfree \ F with τ (i) ≥ τ (j), aij < σ0 .
+(4) If m ≥ 1 then
+(5.21)
+
+|J1 | = · · · = |Jm | ≫ε n
+
+and there is a permutation π : [m] → [m] such that for all 1 ≤ k ≤ m,
+A(σ0 )Jk ,Jπ(k) is (2δ, 2ε)-super-regular (see Definition 1.23).
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+49
+
+Proof. We begin by applying Lemma 5.2 to A(σ0 ) to obtain m0 ∈ N
+with ε−1 ≤ m0 = Oε (1) and a partition [n] = I0 ∪ · · · ∪ Im0 satisfying the
+properties in that lemma.
+The partition I0 , . . . , Im0 is almost what we need. In the remainder of
+the proof we perform a “cleaning” procedure (as it is commonly referred to
+in the extremal combinatorics literature) to obtain a partition J0 , . . . , Jm0
+with improved properties, where Jk ⊂ Ik for each 1 ≤ k ≤ m0 , and J0 ⊃ I0
+collects the leftover elements.
+We start by forming a reduced digraph R = ([m0 ], E) on the vertex set
+[m0 ] with directed edge set
+n
+o
+(5.22) E := (k, l) ∈ [m0 ]2 : (Ik , Il ) is ε-regular and ρA(σ0 ) (Ik , Il ) > 5δ .
+
+Next we ﬁnd a (possibly empty) set T ⊂ [m0 ] such that the induced subgraph
+R(T ) is covered by vertex-disjoint directed cycles, and the induced subgraph
+R([m0 ] \ T ) is cycle-free. Such a set can be obtained by greedily removing
+cycles and the associated vertices from R until the remaining graph has no
+more directed cycles. By relabeling I1 , . . . , Im0 we may take T = [m], where
+m ∈ [0, m0 ].
+Assuming m 6= 0, the fact that R([m]) is covered by vertex-disjoint cycles
+is equivalent to the existence of a permutation π : [m] → [m] such that
+(k, π(k)) ∈ E for all 1 ≤ k ≤ m. Now we will obtain the sets J1 , . . . , Jm
+obeying the properties in part (4) of the lemma. Let 1 ≤ k ≤ m. We have
+that (Ik , Iπ(k) ) is ε-regular with density ρk := ρA(σ0 ) (Ik , Iπ(k) ) > 5δ, so if we
+assume ε ≤ δ then for every I ⊂ Ik , J ⊂ Iπ(k) with |I|, |J| ≥ ε|Ik |,
+(5.23)
+
+eA(σ0 ) (I, J) ≥ (ρk − ε)|I||J| ≥ 4δ|I||J|.
+
+It remains to ensure that conditions (1) and (2) from Deﬁnition 1.23 also
+hold, which we will do by removing a small number of rows and columns.
+Letting
+
+	
+Ik′ = i ∈ Ik : |NA(σ0 ) (i) ∩ Iπ(k) | < 4δ|Ik |
+
+we have eA(σ0 ) (Ik′ , Iπ(k) ) < 4δ|Ik′ ||Iπ(k) |, and it follows that |Ik′ | ≤ ε|Ik |.
+Similarly, letting
+	
+
+Ik′′ = i ∈ Ik : |NA(σ0 )T (i) ∩ Iπ−1 (k) | < 4δ|Ik |
+
+we have |Ik′′ | ≤ ε|Ik |. Letting Ik∗ ⊂ Ik be a set of size ⌊2ε|Ik |⌋ containing
+Ik′ ∪ Ik′′ , we take
+(5.24)
+
+Jk = Ik \ Ik∗ .
+
+50
+
+N. COOK
+
+With this deﬁnition we have |J1 | = · · · |Jm |, and for each 1 ≤ k ≤ m, i ∈ Jk ,
+(5.25) |NA(σ0 ) (i) ∪ Jπ(k) |, |NA(σ0 )T (i) ∩ Jπ−1 (k) | ≥ (4δ − 2ε)|Ik | ≥ 2δ|Jk |.
+Furthermore, for each 1 ≤ k ≤ m and I ⊂ Jk , J ⊂ Jπ(k) with |I|, |J| ≥ 2ε|Jk |,
+if we assume ε ≤ 1/4 then |I|, |J| ≥ ε|Ik |, so by (5.23)
+eA(σ0 ) (I, J) ≥ 4δ|I||J|.
+
+(5.26)
+
+It follows that for every 1 ≤ k ≤ m the submatrix A(σ0 )Jk ,Jπ(k) is (2δ, 2ε)super-regular, which concludes the proof of part (4) of the lemma.
+Now we prove parts (2) and (3). We
+obtain Jfree by removing a small
+S will
+0
+number of bad elements from Ifree := m
+k=m+1 Ik . Since the induced subgraph
+R([m + 1, m0 ]) is cycle-free we may relabel Im+1 , . . . , Im0 so that
+(5.27)
+
+(k, l) ∈
+/ E for all m < l ≤ k ≤ m0 .
+
+We take
+(5.28)
+
+
+	
+F = (i, j) ∈ [n]2 : (i, j) ∈ Ik × Il for some (k, l) ∈
+/E .
+
+The contribution to F from irregular pairs (Ik , Il ) is at most εn2 by the
+regularity of the partition I0 , . . . , Im0 , and the contribution from pairs (Ik , Il )
+with density less than 5δ is at most 5δn2 . Hence,
+(5.29)
+
+|F | ≤ εn2 + 5δn2 ≤ 6δn2
+
+giving the ﬁrst estimate in (2) (recall that we assumed ε ≤ δ). Setting
+(5.30) n
+o
+
+′
+Ifree
+= i ∈ Ifree : max |{j ∈ [n] : (i, j) ∈ F }|, |{j ∈ [n] : (j, i) ∈ F }| ≥ δ1/2 n
+it follows from (5.29) that
+(5.31)
+
+′
+|Ifree
+| ≤ 12δ1/2 n.
+
+∗ ⊂I
+′
+1/2 n⌋) and
+Let Ifree
+free be any set containing Ifree of size min(|Ifree |, ⌊12δ
+∗
+take Jfree = Ifree \ Ifree . The bounds (5.20) now follow immediately from
+(5.30). For part (3), from (5.27) we may take for τ any ordering of the
+∗ , i.e. so
+elements of Jfree that respects the order of the sets Jk := Ik \ Ifree
+that τ (j) ≥ τ (i) for all i ∈ Jk , j ∈ Jl and all m < l ≤ k ≤ m0 .
+Finally, taking
+
+(5.32)
+
+Jbad =
+
+∗
+I0 ∪ Ifree
+
+∪
+
+m
+[
+
+k=1
+
+Ik∗ .
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+51
+
+we have
+|Jbad | ≤ εn + 12δ1/2 n + 2εn ≤ 15δ1/2 n
+
+∗ | =
+giving the upper bound in part (1). Now recalling that we took |Ifree
+1/2
+∗
+min(|Ifree |, ⌊12δ n⌋) and |Ik | = ⌊2ε|Ik |⌋ for all 1 ≤ k ≤ m, we also have
+the lower bound
+[
+
+
+ m ∗
+∗
+|Jbad | ≥ min |Ifree |, 
+Ik 
+
+
+
+≥ min ⌊12δ
+
+k=1
+
+1/2
+
+[
+
+
+ m 
+n⌋, |Ifree |, 2ε
+Ik  − m
+k=1
+
+ [
+
+[
+
+
+ m0
+
+ m 
+1/2
+
+
+
+
+= min ⌊12δ n⌋, 
+Ik , 2ε
+Ik  − m
+
+
+k=m+1
+
+k=1
+
+≫ εn
+
+Sm
+S 0
+where we used that at least one of the sets Ifree = m
+k=1 Ik
+k=m+1 Ik , Icyc =
+must be of size at least n/4, say. This gives the lower bound in part (1) and
+completes the proof.
+5.4. High level proof of Theorem 1.18. In this subsection we prove Theorem 1.18 on two lemmas (Lemmas 5.10 and 5.11) which give control on
+the smallest singular values of the submatrices MJfree and (perturbations
+of) MJcyc , with Jfree , Jcyc as in Lemma 5.9. The proofs of these lemmas are
+deferred to the remaining subsections.
+By our moment assumptions on ξ it follows that ξ is κ0 -spread for some
+κ0 = O(µ24+η ) (see Remark 1.2). By Lemma 2.5 and multiplying X and
+B by a phase we may assume ξ has O(µ24+η )-controlled second moment.
+Without loss of generality we may assume η < 1. We introduce parameters
+σ0 , δ, ε ∈ (0, 1) to be chosen suﬃciently small depending on r0 , η, and µ4+η ;
+speciﬁcally we will have the following dependencies:
+(5.33)
+
+σ0 = σ0 (r0 , µ4+η ),
+
+δ = δ(r0 , η, µ4+η ),
+
+ε = ε(σ0 , δ).
+
+For the remainder of the proof we assume that n is suﬃciently large depending on all parameters (which will only depend on r0 , K0 , η and µ4+η ).
+We begin by summarizing the control we have on the operator norm
+of submatrices of A ◦ X. From Lemma 5.5(a) we have that for any ﬁxed
+B = (bij ) ∈ Mn ([0, 1]) and any I, J ⊂ [n] with |I| ≤ |J|,
+
+p 
+(5.34)
+P k(B ◦ X)I,J k ≤ τ K |J| = 1 − Oτ (|J|−η/8 )
+
+52
+
+N. COOK
+
+for some K = O(µ4+η ), and any τ ≤ 1 satisfying
+(5.35)
+
+1/4 
+1/2
+
+!1/2  n
+X
+X
+X
+1
+
+
+2
+2
+
+
+b4ij   ,
+b
+b
+,
+,
+max
+max
+max
+τ≥
+
+ij
+ij
+j∈J
+i∈I
+|J|1/2
+i,j=1
+j∈J
+i∈I
+
+and similarly with |J| replaced by |I| if |J| ≤ |I|. In particular, taking τ = 1
+and B = A we have
+p
+k(A ◦ X)I,J k ≪µ4+η max(|I|, |J|)
+(5.36)
+
+with probability 1 − O(max(|I|, |J|)−η/8 ).
+
+(We state (5.34) for general B ∈ Mn ([0, 1]) as at one point we will apply
+this to a residual matrix obtained by subtracting oﬀ a collection of “bad”
+entries from A.)
+We now apply Lemma 5.9 (assuming ε is suﬃciently small depending
+on δ) to obtain a partition [n] = Jbad ∪ Jfree ∪ Jcyc and a set F ⊂ [n]2
+satisfying the properties (1)–(4) in the lemma. In the following we abbreviate
+Mfree := MJfree and Mcyc := MJcyc .
+Lemma 5.10. Assume n1 := |Jfree | ≥ δ1/2 n. If σ0 , δ are sufficiently small
+depending on r0 and µ4+η , then
+√
+(5.37)
+sn1 (Mfree ) ≫µ4+η ,r0 n
+except with probability Oµ4+η ,r0 ,δ (n−η/9 ).
+(Note that while the deﬁnition of Mfree depends on ε, the bounds in the
+above lemma are independent of ε.)
+Lemma 5.11. Assume n2 := |Jcyc | ≥ δ1/2 n. Fix γ ≥ 1 and let W ∈
+Mn2 (C) be a deterministic matrix with kW k ≤ nγ . There exists β = β(γ, σ0 , δ)
+such that if ε = ε(σ0 , δ) is sufficiently small,
+r
+
+
+log n
+−β
+.
+≪K0 ,γ,δ,σ0 ,µ4+η
+(5.38)
+P sn2 (Mcyc + W ) ≤ n
+n
+Remark 5.12. We note that in the proof of Lemma 5.11 we do not
+make use of the fact that the atom variable ξ has more than two ﬁnite
+moments (the dependence on µ4+η is only through the parameter κ0 =
+O(µ24+η )). In particular, we can remove the extra moment hypotheses in
+Theorem 1.18 under the additional assumption that the standard deviation
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+53
+
+proﬁle A contains a generalized diagonal of block submatrices which are
+super-regular and of dimension linear in n (that is, if we can take Jbad =
+Jfree = ∅ in (5.19)).
+We defer the proofs of Lemmas 5.10 and 5.11 to subsequent sections, and
+conclude the proof of Theorem 1.18. Note that at this stage (before we have
+applied Lemma 5.10 or 5.11) the only constraint we have put on the parameters in (5.33) is to assume ε is suﬃciently small depending on δ for the
+application of Lemma 5.9. We proceed in the following steps:
+Step 1: Bound the smallest singular value of Mfree using Lemma 5.10. In
+this step we ﬁx σ(r0 , µ4+η ), while δ is assumed to be suﬃciently
+small depending on r0 , µ4+η but is otherwise left free.
+Step 2: Bound the smallest singular value of
+(5.39)
+
+M1 := MJfree ∪Jbad , Jfree ∪Jbad =
+
+
+
+
+Mfree B1
+.
+C1
+M0
+
+using the result of Step 1, the Schur complement bound of Lemma
+5.4, (5.34) and Lemma 5.5(b). In this step we ﬁx δ(r0 , η, µ4+η ).
+Step 3: Bound the smallest singular value of
+
+
+Mcyc B2
+.
+(5.40)
+M=
+C2 M1
+using the result of Step 2, the Schur complement bound of Lemma
+5.4, and Lemma 5.11. In this step we ﬁx ε(σ0 , δ).
+The case that one of Jfree or Jcyc is small (or empty) can be handled
+essentially by skipping either Step 1 or Step 3. We will begin by assuming
+(5.41)
+
+|Jfree |, |Jcyc | ≥ δ1/2 n
+
+and address the case that this does not hold at the end.
+Step 1. By Lemma 5.10 and the assumption (5.41), we can take σ0 and
+δ suﬃciently small depending on r0 and µ4+η such that
+√
+(5.42)
+smin (Mfree ) ≫µ4+η ,r0 n
+except with probability Oµ4+η ,r0 ,δ (n−η/9 ). We now ﬁx σ0 = σ0 (r0 , µ4+η ) once
+and for all, but leave δ free to be taken smaller if necessary. By independence
+of the entries of M we may now condition on a realization of Mfree such that
+(5.42) holds.
+
+54
+
+N. COOK
+
+√
+Step 2. By (5.36) and (5.41) we have kC1 k = Oµ4+η ( n) except with
+probability Oδ (n−η/8 ). We henceforth condition on a realization of C1 satisfying this bound. Together with (5.42) this gives
+(5.43)
+
+−1
+kC1 Mfree
+k≤
+
+kC1 k
+≪µ4+η ,r0 1.
+smin (Mfree )
+
+Since B1 is independent of C1 and Mfree we can apply Lemma 5.5(b) to
+conclude
+(5.44)
+
+−1
+−1
+kC1 Mfree
+B1 k ≪η,µ4+η kC1 Mfree
+k|Jbad |1/2 ≪η,µ4+η ,r0 |Jbad |1/2
+−η/8
+
+except with probability Oε (n1 ) = Oδ,ε (n−η/9 ), where we have used the
+lower bound |Jbad | ≫ εn from Lemma 5.9(1). On the other hand, by the
+triangle inequality and (5.36),
+√
+√
+(5.45) smin (M0 ) = smin (ZJbad n + (A ◦ X)Jbad ) ≥ r0 n − Oµ4+η (|Jbad |1/2 )
+except with probability O(|Jbad |−η/8 ) = Oε (n−η/9 ). Again by the triangle
+inequality and the previous two displays,
+√
+−1
+B1 ) ≥ r0 n − Oη,µ4+η ,r0 (|Jbad |1/2 )
+(5.46)
+smin (M0 − C1 Mfree
+except with probability Oδ,ε (n−η/9 ). Since |Jbad | ≪ δ1/2 n we can take δ
+smaller, if necessary, depending on r0 , η, µ4+η to conclude that
+√
+−1
+B1 ) ≥ (r0 /2) n
+(5.47)
+smin (M0 − C1 Mfree
+except with probability Oδ,ε (n−η/9 ). We may henceforth condition on the
+event that (5.47) holds. Of an event with probability Oδ (n−η/8 ) we may also
+√
+assume kB1 k = Oµ4+η ( n). From Lemma 5.4 and the preceding estimates
+we have
+√ −2
+
+
+
+Oµ4+η ( n)
+−1
+min smin (Mfree ), smin (M0 − C1 Mfree
+B1 )
+smin (M1 ) ≫ 1 +
+smin (Mfree )
+√
+
+−1
+≫µ4+η ,r0 min n, smin (M0 − C1 Mfree
+B1 )
+√
+(5.48)
+≫µ4+η ,r0 n.
+At this point we ﬁx δ = δ(r0 , η, µ4+η ).
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+55
+
+Step 3. Condition on a realization of M1 such that (5.48) holds. By (5.36)
+we may also condition on realizations of the matrices B2 , C2 in (5.40) such
+√
+that kB2 k, kC2 k ≪µ4+η n. Applying Lemma 5.4,
+√ −2
+
+
+Oµ4+η ( n)
+min smin (M1 ), smin (Mcyc − B2 M1−1 C2 )
+sn (M ) ≫ 1 +
+smin (M1 )
+√
+
+(5.49) ≫µ4+η ,r0 min n, smin (Mcyc − B2 M1−1 C2 ) .
+
+
+By our estimates on kB2 k, kC2 k and smin (M1 ) we have
+(5.50)
+
+kB2 M1−1 C2 k ≪µ4+η
+
+√
+n
+≪µ4+η ,r0 n
+smin (M1 )
+
+(unlike in Step 2, here we did not need the stronger control on matrix products provided by (5.5)). Now since M2 is independent of M1 , B2 , C2 , we can
+apply Lemma 5.11 with γ = 0.51 (say), ﬁxing ε suﬃciently small depending
+on σ0 (r0 , µ4+η ) and δ(r0 , η, µ4+η ), to obtain
+r
+
+
+log n
+−1
+−β
+≪K0 ,r0 ,η,µ4+η
+(5.51)
+P smin (Mcyc − B2 M1 C2 ) ≤ n
+n
+for some β = β(r0 , η, µ4+η ) > 0. The result now follows from the above and
+(5.49), taking α = min(η/9, 1/4), say.
+It only remains to address the case that the assumption (5.41) fails. We
+may assume that δ is small enough that only one of these bounds fails. In
+this case we simply redeﬁne Jbad to include the smaller of Jcyc , Jfree . Note
+that we still have |Jbad | = O(δ1/2 n). If |Jcyc | < δ1/2 n, then with this new
+deﬁnition of Jbad we have M = M1 , and the desired bound on sn (M ) follows
+from (5.48) (with plenty of room). If |Jfree | < δ1/2 n then we skip Step 2,
+proceeding with Step 3 using M0 in place of M1 . The bound (5.48) in this
+case follows from (5.45) and the bound |Jbad | ≪ δ1/2 n, taking δ suﬃciently
+small depending on µ4+η , r0 . This concludes the proof of Theorem 1.18.
+5.5. Proof of Lemma 5.10. We denote
+(5.52)
+
+AF = (aij 1(i,j)∈F ).
+
+By the estimates on F in Lemma 5.9 we can apply (5.34) with τ = O(δ1/4 )
+to obtain
+√
+(5.53)
+k(AF (σ0 ) ◦ X)Jfree k ≪µ4+η δ1/4 n
+
+56
+
+N. COOK
+−η/8
+
+except with probability at most Oδ (n1
+cation of (5.34) with τ = 1,
+
+
+ (A − A(σ0 )) ◦ X
+(5.54)
+J
+
+free
+
+) = Oδ (n−η/9 ). By another appli
+ ≪µ
+
+4+η
+
+√
+σ0 n
+
+except with probability at most Oδ (n−η/9 ). Let
+√
+e := A(σ0 ) − AF (σ0 ).
+ffree := (A
+e ◦ X)J + ZJ
+n,
+A
+(5.55)
+M
+free
+free
+By the above estimates and the triangle inequality,
+
+(5.56)
+
+ffree ) − k((A − A)
+e ◦ X)J k
+smin (Mfree ) ≥ smin (M
+free
+√
+1/4
+f
+≥ smin (Mfree ) − Oµ (δ + σ0 ) n
+4+η
+
+except with probability Oδ (n−η/9 ). Thus, it suﬃces to show
+√
+ffree ) ≫µ ,r
+n.
+(5.57)
+smin (M
+4+η 0
+
+except with probability Oµ4+η ,r0 ,δ (n−η/9 ) – the result will then follow from
+(5.57) and (5.56) by taking δ, σ0 suﬃciently small depending on µ4+η , r0 .
+Furthermore, by Lemma 5.9(3) and conjugating Mfree by a permutation
+e is (strictly) upper triangular. Now it suﬃces
+matrix we may assume that A
+to prove the following:
+Lemma 5.13. Let M = A ◦ X + B be an n × n matrix as in Definition
+1.3, and further assume that for some r0 > 0, K ≥ 1, α > 0,
+• A is upper triangular;
+√
+√
+• B = Z n = diag(zi n)ni=1 with |zi | ≥ r0 for all 1 ≤ i ≤ n;
+′
+• ξ is
+A′ ∈ Mn′ ([0, 1]), kA′ ◦X ′ k ≤
+√ such that for all n ≥ 1 and any′ fixed
+−α
+K n′ except with probability O((n ) ).
+√
+Then sn (M ) ≫K,r0 n except with probability OK,r0 (1)α n−α .
+Remark 5.14. The proof gives an implied constant of order exp(−O(K/r0 )O(1) )
+in the lower bound on sn (M ).
+ffree ,
+To deduce Lemma 5.10 we apply the above lemma with M = M
+α = η/8, K = O(µ4+η ) (by (5.36)) and n1 ≫δ n in place of n, which gives
+that (5.57) holds with probability
+(5.58)
+
+−η/8
+
+1 − Oµ4+η ,r0 (n1
+
+) = 1 − Oµ4+η ,r0 ,δ (n−η/9 )
+
+where in the ﬁrst bound we applied our assumption that η < 1.
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+57
+
+Proof. First we note that we may take n to be a dyadic integer, i.e.
+n = 2q for some q ∈ N. Indeed, if this is not the case, then letting 2q be the
+smallest dyadic integer larger than n we can increase the dimension of M
+to 2q by padding A out with rows and columns of zeros, adding additional
+rows and columns of iid copies of ξ to X, and extending the diagonal of Z
+with entries zi ≡ r0 for n < i ≤ 2q . The hypotheses on A and Z in the
+lemma are still satisﬁed, and the smallest singular value of the new matrix
+is a lower bound for that of the original matrix (since the original matrix is
+a submatrix of the new matrix).
+S
+Now ﬁx an arbitrary dyadic ﬁltration F = p≥0 {Js : s ∈ {0, 1}p } of [n],
+where we view {0, 1}0 as labeling the trivial partition of [n], consisting only
+of the empty string ∅, so that J∅ = [n]. Thus, for every 0 ≤ p < q and every
+binary string s ∈ {0, 1}p , Js has cardinality n2−p and is evenly partitioned
+by Js0 , Js1 . For a binary string s we abbreviate Ms := MJs and similarly
+deﬁne As , Xs , Zs . We also write Bs = MJs0 ,Js1 , so that we have the block
+decomposition
+
+
+Ms0 Bs
+.
+(5.59)
+Ms =
+0
+Ms1
+For p ≥ 1 deﬁne the boundedness event
+√
+
+	
+
+√
+(5.60) B ∗ (p) = kA◦Xk ≤ K n}∧ ∀s ∈ {0, 1}p , kAs ◦Xs k ≤ K n2−p .
+
+By our assumption on ξ we have
+(5.61)
+
+P(B ∗ (p)) ≥ 1 − O(n−α ) − 2p O((n2−p )−α ) = 1 − O(2(1+α)p n−α ).
+
+For arbitrary s ∈ {0, 1}p , by the triangle inequality we have that on B ∗ (p),
+√
+smin (Ms ) ≥ smin (Zs ) − kAs ◦ Xs k ≥ (r0 − K2−p/2 ) n.
+Setting p0 = ⌊2 log(2K/r0 )⌋ + 1 we have that on B ∗ (p0 ),
+√
+(5.62)
+smin (Ms ) ≥ (r0 /2) n
+for all s ∈ {0, 1}p0 . For the remainder of the proof we restrict the sample
+space to the event B ∗ (p0 ) and will use the Schur complement bound (Lemma
+5.4) to show that the desired lower bound on smin (M ) holds deterministically
+(note that by (5.61) and our choice of p0 , B ∗ (p0 ) holds with probability
+1 − OK,r0 (n−α )).
+For 0 ≤ p ≤ p0 let
+(5.63)
+
+1
+λp = min √ smin (Ms ).
+p
+n
+s∈{0,1}
+
+58
+
+N. COOK
+
+From (5.62) we have
+λp0 ≥ r0 /2
+
+(5.64)
+
+Now let 1 ≤ p ≤ p0 and s ∈ {0, 1}p−1 . By the block decomposition (5.59)
+and Lemma 5.4,
+−1
+
+kBs k
+min smin (Ms0 ), smin (Ms1 )
+smin (Ms ) ≫ 1 +
+smin (Ms0 )
+√
+≥ (1 + K/λp )−1 λp n
+
+
+√
+so λp−1 ≫ (1 + K/λp )−1 λp n for all 0 ≤ p ≤ p0 . Applying this iteratively
+along with (5.64) we conclude λ0 ≫K,r0 1, i.e.
+√
+(5.65)
+smin (M ) ≫K,r0 n
+as desired.
+5.6. Proof of Lemma 5.11. We may assume throughout that n is suﬃciently large depending on the parameters K0 , γ, δ, σ0 , and µ4+η . Note we
+may also assume γ > 2 without loss of generality. We will apply only the
+following crude control on the operator norm of submatrices:
+(5.66)
+
+P(k(A ◦ X)I,J k ≥ n2 ) ≤ n−2
+
+∀I, J ⊂ [n].
+
+Indeed, for any I, J ⊂ [n],
+P(k(A ◦ X)I,J k ≥ n2 ) ≤ P(kA ◦ XkHS ≥ n2 ).
+Furthermore, E kA ◦ Xk2HS ≤ E kXk2HS = n2 , and (5.66) follows from the
+above display and Markov’s inequality.
+By multiplying Mcyc by a permutation matrix we may assume that Ak :=
+AJk is (2δ, 2ε)-super-regular for 1 ≤ k ≤ m (unlike in the proof of Lemma
+√
+5.10 the diagonal matrix Z n plays no special role here). We denote J≤k =
+J1 ∪ · · ·∪ Jk , and for any matrix W of dimension at least |J≤k | we abbreviate
+(5.67)
+Wk = WJk , W≤k = WJ≤k , W≤k−1,k = WJ≤k−1,Jk , Wk,≤k−1 = WJk ,J≤k−1
+so that for 2 ≤ k ≤ m we have the block decomposition
+
+
+W≤k−1 W≤k−1,k
+(5.68)
+W≤k =
+.
+Wk,≤k−1
+Wk
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+59
+
+Let us denote
+n′ = |J1 | = · · · = |Jm | ≫ε n.
+
+(5.69)
+
+For 1 ≤ k ≤ m − 1, β > 0 and a ﬁxed kn′ × kn′ matrix W , we denote the
+event
+	
+
+(5.70)
+Ek (β, W ) := skn′ (M≤k + W ) > n−β .
+
+Let γ > 2 and ﬁx an arbitrary matrix W ∈ Mn′ ,n′ (C) with kW k ≤ nγ .
+By (5.66) we have
+√
+(5.71)
+kM1 + W k ≤ K0 n + n2 + nγ ≤ 2nγ
+
+with probability 1 − O(n−2 ) if n is suﬃciently large depending on K0 and
+γ. By Theorem 1.24 there exists β1 (γ) = O(γ 2 ) such that if ε is suﬃciently
+small depending on σ0 , δ, then
+
+P E1 (β1 , W )c
+(5.72)
+
+≤ P(kM1 + W k > 2nγ ) + P(E1 (β1 , W )c ∧ {kM1 + W k ≤ 2nγ })
+r
+log n
+≪γ,δ,σ0 ,ε,µ4+η
+,
+n
+
+where we have used (5.69) to write n in n−β1 rather than n′ , and the fact
+that the atom variable is O(µ24+η )-spread.
+Now let 2 ≤ k ≤ m, and suppose we have found a function βk−1 (γ) such
+that for any γ > 2 and any ﬁxed (k − 1)n′ × (k − 1)n′ matrix W with
+kW k ≤ nγ ,
+r
+log n
+c
+.
+(5.73)
+P(Ek−1 (βk−1 (γ), W ) ) ≪γ,δ,σ0 ,ε,µ4+η
+n
+Fix a kn′ × kn′ matrix W with kW k ≤ nγ . By Lemma 5.4 we have
+s
+
+kn′
+
+(M≤k + W ) ≫
+
+(5.74)
+
+
+
+k(M + W )≤k−1,k k
+1+
+s(k−1)n′ (M≤k−1 + W≤k−1 )
+
+−1 
+
+k(M + W )k,≤k−1 k
+1+
+s(k−1)n′ (M≤k−1 + W≤k−1 )
+
+h
+i
+× min s(k−1)n′ (M≤k−1 + W≤k−1 ), sn′ Mk + Bk
+
+where we have abbreviated
+
+(5.75) Bk := Wk − (M + W )k,≤k−1(M≤k−1 + W≤k−1 )−1 (M + W )≤k−1,k .
+
+−1
+
+60
+
+N. COOK
+
+Suppose that the event Ek−1 (βk−1 (γ), W≤k−1 ) holds. We condition on a
+realization of the submatrix M≤k−1 satisfying
+(5.76)
+
+s(k−1)n′ (M≤k−1 + W≤k−1 ) ≥ n−βk−1(γ) .
+
+Moreover, from (5.66) we have
+(5.77)
+
+√
+k(M + W )≤k−1,k k, k(M + W )k,≤k−1k ≤ K0 n + n2 + nγ ≤ 2nγ
+
+with probability 1−O(n−2 ). Conditioning on the event that the above holds,
+from the previous two displays we have kBk k ≤ nγ + 4nγ+βk−1 (γ) . Again by
+(5.66),
+√
+(5.78)
+kMk + Bk k ≤ K0 n + n2 + 4nγ+βk−1 (γ) ≤ 5nγ+βk−1 (γ)
+with probability 1 − O(n−2 ) in the randomness of Mk . By Theorem 1.24
+and independence of Mk from M≤k−1 , Mk,≤k−1 , Mk,≤k−1 , there exists βk′ =
+O(γ 2 + βk−1 (γ)2 ) such that
+r
+
+
+log n
+−βk′
+.
+(5.79)
+P sn′ (Mk + Bk ) ≤ n
+≪γ,δ,σ0 ,ε,µ4+η
+n
+′
+
+Restricting further to the event that sn′ (Mk + Bk ) > n−βk and substituting
+the above estimates into (5.74), we have
+(5.80)
+
+′
+
+skn′ (M≤k + W ) ≫ n−2γ−2βk−1 (γ) min(n−βk−1 (γ) , n−βk ) ≥ n−βk (γ)
+
+for some βk (γ) = O(γ 2 +βk−1 (γ)2 ). With this choice of βk (γ) we have shown
+r
+log n
+c
+.
+(5.81) P(Ek (βk (γ), W≤k ) ∧ Ek−1 (βk−1 (γ), W≤k−1 )) ≪γ,δ,σ0 ,ε,µ4+η
+n
+Applying this bound for all 2 ≤ k′ ≤ k together with (5.72) and Bayes’ rule
+we conclude that for any ﬁxed k and any square matrix W of dimension at
+least kn′ and operator norm at most nγ ,
+r
+log n
+c
+.
+(5.82)
+P(Ek (βk (γ), W≤k ) ) ≪γ,δ,σ0 ,ε,µ4+η k
+n
+The result now follows by taking k = m and recalling that m = Oε (1).
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+61
+
+APPENDIX A: INVERTIBILITY FOR PERTURBED
+NON-HERMITIAN BAND MATRICES
+In this appendix we prove Corollary 1.16.
+By conditioning on the entries ξij with min(|i − j|, n − |i − j|) > εn and
+absorbing the corresponding entries of A ◦ X into B we may assume the
+entries of A(σ0 ) are zero outside the band. By Theorem 1.12 it suﬃces to
+show that A(σ0 ) is (δ, ν)-broadly connected for δ, ν ∈ (0, 1) suﬃciently small
+depending on ε. Throughout the proof we may assume that n is suﬃciently
+large depending on ε, i.e. n ≥ n0 for any n0 (ε) ∈ N.
+Let δ, ν ∈ (0, 1) to be chosen suﬃciently small depending on ε. For all i ∈
+[n] we have |NA(σ0 ) (i)|, |NAT (σ0 ) (i)| ≥ 2εn, so taking δ < 2ε, it only remains
+to verify the third condition in Deﬁnition 1.9. Note that if |J| > (1 − ε)n
+we trivially have |J(i)| ≥ |NA(σ0 ) (i)| − εn ≥ εn for every i ∈ [n], and the
+condition holds in this case.
+Fix a set J ⊂ [n] with 1 ≤ |J| ≤ (1 − ε)n. For the remainder of the proof
+we abbreviate J(i) := J ∩ NA(σ0 ) (i) and
+(δ)
+
+Iδ := NAT (σ ) (J) = {i : |J(i)| ≥ δ|J|}.
+0
+
+It will be convenient to view i 7→ |J(i)| as a function on the torus Z/nZ
+(which we identify with [n] in the natural way). From double counting we
+have
+X
+(A.1)
+|J(i)| = (1 + ⌊2εn⌋)|J| ≥ 2ε|J|.
+i∈Z/nZ
+
+On the other hand, we have the discrete derivative bound
+(A.2)
+
+||J(i)| − |J(i − 1)|| ≤ 1
+
+∀i ∈ Z/nZ.
+
+Suppose towards a contradiction that
+(A.3)
+
+|Iδ | < (1 + ν)|J|.
+
+Since we took δ < 2ε, from (A.1) and the pigeonhole principle it follows that
+|Iδ | ≥ 1. We decompose Iδ = ∪l∈L Il as a disjoint union of interval subsets
+Il = [al , bl ] ⊂ Z/nZ that are pairwise separated by a distance at least 2. We
+further split L = L> ∪L≤ , where L> = {l ∈ L : |Il | ≥ 4εn} and L≤ = L\L> .
+Note that for each l ∈ L we have
+(A.4)
+
+|J(al )| = |J(bl )| = ⌊δ|J|⌋ + 1.
+
+62
+
+N. COOK
+
+From the bound (A.2) and the endpoint conditions (A.4) we see that within
+Il ,
+
+
+(A.5)
+|J(i)| ≤ min ⌊δ|J|⌋ + 1 + min(i − al , bl − i), 2εn + 1 ,
+
+where the second argument in the outer minimum comes from the bound
+|J(i)| ≤ NA(σ0 ) (i) ≤ 2εn + 1. For l ∈ L≤ we ignore the second argument in
+the outer minimum (which only increases the bound), and sum to obtain
+X
+i∈Il
+
+1
+|J(i)| ≤ (δ|J| + 1)|Il | + |Il |2 ≤ (1 + δ|J| + εn)|Il |,
+4
+
+For l ∈ L> we have
+X
+|J(i)| =
+i∈Il
+
+X
+
+i∈Il :min(i−al ,bl −i)≤2εn
+
+l ∈ L≤ .
+
+⌊δ|J|⌋ + 1 + min(i − al , bl − i)
+
++ (2εn + 1)|{i ∈ Il : i − al , bl − i ≥ 2εn + 1}|
+
+≤ 4εn(⌊δ|J|⌋ + 1) + 4ε2 n2 + (2εn + 1)(|Il | − 4εn)
+
+≤ (2εn + 1)|Il | + 4εnδ|J| − 4ε2 n2 .
+From the previous two displays we obtain
+X
+X
+|J(i)| ≤ δ|J|n +
+|J(i)|
+i∈Iδ
+
+i∈Z/nZ
+
+≤ δ|J|n +
+
+X
+
+l∈L≤
+
++
+
+(1 + δ|J| + εn)|Il |
+
+Xh
+
+l∈L>
+
+(2εn + 1)|Il | + 4εnδ|J| − 4ε2 n2
+
+i
+
+= δ|J|n + 4εn(δ|J| − εn)|L> |
+X
+X
+|Il |.
+|Il | + (2εn + 1)
++ (1 + δ|J| + εn)
+l∈L≤
+
+If |L> | = 0 then
+
+X
+
+i∈Z/nZ
+
+|J(i)| ≤ δ|J|n + (1 + δ|J| + εn)|Iδ |.
+
+Combining with (A.1) and rearranging we obtain
+|Iδ | ≥
+
+(2ε − δ)|J|n
+2ε − δ
+≥
+|J|,
+1 + εn + δ|J|
+ε+δ
+
+l∈L>
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+63
+
+and we contradict (A.3) taking ν < 1/2, say, and δ < cε for a suﬃciently
+small constant c > 0. If |L> | ≥ 1, from our assumption δ < 2ε we have
+X
+X
+|J(i)| ≤ δ|J|n − 2εn|L> | + (2εn + 1)
+|Il |
+i∈L
+
+i∈Z/nZ
+
+2 2
+
+≤ δ|J|n − 2ε n + (2εn + 1)|Iδ |.
+Together with (A.1) this gives
+|Iδ | ≥
+
+2εn
+2ε2 n2 − δn|J|
+2εn
+1
+|J| +
+≥
+|J| + εn
+2εn + 1
+2εn + 1
+2εn + 1
+4
+
+where in the last bound we took δ < ε2 and assumed n ≥ 1/ε. Taking
+ν < ε/8, say, we contradict (A.3) if n is suﬃciently large. The claim follows.
+APPENDIX B: PROOFS OF ANTI-CONCENTRATION LEMMAS
+In this appendix we prove Lemmas 2.5, 2.7 and 2.8. All three are established by modiﬁcation of existing arguments from the literature.
+B.1. Proof of Lemma 2.5. (2.5) is immediate by our assumptions. It
+remains to show
+(B.1)
+
+E |Re(zξ − w)|2 1(|ξ| ≤ κ0 ) ≫
+
+1
+|Re(z)|2
+κ0
+
+for all z, w ∈ C after rotating ξ by a phase if necessary. We may assume
+κ0 is larger than any ﬁxed constant. Let E denote the event {|ξ| ≤ κ0 }. By
+Chebyshev’s inequality,
+(B.2)
+
+P(E) ≥ 1 −
+
+1
+.
+κ20
+
+e := E(·|E). By (B.2) and assuming κ0 is suﬃciently
+Fix z, w ∈ C. Write E
+e
+− w)|2 , so it
+large we have that the left hand side of (B.1) is ≫ E|Re(zξ
+suﬃces to show
+(B.3)
+
+1
+e
+|Re(z)|2
+E|Re(zξ
+− w)|2 ≫
+κ0
+
+e we have
+after rotating ξ by a phase. Denoting η := ξ − Eξ,
+
+2
+e
+e
+e − w))|2 = E|Re(zη)|
+e
+e − w|2
+E|Re(zξ
+− w)|2 = E|Re(zη
++ (Eξ
++ |Eξ
+
+64
+
+N. COOK
+
+so it suﬃces to show that after rotating ξ by a phase,
+1
+2
+e
+|Re(z)|2 .
+E|Re(zη)|
+≫
+κ0
+
+(B.4)
+
+We ﬁrst estimate the conditional variance of η. We have
+e 2 = E|ξ|
+e 2 − |Eξ|
+e 2
+E|η|
+1
+1
+E |ξ|2 1E −
+| E ξ 1E |2
+=
+P(E)
+P(E)2
+
+
+1
+1
+1
+Var(ξ 1E ) +
+1−
+E |ξ|2 1E
+=
+P(E)2
+P(E)
+P(E)
+
+1
+Var(ξ 1E ) − P(E c ) E |ξ|2 1E
+=
+2
+P(E)
+≫ Var(ξ 1E ) − O(1/κ20 )
+where in the ﬁnal line we applied (B.2), the assumption E |ξ|2 = 1, and
+assumed κ0 is suﬃciently large. Now by our assumption that ξ is κ0 -spread
+we have Var(ξ 1E ) ≫ 1/κ0 , so
+e 2 ≫ 1/κ0
+E|η|
+
+(B.5)
+
+taking κ0 larger if necessary.
+Now consider the covariance matrix
+(B.6)
+
+Σκ0 :=
+
+!
+2
+e
+e
+E|Re(η)|
+E(Re(η)Im(η))
+.
+2
+e
+e
+E(Re(η)Im(η))
+E|Im(η)|
+
+Writing z = a − ib and letting x = (a
+we have
+(B.7)
+
+b)T be the associated column vector,
+
+2
+e
+e
+E|Re(zη)|
+= E|aRe(η)
++ bIm(η)|2 = xT Σκ0 x.
+
+e 2≫
+Since Σκ0 has two non-negative eigenvalues σ12 ≥ σ22 ≥ 0 summing to E|η|
+1/κ0 , it follows that σ12 ≫ 1/κ0 . We may rotate ξ by an appropriate phase
+to assume the corresponding eigenspace is spanned by (1 0)T . This gives
+
+as desired.
+
+1
+2
+e
+|Re(z)|2
+E|Re(zη)|
+≫ σ12 |Re(z)|2 ≫
+κ0
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+65
+
+B.2. Proof of Lemma 2.7. We ﬁrst need to recall a couple of lemmas
+from [36, 39].
+Lemma B.1 (Fourier-analytic bound, cf. [39, Lemma 6.1]). Let ξ be a
+complex-valued random variable. For all r > 0 and any v ∈ S n−1 we have
+(B.8)
+
+pξ,v (r) ≪ r
+
+2
+
+Z
+
+exp
+w∈C:|w|≤1/r
+
+
+
+−c
+
+n
+X
+j=1
+
+kwvj k2ξ
+
+
+
+dw
+
+where
+(B.9)
+
+kzk2ξ := E kRe(z(ξ − ξ ′ ))k2R/Z ,
+
+ξ ′ is an independent copy of ξ, and kxkR/Z denotes the distance from x to
+the nearest integer.
+The next lemma gives an important property enjoyed by the “norm”
+k · kξ from Lemma B.1 under the assumption that ξ has κ-controlled second
+moment.
+Lemma B.2 (cf. [36, Lemma 5.3]). For any κ > 0 there are constants
+c1 , c2 > 0 such that if ξ is κ-controlled, then kzkξ ≥ c1 |Re(z)| whenever
+|z| ≤ c2 .
+Proof of Lemma 2.7. Let r ≥ 0. We may assume r ≥ C0 kvk∞ for any
+ﬁxed constant C0 > 0 depending only on κ. From Lemma B.1,
+pξ,v (r) ≪ r
+
+2
+
+Z
+
+exp
+|w|≤1/r
+
+
+
+−c
+
+n
+X
+j=1
+
+kwvj k2ξ
+
+
+dw.
+
+If C0 is suﬃciently large depending on κ, it follows from Lemma B.2 that
+whenever |w| ≤ 1/r, kwvj kξ ≥ c1 |Re(wvj )|, giving
+pξ,v (r) ≪ r
+
+2
+
+Z
+
+exp
+
+|w|≤1/r
+
+
+
+
+n
+X
+2
+(Re(wvj )) dw
+−c
+′
+
+j=1
+
+where c′ depends only on κ. By change of variable,
+(B.10)
+
+pξ,v (r) ≪
+
+Z
+
+|w|≤1
+
+exp
+
+
+
+−
+
+
+n
+c′ X
+2
+(Re(wv
+))
+dw.
+j
+r2
+j=1
+
+66
+
+N. COOK
+
+P
+Write vj = rj eiθj for each j ∈ [n]. Since v ∈ S n−1 we have nj=1 rj2 = 1. By
+Jensen’s inequality,
+
+
+Z
+n
+
+c′ X 2
+iθj 2
+rj Re(we )
+dw
+exp − 2
+pξ,v (r) ≪
+r
+|w|≤1
+j=1
+
+
+Z
+n
+X
+2
+c′
+rj2 exp − 2 Re(weiθj )
+≤
+dw.
+r
+|w|≤1
+j=1
+
+By rotational invariance the last expression is equal to
+
+
+
+
+Z
+Z
+n
+X
+c′
+c′
+2
+2
+2
+rj
+exp − 2 (Re(w)) dw =
+exp − 2 (Re(w)) dw
+r
+r
+|w|≤1
+|w|≤1
+j=1
+
+which by direct computation is seen to be of size O(r) (with implied constant
+depending on κ). Together with our assumption that r ≥ C0 kvk∞ this gives
+(2.7).
+B.3. Proof of Lemma 2.8. We only prove part (a) as part (b) is given
+in [28, Lemma 2.2].
+Let c1 > 0 to be taken suﬃciently small depending on p0 , and let α > 0
+a suﬃciently small constant to be chosen later. We have
+
+
+
+
+n
+n
+X
+X
+1
+|ζj |2 ≥ 0
+|ζj |2 ≤ c1 ε20 n = Pn −
+P
+2
+c
+ε
+1 0 j=1
+j=1
+
+
+n
+X
+α
+≤ E exp c1 αn − 2
+|ζj |2 
+ε0 j=1
+n
+Y
+
+c1 αn
+
+=e
+
+(B.11)
+
+j=1
+
+For arbitrary j ∈ [n] we have
+
+
+E exp −α|ζj |2 /ε20 =
+=
+
+Z
+
+1
+
+
+
+P exp −α|ζj |2 /ε20 ≥ u du
+
+Z0 ∞
+0
+
+≤ p0
+
+
+E exp −α|ζj |2 /ε20 .
+
+Z
+
+√ 
+2
+P |ζj | ≤ sε0 / α d(e−s )
+√
+
+α
+
+2
+
+d(e−s ) +
+
+0
+−α
+
+= p0 (1 − e
+
+−α
+
+)+e
+
+Z
+
+∞
+
+√
+
+α
+
+= 1 − (1 − p0 )(1 − e−α ).
+
+2
+
+d(e−s )
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+67
+
+Inserting this in (B.11), we obtain
+
+
+n
+X
+
+n
+|ζj |2 ≤ c1 ε20 n ≤ ec1 αn 1 − (1 − p0 )(1 − e−α )
+P
+j=1
+
+
+≤ exp n c1 α − (1 − p0 )(1 − e−α ) .
+
+The claim now follows by setting c1 = (1 − p0 )/2 (for instance) and taking
+α a suﬃciently small constant.
+REFERENCES
+[1] Aljadeff, J., Renfrew, D. and Stern, M. (2015). Eigenvalues of block structured
+asymmetric random matrices. J. Math. Phys. 56 103502, 14. MR3403052
+[2] Alon, N. and Shapira, A. (2004). Testing subgraphs in directed graphs. J. Comput.
+System Sci. 69 353–382. MR2087940 (2005e:68083)
+[3] Anderson, G. W., Guionnet, A. and Zeitouni, O. (2010). An introduction to
+random matrices. Cambridge Studies in Advanced Mathematics 118. Cambridge University Press, Cambridge. MR2760897 (2011m:60016)
+[4] Bai, Z. D., Silverstein, J. W. and Yin, Y. Q. (1988). A note on the largest
+eigenvalue of a large-dimensional sample covariance matrix. J. Multivariate Anal. 26
+166–168. MR963829
+[5] Bandeira, A. S. and van Handel, R. (2016). Sharp nonasymptotic bounds on
+the norm of random matrices with independent entries. Ann. Probab. 44 2479–2506.
+MR3531673
+[6] Bordenave, C. and Chafaı̈, D. (2012). Around the circular law. Probab. Surv. 9
+1–89. MR2908617
+[7] Bourgade, P., Erdos, L., Yau, H.-T. and Yin, J. Universality for a class of random
+band matrices. Preprint available at arXiv:1602.02312.
+[8] Bourgain, J. and Tzafriri, L. (1987). Invertibility of “large” submatrices with
+applications to the geometry of Banach spaces and harmonic analysis. Israel J. Math.
+57 137–224. MR890420 (89a:46035)
+[9] Cook, N. A. (2016). Spectral properties of non-Hermitian random matrices PhD
+thesis, University of California, Los Angeles.
+[10] Cook, N. A., Hachem, W., Najim, J. and Renfrew, D. Limiting spectral distribution for non-Hermitian random matrices with a variance profile. In preparation.
+[11] Edelman, A. (1988). Eigenvalues and condition numbers of random matrices. SIAM
+J. Matrix Anal. Appl. 9 543–560. MR964668
+[12] Gowers, W. T. (1997). Lower bounds of tower type for Szemerédi’s uniformity
+lemma. Geom. Funct. Anal. 7 322–337. MR1445389 (98a:11015)
+[13] Hachem, W., Loubaton, P. and Najim, J. (2007). Deterministic equivalents
+for certain functionals of large random matrices. Ann. Appl. Probab. 17 875–930.
+MR2326235
+[14] Komlós, J. Circulated manuscript, 1977. Edited version available online at:
+http://www.math.rutgers.edu/∼komlos/01short.pdf.
+[15] Komlós, J. (1967). On the determinant of (0, 1) matrices. Studia Sci. Math. Hungar
+2 7–21. MR0221962 (36 ##5014)
+[16] Komlós, J. (1968). On the determinant of random matrices. Studia Sci. Math. Hungar. 3 387–399. MR0238371 (38 ##6647)
+
+68
+
+N. COOK
+
+[17] Komlós, J. and Simonovits, M. (1996). Szemerédi’s regularity lemma and its applications in graph theory. In Combinatorics, Paul Erdős is eighty, Vol. 2 (Keszthely,
+1993). Bolyai Soc. Math. Stud. 2 295–352. János Bolyai Math. Soc., Budapest.
+MR1395865 (97d:05172)
+[18] Latala, R. (2005). Some estimates of norms of random matrices. Proc. Amer. Math.
+Soc. 133 1273–1282 (electronic). MR2111932 (2005i:15041)
+[19] Litvak, A. E., Lytova, A., Tikhomirov, K., Tomczak-Jaegermann, N. and
+Youssef, P. (2017). Adjacency matrices of random digraphs: singularity and anticoncentration. J. Math. Anal. Appl. 445 1447–1491. MR3545253
+[20] Litvak, A. E., Pajor, A., Rudelson, M. and Tomczak-Jaegermann, N. (2005).
+Smallest singular value of random matrices and geometry of random polytopes. Adv.
+Math. 195 491–523. MR2146352 (2006g:52009)
+[21] Litvak, A. E., Pajor, A., Rudelson, M., Tomczak-Jaegermann, N. and Vershynin, R. (2005). Euclidean embeddings in spaces of finite volume ratio via random
+matrices. J. Reine Angew. Math. 589 1–19. MR2194676
+[22] Litvak, A. E. and Rivasplata, O. (2012). Smallest singular value of sparse random
+matrices. Studia Math. 212 195–218. MR3009072
+[23] Marcus, A. W., Spielman, D. A. and Srivastava, N. (2014). Ramanujan graphs
+and the solution of the Kadison–Singer problem. In Proc. ICM, Vol III 375–386.
+[24] Nguyen, H. H. and Vu, V. H. (2016). Normal vector of a random hyperplane.
+Preprint available at arXiv:1604.04897.
+[25] Rajan, K. and Abbott, L. (2006). Eigenvalue spectra of random matrices for neural
+networks. Physical review letters 97 188104.
+[26] Rebrova, E. and Tikhomirov, K. Covering of random ellipsoids, and invertibility
+of matrices with i.i.d. heavy-tailed entries. Preprint available at arXiv:1508.06690.
+[27] Rudelson, M. (2008). Invertibility of random matrices: norm of the inverse. Ann.
+of Math. (2) 168 575–600. MR2434885
+[28] Rudelson, M. and Vershynin, R. (2008). The Littlewood-Offord problem and invertibility of random matrices. Adv. Math. 218 600–633. MR2407948 (2010g:60048)
+[29] Rudelson, M. and Vershynin, R. (2008). The least singular value of a random
+square matrix is O(n−1/2 ). C. R. Math. Acad. Sci. Paris 346 893–896. MR2441928
+[30] Rudelson, M. and Zeitouni, O. (2016). Singular values of Gaussian matrices and
+permanent estimators. Random Structures Algorithms 48 183–212. MR3432577
+[31] Sankar, A., Spielman, D. A. and Teng, S.-H. (2006). Smoothed analysis of the
+condition numbers and growth factors of matrices. SIAM J. Matrix Anal. Appl. 28
+446–476 (electronic). MR2255338 (2008b:65060)
+[32] Spielman, D. A. and Srivastava, N. (2012). An elementary proof of the restricted
+invertibility theorem. Israel J. Math. 190 83–91. MR2956233
+[33] Szemerédi, E. (1978). Regular partitions of graphs. In Problèmes combinatoires et
+théorie des graphes (Colloq. Internat. CNRS, Univ. Orsay, Orsay, 1976). Colloq.
+Internat. CNRS 260 399–401. CNRS, Paris. MR540024 (81i:05095)
+[34] Talagrand, M. (1996). A new look at independence. Ann. Probab. 24 1–34.
+MR1387624 (97d:60028)
+[35] Tao, T. and Vu, V. (2010). Random matrices: the distribution of the smallest singular values. Geom. Funct. Anal. 20 260–297. MR2647142
+[36] Tao, T. and Vu, V. H. (2008). Random matrices: the circular law. Commun. Contemp. Math. 10 261–307. MR2409368 (2009d:60091)
+[37] Tao, T. and Vu, V. H. (2009). Inverse Littlewood-Offord theorems and the
+condition number of random discrete matrices. Ann. of Math. (2) 169 595–632.
+MR2480613 (2010j:60110)
+
+INVERTIBILITY OF STRUCTURED RANDOM MATRICES
+
+69
+
+[38] Tao, T. and Vu, V. H. (2010). Random matrices: universality of ESDs and the circular law. Ann. Probab. 38 2023–2065. With an appendix by Manjunath Krishnapur.
+MR2722794 (2011e:60017)
+[39] Tao, T. and Vu, V. H. (2010). Smooth analysis of the condition number and the
+least singular value. Math. Comp. 79 2333–2352. MR2684367 (2011k:65065)
+[40] Tulino, A. M. and Verdú, S. (2004). Random matrix theory and wireless communications 1. Now Publishers Inc.
+[41] van Handel, R. On the spectral norm of Gaussian random matrices. Preprint available at arXiv:1502.05003.
+[42] Vershynin, R. (2011). Spectral norm of products of random and deterministic matrices. Probab. Theory Related Fields 150 471–509. MR2824864
+[43] von Neumann, J. and Goldstine, H. H. (1947). Numerical inverting of matrices
+of high order. Bull. Amer. Math. Soc. 53 1021–1099. MR0024235
+[44] Yin, Y. Q., Bai, Z. D. and Krishnaiah, P. R. (1988). On the limit of the largest
+eigenvalue of the large-dimensional sample covariance matrix. Probab. Theory Related
+Fields 78 509–521. MR950344
+Department of Mathematics
+University of California
+Los Angeles, CA 90095-1555
+E-mail: nickcook@math.ucla.edu
+
+

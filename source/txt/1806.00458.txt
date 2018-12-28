@@ -1,0 +1,4601 @@
+arXiv:1806.00458v1 [math.OC] 1 Jun 2018
+
+Improved Oracle Complexity for Stochastic Compositional Variance
+Reduced Gradient
+Tianyi Lin
+
+∗
+
+Chenyou Fan
+
+†
+
+Mengdi Wang
+
+‡
+
+Michael I. Jordan
+
+§
+
+June 4, 2018
+
+Abstract
+We propose an accelerated stochastic compositional variance reduced gradient method for optimizing the sum of a composition function and a convex nonsmooth function. We provide an incremental
+first-order oracle (IFO) complexity analysis for the proposed algorithm and show that it is provably
+faster than all the existing methods. Indeed,
+ we show that our method achieves an asymptotic IFO
+complexity of O (m + n) log (1/ε) + 1/ε3 where m and n are the number of inner/outer compo
+nent functions, improving the best-known results of O m + n + (m + n)2/3 /ε2 and achieving for
+the best known linear run time for convex composition problem. Experiment results on sparse meanvariance optimization with 21 real-world financial datasets confirm that our method outperforms
+other competing methods.
+
+1
+
+Introduction
+
+We consider a general nonsmooth convex composition problem in which the objective is the sum of a
+composition function and a nonsmooth convex function:
+min Φ(x) = F (x) + r(x),
+
+x∈Rd
+
+(1)
+
+where r : Rd → R ∪ {+∞} is an extended real-valued closed convex function and F : Rd → R is a
+continuously differentiable convex function, given by
+
+
+n
+m
+1X 1 X
+fi
+gj (x) .
+F (x) =
+n
+m
+i=1
+
+j=1
+
+∗
+
+Department of Industrial Engineering and Operations Research, UC Berkeley, Berkeley, CA 94720, USA.
+School of Informatics and Computing, Indiana University, Bloomington, IN 47405, USA.
+‡
+Department of Operations Research and Financial Engineering, Princeton University, Princeton, NJ 08544, USA.
+§
+Department of Electrical Engineering and Computer Science and Department of Statistics, UC Berkeley, Berkeley, CA
+94720, USA.
+†
+
+1
+
+Here fi : Rl → R (i ∈ [n]) and gj : Rd → Rl (j ∈ [m]) are continuously differentiable. Problem (1) is
+highly structured but also quite general; indeed, various special cases have been studied in a host of
+applications, including reinforcement learning [25], nonparametric statistics [8], risk management [18],
+multi-stage stochastic programming [24], system control [11], model-based stochastic search [7] and deep
+neural nets [6, 29]. Here are two typical examples:
+Example 1.1 (Risk-Averse Learning). Consider the mean-variance minimization problem
+"
+#2
+n
+n
+n
+λX
+1X
+1X
+h(x, ai , bi ) +
+h(x, ai , bi ) −
+h(x, ai , bi ) ,
+min
+x
+n
+n
+n
+i=1
+
+i=1
+
+i=1
+
+where h(x, ai , bi ) is the loss on a sample data point (ai , bi ) and λ > 0 is a regularization parameter.
+Example 1.2 (On-Policy Reinforcement Learning [25, 15]). Given a controllable Markov chain with
+states {1, 2, . . . , S}, estimate the value-per-state of a fixed control policy π that satisfies the Bellman
+equation:
+γP π V π + rπ = V π ,
+π is the transition probability from state s to state s̃ and r π is
+where γ ∈ (0, 1) is a discount factor, Pss̃
+s
+the expected state transition reward at state s. The solution V π is a vector with each entry Vsπ being the
+total expected reward starting at state s. In a black-box simulation environment, solving the Bellman
+equation is a special case of the stochastic composition optimization problem:
+
+ 
+m
+X
+
+1
+I − γPjπ x − rπj  ,
+min L  
+x∈X
+m
+j=1
+
+where L is a general loss function, x is a policy, and Pjπ and rπj are sampled from a simulator.
+
+Despite its usefulness, problem (1) is more computationally challenging than its noncompositional counterpart; i.e., problem (1) with gj (x) = x for all j ∈ [m]. Indeed, stochastic-gradient-type methods
+deteriorate in the former setting since the sampled gradients are biased in general, being unbiased only
+if gj (x) = x for all j ∈ [m]. The alternative of using the stochastic variance-reduced
+gradient method
+1 Pm
+(SVRG) [10] leads to a very high computational burden as it needs to compute m j=1 gj (x) at each
+iteration. In response to such concerns, a number of computationally efficient stochastic compositional
+variance reduced gradient methods have been proposed for solving problem (1).
+ Notably, Huo et al.
+[9] presented a method having an IFO complexity of O m + n + (m + n)2/3 /ε2 for convex objectives;
+this is the best known complexity to date. See Table 1 for comparisons to various algorithms.
+While there has been abundant work on strongly convex objectives and nonconvex objectives, there
+has been relatively little investigation of convex (but not strongly convex) objectives. In particular, the
+following important case has been neglected: the composition function F is convex while some of the
+composition terms are nonconvex. Perhaps counterintuitively, it has been observed in that the average
+of loss functions can be convex even if some loss functions are nonconvex [21, 4]. This can occur when
+some of the loss functions are strongly convex. Similarly, F can be convex when there are nonconvex
+terms, when some of the other composition terms are strongly convex. In the SVRG setting, [4] has
+shown that the dependence of the IFO complexity of SVRG on n can be n log(1/ε) when the objective
+is convex. What remains unknown is whether this conclusion holds true in the compositional setting.
+This is the central question of the current paper:
+2
+
+Table 1: The IFO complexity of stochastic composition optimization methods. ε is the
+tolerance. m is the number of inner functions. n is the number of outer functions. In order to provide
+a clean comparison, we hide the dependence of the IFO complexity on the Lipschitz constants of f , fi
+and gj , the upper bound of the norm of ∇fi and ∂gj , and the distance between the initial point and
+the optimal set. We also omit the dependence on the dimension d since it is linear for all methods.
+Method
+AGD [14]
+SCGD [26]
+ASC-PG [27]
+VRSC-PG [9]
+ASCVRG (This paper)
+
+Convex Objective
+Criterion: E [Φ(x)] − Φ(x∗ ) ≤ ε
+√
+O ((m + n)/ ε)
+O 1/ε4 
+O 1/ε3.5
+
+O m + n + (m + n)2/3 /ε2 
+O (m+n) log (1/ε) + 1/ε3
+
+r 6= 0?
+
+Shrinking Step Size?
+
+Yes
+No
+Yes
+Yes
+Yes
+
+No
+Yes
+Yes
+No
+No
+
+Can we develop an accelerated stochastic compositional variance reduced gradient method with
+the IFO complexity where the dependence of m + n is (m + n) log(1/ε) in the convex setting?
+
+1.1
+
+Related Work
+
+Since the seminal work on SVRG [10], stochastic average gradient [19] and stochastic dual coordinate
+ascent [22], variance reduction has been successfully applied to solve problem (1), in the special case of
+gj (x) = x for all j ∈ [m], in a variety of settings [4, 23, 3, 17, 2, 12]. Allen-Zhu [4] provided an improved
+IFO complexity of O(n log(1/ε) + 1/ε)) for convex objectives, and Reddi et al. [17] and Allen-Zhu and
+Hazan [3] obtained an IFO complexity of O(n + n2/3 /ε)) for nonconvex objectives. However, all of these
+methods are computationally
+inefficient as putative solutions to problem (1) in general because they
+1 Pm
+g
+(x)
+at each iteration.
+need to compute m
+j=1 j
+
+To solve problem (1) efficiently, Wang et al. [26] proposed and analyzed a class of stochastic compositional gradient/subgradient (SCGD) methods with iterates at two different time scales instead of a
+single iterate as in the case of stochastic gradient descent. Wang et al. [27] proposed an accelerated
+SCGD method which improved the IFO complexity over SCGD. On the other hand, variance reduction
+has been proposed to accelerate stochastic compositional gradient method in [13] for strongly convex
+objectives. Yu and Huang [30] proposed another stochastic compositional variance reduced gradient
+method, named com-SVRADMM, for strongly convex objectives. Very recently, Huo et al. [9] analyzed
+a new class of stochastic compositional variance reduced gradient methods with an IFO
+i of
+h complexity
+2
+2/3
+O(m + n + (m + n) /ε) for nonconvex objectives, yielding a solution x satisfying E k∇Φ(x)k ≤ ε.
+However, in real applications with convex objectives, the quality of training or testing depends on the
+objective gap rather than the norm of the gradient. So a solution x satisfying E [Φ(x)] − Φ(x∗ ) ≤ ε
+would be preferred. On the other hand, we have
+i
+h
+1
+(2)
+E k∇Φ(x)k2 ≤ E [Φ(x)] − Φ(x∗ ) ≤ E [k∇Φ(x)k kx − x∗ k] ,
+2Lφ
+where Lφ is defined in Assumption 3.3, implying that the IFO complexity of Huo et al. ’s method is
+O(m + n + (m + n)2/3 /ε2 ) in terms of the objective gap.
+3
+
+∗
+In contrast, our method can provide a solution
+ x satisfying E [Φ(x)] − Φ(x ) ≤ ε and achieve an
+3
+IFO complexity of O (m + n) log (1/ε) + 1/ε . This is important, suggesting the best linear time
+complexity for approximately solving convex composition problem.
+
+1.2
+
+Contributions
+
+We summarize our major contributions as follows:
+1. We develop an accelerated SCVRG
+ method and prove that it achieves an asymptotic IFO complexity of O (m + n) log (1/ε) + 1/ε3 when the objective is nonsmooth and convex. This improves the
+best known IFO complexity in [9] and provides an accelerated stochastic compositional variance
+reduced gradient algorithm for nonsmooth convex stochastic composition optimization.
+2. We present a new iterative stochastic analysis approach to achieve ε-optimal solutions in terms
+of the objective gap. As discussed earlier, this is more reasonable in real application problems
+involving convex composition optimization.
+3. We conduct extensive experiments on sparse mean-variance optimization with 21 real-world financial datasets to show that our methods outperform other competing methods.
+
+1.3
+
+Notation and Organization
+
+Throughout the paper, we denote vectors by bold lower case letters, e.g., x, and matrices by regular
+upper case letters, e.g., X. The transpose of a real vector x is denoted as x⊤ . kxk and kXk denote
+the vector ℓ2 norm and the matrix spectral norm for a vector x and a matrix X. For a scalar x ∈ R,
+⌊x⌋ is the largest integer which is smaller than x. For two non-negative sequences {at } and {bt }, we
+write at = O(bt ) if there exists a constant N > 0 such that at ≤ N bt for each t ≥ 0, and at = o(bt ) if
+there exists a non-negative sequence {ct } such that at ≤ ct bt for each t ≥ 0 and ct → 0 as t → ∞. We
+denote the gradient1 of F : Rd → R at x as ∇F (x) = [∂g(x)]⊤ ∇f (g(x)) ∈ Rd , where ∂g(x) ∈ Rl×d is
+the Jacobian of g : Rd → Rl at x. We use subscript t and superscript s to denote a iterate, e.g., xst , at
+the t-th iteration in the s-th epoch. The sets At , Bt and Ct are randomly selected indices at the t-th
+iteration with batch sizes A, B and C. E [· | ζ] is a conditional expectation given the variable ζ and E
+is an expectation over all randomness.
+The rest of the paper is organized as follows. Section 2 presents our incremental first-order oracle (IFO)
+framework and our proposed SCVRG method. Section 3 states the IFO complexity bound for our
+method, with complete proofs and technical details deferred to the appendices. Section 4 demonstrates
+an application of our method to sparse mean-variance optimization problem and presents numerical
+results. Conclusions and future directions are presented in Section 5.
+1
+
+The gradient operator always calculates the gradient with respect to the first-level variable. More specifically, ∇f (g(x))
+refers to the gradient of f (y) at y = g(x), not the gradient of F (x) = f (g(x)) at x.
+
+4
+
+Algorithm 1 Accelerated Stochastic Compositional Variance Reduced Gradient Method
+Input: x̃0 =x0k0 =x0 ∈ Rd , first epoch length k0 , step size η > 0 and the number of epochs S.
+Initialization: l = 0 and T = k0 · 2S − k0 .
+for s = 0, 1, . . . , S do
+xs+1
+= xsks , g̃s+1 =g(x̃s ), G̃s+1 =∂g(x̃s ),
+0
+ṽs+1 = [∂g(x̃s )]⊤ ∇f (g̃s+1 ) and ks+1 = 2s+1 · k0 .
+for t = 0, 1, . . . , ks+1 − 1 do
+) and gjt (x̃s ), then update gts+1 according to (3).
+Sample from IFO with gjt (xs+1
+t
+s+1
+according to (4).
+Sample from IFO with ∂gjt (xt ) and ∂gjt (x̃s ), then update Gs+1
+t
+s+1
+s+1
+s+1
+Sample from IFO with ∇fit√(gt ) and ∇fit (g̃ ), then update vt according to (5).
+s+1
+Set l = l + 1 and ηt+1
+= √η2TT−l , then update xs+1
+t+1 according to (6).
+end for
+1 Pks+1 −1 s+1
+x̃s+1 = ks+1
+xt .
+t=0
+end for
+Output: x̃S .
+
+2
+
+Algorithm
+
+In this section, we focus on the algorithmic design of stochastic composition optimization methods under
+a black-box sampling environment with the access to an incremental first-order oracle (IFO). The IFO
+is a typical simulation oracle studied in both online and batch learning [20]; it is also widely used in
+complexity theory [1, 28].
+Definition 2.1 (Incremental First-order Oracle (IFO)). Given some x ∈ Rd and j ∈ [m], the IFO
+returns a vector gj (x) or a matrix ∂gj (x). Alternatively, given some y ∈ Rl and i ∈ [n], the IFO
+returns a value fi (y) or a vector ∇fi (y).
+We propose the Accelerated Stochastic Compositional Variance Reduced Gradient method, denoted as
+ASCVRG for short; see Algorithm 1. A variance reduction scheme, it involves the estimation of three
+). Given a reference point x̃s ,
+unknown quantities. First, it computes an estimate of the value of g(xs+1
+t
+s+1
+s+1
+s
+g̃
+= g(x̃ ), we approximate g(xt ) by
+gts+1 =
+
+1 X
+1 X
+gjt (xs+1
+gjt (x̃s ) + g̃s+1 ,
+)−
+t
+A
+A
+jt ∈At
+
+(3)
+
+jt ∈At
+
+where At ⊂ [m] is a subset of cardinality A. Furthermore, it computes an estimate of the Jacobian
+), which plays a key role in the acceleration of convergence. Given a reference Jacobian
+matrix ∂g(xs+1
+t
+matrix G̃s+1 = ∂g(x̃s ), we approximate ∂g(xs+1
+) by
+t
+Gs+1
+=
+t
+
+1 X
+1 X
+∂gjt (xs+1
+∂gjt (x̃s ) + G̃s+1 ,
+)−
+t
+B
+B
+jt ∈Bt
+
+(4)
+
+jt ∈Bt
+
+
+⊤
+where Bt ⊂ [m] is a subset of cardinality B. Also, the method estimates the gradient vector ∂g(xs+1
+) ∇f (g(xs+1
+)
+t
+t
+5
+
+⊤
+
+)) by
+) ∇f (g(xs+1
+Given a reference gradient vector ṽs+1 = [∂g(x̃s )]⊤ ∇f (g̃s+1 ), we estimate ∂g(xs+1
+t
+t
+!
+!
+h
+i⊤ 1 X
+
+⊤ 1 X
+s+1
+s+1
+)
+−
+∇f
+∇fit (g̃s+1 ) + ṽs+1 ,
+(g
+(5)
+G̃
+vts+1 = Gs+1
+it t
+t
+C
+C
+it ∈Ct
+
+it ∈Ct
+
+s+1
+where Ct ⊂ [n] is a subset of cardinality C. We then compute ηt+1
+, update xs+1
+t+1 by
+(
+)
+
+
+
+
+
+1
+2
+xs+1
+vts+1 , x + s+1 x − xts+1  + r(x) ,
+t+1 = argmin
+2ηt+1
+x∈Rd
+
+(6)
+
+for 0 ≤ t ≤ ks+1 − 1 as the reference point for the next epoch.
+and use the average of all iterates xs+1
+t
+The final output is the reference point of the last iteration, i.e., x̃S .
+Discussion: In terms of IFO complexity per epoch, a full gradient vector and a full Jacobian matrix
+are computed at the point x̃s , requiring m + n IFO queries. Therefore, the IFO complexity of ASCVRG
+for the s-th epoch is m + n + ks (A + B + C) since ASCVRG carries out a variance reduction scheme
+for both the value and the Jacobian matrix.
+
+3
+3.1
+
+Main Result
+Assumptions
+
+For clarity of presentation, we defer the proofs for the theorems and technical lemmas to the appendices.
+Throughout this paper, we measure the efficiency of different algorithms by comparing the number of
+IFO queries to achieve an ε-optimal solution defined by Definition 3.1; recall that this is stronger than
+the criterion E [kΦ(x)k] ≤ ε defined in [9].
+Definition 3.1. Given ε ∈ (0, 1), we say x ∈ Rd is an ε-optimal solution to problem (1) if
+E [Φ(x)] − Φ(x∗ ) ≤ ε,
+where x∗ ∈ Rd is an optimal solution to problem (1).
+We make the following assumptions on F , fi and gj for i ∈ [n] and j ∈ [m].
+Assumption 3.1. The objective F and r are both convex, i.e.,
+F (x) − F (y) − h∇F (y), x − yi ≥ 0,
+
+r(x) − r(y) − hξ, x − yi ≥ 0,
+
+x, y ∈ Rd ,
+x, y ∈ Rd ,
+
+where ξ ∈ ∂r(y) is a subgradient of r.
+Assumption 3.2. The proximal mapping of the objective r, given by
+
+
+1
+2
+kx − yk + r(x) ,
+argmin hg, xi +
+2η
+x∈Rd
+is easily computed for any given g ∈ Rd and y ∈ Rd and η > 0.
+6
+
+Assumption 3.3. For i ∈ [n] and j ∈ [m], there exist constants 0 < Lf , Lg , Lφ < ∞ such that
+k∇fi (x) − ∇fi (y)k ≤ Lf kx − yk ,
+k∂gj (x) − ∂gj (y)k ≤ Lg kx − yk ,
+
+and
+
+x, y ∈ Rl ,
+
+x, y ∈ Rd ,
+
+
+
+
+
+⊤
+⊤
+[∂g
+(x)]
+∇f
+(g(x))
+−
+[∂g
+(y)]
+∇f
+(g(y))
+ ≤ Lφ kx − yk ,
+ j
+i
+j
+i
+
+x, y ∈ Rd .
+
+Intuitively, the constants Lf , Lg and Lφ jointly characterize the smoothness and complexity of stochastic
+composition optimization.
+Assumption 3.4. For i ∈ [n] and j ∈ [m], there exist two constants 0 < Bf , Bg < ∞ such that
+k∂gj (x)k ≤ Bg , x ∈ Rd ,
+
+k∇fi (x)k ≤ Bf , x ∈ Rl .
+
+Assumptions 3.1-3.4 are standard ones in the literature of composition optimization [13, 30, 9].
+
+3.2
+
+Improved IFO Complexity
+
+We present an asymptotic IFO complexity of Algorithm 1 in this subsection, showing that it is an
+accelerated algorithm with an IFO complexity where the dependence on m + n is O((m + n) log(1/ε))
+and ε is better than SCGD and ASC-PG.
+Theorem 3.5. Given the initial vector x0 ∈ Rd satisfies that
+ 0
+
+x − x∗ 2 ≤ Dx , Φ(x0 ) − Φ(x∗ ) ≤ Dφ ,
+
+and the first epoch length k0 > 0 and the number of epochs S > 0 satisfy that
+
+
+
+
+
+6Dφ
+Dx
++ 1,
+S = log2
++ 1,
+k0 =
+2ηDφ
+ε
+and the sample sizes A > 0, B > 0 and C > 0 satisfy
+A=
+
+12Bg4 L2f
+η 2α L2φ
+
+,
+
+B=
+
+12Bf2 L2g
+
+for some α > 1 and η > 0 satisfies
+
+
+1
+ 1
+α
+2Dφ
+η = min
+,
+,
+ 2Lφ
+3Lφ Dx
+
+η 2α L2φ
+
+,
+
+C=
+
+12
+,
+η 2α
+
+ε
+√
+60 2Lφ (Dx + 2Dφ )
+
+!1
+α
+
+
+,
+
+and ε ∈ (0, 1) is a tolerance, then the total IFO complexity, i.e., the number of IFO queries to achieve
+an ε-optimal solution that satisfies
+
+
+E Φ(x̃s+1 ) − Φ(x∗ ) ≤ ε,
+7
+
+is
+
+ 
+
+1
+1
++
+O (m + n) log
+,
+1
+ε
+ε3+ α
+where we omit the dependence of the IFO complexity on the Lipschitz constants Lφ , Lf , Lg , the upper
+bound of the norm of gradient and Jacobian Bf , Bg , the distances between the initial point and the
+optimal set, i.e., Dx (the iterative gap) and Dφ (the objective gap).
+
+
+Remark 3.6. We highlight that our goal is to develop an efficient algorithm that targets the case when
+m and n are very large. In this case, we observe that A, B and C are independent of m and n and can
+assume that A, B ≪ m and C ≪ n. This implies that our method will achieve superior performance
+compared to AGD, an assertion confirmed by our experimental results.
+Remark 3.7. This holds true for any α > 1 so the total asymptotic IFO complexity is
+
+
+ 
+1
+1
++ 3 .
+O (m + n) log
+ε
+ε
+Furthermore,
+
+
+
+√ε
+120 2Lφ Dx
+
+1
+
+α
+
+→ 1 and
+
+
+
+2Dφ
+3Lφ Dx
+
+1
+
+α
+
+→ 1 as α → +∞, implying that
+
+η=
+
+1
+.
+2Lφ
+
+On the other hand, since η < 1 and α → +∞, we have A, B, C → +∞. This makes sense since the
+IFO complexity turns out to be better if we allow a large step size and increase the sample size.
+
+3.3
+
+Comparison with Previous Work
+
+We provide a comprehensive comparison among AGD, ASC-PG, VRSC-PG and ASCVRG based on
+the IFO complexity for achieving an ε-optimal solution.
+1. Dependence on m + n: The number of IFO queries of AGD, VRSC-PG and ASCVRG depend
+explicitly on m + n. In contrast, the IFO complexity of ASC-PG is independent of m + n while
+this comes at the expense of worse dependence on ε. The IFO complexity of AGD is proportional
+to m + n and that of VRSC-PG is proportional to (m + n)2/3 while m + n is independent of 1/ε3
+for ASCVRG. In fact, ASCVRG is the best known linear-time algorithm since log(1/ε) is nearly
+a constant. This makes ASCVRG clearly superior to AGD and VRSC-PG as m + n is large.
+2. Dependence on ε: The complexity bound of ASC-PG depends as O(1/ε3.5 ) while ASCVRG
+√
+converges as O(1/ε3 ) and AGD converge as O(1/ ε). This speedup of ASCVRG in convergence
+over ASC-PG is especially significant when medium to high accuracy solutions are required.
+3. Dependence on shrinking step size: It is beneficial to compare the step sizes used by different
+algorithms. It is undesirable that the step size of ASC-PG shrinks to zero as the number of
+iterations t increases, while the step sizes of AGD, VRSC-PG and ASCVRG can remain constant.
+The usage of the constant step size is crucial to the effectiveness and robustness of the algorithms
+when a huge number of iterations are required—which is the case in many real-world learning
+problems.
+8
+
+4
+
+Experiments
+
+In this section, we present the results of experiments on 21 US Research Returns datasets from the
+Center for Research in Security Prices (CRSP) website2 , including three large 100-porfolio datasets and
+18 medium datasets for Developed Market Factors and Returns; see Table 2 for details.
+Table 2: The Statistics of 21 CRSP Real Datasets
+Type
+100 Portfolios
+
+N
+13781
+
+d
+100
+
+Market Factors
+
+7240
+
+25
+
+Problems
+Book-to-Market (BM), Operating Profitability (OP), Investment (INV)
+BM: Asia Pacific ex Japan, Europe, Global ex US, Global, Japan, North America
+OP: Asia Pacific ex Japan, Europe, Global ex US, Global, Japan, North America
+INV: Asia Pacific ex Japan, Europe, Global ex US, Global, Japan, North America
+
+d
+Given d assets and the reward vectors observed at N time points, i.e., {ri }N
+i=1 ⊂ R , the goal of
+portfolio management optimization is to maximize the return of the investment as well as to control
+the investment risk. This can be formulated as sparse mean-variance optimization [16] in the form of
+problem (1) with m = n = N , given by
+
+min Φ(x) =
+
+x∈Rd
+
+=
+
+2
+
+N
+N
+N
+X
+X
+1 X
+1
+
+hri , xi − 1
+hrj , xi
+−
+hri , xi + λ kxk1
+N
+N
+N
+i=1
+j=1
+i=1
+
+
+n
+m
+X
+X
+1
+1
+fi 
+gj (x) + λ kxk1 ,
+n
+m
+i=1
+
+(7)
+
+j=1
+
+⊤
+with fi (z, y) = (hri , zi + y)2 − hri , zi and gj (x) = x⊤ , − hrj , xi , for x, z ∈ Rd and y ∈ R. Problem (7)
+satisfies Assumption 3.1-3.4 so that it serves as a good example for our experiment.
+We compare our ASCVRG method with AGD, SCGD [26], ASC-PG [27] and VRSC-PG [9]. Except
+that we use our own implementation of AGD, we use official implementation of other methods provided
+by the authors and run the experiments with default parameters 3 . We exclude the method in [13] since
+problem (7) is neither smooth nor strongly convex. On the other hand, although problem (7) can be
+formulated as a saddle point problem, [9] has shown that VRSC-PG is superior to prior work based on
+the saddle-point formulation, e.g., [30], so we do not consider such approaches.
+We set λ = 5 × 10−7 in problem (7) and A = B = C = 5 and η = 1/2Lφ in ASCVRG. For the
+x-axis, we use the number of gradient oracles divided by the number of samples, denoted as #grad/n,
+which is proportional to the query complexity. For the y-axis, we use the log-scale of the objective gap
+Φ(x) − Φ(x∗ ) where x∗ is obtained by running ASCVRG for enough iterations until convergence and is
+used as the optimal solution for all methods.
+Figure 1 shows that, on three large datasets, ASCVRG consistently outperforms the other four methods
+in terms of the IFO complexity. Moreover, ASCVRG and VRSC-PG are more robust than SCGD and
+ASC-PG, showing that the use of variance reduction together with constant step size stabilizes the
+behavior of the stochastic algorithms. Although SCGD and ASC-PG perform well on some datasets,
+2
+3
+
+http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data Library/changes crsp.html
+We will release our code to facilitate future research once the paper gets accepted.
+
+9
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+10
+
+0
+
+10
+
+-2
+
+10
+
+-4
+
+10
+
+-6
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+4
+
+6
+
+OP, n=13781, d=100
+
+10 2
+
+8
+
+10
+
+10
+
+0
+
+10
+
+-2
+
+10
+
+-4
+
+10
+
+-6
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+4
+
+6
+
+INV, n=13781, d=100
+
+10 2
+
+Objective Gap in Log-Scale
+
+ME, n=13781, d=100
+
+10 2
+
+8
+
+10
+
+10
+
+0
+
+10
+
+-2
+
+10
+
+-4
+
+10
+
+-6
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+4
+
+6
+
+#grad/n
+
+#grad/n
+
+#grad/n
+
+(a) Book-to-Market
+
+(b) Operating Profitability
+
+(c) Investment
+
+8
+
+Figure 1: The Performance of All Methods on three Large 100-Portfolio Datasets
+pure stochastic gradient-type methods can be sensitive to choices of shrinking step sizes and thus require
+effort to tune parameters in practice [5]. In contrast, the step sizes of ASCVRG and VRSC-PG are
+not shrinking, yielding improved robustness in practice. As expected, AGD performs worse than other
+methods, having the highest IFO complexity on large datasets.
+Figures 2-4 further show that, on 18 different medium datasets, ASCVRG consistently outperforms
+the other four methods in terms of the IFO complexity even if the margin is smaller than that on
+large datasets. Actually ASCVRG and VRSC-PG are comparable on nearly half of the datasets,
+significantly outperforming the other three methods by a large margin. This is consistent with the
+theoretical IFO complexity ofASCVRG and VRSC-PG. In comparison to ASCVRG’s IFO complexity
+of O (m + n) log(1/ε) + 1/ε3 , VRSC-PG’s IFO complexity of O(m + n + (m + n)2/3 /ε2 ) is favorable
+when m + n is not very large. On the other hand, we observe from Figures 2-4 that VRSC-PG is less
+robust than ASCVRG. One possible reason is that VRSC-PG uses a constant step size while ASCVRG
+uses an adaptive but not shrinking step size. In sum, the ASCVRG method has the potential to be a
+benchmark algorithm for nonsmooth convex composition optimization.
+
+5
+
+Conclusions
+
+We propose an accelerated stochastic compositional variance reduced gradient method for convex composition optimization. We establish a better IFO complexity than the best-known result prior to this
+paper under the same reasonable conditions. Experimental results on sparse mean-variance optimization with 21 real-world financial datasets demonstrate that our method outperforms other competing
+methods. An important direction for future work is to study the possibility of a lower oracle complexity
+for stochastic composition optimization and the optimal compositional gradient method.
+
+10
+
+10
+
+10 -3
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10 -2
+
+10 -3
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+#grad/n
+
+4
+
+6
+
+8
+
+10 -1
+
+10 -2
+
+10 -3
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+#grad/n
+
+(a) Asia Pacific ex Japan
+
+4
+
+6
+
+8
+
+10 -1
+
+10 -2
+
+10 -3
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+0
+
+2
+
+#grad/n
+
+(b) Europe
+
+4
+
+6
+
+8
+
+Europe ME, n=7240, d=25
+
+10 1
+
+10 0
+
+10
+
+10
+
+-1
+
+10 -3
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+-2
+
+0
+
+2
+
+4
+
+#grad/n
+
+(c) Global ex US
+
+6
+
+8
+
+North America ME, n=7240, d=25
+
+10 1
+
+Objective Gap in Log-Scale
+
+10 -1
+
+Global ME, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+Global ex US ME, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+10 -1
+
+10 -2
+
+Europe ME, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+Asia Pacific ex Japan ME, n=7240, d=25
+
+10 0
+
+10 0
+
+10 -1
+
+10
+
+10 -3
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+-2
+
+0
+
+2
+
+#grad/n
+
+(d) Global
+
+4
+
+6
+
+8
+
+10
+
+#grad/n
+
+(e) Japan
+
+(f) North America
+
+Figure 2: The Performance of All Methods on six 25-Portfolio Book-to-Market Datasets
+
+10 -4
+10 -5
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10 -2
+
+10
+
+10 -4
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+-3
+
+0
+
+2
+
+#grad/n
+
+4
+
+6
+
+8
+
+10
+
+10 -2
+10 -3
+
+10 -5
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+
+0
+
+2
+
+#grad/n
+
+(a) Asia Pacific ex Japan
+
+4
+
+6
+
+8
+
+10
+
+10 -2
+10 -3
+
+10 -5
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+
+0
+
+2
+
+#grad/n
+
+(b) Europe
+
+4
+
+6
+
+8
+
+Japan OP, n=7240, d=25
+
+10 1
+
+-1
+
+10
+
+0
+
+10 -1
+10 -2
+
+10 -4
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -3
+
+0
+
+2
+
+4
+
+#grad/n
+
+(c) Global ex US
+
+6
+
+8
+
+North America OP, n=7240, d=25
+
+10 1
+
+Objective Gap in Log-Scale
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -1
+
+Global OP, n=7240, d=25
+
+10 0
+
+-1
+
+Objective Gap in Log-Scale
+
+10 -3
+
+Global ex US OP, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+10 -2
+
+Europe OP, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+10
+
+-1
+
+Objective Gap in Log-Scale
+
+Asia Pacific ex Japan OP, n=7240, d=25
+
+10 0
+
+10
+
+0
+
+10 -1
+10 -2
+
+10 -4
+
+10
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -3
+
+0
+
+2
+
+#grad/n
+
+(d) Global
+
+4
+
+6
+
+8
+
+10
+
+#grad/n
+
+(e) Japan
+
+(f) North America
+
+Figure 3: The Performance of All Methods on six 25-Portfolio Operating Profitability Datasets
+
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+10 -5
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+10 -2
+10 -3
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+10 -5
+
+0
+
+2
+
+#grad/n
+
+4
+
+6
+
+#grad/n
+
+(a) Asia Pacific ex Japan
+
+(b) Europe
+
+8
+
+10
+
+10 -1
+10 -2
+10 -3
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+10 -5
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+10 -1
+10 -2
+10 -3
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+10 -5
+
+0
+
+#grad/n
+
+2
+
+4
+
+6
+
+#grad/n
+
+(c) Global ex US
+
+(d) Global
+
+8
+
+Japan INV, n=7240, d=25
+
+10 2
+
+10
+
+10 0
+
+10 -2
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+
+10 -6
+
+0
+
+2
+
+4
+
+6
+
+8
+
+North America INV, n=7240, d=25
+
+10 2
+
+Objective Gap in Log-Scale
+
+10 -3
+
+10 -1
+
+Global INV, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+10 -2
+
+Global ex US INV, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+Objective Gap in Log-Scale
+
+10 -1
+
+Europe INV, n=7240, d=25
+
+10 0
+
+Objective Gap in Log-Scale
+
+Asia Pacific ex Japan INV, n=7240, d=25
+
+10 0
+
+10
+
+10 0
+
+10 -2
+ASCVRG
+VRSC-PG
+ASC-PG
+SCGD
+AGD
+
+10 -4
+
+10 -6
+
+0
+
+#grad/n
+
+(e) Japan
+
+2
+
+4
+
+6
+
+(f) North America
+
+Figure 4: The Performance of All Methods on six 25-Portfolio Investment Datasets
+
+References
+[1] A. Agarwal and L. Bottou. A lower bound for the optimization of finite sums. In ICML, pages
+78–86, 2015.
+[2] Z. Allen-Zhu. Natasha: Faster non-convex stochastic optimization via strongly non-convex parameter. In ICML, pages 89–97, 2017.
+[3] Z. Allen-Zhu and E. Hazan. Variance reduction for faster non-convex optimization. In ICML, pages
+699–707, 2016.
+[4] Z. Allen-Zhu and Y. Yuan. Improved SVRG for non-strongly-convex or sum-of-non-convex objectives. In ICML, pages 1080–1089, 2016.
+[5] A. S. Berahas, R. Bollapragada, and J. Nocedal. An investigation of Newton-sketch and subsampled
+Newton methods. ArXiv Preprint: 1705.06211, 2017.
+11
+
+8
+
+#grad/n
+
+10
+
+[6] I. Goodfellow, Y. Bengio, and A. Courville. Deep Learning. MIT press, 2016.
+[7] J. Hu. Model-based stochastic search methods. In Handbook of Simulation Optimization, pages
+319–340. Springer, 2015.
+[8] J. Huang, J. L. Horowitz, and F. Wei. Variable selection in nonparametric additive models. Annals
+of Statistics, 38(4):2282, 2010.
+[9] Z. Huo, B. Gu, and H. Huang. Accelerated method for stochastic composition optimization with
+nonsmooth regularization. ArXiv Preprint: 1711.03937, 2017.
+[10] R. Johnson and T. Zhang. Accelerating stochastic gradient descent using predictive variance reduction. In NIPS, pages 315–323, 2013.
+[11] P. Kundur, N. J. Balu, and M. G. Lauby. Power System Stability and Control, volume 7. McGrawhill New York, 1994.
+[12] L. Lei, C. Ju, J. Chen, and M. I. Jordan. Nonconvex finite-sum optimization via SCSG methods.
+ArXiv Preprint: 1706.09156, 2017.
+[13] X. Lian, M. Wang, and J. Liu. Finite-sum composition optimization via variance reduced gradient
+descent. In AISTATS, pages 1159–1167, 2017.
+[14] Y. Nesterov. Introductory Lectures on Convex Optimization: A Basic Course, volume 87. Springer
+Science & Business Media, 2013.
+[15] M. L. Puterman. Markov Decision Processes: Discrete Stochastic Dynamic Programming. John
+Wiley & Sons, 2014.
+[16] P. Ravikumar, J. Lafferty, H. Liu, and L. Wasserman. Sparse additive models. Journal of the Royal
+Statistical Society. Series B, Statistical Methodology, pages 1009–1030, 2009.
+[17] S. J. Reddi, A. Hefny, S. Sra, B. Poczos, and A. Smola. Stochastic variance reduction for nonconvex
+optimization. In ICML, pages 314–323, 2016.
+[18] R. T. Rockafellar and S. Uryasev. Optimization of conditional value-at-risk. Journal of Risk,
+2:21–42, 2000.
+[19] M. Schmidt, N. Le Roux, and F. Bach. Minimizing finite sums with the stochastic average gradient.
+Mathematical Programming, 162(1-2):83–112, 2017.
+R in
+[20] S. Shalev-Shwartz. Online learning and online convex optimization. Foundations and Trends
+Machine Learning, 4(2):107–194, 2012.
+
+[21] S. Shalev-Shwartz. SDCA without duality, regularization, and individual convexity. In ICML,
+pages 747–754, 2016.
+[22] S. Shalev-Shwartz and T. Zhang. Stochastic dual coordinate ascent methods for regularized loss
+minimization. Journal of Machine Learning Research, 14(Feb):567–599, 2013.
+[23] O. Shamir. Fast stochastic algorithms for SVD and PCA: Convergence properties and convexity.
+In ICML, pages 248–256, 2016.
+12
+
+[24] A. Shapiro, D. Dentcheva, and A. Ruszczyński. Lectures on Stochastic Programming: Modeling
+and Theory. SIAM, 2009.
+[25] R. S. Sutton and A. G. Barto. Reinforcement Learning: An Introduction, volume 1. MIT press
+Cambridge, 1998.
+[26] M. Wang, E. X. Fang, and H. Liu. Stochastic compositional gradient descent: algorithms for
+minimizing compositions of expected-value functions. Mathematical Programming, 161(1-2):419–
+449, 2017.
+[27] M. Wang, J. Liu, and E. X. Fang. Accelerating stochastic composition optimization. Journal of
+Machine Learning Research, 18:1–23, 2017.
+[28] B. E. Woodworth and N. Srebro. Tight complexity bounds for optimizing composite objectives. In
+NIPS, pages 3639–3647, 2016.
+[29] S. Yang, M. Wang, and E. X. Fang. Multi-level stochastic gradient methods for nested compositon
+optimization. ArXiv Preprint: 1801.03600, 2018.
+[30] Y. Yu and L. Huang. Fast stochastic variance reduced ADMM for stochastic composition optimization. ArXiv Preprint: 1705.04138, 2017.
+
+A
+
+Proof Outline
+
+We list the assumptions in our paper and some major steps to give a whole picture of the proof.
+Proof Outlines:
+1. We provide two basic lemmas, which concerns with convex objective and common
+variance; see Lemmas B.1 and B.2.
+h
+2 s+1 s i
+ | x , x̃ using the term kx̃s − x∗ k2 ,
+2. We bound the term of E vts+1 − ∇f (xs+1
+)
+t
+t
+2
+ s+1
+∗
+x
+− x  and the size of At , Bt and Ct , i.e., A, B and C; see Lemma B.3.
+t
+2
+
+
+
+3. We bound the term of E Φ(x̃s+1 ) − Φ(x∗ ) using the term Φ(x0 ) − Φ(x∗ ), x0 − x∗ 
+and the parameters η and k0 ; see Lemmas C.1 and C.2.
+4. We provide the explicit IFO complexity in terms of m + n, Lφ , Lf , Lg , Bf and Bg ;
+see Theorem C.3.
+
+Assumption A.1. The objective F and r are both convex, i.e.,
+F (x) − F (y) − h∇F (y), x − yi ≥ 0,
+
+r(x) − r(y) − hξ, x − yi ≥ 0,
+
+where ξ ∈ ∂r(y) is a subgradient of r.
+13
+
+x, y ∈ Rd ,
+x, y ∈ Rd ,
+
+Assumption A.2. The proximal mapping of the objective r, given by
+
+
+1
+2
+kx − yk + r(x) ,
+argmin hg, xi +
+2η
+x∈Rd
+is easily computed for any given g ∈ Rd and y ∈ Rd and η > 0.
+Assumption A.3. For i ∈ [n] and j ∈ [m], there exist constants 0 < Lf , Lg , Lφ < ∞ such that
+k∇fi (x) − ∇fi (y)k ≤ Lf kx − yk ,
+k∂gj (x) − ∂gj (y)k ≤ Lg kx − yk ,
+
+and
+
+x, y ∈ Rl ,
+
+x, y ∈ Rd ,
+
+
+
+
+
+⊤
+⊤
+[∂gj (x)] ∇fi (g(x)) − [∂gj (y)] ∇fi (g(y)) ≤ Lφ kx − yk ,
+
+x, y ∈ Rd .
+
+Intuitively, the constants Lf , Lg and Lφ jointly characterize the smoothness and complexity of stochastic
+composition optimization.
+Assumption A.4. For i ∈ [n] and j ∈ [m], there exist two constants 0 < Bf , Bg < ∞ such that
+k∂gj (x)k ≤ Bg , x ∈ Rd ,
+
+B
+
+k∇fi (x)k ≤ Bf , x ∈ Rl .
+
+Proof of Technical Lemmas
+
+Lemma B.1. The following statement holds true,
+
+
+2
+
+
+ s+1 ⊤
+s+1 
+s+1
+s+1 ⊤
+s+1
+s
+E  Gt
+∇fit (gt ) − ∂g(xt ) ∇fit (g(xt )) | xt , x̃ ≤
+
+where x∗ is one optimal solution.
+
+4Bf2 L2g
+4Bg4 L2f
++
+A
+B
+
+!
+
+h
+
+
+ i
+2
+∗ 2
+.
+kx̃s − x∗ k + xs+1
+−
+x
+t
+
+Proof. We observe that
+
+
+2
+
+
+ s+1 ⊤
+s+1 s
+s+1 
+s+1 ⊤
+s+1
+∇fit (gt ) − ∂g(xt ) ∇fit (g(xt )) | xt , x̃
+E  Gt
+
+
+2
+
+
+ s+1 ⊤
+s+1
+s+1 ⊤
+s+1
+s+1 
+s
+∇fit (gt ) − ∂g(xt ) ∇fit (gt ) | xt , x̃
+≤ 2E  Gt
+
+
+2
+
+
+
+
+s+1 
+s+1 s
+s+1 ⊤
+s+1
+s+1 ⊤
++2E  ∂g(xt ) ∇fit (gt ) − ∂g(xt ) ∇fit (g(xt )) | xt , x̃
+h
+i
+ 
+
+s+1 2 
+s+1 2
+s+1 s
+≤ 2E Gs+1
+)
+−
+∂g(x
+·
+)
+∇f
+(g
+,
+x̃
+|
+x
+i
+t
+t
+t
+t
+t
+h
+i
+
+
+
+2
+ · ∇fit (gs+1 ) − ∇fit (g(xs+1 ))2 | xs+1 , x̃s
++2E ∂g(xs+1
+)
+t
+t
+t
+t
+h
+i
+h
+i
+
+2
+2
+≤ 2Bf2 E Gs+1
+− ∂g(xs+1
+) | xs+1
+, x̃s + 2Bg2 E ∇fit (gts+1 ) − ∇fit (g(xs+1
+)) | xs+1
+, x̃s
+t
+t
+t
+t
+t
+h
+i
+h
+i
+2
+2
+≤ 2Bf2 E Gs+1
+) | xs+1
+, x̃s ,
+− ∂g(xs+1
+) | xs+1
+, x̃s + 2Bg2 L2f E gts+1 − g(xs+1
+t
+t
+t
+t
+t
+14
+
+where the first inequality comes from the Cauchy-Schwarz inequality, the third inequality comes from
+Assumption A.4 and the last inequality comes from Assumption A.3. So it suffices to bound the terms
+h
+i
+h
+i
+2
+2
+E Gs+1
+− ∂g(xs+1
+) | xs+1
+, x̃s
+and E gts+1 − g(xs+1
+) | xs+1
+, x̃s .
+t
+t
+t
+t
+t
+
+Indeed, we have
+
+2
+
+
+
+
+i
+h
+X
+X
+
+
+
+1
+1
+2
+s+1 s 
+)−
+)
+gjt (xs+1
+gjt (x̃s ) + g̃s+1 − g(xs+1
+, x̃s = E 
+E gts+1 − g(xs+1
+) | xs+1
+t
+t
+t
+t
+ | xt , x̃
+A
+A
+
+ jt ∈At
+jt ∈At
+2
+
+
+
+
+X
+
+1 
+s+1 s 
+=
+) + g̃s+1 
+) − gjt (x̃s ) − g(xs+1
+gjt (xs+1
+E 
+t
+t
+ | xt , x̃
+
+2
+A
+
+jt ∈At
+i
+
+1 X h
+gjt (xs+1 ) − gjt (x̃s ) − g(xs+1 ) + g̃s+1 2 | xs+1 , x̃s
+E
+=
+t
+t
+t
+A2
+jt ∈At
+i
+
+1 X h
+gjt (xs+1 ) − gjt (x̃s )2 | xs+1 , x̃s
+≤
+E
+t
+t
+A2
+≤
+
+≤
+
+Bg2
+A2
+
+jt ∈At
+
+X
+
+xs+1 − x̃s 2
+
+t
+j∈At
+2Bg2 h s+1
+x
+t
+
+A
+
+i
+2
+− x∗  + kx̃s − x∗ k2 ,
+
+where the third equality holds true since the indices in At are drawn independently without replacement,
+the first inequality holds true since E kξ − E [ξ]k2 ≤ E kξk2 , and the second inequality comes from
+Assumption A.4. Furthermore, we have
+h
+i
+
+s+1 2
+s+1 s
+E Gs+1
+,
+x̃
+−
+∂g(x
+)
+|
+x
+t
+t
+t
+2
+
+
+ X
+
+X
+1
+
+1
+s
+s+1
+= E 
+)−
+)
+∂gjt (xs+1
+∂gjt (x̃s ) + G̃s+1 − ∂g(xs+1
+t
+t
+B
+ | xt , x̃
+B
+ jt ∈Bt
+
+jt ∈Bt
+2
+
+
+
+X 
+
+
+1 
+s+1 s 
+) + G̃s+1 
+) − ∂gjt (x̃s ) − ∂g(xs+1
+∂gjt (xs+1
+E 
+=
+t
+t
+ | xt , x̃
+
+B2
+
+jt ∈Bt
+
+
+
+
+2
+1 X
+
+s+1
+s+1
+s+1 s
+s
+s+1 
+=
+E ∂gjt (xt ) − ∂gjt (x̃ ) − ∂g(xt ) + G̃  | xt , x̃
+B2
+jt ∈Bt
+i
+
+1 X h
+∂gjt (xs+1 ) − ∂gjt (x̃s )2 | xs+1 , x̃s
+≤
+E
+t
+t
+B2
+≤
+
+≤
+
+L2g
+B2
+
+jt ∈Bt
+
+X 
+
+xs+1 − x̃s 2
+t
+
+jt ∈Bt
+2
+2Lg h s+1
+x
+t
+
+B
+
+i
+2
+− x∗  + kx̃s − x∗ k2 ,
+
+15
+
+where the third equality holds true since the indices in Bt are drawn independently without replacement,
+the first inequality holds true since E kξ − E [ξ]k2 ≤ E kξk2 , and the second inequality comes from
+Assumption A.3. This completes the proof.
+
+Lemma B.2. For i ∈ [n], we have
+"
+#
+2
+i⊤
+h
+
+
+
+⊤
+s+1
+s+1
+s+1
+s+1
+s
+E 
+∇fit (g̃s+1 )
+ ∂g(xt ) ∇fit (g(xt )) − G̃
+ | xt , x̃
+
+
+
+2
+
+
+− x∗  + kx̃s − x∗ k2 .
+) − Φ(x∗ ) + Φ(x̃s ) − Φ(x∗ ) + 4L2φ xs+1
+≤ 4Lφ Φ(xs+1
+t
+t
+
+where x∗ is an optimal solution to the objective Φ.
+
+Proof. Given any z ∈ Rd and an optimal solution x∗ to the objective Φ, we define ϕit (z) as
+D
+E L
+φ
+kz − x∗ k2 .
+ϕit (z) = fit (g(z)) − [∂g(x∗ )]⊤ ∇fit (g(x∗ )), z − x∗ +
+2
+It is clear that ϕit (z) is a convex function with the gradient being Lipschitz continuous with 2Lφ > 0
+and has a minimzer x∗ . Therefore, we obtain from Theorem 2.1.5 in the textbook [14] that
+ϕit (z) − ϕit (x∗ ) ≥
+
+1
+k∇ϕit (z)k2 .
+2Lφ
+
+Equivalently, we have
+E L
+D
+φ
+fit (g(z)) − fit (g(x∗ )) − [∂g(x∗ )]⊤ ∇fit (g(x∗ )), z − x∗ +
+kz − x∗ k2
+2
+2
+1 
+
+
+⊤
+⊤
+≥
+[∂g(z)] ∇fit (g(z)) − [∂g(x∗ )] ∇fit (g(x∗ )) + Lφ (z − x∗ ) .
+2Lφ
+
+Therefore, we have
+
+2
+
+
+⊤
+⊤
+[∂g(z)] ∇fit (g(z)) − [∂g(x∗ )] ∇fit (g(x∗ ))
+2
+
+
+
+≤ 2 [∂g(z)]⊤ ∇fit (g(z)) − [∂g(x∗ )]⊤ ∇fit (g(x∗ )) + Lφ (z − x∗ ) + 2L2φ kz − x∗ k2
+Ei
+h
+D
+≤ 4Lφ fit (g(z)) − fit (g(x∗ )) − [∂g(x∗ )]⊤ ∇fit (g(x∗ )), z − x∗ + 4L2φ kz − x∗ k2 .
+
+(8)
+
+where the second inequality comes from (8). Letting z = xs+1
+and z = x̃s and taking the conditional
+t
+s+1
+s
+expectation on xt and x̃ yields that
+"
+#
+2
+h
+i⊤
+
+
+⊤
+s+1
+s+1
+s+1
+s+1
+s+1
+s
+E 
+∇fit (g̃ )
+ ∂g(xt ) ∇fit (g(xt )) − G̃
+ | xt , x̃
+
+
+2
+
+
+∗ ⊤
+∗ 
+s+1 s
+s+1
+s+1 ⊤
+≤ E  ∂g(xt ) ∇fit (g(xt )) − [∂g(x )] ∇fit (g(x )) | xt , x̃
+#
+"
+2
+
+h s+1 i⊤
+s+1 s
+∇fit (g̃s+1 ) − [∂g(x∗ )]⊤ ∇fit (g(x∗ ))
++E 
+ | xt , x̃
+ G̃
+2
+
+
+
+
+
+− x∗ 
+− x∗ + 4L2φ xs+1
+) − F (x∗ ) − ∇F (x∗ ), xs+1
+≤ 4Lφ F (xs+1
+t
+t
+t
++4Lφ [F (x̃s ) − F (x∗ ) − h∇F (x∗ ), x̃s − x∗ i] + 4L2φ kx̃s − x∗ k2 .
+16
+
+In addition, we have
+− h∇F (x∗ ), x − x∗ i = hξ, x − x∗ i ≤ r(x) − r(x∗ ),
+
+where the first equality since x∗ is an optimal solution to the objective Φ and the inequality comes from
+Assumption A.1. Therefore, we conclude that
+#
+"
+2
+h
+i⊤
+
+
+
+⊤
+s+1
+s+1
+s+1
+s
+s+1
+∇fit (g̃s+1 )
+E 
+ | xt , x̃
+ ∂g(xt ) ∇fit (g(xt )) − G̃
+
+
+
+
+
+∗ 2
+s
+∗ 2
+∗
+s
+∗
+2  s+1
+.
+−
+x
++
+kx̃
+−
+x
+k
+x
+)
+−
+Φ(x
+)
++
+Φ(x̃
+)
+−
+Φ(x
+)
++
+4L
+≤ 4Lφ Φ(xs+1
+φ
+t
+t
+
+This completes the proof.
+
+
+
+) and its approximation vts+1 is upper bounded by kx̃s − x∗ k2
+Lemma B.3. The gap between ∇F (xs+1
+t
+ s+1
+
+2
+and xt − x∗  in terms of conditional expectation, given by
+h
+2 s+1 s i
+ | x , x̃
+E vts+1 − ∇F (xs+1
+)
+t
+t
+!
+4 L2
+2 L2
+2
+h
+i
+
+8B
+8B
+8L
+
+8L
+8Lφ 
+g
+g
+f
+f
+φ
+φ
+xs+1 − x∗ 2 + kx̃s − x∗ k2 .
+[Φ(x̃s ) − Φ(x∗ )] +
++
++
+) − Φ(x∗ ) +
+Φ(xs+1
+≤
+t
+t
+C
+C
+A
+B
+C
+Proof. Let us+1
+be an unbiased estimate of ∇F (xs+1
+), i.e.,
+t
+t
+=
+us+1
+t
+
+⊤
+1 X h s+1 i⊤
+1 X
+s+1
+G̃
+∇fit (g̃s+1 ) + ṽs+1 ,
+))
+−
+)
+∇f
+(g(x
+∂g(xs+1
+i
+t
+t
+t
+C
+C
+it ∈Ct
+
+it ∈Ct
+
+then we have
+h
+i
+h
+h
+i
+2
+2 s+1 s i
+
+ | x , x̃ +2E us+1 − ∇F (xs+1 )2 | xs+1 , x̃s .
+E vts+1 − ∇F (xs+1
+) | xs+1
+, x̃s ≤ 2E vts+1 − us+1
+t
+t
+t
+t
+t
+t
+t
+
+So it suffices to bound the terms
+h
+2 s+1 s i
+ | x , x̃
+E vts+1 − us+1
+t
+t
+
+i
+h
+
+s+1 s
+s+1 2
+.
+and E us+1
+,
+x̃
+)
+|
+x
+−
+∇F
+(x
+t
+t
+t
+
+17
+
+Indeed, we have
+h
+2 s+1 s i
+ | x , x̃
+E vts+1 − us+1
+t
+t
+
+
+2
+
+1 X 
+X
+⊤
+⊤
+
+1
+
+
+∇fit (gts+1 ) −
+)) | xs+1
+Gs+1
+∂g(xts+1 ) ∇fit (g(xs+1
+, x̃s 
+= E 
+t
+t
+t
+
+C
+C
+it ∈Ct
+it ∈Ct
+
+
+2
+
+
+X
+X
+
+
+
+
+1 
+⊤
+⊤
+
+=
+E 
+Gs+1
+, x̃s 
+∇fit (gts+1 ) −
+)) | xs+1
+) ∇fit (g(xs+1
+∂g(xs+1
+t
+t
+t
+t
+
+
+C2
+it ∈Ct
+it ∈Ct
+
+
+2
+X
+
+
+1
+ s+1 ⊤
+s+1 s
+s+1 
+s+1 ⊤
+s+1
+E  Gt
+∇fit (gt ) − ∂g(xt ) ∇fit (g(xt )) | xt , x̃
+≤
+C
+i∈Ct
+!
+4 2
+
+ i
+4Bf2 L2g h s
+1 X 4Bg Lf
+∗ 2
+≤
+kx̃ − x∗ k2 + xs+1
+−
+x
++
+t
+C
+A
+B
+i∈Ct
+!
+
+ i
+4Bg4 L2f
+4Bf2 L2g h s
+∗ 2
+,
+kx̃ − x∗ k2 + xs+1
+−
+x
+=
++
+t
+A
+B
+
+where the first inequality comes from Cauchy-Schwarz inequality and the second inequality comes from
+Lemma B.1. Furthermore, we have
+i
+h
+
+s
+s+1 2
+s+1
+E us+1
+)
+,
+x̃
+−
+∇F
+(x
+|
+x
+t
+t
+t
+
+
+2
+1 X 
+
+i
+h
+X
+⊤
+
+1
+⊤
+
+
+= E 
+) | xs+1
+G̃s+1 ∇fit (g̃s+1 ) + ṽs+1 − ∇F (xs+1
+∂g(xs+1
+) ∇fit (g(xs+1
+)) −
+, x̃s 
+t
+t
+t
+t
+C
+
+C
+it ∈Ct
+it ∈Ct
+
+
+2
+
+
+
+
+h
+i
+X
+⊤
+
+
+1 
+⊤
+
+)) − G̃s+1 ∇fit (g̃s+1 ) + ṽs+1 − ∇F (xs+1
+) ∇fit (g(xs+1
+∂g(xs+1
+)  | xs+1
+E 
+, x̃s 
+=
+t
+t
+t
+t
+
+
+C2
+it ∈Ct
+"
+#
+2
+h
+i⊤
+
+
+⊤
+1 X
+s+1
+s+1
+s+1
+s+1
+s+1
+s+1
+s+1
+s
+E 
+∇fit (g̃ ) + ṽ
+− ∇F (xt )
+=
+ ∂g(xt ) ∇fit (g(xt )) − G̃
+ | xt , x̃
+C2
+it ∈Ct
+"
+#
+2
+h
+i⊤
+
+
+
+1 X
+⊤
+s+1
+s+1
+s+1
+s+1
+s
+E 
+∇fit (g̃s+1 )
+≤
+ ∂g(xt ) ∇fit (g(xt )) − G̃
+ | xt , x̃
+C2
+it ∈Ct
+
+i
+
+
+
+1 Xh
+s+1
+∗ 2
+s
+∗ 2
+∗
+s
+∗
+2  s+1
+≤
++ kx̃ − x k
+4Lφ Φ(xt ) − Φ(x ) + Φ(x̃ ) − Φ(x ) + 4Lφ xt − x
+C2
+it ∈Ct
+
+=
+
+
+
+ 4L2φ  s+1
+4Lφ 
+∗ 2
+s
+∗ 2
+∗
+s
+∗
+x
+−
+x
++
+kx̃
+−
+x
+k
+Φ(xs+1
+)
+−
+Φ(x
+)
++
+Φ(x̃
+)
+−
+Φ(x
+)
++
+t
+t
+C
+C
+
+where the third equality holds true since the indices in Ct are drawn independently without replacement,
+the first inequality holds true since E kξ − E [ξ]k2 ≤ E kξk2 and the second inequality comes from
+
+18
+
+Lemma B.2. Therefore, we conclude that
+h
+2 s+1 s i
+ | x , x̃
+E vts+1 − ∇F (xs+1
+)
+t
+t
+≤
+
+ 8Lφ
+8Lφ 
+[Φ(x̃s ) − Φ(x∗ )] +
+Φ(xs+1
+) − Φ(x∗ ) +
+t
+C
+C
+
+8Bg4 L2f
+A
+
++
+
+8Bf2 L2g
+B
+
++
+
+8L2φ
+C
+
+This completes the proof.
+
+C
+
+!
+
+h
+i
+
+xs+1 − x∗ 2 + kx̃s − x∗ k2 .
+t
+
+
+
+Proof of Main Theorem
+
+Lemma C.1. For any x ∈ Rd , we have
+i
+h
+
+
+ η α Lφ 
+
+η
+s+1 s
+x − xs+1 2 +
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s
+E
+,
+x̃
++
+0 ≤ Φ(x) − E Φ(xs+1
+)
+|
+x
+t
+t
+t
+t
+t
+t+1
+2
+2(1 − ηLφ )
+h
+ii
+h
+
+
+
+
+
+
+1 
+E vs+1 − us+1 | xs+1 , x̃s 2 + 1
+x − xs+1 2 − E x − xs+1 2 | xs+1 , x̃s .
++ α
+t
+t
+t
+t
+t
+t+1
+s+1
+2η Lφ
+2ηt+1
+where α > 1 is a constant.
+
+Proof. We have
+
+
+
+s+1
+s+1
++
+0 ≤ r(x) − r(xs+1
+t+1 ) + x − xt+1 , vt
+
+1
+
+
+
+
+s+1
+s+1
+· x − xs+1
+t+1 , xt+1 − xt
+
+s+1
+ηt+1
+
+
+
+s+1
+s+1
+, vt
+= r(x) − r(xs+1
+− xs+1
++ xs+1
+t
+t+1 ) + x − xt
+t+1 , vt
+
+
+2 
+ i
+1 h
+ − x − xs+1 2 − xs+1 − xs+1 2
++ s+1 x − xs+1
+t
+t
+t+1
+t+1
+2ηt+1
+
+ 
+
+
+
+
+
+
+s+1
+s+1
+s+1
+)
+− ∇F (xs+1
+− xs+1
+) + xs+1
+− xs+1
+, vts+1 + xs+1
+= r(x) − r(xs+1
+t
+t
+t
+t+1 , vt
+t+1 , ∇F (xt
+t+1 ) + x − xt
+
+
+2 
+ i
+1 h
+ − x − xs+1 2 − xs+1 − xs+1 2
++ s+1 x − xs+1
+t
+t
+t+1
+t+1
+2ηt+1
+
+
+
+
+Lφ 
+s+1
+s+1
+s+1
+s+1
+xs+1 − xs+1 2
++
+F
+(x
+)
+−
+F
+(x
+)
++
+≤ r(x) − r(xs+1
+)
++
+x
+−
+x
+,
+v
+t
+t
+t
+t
+t+1
+t+1
+t+1
+2
+h
+
+
+ i
+
+
+
+
+ s+1
+1
+s+1
+s+1
+x − xs+1 2 − x − xs+1 2 − xs+1 − xs+1 2
+)
++
+−
+∇F
+(x
+,
+v
++ xt − xs+1
+t
+t
+t
+t
+t+1
+t+1
+t+1
+s+1
+2ηt+1
+
+
+
+
+
+s+1
+
+
+
+
+s+1
+) − F (xs+1
+, vts+1 + F (xs+1
+≤ r(x) − r(xs+1
+t
+t+1 ) +
+t+1 ) + x − xt
++
+
+1
+s+1
+2ηt+1
+
+h
+ i
+
+
+x − xs+1 2 − x − xs+1 2 ,
+t
+t+1
+
+s+1
+ηt+1
+
+2(1 −
+
+s+1
+ηt+1
+Lφ )
+
+2
+ s+1
+v
+)
+− ∇F (xs+1
+t
+t
+
+where
+the first inequality comes
+from the update of xs+1
+t+1 , the first equality holds true since hx, yi =
+i
+h
+2
+2
+2
+1
+2 kx + yk − kxk − kyk , the second inequality comes from Assumption A.3, and the third inequality
+comes from the Young inequality.
+19
+
+Taking the conditional expectation of both side on xts+1 and x̃s yields that
+
+
+ 
+
+
+s+1 s
+, x̃s
+| xs+1
+, E vts+1 − us+1
+, x̃ + x − xs+1
+0 ≤ r(x) − E r(xs+1
+t
+t
+t
+t+1 ) | xt
+
+
+
+
+
+s+1 s
+, x̃
+) − E F (xs+1
+) + F (xs+1
+, ∇F (xs+1
++ x − xs+1
+t
+t
+t
+t+1 ) | xt
+s+1
+h
+ii
+h
+i
+h
+
+
+
+ηt+1
+x − xs+1 2 − E x − xs+1 2 | xs+1 , x̃s
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s + 1
+E
++
+t
+t
+t
+t
+t
+t+1
+s+1
+s+1
+2(1 − ηt+1
+Lφ )
+2ηt+1
+
+
+
+
+
+
+s+1 s
+, x̃s
+| xs+1
+, E vts+1 − us+1
+, x̃ + x − xs+1
+≤ Φ(x) − E Φ(xs+1
+t
+t
+t
+t+1 ) | xt
+s+1
+h
+h
+i
+ii
+h
+
+
+
+ηt+1
+x − xs+1 2 − E x − xs+1 2 | xs+1 , x̃s
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s + 1
++
+E
+t
+t
+t
+t
+t
+t+1
+s+1
+s+1
+2(1 − ηt+1
+Lφ )
+2ηt+1
+s+1
+i
+h
+
+
+
+ η α Lφ 
+ηt+1
+s+1 s
+x − xs+1 2 +
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s
+,
+x̃
+≤ Φ(x) − E Φ(xs+1
+)
+|
+x
++
+E
+t
+t
+t
+t
+t
+t+1
+s+1
+2
+2(1 − ηt+1
+Lφ )
+h
+ii
+h
+
+
+
+
+1 
+x − xs+1 2 − E x − xs+1 2 | xs+1 , x̃s
+E vs+1 − us+1 | xs+1 , x̃s 2 + 1
++ α
+t
+t
+t
+t
+t
+t+1
+s+1
+2η Lφ
+2ηt+1
+), the second
+is an unbiased estimator of ∇F (xs+1
+where the first inequality holds true since us+1
+t
+t
+inequality comes from Assumption A.1 and the third inequality comes from the Young inequality with
+η α Lφ > 0 and α > 1. Finally, we observe that
+s+1
+ηt+1
+
+2(1 −
+
+s+1
+ηt+1
+Lφ )
+
+=
+
+1
+1
+η
+.
+≤ 1
+=
+2(1 − ηLφ )
+2( ηs+1 − Lφ )
+2( η − Lφ )
+1
+
+t+1
+
+s+1
+where the inequality comes from the fact that ηt+1
+∈
+
+h
+
+√η , η
+2
+
+i
+
+. This implies that
+
+h
+i
+
+
+
+ η α Lφ 
+η
+s+1 s
+x − xs+1 2 +
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s
+0 ≤ Φ(x) − E Φ(xs+1
+)
+|
+x
+,
+x̃
++
+E
+t
+t
+t
+t
+t
+t+1
+2
+2(1 − ηLφ )
+ii
+h
+h
+
+
+
+
+
+
+1 
+x − xs+1 2 − E x − xs+1 2 | xs+1 , x̃s .
+E vs+1 − us+1 | xs+1 , x̃s 2 + 1
++ α
+t
+t
+t
+t
+t
+t+1
+s+1
+2η Lφ
+2ηt+1
+This completes the proof.
+
+
+
+Lemma C.2. Assume that k0 ≥ 1 and the sample sizes A > 0, B > 0 and C > 0 satisfy
+A=
+
+12Bg4 L2f
+η 2α L2φ
+
+,
+
+B=
+
+12Bf2 L2g
+η 2α L2φ
+
+,
+
+C=
+
+12
+,
+η 2α
+
+for some α > 1 and η > 0 satisfies
+η≤
+
+1
+,
+2Lφ
+
+ηα ≤
+
+1
+√
+,
+20 2ηLφ T
+
+we have
+ ∗
+
+
+
+
+
+α L x∗ − x0 2
+0 ) − Φ(x∗ )
+x − x0 2
+
+3η
+2
+Φ(x
+φ
++
++
+.
+E Φ(x̃s+1 ) − Φ(x∗ ) ≤
+2S
+2S
+2S ηk0
+
+
+where x∗ is an optimal solution, i.e.,
+
+x∗ = argmin Φ(x).
+x∈Rd
+
+20
+
+Proof. Letting x = x∗ in Lemma C.1 and combining Lemma B.1 and Lemma B.3 yields that
+
+i
+h
+
+
+ η α Lφ  ∗
+
+η
+s+1 s
+x − xs+1 2 +
+vs+1 − ∇F (xs+1 )2 | xs+1 , x̃s
+E
+,
+x̃
++
+0 ≤ Φ(x∗ ) − E Φ(xs+1
+)
+|
+x
+t
+t
+t
+t
+t
+t+1
+2
+2(1 − ηLφ )
+ii
+h
+h
+
+ ∗
+
+
+
+
+1 
+x − xs+1 2 − E x∗ − xs+1 2 | xs+1 , x̃s
+E vs+1 − us+1 | xs+1 , x̃s 2 + 1
++ α
+t
+t
+t
+t
+t
+t+1
+s+1
+2η Lφ
+2ηt+1
+
+ η α Lφ  ∗
+
+
+
+
+4ηLφ
+s+1 s
+x − xs+1 2 +
+,
+x̃
++
+≤ Φ(x∗ ) − E Φ(xs+1
+)
+|
+x
+) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )]
+Φ(xs+1
+t
+t
+t
+t+1
+2
+C(1 − ηLφ )
+!
+!#
+"
+2
+2
+4
+4
+2
+2
+2
+h
+
+2 i
+Bg L f
+Bg L f
+Bf L g
+Lφ
+Bf2 L2g
+2
+4η
+kx̃s − x∗ k2 + xs+1
+− x∗ 
++ α
++
++
++
++
+t
+1 − ηLφ
+A
+B
+C
+η Lφ
+A
+B
+h
+ii
+h
+
+
+
+
+1
+2 − E x∗ − xs+1 2 | xs+1 , x̃s .
++ s+1 x∗ − xs+1
+t
+t
+t+1
+2ηt+1
+Recall that the sample size of At , Bt and Ct are selected as
+A=
+
+12Bg4 L2f
+η 2α L2φ
+
+,
+
+B=
+
+12Bf2 L2g
+η 2α L2φ
+
+,
+
+C=
+
+12
+,
+η 2α
+
+(9)
+
+we have
+4η
+1 − ηLφ
+
+Bg4 L2f
+A
+2
+α
+η Lφ
+
++
+
+Bf2 L2g
+
++
+
+B
+
+Bg4 L2f
+A
+
+L2φ
+C
+
+Bf2 L2g
+
++
+
+B
+
+!
+
+=
+
+!
+
+≤
+
+η 2α L2φ
+1 − ηLφ
+
+,
+
+η α Lφ
+.
+4
+
+Plugging (9) into the above inequality yields that
+
+
+
+ η α Lφ  ∗
+
+
+
+4ηLφ
+s+1 s
+x − xs+1 2 +
+, x̃ +
+0 ≤ Φ(x∗ ) − E Φ(xs+1
+) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )]
+Φ(xs+1
+t
+t
+t+1 ) | xt
+2
+C(1 − ηLφ )
+!
+2α
+2
+ii
+i
+h
+h
+α
+
+
+
+
+η Lφ
+η Lφ
+1 h
+∗ 2
+x∗ − xs+1 2 − E x∗ − xs+1 2 | xs+1 , x̃s
++
++
+kx̃s − x∗ k2 + xs+1
+−
+x
++
+t
+t
+t
+t+1
+s+1
+1 − ηLφ
+2
+2ηt+1
+Furthermore, since α > 1 and 0 < η ≤
+
+1
+2Lφ
+
+< 1, we have
+
+4ηLφ
+η 1+2α Lφ
+η 3 Lφ
+ηLφ
+=
+≤
+≤
+≤
+C(1 − ηLφ )
+3 − 3ηLφ
+3 − 3ηLφ
+3 − 3ηLφ
+and
+
+η 2α L2φ
+1 − ηLφ
+
+≤
+
+η 1+α L2φ
+1 − ηLφ
+
+=
+
+21
+
+η α L2φ
+1
+η
+
+− Lφ
+
+≤ η α Lφ .
+
+3
+η
+
+Lφ
+1
+≤ ,
+3
+− 3Lφ
+
+(10)
+
+(11)
+
+Plugging (10) and (11) yields that
+
+
+
+
+ η α Lφ  ∗
+
+s+1 s
+x − xs+1 2 + 1 Φ(xs+1 ) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )]
+,
+x̃
++
+0 ≤ Φ(x∗ ) − E Φ(xs+1
+)
+|
+x
+t
+t
+t
+t+1
+2
+3
+h
+ii
+h
+i
+
+
+
+
+3η α Lφ h s
+1
+2
+∗
+x∗ − xs+1 2 − E x∗ − xs+1 2 | xs+1 , x̃s
++
++
+kx̃ − x∗ k2 + xs+1
+−
+x
+t
+t
+t
+t+1
+s+1
+2
+2ηt+1
+
+
+
+ 1 
+s+1 s
+) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )]
+Φ(xs+1
+, x̃ +
+= Φ(x∗ ) − E Φ(xs+1
+t
+t+1 ) | xt
+3
+ii
+h
+
+
+ i
+
+η α Lφ h
+1 h
+∗ 2
+x∗ − xs+1 2 − E x∗ − xs+1 2 | xs+1 , x̃s
++
++
+3 kx̃s − x∗ k2 + 4 xs+1
+−
+x
+t
+t
+t
+t+1
+s+1
+2
+2ηt+1
+
+ 1 
+
+
+s+1 s
+, x̃ +
+= Φ(x∗ ) − E Φ(xs+1
+) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )]
+Φ(xs+1
+t
+t+1 ) | xt
+3
+ii
+h
+ s+1
+2 i
+2
+
+η α Lφ h
+1 h
+s
+∗ 2
+ − E x∗ − xs+1 2 | xs+1 , x̃s
+3 kx̃ − x k − 6 xt − x∗  + s+1 x∗ − xs+1
++
+t
+t
+t+1
+2
+2ηt+1
+2
+
++5η α Lφ xs+1
+− x∗  ,
+t
+Furthermore, we observe that
+
+1
+ηts+1
+
+−
+
+1
+s+1
+ηt+1
+
+≥
+
+1
+1
+√ √
+≥ 10η α Lφ ,
+= √
+2 2ηT
+2η T 2T
+
+where the last inequality comes from the fact that
+0 < ηα ≤
+
+1
+√
+.
+20 2ηLφ T
+
+This implies that
+
+≤
+≤
+
+ii
+h
+
+
+
+
+1 h
+x∗ − xs+1 2 − E x∗ − xs+1 2 | xs+1 , x̃s + 5η α Lφ x∗ − xs+1 2
+t
+t
+t
+t+1
+s+1
+2ηt+1
+!
+i
+h
+
+ ∗
+
+1
+α
+x − xs+1 2 − 1 E x∗ − xs+1 2 | xs+1 , x̃s
++
+5η
+L
+φ
+t
+t
+t+1
+s+1
+s+1
+2ηt+1
+2ηt+1
+i
+h
+
+
+1 
+x∗ − xs+1 2 − 1 E x∗ − xs+1 2 | xs+1 , x̃s .
+t
+t
+t+1
+s+1
+2ηts+1
+2ηt+1
+
+Therefore, we conclude that
+
+
+s+1 s
+, x̃ − Φ(x∗ )
+E Φ(xs+1
+t+1 ) | xt
+
+2 i
+
+ η α Lφ h
+1 
+3 kx̃s − x∗ k2 − 6 xs+1
+− x∗ 
+≤
+Φ(xs+1
+) − Φ(x∗ ) + [Φ(x̃s ) − Φ(x∗ )] +
+t
+t
+3
+2
+i
+h
+
+
+1 
+1
+s+1 2
+s+1 2
+s
+∗
+∗
+
+
+.
++ s+1 x − xt
+,
+x̃
+− s+1 E x − xt+1 | xs+1
+t
+2ηt
+2ηt+1
+
+We take the expectation of both sides of the above inequality, sum the resulting inequality up over
+
+22
+
+t = 0, 1, 2, . . . , ks+1 − 1, and divide both sides of the final inequality by ks+1 . Then we arrive at
+
+
+ ∗
+
+ks+1 −1
+s+1 2
+α
+
+X Φ(xs+1
+t+1 ) + 3η Lφ x − xt
+− Φ(x∗ )
+E
+ks+1
+t=0
+ 
+
+ks+1 −1
+s+1
+X
+
+ ∗
+3η α Lφ ∗
+1
+1
+Φ(xt )
+x − xs+1 2
+≤ E 
+kx − x̃s k2 + s+1
+− Φ(x∗ ) + Φ(x̃s ) − Φ(x∗ ) +
+0
+3
+ks+1
+2
+2η0 ks+1
+t=0
+#
+2
+
+1
+ ∗
+s+1 
+− s+1
+x − xks+1  .
+2ηks+1 ks+1
+
+Multiplying both sides of the above inequality by 3 and rearranging yields that
+
+
+
+ks+1 −1
+9ηα Lφ 
+s+1 2
+∗
+
+X Φ(xs+1
+)+ 2
+x − xt
+t
+2 · E
+− Φ(x∗ )
+ks+1
+t=0
+h
+i
+ 
+
+∗ ) − 3 Φ(xs+1 ) − Φ(x∗ )
+3 Φ(xs+1
+)
+−
+Φ(x
+0
+ks+1
+9η α Lφ s
+≤ E
++ Φ(x̃s ) − Φ(x∗ ) +
+kx̃ − x∗ k2
+ks+1
+2
+#
+
+2
+
+ ∗
+3
+3
+2
+
+
+ −
+· x∗ − xs+1
+· x − xs+1
+.
++ s+1
+0
+ks+1 
+·
+k
+2η0 · ks+1
+2ηks+1
+s+1
+s+1
+According to Assumption A.1 and the definition of x̃s+1 , we obtain that
+
+ s+1
+2
+x̃
+− x∗ 
+
+which implies that
+
+
+E Φ(x̃s+1 ) − Φ(x∗ ) +
+
+9η α L
+2
+
+φ
+
+ks+1 −1
+
+X Φ(xs+1 )
+t
+,
+k
+s+1
+t=0
+2
+ks+1 −1 
+X xs+1
+− x∗ 
+t
+≤
+,
+ks+1
+t=0
+
+Φ(x̃s+1 ) ≤
+
+
+
+ks+1 −1
+X Φ(xs+1
+ s+1
+
+)+
+t
+∗ 2
+x̃
+
+−x
+≤E
+t=0
+
+9ηα Lφ
+2
+
+ ∗
+
+x − xs+1 2
+t
+
+ks+1
+
+− Φ(x∗ ) .
+
+Then we arrive at
+
+
+2
+9η α Lφ 
+s+1
+∗
+s+1
+∗
+x̃
+−x 
+2 · E Φ(x̃ ) − Φ(x ) +
+2
+h
+i
+ 
+
+∗ ) − 3 Φ(xs+1 ) − Φ(x∗ )
+3 Φ(xs+1
+)
+−
+Φ(x
+0
+ks+1
+9η α Lφ s
+≤ E
++ Φ(x̃s ) − Φ(x∗ ) +
+kx̃ − x∗ k2
+ks+1
+2
+#
+
+2
+
+ ∗
+3
+3
+2
+
+
+ −
+· x − xs+1
+· x∗ − xs+1
+.
++ s+1
+0
+ks+1 
+2η0 · ks+1
+2ηks+1
+·
+k
+s+1
+s+1
+23
+
+
+
+s+2
+s+1
+s+2
+Combining the fact that xs+1
+and ks+2 = 2ks+1 , we have
+ks+1 = x0 , ηks+1 = η0
+
+2
+
+
+#
+s+2
+∗)
+
+2 3 x∗ − xs+2
+3
+Φ(x
+)
+−
+Φ(x
+9η α Lφ 
+0
+0
+∗
+s+1
+x − x̃  +
++
+2 · E Φ(x̃ ) − Φ(x ) +
+2
+2ks+1
+4η0s+2 · ks+1
+"
+
+ ∗
+
+#
+αL
+x − xs+1 2 3 Φ(xs+1 ) − Φ(x∗ )
+3
+9η
+φ
+0
+0
+kx∗ − x̃s k2 +
+.
+≤ E Φ(x̃s ) − Φ(x∗ ) +
++
+2
+2ks
+4η0s+1 · ks
+"
+
+s+1
+
+∗
+
+Finally, we telescope the above inequality for s = 0, 1, 2, . . . , S and obtain that
+
+
+E Φ(x̃s+1 ) − Φ(x∗ )
+"
+ ∗
+
+#
+
+1 2
+1 ) − Φ(x∗ )
+αL 
+
+
+3
+x
+−
+x
+3
+Φ(x
+9η
+1
+2
+φ  ∗
+0
+0
+≤
+· E Φ(x̃0 ) − Φ(x∗ ) +
+x − x̃0  +
++
+2S+1
+2
+2k0
+4η01 · k0
+
+
+
+
+
+
+2
+x∗ − x0 2
+2 Φ(x0 ) − Φ(x∗ )
+3η α Lφ x∗ − x0 
+≤
++
++
+.
+2S
+2S
+2S η · k0
+
+This completes the proof.
+
+
+
+Theorem C.3. Given the initial vector x0 ∈ Rd satisfies that
+ 0
+
+x − x∗ 2 ≤ Dx , Φ(x0 ) − Φ(x∗ ) ≤ Dφ ,
+
+and the first epoch length k0 > 0 and the number of epochs S > 0 satisfy that
+
+
+
+
+
+6Dφ
+Dx
++ 1,
+S = log2
++ 1,
+k0 =
+2ηDφ
+ε
+and the sample sizes A > 0, B > 0 and C > 0 satisfy
+A=
+
+12Bg4 L2f
+η 2α L2φ
+
+,
+
+B=
+
+12Bf2 L2g
+
+for some α > 1 and η > 0 satisfies
+
+
+1
+ 1
+α
+2Dφ
+,
+,
+η = min
+ 2Lφ
+3Lφ Dx
+
+η 2α L2φ
+
+,
+
+C=
+
+12
+,
+η 2α
+
+ε
+√
+60 2Lφ (Dx + 2Dφ )
+
+!1
+α
+
+,
+
+
+
+and ε ∈ (0, 1) is a tolerance, then the total IFO complexity, i.e., the number of IFO queries to achieve
+an ε-optimal solution that satisfies
+
+
+E Φ(x̃s+1 ) − Φ(x∗ ) ≤ ε,
+
+is
+
+
+ 
+1
+1
++
+,
+O (m + n) log
+1
+ε
+ε3+ α
+where we omit the dependence of the IFO complexity on the Lipschitz constant Lφ , Lf , Lg , the upper
+bound of the norm of gradient and Jacobian Bf , Bg , and the distance between the initial point and the
+optimal set, i.e., Dx (the iterative gap) and Dφ (the objective gap).
+
+
+24
+
+Proof. Firstly, we check if the choices of parameter satisfy the requirement in Lemma C.2. Indeed, we
+observe that k0 ≥ 1 and the sample sizes A > 0, B > 0 and C > 0 satisfy
+A=
+
+12Bg4 L2f
+η 2α L2φ
+
+,
+
+B=
+
+for some α > 1 and η > 0 satisfies
+η≤
+
+12Bf2 L2g
+η 2α L2φ
+
+,
+
+C=
+
+12
+,
+η 2α
+
+1
+.
+2Lφ
+
+Then it suffices to check if the following statement holds true,
+η≤
+
+1
+,
+2Lφ
+
+ηα ≤
+
+1
+√
+.
+20 2ηLφ T
+
+We observe that
+1
+√
+20 2ηLφ T
+
+≥
+≥
+≥
+=
+≥
+≥
+
+1
+√
+20 2ηLφ k0 2S
+ε
+1
+√
+·
+20 2ηLφ k0 6Dφ
+1
+ε
+
+·
+√
+Dx
+6Dφ
+20 2ηLφ 2ηD
++1
+φ
+ε
+√
+60 2Lφ (Dx + 2ηDφ )
+ε
+√
+60 2Lφ (Dx + 2Dφ )
+ηα ,
+
+S
+where the jfirst inequality
+k comes from the fact that T = k0 · 2 − kj0 , thekfirst equality comes from
+6Dφ
+Dx
+S = S = log2 ε
++ 1, the third inequality
++ 1, the second inequality comes from k0 = 2ηD
+φ
+comes from the fact that 0 < η < 1 and the last inequality comes from 0 < η α < 60√2L εD +2D .
+φ)
+φ( x
+Therefore, we arrive at
+
+
+2  ∗
+
+
+x − x0 2
+
+ 2 Φ(x0 ) − Φ(x∗ )
+3η α Lφ x∗ − x0 
+s+1
+∗
+E Φ(x̃ ) − Φ(x ) ≤
++
++
+.
+2S
+2S
+2S ηk0
+
+Furthermore, we have
+
+
+
+2 Φ(x0 ) − Φ(x∗ )
+2S
+
+2
+3η α Lφ x0 − x∗ 
+2S
+ 0
+
+x − x∗ 2
+2S ηk0
+
+≤
+
+ε
+,
+3
+εη α Lφ Dx
+ε
+≤ ,
+2Dφ
+3
+
+≤
+
+ε
+,
+3
+
+≤
+
+25
+
+2D
+
+φ
+where the second inequality comes from 0 < η α ≤ 3Lφ D
+and the third inequality comes from k0 =
+x
+j
+k
+Dx
+2ηDφ + 1. Therefore, the total IFO complexity, i.e., the number of IFO queries to achieve an ε-optimal
+solution that satisfies
+
+
+E Φ(x̃s+1 ) − Φ(x∗ ) ≤ ε,
+
+is
+
+S · (m + n) + 2S · k0 · (A + B)
+
+
+
+ 
+ 
+
+
+6Dφ
+12Dφ
+Dx
+1
+= (m + n) ·
+log2
++1 +
+·
++ 1 · 2α ·
+ε
+ε
+2ηDφ
+η
+
+ 
+
+1
+1
+= O (m + n) · log
+.
++
+1
+ε
+ε3+ α
+This completes the proof.
+
+12Bg4 L2f
+L2φ
+
++
+
+12Bf2 L2g
+L2φ
+
+!
+
++ 12 ,
+
+
+
+26
+
+

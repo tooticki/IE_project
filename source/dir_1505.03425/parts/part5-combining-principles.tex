@@ -1,0 +1,235 @@
+
+The domination framework has two purposes. First, it emphasizes on the key elements
+of the construction and gets rid of the implementation technicalities by abstracting 
+the main operations into operators. Second, it enables us to separate conjunctions
+of principles from $\amt$, using the ability to compose modules into a compound one.
+In this section, we will take advantage of the latter to prove that $\emo$
+is not strong enough to prove~$\amt$, even when allowing compactness arguments.
+
+\begin{theorem}\label{thm:emo-coh-amt}
+There is an $\omega$-model of $\emo \wedge \coh \wedge \wkl$ which
+is not a model of $\amt$.
+\end{theorem}
+
+In subsection~\ref{subsect:composing-modules}, we will show how to compose multiple modules to obtain
+separations of conjunctions of principles from $\amt$. Then, in subsection~\ref{subsect:module-for-wkl}, we will
+provide a module for $\wkl$ and will show how to choose properly the sequence
+of sets $X_0, X_1, \dots$ to obtain an $\omega$-model of~$\wkl$. 
+
+\subsection{Composing modules}\label{subsect:composing-modules}
+
+When building the second-order part~$\Ical$ of an $\omega$-model of a countable collection of principles $\Psf_0, \Psf_1, \dots$,
+we usually interleave the instances of the various $\Psf$'s so that each instance receives attention after a finite number of iterations.
+This is exactly what we will do when composing module supports $\Sb_i = \tuple{\Pb_i, \Ub_i, \parop_i, \iniop_i, \satop_i}$
+for $\Psf_i$ for each $i \in \omega$, in order to obtain a compound 
+module support $\Sb = \tuple{\Pb, \Ub, \parop, \iniop, \satop}$ for $\bigwedge_{i \in \Nb} \Psf_i$.
+The domain of the partial order~$\Pb$ is obtained by taking the disjoint union of the partial orders $\Pb_i$.
+Therefore $\Pb = \{ \tuple{c,i} : i \in \Nb \wedge c \in \Pb_i \}$.
+The order is defined accordingly: $\tuple{d, j} \leq_\Pb \tuple{c,i}$ if $i = j$
+and $d \leq_{\Pb_i} c$. Similarly, $\Ub = \{ \tuple{\nu,i} : i < \Nb \wedge \nu \in \Ub_i \}$,
+$\parop(\tuple{c,i}) = \{\tuple{\nu, i} : \nu \in \parop_i(c)\}$ and $\satop(\tuple{\nu,i}) = \satop_i(\nu)$.
+
+The key element of the composition is the definition of $\iniop(n)$, which will
+return $\iniop_i(m)$ if $n$ codes the pair $(m, i)$.
+This way, infinitely many iterations are responsible for making $\Ical$ satisfy $\Psf_i$ for each $i \in \Nb$.
+The construction within the domination framework therefore follows the usual construction of a model satisfying two principles.
+
+The property~(i) in the definition of a module support for~$\Sb$ inherits from
+the property~(i) of $\Sb_i$ for each $i \in \Nb$. Indeed, if $\tuple{d,j} \leq_\Pb \tuple{c,i}$,
+then $j = i$ and $d \leq_{\Pb_i} c$. By the property~(i) of $\Mb_i$, there is a function
+$f : \parop_i(d) \to \parop_i(c)$ such that $\satop_i(\nu) \subseteq \satop_i(f(\nu))$
+for each $\nu \in \parop_i(d)$. Let $g : \parop(\tuple{d,i}) \to \parop(\tuple{c,i})$
+be defined by $g(\tuple{\nu,i}) = \tuple{f(\nu), i}$.
+$\satop(\tuple{\nu,i}) = \satop_i(\nu) \subseteq \satop_i(f(\nu)) = \satop(g(\tuple{\nu,i})$.
+
+Given a module $\Mb_i = \tuple{\Sb_i, \boxop_i, \unboxop_i, \progop_i}$ for $\Psf_i$ for each~$i \in \Nb$,
+the definition of the compound module $\Mb = \tuple{\Sb, \boxop, \unboxop, \progop}$ for $\bigwedge_{i \in \Nb} \Psf_i$
+does not contain any particular subtlety.
+Simply redirect $\boxop(\tuple{\nu,i}, \varphi)$ to $\boxop_i(\nu, \varphi)$,
+$\unboxop(\tuple{\nu,i}, a)$ to $\unboxop_i(\nu, a)$, and $\progop(\tuple{\nu,i})$ to $\progop_i(\nu)$.
+Again, the properties of a module support for $\Mb$ inherit the properties for $\Mb_i$.
+
+\subsection{A module for $\wkl$}\label{subsect:module-for-wkl}
+
+Weak K\"onig's lemma states for every infinite binary tree
+the existence of an infinite path through it.
+The usual effective construction of such a path follows
+the classical proof of K\"onig's lemma:
+we build the path by finite approximations and consider 
+the infinite subtree below the finite path we constructed so far.
+The difficulty consists of finding which ones, among the finite extensions candidates,
+induce an infinite subtree.
+
+First note that we do not share the same concerns as for the Erd\H{o}s-Moser theorem
+about the choice of an instance, since $\wkl$ admits a universal instance which is the tree
+whose paths are completions of Peano arithmetics. Moreover,
+this universal instance is a primitive recursive tree functional.
+
+It is natural to choose the infinite, computable binary tree functionals as our forcing conditions.
+A condition (tree) $U$ \emph{extends} $T$ if $U^D \subseteq T^D$. 
+A set $G$ \emph{satisfies} the condition $T$ if $G$ is an infinite path through $T^D$.
+Let us now see how we decide some $\Sigma^0_1$ query $\varphi(D, G)$. Consider the following question:
+
+\smallskip
+{\itshape
+Q6: Is the set $T^D \cap \{\sigma \in 2^{<\omega} : \neg \varphi(D, \sigma) \}$ finite?
+}
+\smallskip
+
+Let $\Gamma^D_\varphi = \{\sigma \in 2^{<\omega} : \neg \varphi(D, \sigma) \}$.
+Whenever $\varphi(D, \tau)$ holds and $\rho \succeq \tau$, $\varphi(D, \rho)$ holds,
+thus $\Gamma^D_\varphi$ is a tree.
+At first sight, the question Q6 seems $\Sigma^{0,D}_2$. However, $T^D \cap \Gamma^D_\varphi$ is a tree,
+so the question can be formulated in a $\Sigma^{0,D}_1$ way as follows:
+
+\smallskip
+{\itshape
+Q6': Is there some length $n$ such that $T^D \cap \Gamma^D_\varphi$ has no string of length $n$?
+}
+\smallskip
+
+If the answer is negative, the extension $T \cap \Gamma_\varphi$
+is valid and forces $\varphi(D, G)$ not to hold.
+If the answer is positive, the condition $T$ already forces $\varphi(D, G)$ to hold.
+Note that there is a hidden application of our moto ``if you cannot choose, try every possibilities in parallel''.
+Indeed, in many forcing arguments involving weak K\"onig's lemma,
+we $\emptyset'$-choose an extensible string $\sigma \in T$ such that $\varphi(D, \sigma)$ holds
+and $T^{D, [\sigma]}$ is infinite. However, we meet the same problem as in the Erd\H{o}s-Moser case,
+that is, we are unable to decide which of the $\sigma$'s will be extensible into an infinite subtree.
+To be more precise, for every $\sigma \in 2^n$, there may be some $D$ such that the set $T^{D, [\sigma]}$ is finite.
+By taking $T$ as our extension forcing $\varphi(D, G)$ to hold, we take in reality $\bigcup_{\sigma \in 2^n \cap T} T^{[\sigma]}$,
+that is, we take the union of the candidate extensions $T^{[\sigma]}$.
+We are now ready to define a module support $\Sb^{\wkl} = \tuple{\Pb, \Ub, \parop, \iniop, \satop}$ for $\wkl$.
+
+The set $\Pb$ is the set of conditions as defined above.
+Each condition has only one part which can be identified as the condition itself,
+therefore $\Ub = \Pb$. Accordingly, $\parop(T) = \{T\}$.
+The function $\iniop(n)$ always returns the universal instance of $\wkl$.
+Last, $\satop(T)$ is the collection of the infinite paths through $T^D$.
+
+\begin{lemma}
+$\Sb^{\wkl}$ is a module support.
+\end{lemma}
+\begin{proof}
+We need to check the property (i) of a module support.
+Let~$U \leq_\Pb T$ for some conditions~$T$ and~$U \in \Pb$.
+Define $f : \parop(U) \to \parop(T)$ as the function $f(U) = T$.
+We claim that $\satop(U) \subseteq \satop(f(U))$ for each~$U \in \parop(U)$.
+Since $\parop(U) = \{U\}$, we need to check that $\satop(U) \subseteq \satop(T)$,
+which is immediate since $U \subseteq T$.
+\end{proof}
+
+We now define the module $\Mb^{\wkl} = \tuple{\Sb^{\wkl}, \boxop, \unboxop, \progop}$ as follows.
+Given some tree $T$ and some query $\varphi(D, G)$, $\boxop(T, G)$ is the formula
+$\psi(D) = (\exists n)[T^D \cap \Gamma^D_\varphi \cap 2^n = \emptyset]$.
+Recall that $\Gamma^D_\varphi = \{\sigma \in 2^{<\omega} : \neg \varphi(D, \sigma) \}$.
+If the answer to the question $\psi(D)$ is $\tuple{\no}$,
+$\unboxop(T, \tuple{\no})$ returns the tuple $\tuple{T \cap \Gamma_\varphi, f, b}$
+where $f : \parop(T \cap \Gamma_\varphi) \to \parop(T)$ is trivially defined by $f(T \cap \Gamma_\varphi) = T$
+and $b$ is the constant function returning $\tuple{\no}$ everywhere.
+In the answer to the question $\psi(D)$ is $a = \tuple{\yes, n, a'}$, where $n$ is the integer witnessing
+$T^D \cap \Gamma^D_\varphi \cap 2^n = \emptyset$ and $a'$ witnesses the other existentials variables in $\varphi(D, G)$,
+$\unboxop(T, a)$ returns the tuple $\tuple{T, id, b}$
+where $id$ is the identify refinement function and $b$ is the constant function returning~$\tuple{\yes, a'}$ everywhere.
+No progress is needed for~$\wkl$. Therefore, $\progop(T)$ can be chosen to be any formula.
+
+%Last, we want to make sure that $\bigcap_s T_s$ is infinite for every infinite,
+%decreasing sequence of conditions $T_0 \geq T_1 \geq \dots$ such that $T_{s+1} \Vdash \progop(T_s)$ or 
+%$T_{s+1} \Vdash \neg \progop(T_s)$. To do that, we need to slightly change the definition of a condition $T$,
+%and use instead pairs $(T, F)$, where $F$ is a finite set of strings $\sigma$ such that 
+%either $T \Vdash \sigma \preceq G$ or $T \Vdash \sigma \not \preceq G$. A condition $(U, E)$ \emph{extends}
+%$(T, F)$ if $U^D \subseteq T^D$ and $F \subseteq E$. The unique part is again identified to the unique condition.
+%Let $\progop(T, F)$ be the formula $\sigma \preceq G$ for the least string $\sigma \not \in F$.
+%Therefore, for every sequence of conditions $(T_0, F_0) \geq (T_1, F_1) \geq \dots$
+%such that $(T_{s+1}, F_{s+1}) = \progop(T_s, F_s)$ and for every length $n$,
+%there is some stage $s$ such that $2^n \subseteq F_s$, and among those strings, there is
+%a $\sigma \in 2^n$ such that $(T_s, F_s) \Vdash \sigma \prec G$.
+%Since the set $F$ is only a state-passing-style trick for giving another parameter to $\progop$
+%and does not interfer with the other abstract operators, we will continue considering that
+%the conditions are trees to keep our notation simple. The reader must however keep in mind
+%that the actual forcing conditions are pairs.
+
+\begin{lemma}
+$\Mb^{\wkl}$ is a module.
+\end{lemma}
+\begin{proof}
+We need to ensure that, given the unique part $T$ of the condition $T$
+and some answer $a$ to a $\Sigma^0_1$ formula $\psi(D) = \boxop(T, \varphi)$
+where $\varphi(D, G)$ is a $\Sigma^0_1$ formula, $\unboxop(T, a)$
+outputs a tuple $\tuple{U, f, b}$ where $U$ is an extension of~$T$,
+$f : \parop(U) \to \parop(T)$ is defined by $f(U) = T$
+and for every set $G \in \satop(U)$, $b(U)$ is an answer to $\varphi(D, G)$.
+
+Suppose that $a = \tuple{\no}$. By definition of $\unboxop(T, \tuple{\no})$,
+$U = T \cap \Gamma_\varphi$ and $b$ is the constant function $\tuple{\no}$. 
+By definition of $\satop(U)$, $G$ is an infinite path through $T^D \cap \Gamma^D_\varphi$.
+Let $\sigma$ be any initial segment of $G$. In particular, $\sigma \in \Gamma^D_\varphi$. Unfolding the definition of $\Gamma^D_\varphi$n
+$\varphi(D, \sigma)$ does not hold. Therefore $\varphi(D, G)$ does not hold.
+
+Suppose now that $a = \tuple{\yes, n, a'}$, where $a'$ witnesses the existential variables of $\varphi(D, G)$.
+Again, by definition of $\unboxop(T, a)$, $U = T$, $f$ is the identify function 
+and $b$ is the constant function returning $\tuple{\yes, a'}$ everywhere.
+By definition of $\satop(U)$, $G$ is an infinite path through $T^D$.
+Let $\sigma$ be an initial segment of $G$ of length $n$. Since $T^D \cap \Gamma^D_\varphi \cap 2^n = \emptyset$,
+$\varphi(D, \sigma)$ holds, so $\varphi(D, G)$ holds.
+\end{proof}
+
+Finally, we explain how to extract a solution to the universal instance of $\wkl$ below some set $D$,
+given the infinite decreasing sequence of stage trees constructed in subsection~\ref{subsect:framework-construction}.
+Given the sequence $T_0 \geq T_1 \geq \dots$ whose roots are $T_0 \geq T_1 \geq \dots$,
+there is no much choice since each condition $T_s$ has only one part, that is, the tree $T_s$ itself.
+By compactness, $\bigcap_s T_s^D$ is infinite. Take any infinite path~$G$ through~$\bigcap_s T_s^D$.
+This completes the proof of Theorem~\ref{thm:emo-coh-amt}.
+
+%We just need to prove that $\bigcap_s T_s^D$ is infinite, so that we can take some infinite path $G$ through $\bigcap_s T_s^D$.
+%In particular, $G \in \satop(T_s)$ for every $s$.
+%Fix some $n \in \omega$. By the query lemma applied to the progress operator, there is some stage $s$
+%such that for every $\sigma \in 2^n$, $T_s \Vdash \sigma \prec G$ or $T_s \Vdash \sigma \not \prec G$.
+%In particular, there must be a (unique) $\sigma \in 2^n$ such that $T_s \Vdash \sigma \prec G$.
+%For every $t > s$, $T_t \Vdash \sigma \prec G$, so $\sigma \in T^D_t$. Moreover, $\sigma \in T_t$
+%for every $t \leq s$ since $T^D_s \subseteq T^D_t$. Therefore, $\sigma \in \bigcap_s T_s^D$.
+%We proved that for every $n$, there is a string of length $n$ in $\bigcap_s T_s^D$,
+%so the tree $\bigcap_s T_s^D$ is infinite.
+%This finishes the proof of Theorem~\ref{thm:emo-coh-amt}.
+
+\subsection{Beyond the atomic model theorem}
+
+We conclude this section by a discussion on the generality of the domination framework and
+its key properties.
+
+Ramsey-type theorems satisfy one common core combinatorial property: given an instance $I$ of a principle $\Psf$,
+for every infinite set $X \subseteq \Nb$, there is a solution of~$Y \subseteq X$ of $I$.
+This property makes Ramsey-type principles combinatorially weak. Indeed, Solovay~\cite{Solovay1978Hyperarithmetically}
+proved that the sets computable by every solution to a given instance~$I$ of $\Psf$ are precisely
+the hyperarithmetical ones.  Moreover, Groszek and Slaman~\cite{Groszek2007Moduli} proved that the hyperarithmetical 
+sets are precisely the sets~$S$ admitting a modulus, namely,
+a function $f$ such that every function dominating $f$ computes~$S$. These results put together can be interpreted
+as stating that the coding power of Ramsey-type principles comes from the sparsity of their solutions.
+If an instance can force its solutions~$H = \{x_0 < x_1 < \dots \}$ to have arbitrarily large gaps, then the principal function
+$p_H$ defined by $p_H(n) = x_n$ will be fast-growing, and contain some computational power.
+
+The strength of many principles in reverse mathematics can be explained 
+in terms of the ability to ensure gaps in the solutions.
+$\aca$ has instances whose solutions are everywhere-sparse, in that the principal function
+of the solutions dominated the modulus function of $\emptyset'$.
+Some principles such as $\coh$, $\amt$ or $\fip$ imply the existence of hyperimmune sets,
+which are sets sparse enough so that their principal function is not dominated by any computable function.
+These sets have infinitely many gaps, but their repartition cannot be controlled.
+
+Another important aspect of the hole-based analysis is their definitional complexity.
+For example, $\amt$ has the ability to ensures $\Delta^0_2$ gaps, which gives it more computational power
+than $\coh$ or $\emo$ which can only have $\Delta^0_1$ gaps. This is the main feature used by the domination framework
+to prove that $\coh \wedge \emo$ does not imply $\amt$.
+This framework was designed to exploit this weakness of the principles, and is therefore relatively specific to
+the atomic model theorem. However, some weakenings of $\amt$, such as the finite intersection property,
+share some similar properties, in that they can also be purely characterized in terms of hyperimmunity properties.
+The author leaves open the following question:
+
+\begin{question}
+Does $\coh$ imply $\fip$ in $\rca$?
+\end{question}
+
+
+
+
+

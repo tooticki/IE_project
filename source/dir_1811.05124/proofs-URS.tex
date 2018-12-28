@@ -1,0 +1,203 @@
+\subsection{Bounding the upper tails of AGG maxima}
+\label{subsec:bounding-upper-tails-of-maxima}
+
+
+\begin{proof}[Proof of Lemma \ref{lemma:AGG-maxima-upper-tails}]
+Recall by \eqref{eq:AGG-quantiles} that 
+\begin{equation*}
+    u_q\sim\left(\nu\log{q}\right)^{1/\nu}, \quad q\to\infty,
+\end{equation*}
+so that
+\begin{equation} %\label{eq:choice-of-c_p}
+c_p  = \frac{u_{p\log{p}}}{u_p} -1 = \left(\frac{\log{p}+\log{\log{p}}}{\log{p}}\right)^{1/\nu}(1+o(1)) - 1 \rightarrow 0 \quad \mbox{as } p\to\infty.
+\end{equation} 
+By the union bound, we have
+\begin{align}
+    \P\left[\frac{M_p}{u_p} > 1+c_p\right] 
+        &\le \sum_{j=1}^p \P\left[\frac{\epsilon_p(j)}{u_p} > 1+c_p\right] 
+        = p \overline{F}\left(u_{p\log{p}}\right) \label{eq:AGG-maxima-upper-tails-proof-1} \\
+        &= p \overline{F}\left(F^{\leftarrow}\left(\frac{1}{p\log{p}}\right)\right) \le \frac{1}{\log{p}} \rightarrow 0. \nonumber
+\end{align}
+where the last inequality follows from the fact that $F\left(F^{\leftarrow}(u)\right)\ge u$ for all $u\in[0,1]$.
+\end{proof}
+
+In addition to Lemma \ref{lemma:AGG-maxima-upper-tails}, which says the upper tail vanishes in probability, we will also prepare a result which states that the upper tail also vanishes in expectation.
+
+\begin{lemma} \label{lemma:AGG-max-uniform-integrability}
+Let $M_p$ and $c_p$ be as in Lemma \ref{lemma:AGG-maxima-upper-tails}, and denote 
+$$
+\xi_p := \frac{M_p}{(1+c_p)u_p}.
+$$
+Then there exists $p_0,t_0 > 0$, and absolute constant $C>0$ such that
+\begin{equation} \label{eq:lemma-AGG-uniform-integrability}
+    \P\left[\xi_p > t \right]\le \exp{\{-Ct^\nu\}}, \quad \text{for all} \quad p>p_0, t>t_0.
+\end{equation}
+In particular, the set of random variables $\{\left(\xi_p\right)_+,p\in\N\}$ is uniformly integrable.
+\end{lemma}
+\begin{proof}[Proof of Lemma \ref{lemma:AGG-max-uniform-integrability}]
+Recalling that $(1+c_p)u_p = u_{p\log{p}}$, and by applying the union bound as in \eqref{eq:AGG-maxima-upper-tails-proof-1}, we have
+\begin{align}
+    \log \P\left[\xi_p > t\right] 
+        &\le \log p + \log{\overline{F}\left(u_{p\log{p}}t\right)} \nonumber \\
+        &\le \log p - \frac{1}{\nu}\left(u_{p\log{p}}t\right)^\nu(1-\delta). \label{eq:lemma-AGG-uniform-integrability-proof-1}
+\end{align}
+for $t > t_0(\delta)>0$, where $\delta\in(0,1)$ is an arbitrarily small number fixed in advance. 
+This follows from the assumption that $F\in\text{AGG}(\nu)$ and the Definition \ref{def:AGG} of AGG tails.
+Using in \eqref{eq:lemma-AGG-uniform-integrability-proof-1} the explicit expressions for quantiles in \eqref{eq:AGG-quantiles}, we obtain
+\begin{equation} \label{eq:lemma-AGG-uniform-integrability-proof-2}
+    \log \P\left[\xi_p > t\right] \le \log p - \underbrace{\left(1+o(1)\right)(1-\delta)t^\nu}_{\text{greater than }1\text{ for large }t}\log{p} - t^\nu\underbrace{\log{\log{p}}\left(1+o(1)\right)(1-\delta)}_{\text{greater than }C\text{ for large }p}.
+\end{equation}
+For large $t$, we have $\left(1+o(1)\right)(1-\delta)t^\nu > 1$, so that sum of the first two terms on the right-hand side of \eqref{eq:lemma-AGG-uniform-integrability-proof-2} is negative.
+Also, for $p$ larger than some constant $p_0(\delta)$, we have $\log{\log{p}}\left(1+o(1)\right)(1-\delta) > C$ for some constant $C$ that does not depend on $p$.
+Therefore \eqref{eq:lemma-AGG-uniform-integrability} holds for $t>t_0(\delta)$ and $p>p_0(\delta)$, and the proof is complete.
+\end{proof}
+
+\begin{corollary} \label{cor:AGG-max-upper-bound-expectation}
+The upper tails of AGG maxima vanish in expectation, i.e.,
+    \begin{equation} \label{eq:AGG-max-bound-upper-expectation}
+    \E\left[\left(\frac{M_p}{u_p} - (1+c_p)\right)_+\right]
+    \to 0 \quad\text{as }\; p\to\infty.
+\end{equation}
+\end{corollary}
+
+\begin{proof}[Proof of Corollary \ref{cor:AGG-max-upper-bound-expectation}]
+Since $c_p\ge0$ is a sequence converging to 0, we have $c_p < 1$ for $p \ge p_0$. Hence for any $t>0$, we have
+\begin{align}
+    \P\left[\left(\frac{M_p}{u_p} - (1+c_p)\right)_+ > t\right] 
+    &= \P\left[(1+c_p)\left(\xi_p-1\right)_+ > t\right] \nonumber \\
+    &\le \P\left[\left(\xi_p-1\right)_+ > t/2\right] 
+    \le \P\left[\xi_p > t/2 \right]. \label{eq:AGG-max-bound-upper-expectation-proof}
+\end{align}
+By Lemma \ref{lemma:AGG-max-uniform-integrability}, $\{\left(\xi_p\right)_+\}$ is u.i., therefore by Relation \eqref{eq:AGG-max-bound-upper-expectation-proof}, $\{\left(M_p/u_p - (1+c_p)\right)_+,\;p\in\N\}$ is u.i. as well.
+Since by Lemma \ref{lemma:AGG-maxima-upper-tails}, $\left(M_p/u_p - (1+c_p)\right)_+\to 0$ in probability, Relation \eqref{eq:AGG-max-bound-upper-expectation} follows from the established uniform integrability.
+\end{proof}
+
+
+\subsection{Bounding the lower tails of Gaussian maxima}
+\label{subsec:bounding-lower-tails-of-maxima}
+
+The main goal of this section is to establish the following result. 
+
+\begin{proposition} \label{prop:Gaussian-maxima-expectation-lower-bound}
+For every UDD Gaussian array $\cal E$, and any sequence of subsets
+$S_p\subseteq\{1,\ldots,p\}$ such that $q = q(p) = |S_p|\to \infty$, we have
+\begin{equation} \label{eq:AGG-max-bound-expectation}
+    \liminf_{p\to\infty} \E\left[\frac{M_{S_p}}{u_q}\right] \ge 1,
+\end{equation}
+where $M_S = \max_{j\in S}\epsilon(j)$.
+\end{proposition}
+% We suppressed dependence on $p$ for both $S = S_p$ and $s = s(p) = |S_p|$ for convenience of notation.
+
+Lemma \ref{lemma:Gaussian-maxima-lower-expectation}, which is the key to the proof of the `if' part of Theorem \ref{thm:Gaussian-weak-dependence}, follows immediately from this proposition.
+
+\begin{proof}[Proof of Lemma \ref{lemma:Gaussian-maxima-lower-expectation}]
+We start with the identity
+$$
+\E\left[\frac{M_{S_p}}{u_q}-(1+c_q)\right] = \E\left[\left(\frac{M_{S_p}}{u_q}-(1+c_q)\right)_+\right] - \E\left[\left(\frac{M_{S_p}}{u_q}-(1+c_q)\right)_-\right].
+$$
+By re-arranging terms and taking limsup/liminf, we obtain
+\begin{align} \label{e:lim-sup-vanishes}
+    0 \le &\limsup_{p\to\infty}\E\left[\left(\frac{M_{S_p}}{u_q}-(1+c_q)\right)_-\right]\nonumber \\
+        \le & \limsup_{p\to\infty}\E\left[\left(\frac{M_{S_p}}{u_q}-(1+c_q)\right)_+\right] - \liminf_{p\to\infty}\E\left[\frac{M_{S_p}}{u_q}-(1+c_q)\right]\\
+        = & - \liminf_{p\to\infty}\E\left[\frac{M_{S_p}}{u_q}-(1+c_q)\right],
+        \label{e:lim-inf-bound}
+\end{align}
+where the last equality follows from the fact that the lim-sup in \eqref{e:lim-sup-vanishes} vanishes by Corollary \ref{cor:AGG-max-upper-bound-expectation}.
+On the other hand, since $c_q\to 0$, we have
+$$
+\liminf_{p\to\infty}\E\left[\frac{M_{S_p}}{u_q}-(1+c_q)\right] 
+= \liminf_{p\to\infty}\E\left[\frac{M_{S_p}}{u_q}-1\right] \ge 0,
+$$
+where the last inequality follows from Proposition \ref{prop:Gaussian-maxima-expectation-lower-bound}.  This shows that 
+the right-hand side of \eqref{e:lim-inf-bound} is non-positive and hence
+\eqref{eq:Gaussian-maxima-lower-expectation} holds. 
+\end{proof}
+
+We now prove Proposition \ref{prop:Gaussian-maxima-expectation-lower-bound}. This is where the UDD dependence assumption is used.
+
+\begin{proof}[Proof of Proposition \ref{prop:Gaussian-maxima-expectation-lower-bound}]
+% Assume without loss of generality that the $\epsilon(j)$'s have unit variances.
+Define the canonical (pseudo) metric on $S_p$,
+$$
+d(i,j) = \sqrt{\E\left[\left(\epsilon(i)-\epsilon(j)\right)^2\right]}.
+$$
+It can be easily checked that the canonical metric takes values between 0 and 2.
+For arbitrary $\delta\in(0,1)$, take $\gamma = \sqrt{2(1-\delta)}$, and
+let $\mathcal{N}$ be a $\gamma$-packing of $S_p$. That is, let $\mathcal{N}$ be a subset of $S_p$, such that for any $i,j\in\mathcal{N}$, $i\neq j$, we have $d(i,j)\ge\gamma$, i.e.,
+\begin{equation}\label{e:gamma-packing-def}
+d(i,j) = \sqrt{2\left(1-\Sigma_p(i,j)\right)} \ge \gamma = \sqrt{2(1-\delta)},
+\end{equation}
+or equivalently, $\Sigma_p(i,j) \le \delta$.
+We claim that we can find a $\gamma$-packing $\mathcal{N}$ whose number of elements is at least 
+\begin{equation} \label{eq:packing-number-lower-bound}
+    |\mathcal{N}| \ge q/N(\delta).
+\end{equation}
+Indeed, $\mathcal{N}$ can be constructed iteratively as follows:
+\begin{itemize}[
+    align=left,
+    leftmargin=4em,
+    itemindent=0pt,
+    labelsep=0pt,
+    labelwidth=4em
+    ]
+    \raggedright
+    \item[{\bf Step 1:}] Set $S_p^{(1)}:=S_p$ and $\mathcal{N}:=\{j_1\}$, where $j_1\in S_p^{(1)}$ is an arbitrary element. Set $k:=1$.\\
+    \item[{\bf Step 2:}] Set $S_p^{(k+1)}:=S_p^{(k)}\setminus B_\gamma(j_k)$, where
+    $$
+    B_\gamma(j_k) := \{i\in S_p: \;d(i,j_k) < \gamma \equiv \sqrt{2(1-\delta)}\}.
+    $$
+    \item[{\bf Step 3:}] If $S_p^{(k)} \neq \emptyset$, pick an arbitrary $j_{k+1}\in S_p{(k)}$, set $\mathcal{N}:=\mathcal{N}\cup\{j_{k+1}\}$, and $k:=k+1$, go to step 2; otherwise, stop.
+\end{itemize}
+By the definition of UDD (see Definition \ref{def:UDD}), there are at most $N(\delta)$ coordinates whose covariance with $\epsilon(j)$ exceed $\delta$. 
+Therefore at each iteration, $\left|B_\gamma(j_k)\right|\le N(\delta)$, and hence
+$$
+\left|S_p^{(k+1)}\right| \ge \left|S_p^{(k)}\right| - \left| B_\gamma(j_k)\right| \ge q - kN(\delta).
+$$
+The construction can continue for at least $q/N(\delta)$ iterations, and we have $|\mathcal{N}| \ge \lfloor q/N(\delta) \rfloor$ as desired.
+    
+Now we define on this $\gamma$-packing $\mathcal{N}$ an independent Gaussian process $\left(\eta(j)\right)_{j\in\mathcal{N}}$, 
+$$\eta(j) = \frac{\gamma}{\sqrt{2}}Z(j) \quad j\in \mathcal{N},$$
+where $Z(j)$'s are i.i.d. standard normal random variables.
+Observe that by the definition of $\gamma$-packing in \eqref{e:gamma-packing-def}, the increments of the new process are smaller than those of the original process in the following sense, 
+$$
+\E\left[\left(\eta(i)-\eta(j)\right)^2\right] = \gamma^2 \le d^2(i,j) = \E\left[\left(\epsilon(i)-\epsilon(j)\right)^2\right]
+$$
+for all $i\neq j$, $i,j\in\mathcal{N}$. Applying the Sudakov-Fernique inequality (see, e.g., Theorem 2.2.3 in \citep{adler2009random}) to  $\left(\eta(j)\right)_{j\in\mathcal{N}}$ and  $\left(\epsilon(j)\right)_{j\in\mathcal{N}}$, we have
+\begin{equation}\label{eq:Sudakov-1}
+\E\left[\max_{j\in\mathcal{N}}\eta(j)\right] \le \E\left[\max_{j\in\mathcal{N}}\epsilon(j)\right] \le \E\left[\max_{j\in{S_p}}\epsilon(j)\right].
+\end{equation}
+Since the $\left(\eta(j)\right)_{j\in\mathcal{N}}$ are independent Gaussians, Lemma \ref{lemma:expectation-lower} yields the lower bound,
+\begin{equation}\label{eq:Sudakov-2}
+\liminf_{p\to\infty} \E\left[\frac{\max_{j\in\mathcal{N}}\eta(j)}{u_{|\mathcal{N}|}}\right] \ge \frac{\gamma}{\sqrt{2}} = \sqrt{1-\delta}.
+\end{equation}
+Using the expressions \eqref{eq:AGG-quantiles} for the quantiles 
+of AGG models (with $\nu=2$ here), we have
+\begin{equation}\label{eq:Sudakov-3}
+\frac{u_{|\mathcal{N}|}}{u_q} 
+= \left(\frac{\log q-\log{N(\delta)}}{\log{q}}\right)^{1/2}\left(1+o(1)\right)\to 1,
+\end{equation}
+since $N(\delta)$ does not depend on $q= q(p)\to \infty$.
+
+By combining \eqref{eq:Sudakov-1}, \eqref{eq:Sudakov-2} and \eqref{eq:Sudakov-3}, we conclude that
+\begin{align*}
+    \liminf_{p\to\infty} \E\left[\frac{\max_{j\in{S_p}}\epsilon(j)}{u_q}\right] 
+    &\ge \liminf_{p\to\infty} \E\left[\frac{\max_{j\in\mathcal{N}}\eta(j)}{u_q}\right] &\text{by } \eqref{eq:Sudakov-1}\\
+    &= \liminf_{p\to\infty} \E\left[\frac{\max_{j\in\mathcal{N}}\eta(j)}{u_{|\mathcal{N}|}}\right]  &\text{by } \eqref{eq:Sudakov-3} \\
+    &\ge \sqrt{1-\delta}.  &\text{by } \eqref{eq:Sudakov-2}
+\end{align*} 
+Since $\delta>0$ is arbitrary, \eqref{eq:AGG-max-bound-expectation} follows as desired.
+\end{proof}
+
+% The current proof of Theorem \ref{thm:Gaussian-weak-dependence} relies on Slepian's lemma \cite{slepian1962one}. 
+% \begin{lemma}[Slepian's Lemma] \label{lemma:Slepian}
+% For two zero-mean Gaussian sequences $\left(\eta(j)\right)_{j=1}^p$ and $\left(z(j)\right)_{j=1}^p$, if
+% $$
+% \E[\eta(j)^2] \le \E[z(j)^2] \quad \text{and} \quad \E[\eta(i)\eta(j)] \le \E[z(i)z(j)]
+% $$
+% for all $i,j\in \{1,\ldots,p\}$, then 
+% $$
+% \P\left[\max_{j\in\{1,\ldots,p\}}\eta(j) \le u\right] \ge \P\left[\max_{j\in\{1,\ldots,p\}}z(j) \le u\right]
+% $$
+% for all $u\in\mathbb R$.
+% \end{lemma}
+

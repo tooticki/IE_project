@@ -1,0 +1,741 @@
+METRIC THICKENINGS OF EUCLIDEAN SUBMANIFOLDS
+HENRY ADAMS AND JOSHUA MIRTH
+
+arXiv:1709.02492v2 [math.MG] 2 Apr 2018
+
+Abstract. Given a sample Y from an unknown manifold X embedded in Euclidean space, it is possible
+to recover the homology groups of X by building a Vietoris–Rips or Čech simplicial complex on top of the
+vertex set Y . However, these simplicial complexes need not inherit the metric structure of the manifold, in
+particular when Y is infinite. Indeed, a simplicial complex is not even metrizable if it is not locally finite. We
+instead consider metric thickenings, called the Vietoris–Rips and Čech thickenings, which are equipped with
+the 1-Wasserstein metric in place of the simplicial complex topology. We show that for Euclidean subsets X
+with positive reach, the thickenings satisfy metric analogues of Hausmann’s theorem and the nerve lemma
+(the metric Vietoris–Rips and Čech thickenings of X are homotopy equivalent to X for scale parameters less
+than the reach). To our knowledge this is the first version of Hausmann’s theorem for Euclidean submanifolds
+(as opposed to Riemannian manifolds), and our result also extends to non-manifold shapes (as not all sets
+of positive reach are manifolds). In contrast to Hausmann’s original proof, our homotopy equivalence is a
+deformation retraction, is realized by canonical maps in both directions, and furthermore can be proven to
+be a homotopy equivalence via simple linear homotopies from the map compositions to the corresponding
+identity maps.
+
+1. Introduction
+The Vietoris–Rips simplicial complex VR(X; r) of a metric space X at scale parameter r > 0 has X as its
+vertex set, and a simplex σ for every finite set of points of diameter less than r. Vietoris–Rips complexes are
+a natural way to enlarge a metric space. Indeed, Hausmann proves in [18] that given a compact Riemannian
+manifold X and a sufficiently small scale parameter r, the Vietoris–Rips complex VR(X; r) is homotopy
+equivalent to X. In response to a question in Hausmann’s paper, Latschev [21] proves furthermore that if
+Y ⊆ X is a sufficiently dense sample, then VR(Y ; r) is also homotopy equivalent to X. Latschev’s result is a
+precursor to many theoretical guarantees [5, 7, 9, 10, 23] showing how Vietoris–Rips complexes and related
+constructions can recover topological information about a shape X from a sufficiently dense sampling Y . In
+applications of topology to data analysis [8, 13] the datasets will typically be finite, but nevertheless infinite
+Vietoris–Rips constructions are important for applications in part because if a dataset Y converges to an
+infinite shape X in the Gromov–Hausdorff distance, then the persistent homology of VR(Y ; r) converges to
+that of the infinite object VR(X; r) [9].
+Despite theoretical guarantees such as Hausmann’s theorem, the simplicial complex VR(X; r) does not
+retain the metric properties of X. In fact, a simplicial complex is metrizable if and only if it is locally finite,
+which VR(X; r) need not be when X is infinite. Furthermore, if X is not discrete then the natural inclusion
+map X ,→ VR(X; r) is not continuous for any r > 0. The Vietoris–Rips thickening of X, denoted VRm (X; r)
+and introduced in [3], addresses each of these issues. As a set, VRm (X; r) is naturally identified with the
+geometric realization of simplicial complex VR(X; r), but it has a completely different topology induced
+from the 1-Wasserstein metric. Indeed, the space VRm (X; r) is a metric thickening of X, meaning that it is
+Date: April 4, 2018.
+2010 Mathematics Subject Classification. 53C23, 54E35, 55P10, 55U10.
+Key words and phrases. Vietoris–Rips complex, Čech complex, metric thickening, metric reconstruction, Euclidean submanifold, positive reach, homotopy, clique complex, nerve lemma, persistent homology.
+1
+
+a metric space extending the metric on X. As a result, the inclusion X ,→ VRm (X; r) is continuous for all
+metric spaces X and scale parameters r. In general, the simplicial complex VR(X; r) and metric thickening
+VRm (X; r) are neither homeomorphic nor homotopy equivalent, and we argue that the metric thickening is
+often a more natural object.
+In particular, let X be a compact Riemannian manifold. If X is of dimension at least one, then the inclusion
+'
+X ,→ VR(X; r) is not continuous. For r sufficiently small, the homotopy equivalence VR(X; r) −
+→ X in
+1
+Hausmann’s result depends on the choice of a total ordering of the points in X, meaning it is non-canonical
+as different choices of orderings produce different maps. By contrast, the inclusion X ,→ VRm (X; r) to the
+metric thickening is continuous, and for r sufficiently small it has as a homotopy inverse the canonical map
+VRm (X; r) → X defined by Karcher means [3, 19].
+In this work we prove a metric analogue of Hausmann’s result for subsets of Euclidean space with positive
+reach. Our main result is the following:
+Theorem 3.4. Let X be a subset of Euclidean space Rn , equipped with the Euclidean metric, and suppose
+the reach τ of X is positive. Then for all r < τ , the metric Vietoris–Rips complex VRm (X; r) is homotopy
+equivalent to X.
+In particular, if X is a submanifold of Rn with positive reach, then its Vietoris–Rips thickening is homotopy equivalent to X for sufficiently small scale parameters. To our knowledge, this is the first version of
+Hausmann’s theorem for Euclidean (and hence typically non-Riemannian) manifolds, using either Vietoris–
+Rips complexes or Vietoris–Rips thickenings. However, our theorem does not require X to be a manifold,
+and indeed not every set of positive reach is a manifold [15, 24].
+We prove the main theorem by showing that the linear projection of VRm (X; r) into Rn has image
+contained in the tubular neighborhood of radius τ about X. We then map each point in the tubular neighborhood to its unique closest point in X. The composition of these maps produces a homotopy equivalence
+'
+VRm (X; r) −
+→ X whose homotopy inverse is the (now continuous) inclusion X ,→ VRm (X; r).
+We provide the following motivation for our work. Given a sample Y from an unknown shape X, there
+are theoretical guarantees [5, 7, 9, 10, 21, 23] which recover topological information about X by building
+a Vietoris–Rips complex or a related construction on top of Y . However, many of these theorems require
+choosing a scale parameter (such as r in VR(Y ; r)) which is sufficiently small depending on the curvature
+of X, and hence it may be difficult to choose an appropriate r without prior knowledge of X. Instead,
+practitioners often compute the persistent homology of VR(Y ; r) over a range of scale parameters r in order
+to learn about X. This is well-motivated since as a dataset Y converges to an infinite shape X in the
+Gromov–Hausdorff distance, stability implies that the persistent homology of VR(Y ; r) converges to that of
+VR(X; r) [9]. Nevertheless, very little is known about the theory of Vietoris–Rips complexes of infinite shapes
+(such as manifolds) at larger scale parameters r. This is in part due to the difficulty of working with the
+simplicial complex VR(X; r), which may not be metrizable even though X is a metric space, and for which
+the natural inclusion map X ,→ VR(X; r) is often not continuous. We believe that the metric Vietoris–Rips
+thickening VRm (X; r) is often a more natural object to consider when X is infinite. As evidence of this
+claim, we provide a metric analogue of Hausmann’s theorem (VRm (X; r) ' X for r sufficiently small) when
+X is a Euclidean subset of positive reach. Our results are relevant for data analysis since a finite dataset Y
+may converge (as more samples are drawn) in the Gromov–Hausdorff distance to an underlying Euclidean
+set X, and since one may want to recover not only the homotopy type or persistent homology of X but also
+its metric properties.
+1One could use the axiom of choice to pick such a total order, though constructive total orders may also exist.
+2
+
+An important clarifying remark about metrics on Euclidean submanifolds is the following. Let X be a
+manifold embedded in Euclidean space Rn and equipped with the Euclidean submetric (as in Theorem 3.4).
+A different metric on X is the Riemannian structure inherited from the usual inner product in Rn —assuming
+X is connected, the Riemannian distance on X is also a metrization of the original manifold topology [22].
+The Vietoris–Rips complex, and its homotopy type, may depend upon which of these two metrics one chooses
+to use. For example, a circle and an ellipse in R2 with the Riemannian distance function (i.e. the arc-length
+metric) and equal circumferences have identical Vietoris–Rips complexes. On the other hand, with the
+Euclidean metrics their Vietoris–Rips complexes are not homotopy equivalent at all scale parameters [2, 4].
+The Vietoris–Rips thickening VRm (X; r) will similarly depend on the choice of metric on X; in this paper
+we consider the Euclidean metric.
+A related construction to the Vietoris–Rips complex is the Čech complex. For X ⊆ Rn , the Čech complex
+Č(X; r) is the nerve simplicial complex of the collection of balls B(x, r/2) with centers x ∈ X. The nerve
+lemma implies that Č(X; r) is homotopy equivalent to the union of the balls.2 However, the Čech complex
+Č(X; r) need not inherit any metric properties of X, and again is not metrizable if it is not locally finite.
+We therefore consider the metric Čech thickening Čm (X; r) from [3], which is a metric space equipped with
+the 1-Wasserstein distance that furthermore is a metric thickening of X. In Theorem 4.5 we prove that if X
+is a subset of Euclidean space of positive reach τ , then for all r < τ the metric Čech thickening Č(X; 2r) is
+homotopy equivalent to X.3 The proof mirrors that of the main theorem, Theorem 3.4.
+In Section 2 we review notation and we introduce the Wasserstein metric, Vietoris–Rips and Čech simplicial
+complexes, Vietoris–Rips and Čech metric thickenings, Euclidean subsets of positive reach, and tubular
+neighborhoods. Section 3 contains our main result, a metric analogue of Hausmann’s theorem for Vietoris–
+Rips thickenings of Euclidean subsets of positive reach, and the lemmas building up to it. We use similar
+techniques to prove a version for Čech thickenings in Section 4.
+2. Preliminaries
+We describe background material and notation on metric spaces, Euclidean space, topological spaces [17],
+the Wasserstein metric [28, 14], simplicial complexes, Vietoris–Rips and Čech simplicial complexes [13],
+Vietoris–Rips and Čech metric thickenings [3], and sets of positive reach [15].
+2.1. Metric spaces. A metric space, (X, d), is a set X along with a function d : X × X → R such that for
+all u, v, w ∈ X,
+• d(u, v) ≥ 0 and d(u, v) = 0 if and only if u = v,
+• d(u, v) = d(v, u), and
+• d(u, v) ≤ d(u, w) + d(w, v).
+The function d is called a distance or a metric. We will denote open balls in X by B(x, r) = {y ∈ X | d(y, x) <
+r}, where x ∈ X is the ball’s center and r is its radius. Likewise, a closed ball will be denoted B(x, r) =
+{y ∈ X | d(y, x) ≤ r}.
+Given a point x ∈ X and subset Y ⊆ X, we define the distance between x and Y to be d(x, Y ) =
+inf y∈Y d(x, y). The distance between two subsets Y, Y 0 ⊆ X is d(Y, Y 0 ) = inf y∈Y,y0 ∈Y 0 d(y, y 0 ). An rthickening of a metric space X is a metric space Z ⊇ X such that the metric on X extends to that on Z, and
+2Here we mean ambient Čech complexes corresponding to Euclidean balls, though in this paper we also consider intrinsic
+
+Čech complexes corresponding to possibly non-contractible balls in X.
+3This result does not follow from the nerve lemma since the nerve complex Č(X; r) and metric thickening Čm (X; r) can in
+general have different homotopy types. The theorem holds for both ambient and intrinsic Čech thickenings.
+3
+
+also d(x, Z) ≤ r for all x ∈ X. We define the diameter of a set Y ⊆ X to be diam(Y ) = sup{d(y, y 0 ) | y, y 0 ∈
+Y }.
+Any metric d induces a topology on the set X called the metric topology. The basis for this topology
+consists of all open balls of positive radius. A topological space X is metrizable if there exists a metric
+d : X × X → R that induces the topology of X.
+2.2. Euclidean Space. Euclidean space is the metric space (Rn , d) where d is the usual Euclidean distance.
+There is a standard inner product h·, ·i on Rn defined by
+h(u1 , . . . , un ), (v1 , . . . , vn )i = u1 v1 + . . . + un vn .
+We can define the norm, k · k, of an element x ∈ Rn by kxk = hx, xi1/2 . The metric d is then simply
+d(u, v) = ku − vk.
+For any X ⊆ Rn define the convex hull of X as
+k
+
+n
+o
+X
+X
+
+conv(X) = x =
+λi = 1, xi ∈ X .
+λi xi ∈ Rn  k ∈ N, λi ≥ 0,
+i
+
+i=0
+
+Note that the diameter of X is the same as the diameter of its convex hull. If X ⊆ Rn , we denote by X c
+the complement of X, that is, X c = Rn \ X, and by X the closure of X in Rn .
+2.3. Topological spaces. Let Y and Z be topological spaces. Two continuous maps f, g : Y → Z are
+homotopy equivalent if there exists a continuous map H : Y × I → Z with H(·, 0) = f and H(·, 1) = g, where
+I = [0, 1] is the unit interval [17]. Two spaces Y and Z are homotopy equivalent if there exist continuous
+maps f : Y → Z and g : Z → Y such that g ◦ f is homotopy equivalent to the identity map idY on Y , and
+similarly f ◦ g is homotopy equivalent to the identity map idZ on Z.
+2.4. Wasserstein metric. In this section we describe a way to put a metric on probability Radon measures.
+The metric has many names: the Wasserstein, Kantorovich, optimal transport, or earth mover’s metric. It
+is known to solve the Monge-Kantorovich problem (see [28]).
+Let X be a metric space equipped with a distance function d : X × X → R. A measure µ defined on the
+Borel sets of X is
+•
+•
+•
+•
+
+inner regular if µ(B) = sup{µ(K) | K ⊆ B is compact} for all Borel sets B,
+locally finite if every point x ∈ X has a neighborhood U such that µ(U ) < ∞,
+a Radon measure if it is both inner regular and locally finite, and
+R
+a probability measure if X dµ = 1.
+
+The following is from [14, 20]. Let P(X) denote the set of probability Radon measures such that for some
+R
+(and hence all) y ∈ X, we have X d(x, y) dµ < ∞. Define the L1 metric on X × X by setting the distance
+between (x1 , x2 ), (x01 , x02 ) ∈ X × X to be d(x1 , x01 ) + d(x2 , x02 ). Given µ, ν ∈ P(X), let Π(µ, ν) ⊆ P(X × X)
+be the set of all probability Radon measures π on X × X such that µ(B) = π(B × X) and ν(B) = π(X × B)
+for all Borel subsets B ⊆ X. Note that such an element π is a joint measure on X × X whose marginals,
+when restricted to each X factor, are µ and ν.
+Definition 2.1. The 1-Wasserstein metric on P(X) is defined by
+Z
+dW (µ, ν) = inf
+d(x, y) dπ.
+π∈Π(µ,ν)
+
+X×X
+
+The names optimal transport or earth mover’s metric can be interpreted as follows. One can think of
+measures µ and ν as “piles of dirt” in X with prescribed mass distributions. The joint measure π with µ and
+ν as marginals is a transport plan moving the µ pile of dirt to the ν pile. The 1-Wasserstein distance between
+4
+
+µ and ν is the infimum, over all transport plans π, of the work involved in moving µ to ν via transport plan
+π.
+2.5. Simplicial Complexes.
+Definition 2.2. Let V be a set, called the set of vertices. An abstract simplicial complex K on vertex set
+V is a subset of the power set of V with the property that if σ ∈ K, then all subsets of σ are in K.
+Every abstract simplicial complex permits a geometric realization, |K|, which is a topological space. As
+a set we have
+( k
+)
+
+X
+X
+
+|K| =
+λi = 1, [v0 , . . . , vk ] ∈ K .
+λi vi  k ∈ N, λi ≥ 0,
+i
+
+i=0
+
+In the simpler case when K is finite, we can put a topology on |K| as follows. Choose an affinely independent
+set of points in Rn (for n sufficiently large) to correspond to each of the elements of the vertex set V . Then
+|K| consists of all convex linear combinations of these points, and |K| is given its topology as a subset of
+Euclidean space. More generally, one can produce a topology on |K| by viewing it as a subset of [0, 1]V , the
+space of functions V → [0, 1]. Indeed note
+
+(
+)
+ X
+
+|K| = f : [0, 1] → V 
+f (v) = 1, supp(f ) ∈ K .
+
+v∈V
+
+Give [0, 1]V its induced topology as the direct limit of [0, 1]τ where τ ranges over all finite subsets of V , and
+equip |K| with the subspace topology [26].
+For the rest of this paper we denote both an abstract simplicial complex and its geometric realization by
+the same symbol K.
+2.6. The Vietoris–Rips and Čech simplicial complexes. Two natural ways to enlarge a metric space
+by building a simplicial complex on top of it are the Vietoris–Rips and Čech complex constructions.
+Definition 2.3. Let X be a metric space and r > 0 a scale parameter. The Vietoris–Rips simplicial complex
+of X with scale parameter r, denoted VR≤ (X; r), has vertex set X and a simplex for every finite subset σ ⊆ X
+such that diam(σ) ≤ r. Similarly, VR< (X; r) contains every finite subset with diameter < r.
+
+VR(X; r)
+
+X
+
+Figure 1. A metric space X and (a subset of) its Vietoris–Rips complex.
+We will write VR(X; r) when the distinction between < and ≤ is unimportant. The Vietoris–Rips complex
+is the clique or flag complex of its 1-skeleton.
+5
+
+Definition 2.4. Let X ⊆ Y be a submetric space and r a scale parameter with r ≥ 0. The Čech complex of
+X with scale parameter r, Č≤ (X, Y ; r), has vertex set X and a simplex for every finite subset σ ⊆ X such
+T
+that xi ∈σ B(xi , r/2) 6= ∅, where B(xi , r/2) denotes a closed ball in Y centered at xi with radius r/2.
+T
+Similarly, Č< (X, Y ; r) contains a simplex for every finite subset σ such that xi ∈σ B(xi , r/2) 6= ∅.
+Again, we will write Č(X, Y ; r) when the distinction between open and closed is unimportant. The Čech
+complex can be considered as the nerve of the union of balls in Y of radius r/2 centered at each of the points
+in X. Of particular interest are the cases where Y = Rn and Y = X. These are called the called the ambient
+and intrinsic Čech complex, respectively. Note that if X ⊆ Rn then Č(X, X; r) ⊆ Č(X, Rn ; r). When it is
+not necessary to distinguish these two we will write Č(X; r).
+For any σ ∈ Č(X, Y ; r) we have diam(σ) ≤ r, and so Č(X, Y ; r) is a subcomplex of VR(X; r). When Y
+is a geodesic space, the complexes VR(X; r) and Č(X, Y ; r) have the same 1-skeletons. But independent of
+whether Y is geodesic or not, the Čech complex can be a proper subset of the Vietoris–Rips complex.
+A useful characterisation is the following:
+Proposition 2.5. A set of points x0 , . . . , xk ∈ X form a simplex in Č< (X, Y ; r) if and only if there exists
+a point c ∈ Y such that every xi is contained in the open ball B(c, r/2). A similar statement is true for
+Č≤ (X, Y ; r) with closed balls.
+T
+Proof. Let c be any point in the intersection xi ∈σ B(xi , r/2). Then B(c, r/2) contains all of the xi .
+T
+Conversely, if all of the xi are in B(c, r/2), then c is in xi ∈σ B(xi , r/2) and hence the intersection is
+nonempty.
+
+The Vietoris–Rips and Čech complexes are given the standard topology as simplicial complexes: a subset
+of the geometric realization is open if and only if its intersection with every simplex is open. An important
+remark is the following. A simplicial complex K is said to be locally finite if each vertex belongs to only
+finitely many simplices of K, and a simplicial complex is metrizable if and only if it is locally finite [25,
+Proposition 4.2.16(2)]. This means that in general, the Vietoris–Rips and Čech simplicial complexes cannot
+be equipped with a metric without changing their homeomorphism types, even though they were built on
+top of a metric space.
+2.7. The Vietoris–Rips and Čech Thickenings. The definitions in this section are from [3, 14, 20].
+Given a metric space X and a scale parameter r we will define the Vietoris–Rips thickening VRm (X; r),
+which will be a metric space r-thickening of X. As a set, VRm (X; r) is the set of all formal convex combinations of points in X with diameter at most r, namely4
+VRm
+≤ (X; r) =
+
+k
+nX
+
+λi xi | k ∈ N, λi ≥ 0,
+
+i=0
+
+VRm
+< (X; r) =
+
+k
+nX
+i=0
+
+X
+
+λi = 1, xi ∈ X, and diam({x0 , . . . , xk }) ≤ r
+
+o
+
+i
+
+λi xi | k ∈ N, λi ≥ 0,
+
+X
+
+o
+λi = 1, xi ∈ X, and diam({x0 , . . . , xk }) < r .
+
+i
+
+A useful viewpoint is to consider an element of VRm (X; r) as a probability measure. For x ∈ X, let δx be
+the Dirac probability measure defined on any Borel subset E ⊆ X by
+(
+1 if x ∈ E
+δx (E) =
+0 if x ∈
+/ E.
+4There is a canonical bijection between the sets underlying VRm (X; r) and the geometric realization |VR(X; r)| of the
+
+Vietoris–Rips simplicial complex. However, these two topological spaces will often not be homeomorphic (and sometimes not
+even homotopy equivalent).
+6
+
+Pk
+Pk
+By identifying x ∈ X with δx ∈ P(X), and more generally x =
+i=0 λi xi with
+i=0 λi δxi ∈ P(X),
+m
+we can view VR (X; r) as a subset of P(X), the set of all Radon probability measures on X. Hence
+we can equip the set VRm (X; r) with the 1-Wasserstein metric from Section 2.4, namely dW (x, x0 ) =
+R
+inf π∈Π(x,x0 ) X×X d(x, x0 ) dπ for x, x0 ∈ VRm (X; r).
+Pk
+To give a more explicit definition of the metric on VRm (X; r), let x, x0 ∈ VRm (X; r) with x = i=0 λi xi
+0
+P
+k
+0 0
+and x0 =
+i=0 λi xi (we cease to distinguish between x ∈ X and its associated measure, δx ). Define a
+Pk 0
+matching p between x and x0 to be any collection of non-negative real numbers {pi,j } such that j=0 pi,j = λi
+Pk
+P
+and i=0 pi,j = λ0j . It follows as a consequence that i,j pi,j = 1, and so matching {pi,j } can be thought of
+0
+as a joint probability distribution with marginals {λi }ki=0 and {λ0j }kj=0 . Define the cost of the matching p to
+P
+be cost(p) = i,j pi,j d(xi , x0j ).
+Definition 2.6. The 1-Wasserstein metric on VRm (X; r) is the distance dW defined by
+dW (x, x0 ) = inf {cost(p) | p is a matching between x and x0 } .
+Similar to the Vietoris–Rips thickening, we can construct the Čech thickening Čm (X, Y ; r) equipped with
+the 1-Wasserstein metric. The construction is exactly the same, except that the elements of Čm (X, Y ; r)
+are the convex combinations of vertices from simplices in Č(X, Y ; r) (rather than in VR(X; r)). By [3,
+Lemma 3.5], both VRm (X; r) and Čm (X, Y ; r) are r-thickenings of the metric space X.
+One could alternatively consider a p-Wasserstein metric for 1 ≤ p ≤ ∞.
+2.8. Sets of positive reach. We are interested in the case where metric space X is a subset of Rn of
+positive reach. In particular, any embedded C k submanifold (with or without boundary) of Rn with k ≥ 2
+has positive reach [27], but not every set of positive reach is a manifold [15, 24]. Consider the set
+Y = {y ∈ Rn | ∃ x1 6= x2 ∈ X with d(y, x1 ) = d(y, x2 ) = d(y, X)} .
+The closure Y of Y is the medial axis of X. For any point x ∈ X, the local feature size at x is the distance
+d(x, Y ) from x to the medial axis. The reach τ of X is the minimal distance τ = d(X, Y ) between X and
+its medial axis.
+For X ⊆ Rn and α > 0 we define its α-offset (or tubular neighborhood), Tubα , by
+[
+Tubα = {x ∈ Rn | d(x, X) < α} =
+B(x, α).
+x∈X
+
+In particular, if X has reach τ , then for every point in Tubτ there exists a unique nearest point in X. As
+in [15, 23], define π : Tubτ → X to be the nearest point projection map, sending an element x ∈ Tubτ to its
+unique closest point π(x) ∈ X.
+Lemma 2.7. The function π : Tubτ → X is continuous.
+Proof. Let x, y ∈ Tubτ and r = max{d(x, π(x)), d(y, π(y))}. Then the conditions of [15, Theorem 4.8(8)] are
+satisfied and so
+τ
+(1)
+d(π(x), π(y)) ≤
+d(x, y).
+τ −r
+Thus π is continuous at x for any x ∈ Tubτ .
+
+We also state the following proposition, implicit in [23], for any set of positive reach.
+Proposition 2.8. Let X ⊆ Rn have reach τ > 0. Let p ∈ X and suppose x ∈ Tubτ \ X satisfies π(x) = p.
+x−p
+If c = p + τ kx−pk
+, then B(c, τ ) ∩ X = ∅.
+7
+
+x−p
+Proof. For any 0 < t < τ , let yt = p + t kx−pk
+. Since yt ∈ Tubτ , we have B(yt , t) ∩ X = {p} and
+d(yt , p) = t, so B(c, t) ∩ X = ∅. Note that B(c, τ ) = ∪0<t<τ B(yt , t). Indeed, to see the inclusion ⊆, suppose
+that z ∈ B(c, τ ), so that d(z, c) = τ −  for some  > 0. Let t = τ − 3 . By the triangle inequality,
+d(yt , z) ≤ d(yt , c) + d(c, z) = τ − 2
+3 < t, giving z ∈ B(yt , t). The reverse inclusion ⊇ is straightforward. It
+follows that B(c, τ ) ∩ X = ∅.
+
+
+3. A metric and Euclidean analogue of Hausmann’s result
+We now present our main theorem, a metric analogue of Hausmann’s result for Vietoris–Rips thickenings
+of subsets of Euclidean space with positive reach. Since in Section 4 we will also give an analogous theorem
+for the metric Čech thickening, we provide some notation now for both cases. Let X ⊆ Rn be a set of positive
+reach. Let K(X; r) be either a Vietoris–Rips complex or Čech complex of X with scale parameter r, and let
+K m (X; r) be the corresponding metric Vietoris–Rips or Čech thickening. Define f : K m (X; r) → Rn to be
+P
+P
+the linear projection map f ( i λi xi ) = i λi xi ∈ Rn , where the first sum is a formal convex combination
+of points in X, and the second sum is the standard addition of vectors in Rn . Recall π : Tubτ → X ⊆ Rn is
+the nearest-point projection map.
+Several geometric lemmas are required.
+Lemma 3.1. Let x0 , . . . , xk ∈ Rn , let y ∈ conv{x0 , . . . , xk }, and let C be a convex set with y ∈
+/ C. Then
+there is at least one xi with xi ∈
+/ C.
+Proof. Suppose for a contradiction that we had xi ∈ C for all i = 0, . . . , k. Then since C is convex, we’d
+also have y ∈ conv{x0 , . . . , xk } ⊆ C. Hence it must be the case that xi ∈
+/ C for some i.
+
+Lemma 3.2. For X ⊆ Rn and r > 0, the map f : VRm (X; r) → Rn has its image contained in Tubr .
+Pk
+Proof. Let x = i=0 λi xi ∈ VRm (X; r); we have
+diam(conv{x0 , . . . , xk }) = diam([x0 , . . . , xk ]) ≤ r.
+Since f (x) ∈ conv{x0 , . . . , xk }, it follows that d(f (x), X) ≤ d(f (x), x0 ) ≤ r, and so f (x) ∈ Tubr .
+
+
+P
+
+The substance of Lemma 3.3 will be that if [x0 , . . . , xk ] is a simplex in VR(X; r) and if x = i λi xi ∈
+VRm (X; r), then π(f (x)) will be “close enough” to x0 , . . . , xk so that [x0 , . . . , xk , π(f (x))] is also a simplex
+in VR(X; r). This fact will be crucial for defining the homotopy equivalences in our proof of Theorem 3.4.
+Lemma 3.3. Let X ⊆ Rn have positive reach τ , let [x0 , . . . xk ] be a simplex in VR(X; r) with r < τ , let
+P
+x=
+λi xi ∈ VRm (X; r), and let p = π(f (x)). Then the simplex [x0 , . . . , xk , p] is in VR(X; r).
+Proof. We write the proof for VR≤ (X; r); an analogous proof works for VR< (X; r). Note p = π(f (x)) is
+defined by Lemma 3.2 since Tubr ⊆ Tubτ . We may assume p 6= f (x), since otherwise the conclusion follows
+as f (x) is in the convex hull of the xi .
+Suppose for a contradiction that d(xi , p) > r for some i; without loss of generality we may assume i = 0.
+Since d(x0 , f (x)) ≤ r we have that f (x) 6= p. Following [23], let c = p + τ kff (x)−p
+(x)−pk , and let B(c, τ ) be the
+open ball of radius τ that is tangent to X at p. By Proposition 2.8 this open ball does not intersect X,
+giving x0 , . . . , xk ∈
+/ B(c, τ ). Define Tp⊥ to be the line through f (x) and p. Since f (x) is between p and
+c on Tp⊥ , note that d(x0 , f (x)) ≤ r implies x0 is not on Tp⊥ . Let x00 6= x0 be the closest point on Tp⊥ to
+x0 . Let Hx0 = {z ∈ Rn | hz − x00 , x0 − x00 i > 0} be the open half-space containing x0 , whose boundary is
+the hyperplane containing Tp⊥ that’s perpendicular to x0 − x00 . Since d(x0 , p), d(x0 , c) > r, it follows that
+Hxc0 ∩ B(x0 , r) ⊆ B(c, τ ). Since xi ∈ B(x0 , r) \ B(c, τ ), this implies that xi ∈ Hx0 for all i. This contradicts
+8
+
+Lemma 3.1 since Hx0 is convex with f (x) ∈
+/ Hx0 , even though f (x) ∈ conv({x0 , . . . , xk }). Hence it must be
+the case that d(x0 , p) ≤ r, and it follows that [x0 , . . . , xk , p] is a simplex in VR≤ (X; r).
+
+Tp⊥
+
+Hx 0
+
+B(c, τ )
+B(x0 , r)
+c
+
+f (x)
+
+x0
+
+p
+
+Figure 2. Figure for the proof of Lemma 3.3. The green shaded region is a subset of
+B(c, τ ), forcing all xi to be in the same half-space.
+We are now prepared to prove our main result. We remark that when X is a manifold, it may be possible
+to estimate the reach of X using the techniques of [1, 6, 12, 16].
+Theorem 3.4. Let X be a subset of Euclidean space Rn , equipped with the Euclidean metric, and suppose
+the reach τ of X is positive. Then for all r < τ , the metric Vietoris–Rips thickening VRm (X; r) is homotopy
+equivalent to X.
+
+f
+
+X with Tubτ
+
+VRm (X; r)
+i
+π
+
+X
+Figure 3. The homotopy equivalence between VRm (X; r) and X in Theorem 3.4.
+9
+
+Proof. By [3, Lemma 5.2], map f : VRm (X; r) → Rn is 1-Lipschitz and hence continuous. It follows from
+Lemma 3.2 that the image of f is a subset of Tubτ . By Lemma 2.7 we have that π : Tubτ → X is continuous.
+Let ι : X → VRm (X; r) be the natural inclusion map.
+We will show that ι and π ◦ f are homotopy inverses. Note that π ◦ f ◦ i = idX . Consider the map
+H : VRm (X; r) × I → VRm (X; r) defined by H(x, t) = t · idVRm (X;r) + (1 − t)ι ◦ π ◦ f . Map H is well-defined
+by Lemma 3.3, and continuous by [3, Lemma 3.8] since π ◦ f is continuous. It follows that H is a homotopy
+equivalence from ι ◦ π ◦ f to idVRm (X;r) , and hence VRm (X; r) is homotopy equivalent to X.
+
+4. A metric and Euclidean analogue of the nerve lemma
+We handle the case of Čech thickenings in a similar fashion in this section. We write Čm (X; r) for either
+the ambient Čech complex Čm (X, Rn ; r) or the intrinsic Čech complex Čm (X, X; r) when the distinction is
+not important.
+Lemma 4.1. Let [x0 , . . . , xk ] be a simplex in Č(X; 2r), where X ⊆ Rn . Then for any x ∈ conv([x0 , . . . , xk ]),
+there exists a vertex xi such that d(x, xi ) ≤ r.
+Proof. We follow the proof of [11, Lemma 2.9] closely. By assumption, balls of radius r centered at the
+P
+points xi meet at a common point y. Let x = i λi xi be a point in conv([x0 , . . . , xk ]). Rewrite this as
+~0 = λ0 x̂0 + · · · + λk x̂k where x̂i = xi − x. Also let ŷ = y − x. Taking the dot product with ŷ gives
+0 = λ0 hx̂0 , ŷi + · · · + λk hx̂k , ŷi.
+So for some i we have hx̂i , ŷi ≤ 0. In that case,
+r2 ≥ d(xi , y)2 = d(x̂i , ŷ)2 = kx̂i k2 − 2hx̂i , ŷi + kŷk2 ≥ kx̂i k2 = kxi − xk2 .
+
+Lemma 4.2. For X ⊆ Rn and r > 0, the map f : Čm (X; 2r) → Rn has its image contained in Tubr .
+P
+Proof. For any point x = i λi xi ∈ Čm (X; 2r) we have that f (x) ∈ conv({x0 , . . . , xk }). The result then
+follows form Lemma 4.1.
+
+Lemma 4.3. Let X ⊆ Rn have positive reach τ , let [x0 , . . . xk ] be a simplex in Č(X, Rn ; 2r) with r < τ , let
+P
+x=
+λi xi ∈ Čm (X, Rn ; 2r), and let p = π(f (x)). Then the simplex [x0 , . . . , xk , p] is in Č(X, Rn ; 2r).
+Proof. We write the proof for Č≤ (X, Rn ; 2r); an analogous proof works for Č< (X, Rn ; 2r). Since [x0 , . . . , xk ]
+is a simplex in Č< (X, Rn ; 2r), there exists a ball B(y, r) of radius r centered at some point y ∈ Rn such that
+xi ∈ B(y, r) for all i. Also note that f (x) ∈ conv{x0 , . . . , xk } ⊆ B(y, r). Note p = π(f (x)) is defined by
+Lemma 4.2. We may assume p 6= f (x), since otherwise the conclusion follows from f (x) ∈ B(y, r). Similarly,
+we know that d(p, f (x)) ≤ r since d(xi , f (x)) ≤ r for some i and since p is the closest point in X to f (x).
+(x)−p
+Suppose for a contradiction that p ∈
+/ B(y, r). Let c = p + τ kff (x)−pk
+, and let B(c, τ ) be the open ball with
+center c and radius τ that is tangent to X at p. By Proposition 2.8 every xi must be in B(y, r) \ B(c, τ ). Let
+Tp⊥ be the line through f (x) and p. We claim that y cannot lie on Tp⊥ . Indeed if y were on Tp⊥ its location
+would be limited to one of three line segments — one with p between y and f (x), one with y between p and
+f (x), and one with f (x) between p and y. The first cannot occur as we would have d(p, y) ≤ d(f (x), y) ≤ r.
+The second cannot occur as we would have d(p, y) ≤ d(p, f (x)) ≤ r. Finally, the third cannot occur because
+either d(p, y) < 2τ − r and so the ball B(y, r) is contained in B(c, τ ) and thus cannot contain any vertex xi
+10
+
+Tp⊥
+
+Tp⊥
+
+Tp⊥
+B(c, τ )
+
+B(c, τ )
+
+B(c, τ )
+
+c
+
+c
+
+y
+c
+
+f (x)
+
+f (x)
+y
+
+f (x)
+
+p
+y
+
+p
+
+p
+
+Figure 4. (Left) If p is between y and f (x), then B(y, r) contains p. (Middle) If y is
+between p and f (x) then again B(y, r) contains p. (Right) If f (x) is between y and p, then
+the green region B(y, r) \ B(c, τ ) is either empty or too far from f (x).
+Tp⊥
+
+Hy
+
+B(c, τ )
+c
+
+y
+f (x)
+p
+
+Figure 5. Figure for the proof of Lemma 4.3. The green region B(y, r) \ B(c, τ ) is entirely
+contained in Hy .
+in contradiction of the definition of y, or d(p, y) ≥ 2τ − r, in which case d(f (x), B(y, r) \ B(c, τ )) > r which
+contradicts Lemma 4.1.
+Let y 0 6= y be the closest point on Tp⊥ to y. Let Hy = {z ∈ Rn | hz − y 0 , y − y 0 i > 0} be the open
+half-space containing y, whose boundary is the hyperplane containing Tp⊥ that’s perpendicular to y − y 0 .
+Since f (x) ∈ B(y, r) and p ∈
+/ B(y, r), we have B(y, r) \ B(c, τ ) ⊆ Hy , which implies xi ∈ Hy for all i. This
+contradicts Lemma 3.1 since Hy is convex with f (x) ∈
+/ Hy , even though f (x) ∈ conv({x0 , . . . , xk }). Hence
+it must be the case that p ∈ B(y, r), and so [x0 , . . . , xk , p] is a simplex in Č≤ (X, Rn ; 2r).
+
+An analogous lemma holds for the intrinsic Čech complex.
+Lemma 4.4. Let X ⊆ Rn have positive reach τ , let [x0 , . . . xk ] be a simplex in Č(X, X; 2r) with r < τ , let
+P
+x=
+λi xi ∈ Čm (X, X; 2r), and let p = π(f (x)). Then the simplex [x0 , . . . , xk , p] is in Č(X, X; 2r).
+Proof. As in the ambient case, we write the proof for Č≤ (X, X; 2r); an analogous proof works for Č< (X, X; 2r).
+11
+
+Since [x0 , . . . , xk ] is a simplex in Č(X, X; 2r), there exists a ball B(y, r) of radius r centered at some
+point y ∈ X such that xi ∈ B(y, r) ∩ X for all i. Also note that f (x) ∈ conv{x0 , . . . , xk } ⊆ B(y, r), and
+again p = π(f (x)) is well-defined by Lemma 4.2. We may assume p 6= f (x), since otherwise the conclusion
+follows trivially because p ∈ X and f (x) ∈ B(y, r), so we would have p ∈ B(y, r) ∩ X. Also, we know that
+d(p, f (x)) < r since d(xi , f (x)) ≤ r for some i and since p is the closest point in X to f (x).
+(x)−p
+Suppose for a contradiction that p ∈
+/ B(y, r). Let c = p + τ kff (x)−pk
+, and let B(c, τ ) be the open ball with
+center c and radius τ that is tangent to X at p. By Proposition 2.8 every xi must be in B(y, r) \ B(c, τ ). As
+above, let Tp⊥ be the line through f (x) and p.
+We now claim that y cannot lie on Tp⊥ . Indeed, since y ∈ X, we would have either y = p contradicting
+/ B(c, τ ), contradicting f (x) ∈ B(y, r).
+p∈
+/ B(y, r), or d(y, f (x)) > τ because y ∈
+0
+Let y 6= y be the closest point on Tp⊥ to y. Let Hy = {z ∈ Rn | hz − y 0 , y − y 0 i > 0} be the open
+half-space containing y, whose boundary is the hyperplane containing Tp⊥ that’s perpendicular to y − y 0 .
+Since f (x) ∈ B(y, r) and p ∈
+/ B(y, r), we have B(y, r) \ B(c, τ ) ⊆ Hy , which implies xi ∈ Hy for all i. This
+contradicts Lemma 3.1 since Hy is convex with f (x) ∈
+/ Hy , even though f (x) ∈ conv({x0 , . . . , xk }). Hence
+it must be the case that p ∈ B(y, r) ∩ X, and so [x0 , . . . , xk , p] is a simplex in Č(X, X; 2r).
+
+The following result is related to the nerve lemma, but it is not a consequence thereof. Indeed, even
+though the Čech simplicial complex Č(X; 2r) is the nerve of a collection of balls, the metric Čech thickening
+Čm (X; 2r) in general need not be homeomorphic nor even homotopy equivalent to the nerve Č(X; 2r).
+We reiterate that this theorem is for both the ambient and intrinsic Čech complexes, Čm (X, Rn ; 2r) and
+Čm (X, X; 2r).
+Theorem 4.5. Let X be a subset of Euclidean space Rn , equipped with the Euclidean metric, and suppose the
+reach τ of X is positive. Then for all r < τ , the metric Čech thickening Čm (X; 2r) is homotopy equivalent
+to X.
+Proof. We follow the same outline as for the Vietoris–Rips case. Map f : Čm (X; 2r) → Rn is again continuous
+by [3, Lemma 5.2]. It follows from Lemma 4.2 that the image of f is a subset of Tubτ . By Lemma 2.7 we
+have that π : Tubτ → X is continuous, and let ι : X → VRm (X; r) be the natural inclusion map.
+We will show that ι and π ◦ f are homotopy inverses. Note that π ◦ f ◦ i = idX . The continuous map
+H : Čm (X; 2r) × I → Čm (X; 2r) given by H(x, t) = t · idČm (X;2r) + (1 − t)ι ◦ π ◦ f is well-defined by Lemma 4.3
+or 4.4 and is the necessary homotopy equivalence from ι ◦ π ◦ f to idČm (X;2r) . Hence Čm (X; 2r) is homotopy
+equivalent to X.
+
+In the case of the metric Čech thickening, the bound r < 2τ is tight. For example, consider the zero sphere
+0
+∼
+S = {−1, 1} ⊆ R. The reach of S0 is τ = 1. At scale parameter r = 2 we have that Čm
+≤ (S , R; 2) = [−1, 1]
+0
+is contractible, and hence not homotopy equivalent to S .
+0
+
+5. Conclusion
+Subsets of Euclidean space of positive reach are a class of objects of particular interest in topological data
+analysis, and in this paper we have shown that Vietoris–Rips and Čech thickenings of these spaces recover the
+same topological information as the space itself. Moreover, metric Vietoris–Rips and Čech thickenings retain
+metric information about the subset, in stark contrast with the classical Vietoris–Rips and Čech simplicial
+complexes, which in general are not metrizable. Furthermore, metric thickenings have the advantage of
+allowing simpler (and explicit) constructions of the maps realizing homotopy equivalences in analogues of
+Hausmann’s result and the nerve lemma. Several questions, however, remain open. In particular, Latschev’s
+12
+
+theorem [21] states that if Y is Gromov–Hausdorff close to a manifold X, then an appropriate Vietoris–Rips
+complex of Y is homotopy equivalent to the manifold. A metric analogue for Vietoris–Rips thickenings is
+currently known only when Y is finite ([3, Theorem 4.4]), even though we expect the result to also be true
+for infinite Y .
+References
+[1] Eddie Aamari, Jisu Kim, Frédéric Chazal, Bertrand Michel, Alessandro Rinaldo, and Larry Wasserman. Estimating the
+reach of a manifold. arXiv preprint arXiv:1705.04565, 2017.
+[2] Michal Adamaszek and Henry Adams. The Vietoris–Rips complexes of a circle. Pacific Journal of Mathematics, 290:1–40,
+2017.
+[3] Michal Adamaszek, Henry Adams, and Florian Frick. Metric reconstruction via optimal transport. arXiv preprint
+arXiv:1706.04876.
+[4] Michal Adamaszek, Henry Adams, and Samadwara Reddy. On Vietoris–Rips complexes of ellipses. Journal of Topology
+and Analysis, pages 1–30, 2017.
+[5] Michal Adamaszek, Florian Frick, and Adrien Vakili. On homotopy types of Euclidean Rips complexes. Discrete & Computational Geometry, 58(3):526–542, 2017.
+[6] Dominique Attali, Jean-Daniel Boissonnat, and Herbert Edelsbrunner. Stability and computation of medial axes - a stateof-the-art report. In Mathematical foundations of scientific visualization, computer graphics, and massive data exploration,
+pages 109–125. Springer, 2009.
+[7] Dominique Attali and André Lieutier. Geometry-driven collapses for converting a Čech complex into a triangulation of a
+nicely triangulable shape. Discrete & Computational Geometry, 54(4):798–825, 2015.
+[8] Gunnar Carlsson. Topology and data. Bulletin of the American Mathematical Society, 46(2):255–308, 2009.
+[9] Frédéric Chazal, Vin de Silva, and Steve Oudot. Persistence stability for geometric complexes. Geometriae Dedicata, pages
+1–22, 2013.
+[10] Frédéric Chazal and Steve Oudot. Towards persistence-based reconstruction in Euclidean spaces. In Proceedings of the 24th
+Annual Symposium on Computational Geometry, pages 232–241. ACM, 2008.
+[11] Vin de Silva and Robert Ghrist. Coverage in sensor networks via persistent homology. Algebraic and Geometric Topology,
+7:339–358, 2007.
+[12] Tamal K Dey and Jian Sun. Normal and feature approximations from noisy point clouds. Lecture Notes in Computer
+Science, 4337:21–32, 2006.
+[13] Herbert Edelsbrunner and John L Harer. Computational Topology: An Introduction. American Mathematical Society,
+Providence, 2010.
+[14] David A Edwards. On the Kantorovich–Rubinstein theorem. Expositiones Mathematicae, 29(4):387–398, 2011.
+[15] Herbert Federer. Curvature measures. Transactions of the American Mathematical Society, 93(3):418–491, December 1959.
+[16] Charles Fefferman, Sanjoy Mitter, and Hariharan Narayanan. Testing the manifold hypothesis. Journal of the American
+Mathematical Society, 29(4):983–1049, 2016.
+[17] Allen Hatcher. Algebraic topology. Cambridge University Press, 2002.
+[18] Jean-Claude Hausmann. On the Vietoris–Rips complexes and a cohomology theory for metric spaces. In Frank Quinn,
+editor, Prospects In Topology, volume 138 of Annals of Mathematics Studies, pages 175–188. Princeton University Press,
+1995.
+[19] Hermann Karcher. Riemannian center of mass and mollifier smoothing. Communications on pure and applied mathematics,
+30(5):509–541, 1977.
+[20] Hans G Kellerer. Duality theorems and probability metrics. In Proceedings of the Seventh Conference on Probability theory,
+Braşov, Romania, pages 211–220, 1985.
+[21] Janko Latschev. Vietoris–Rips complexes of metric spaces near a closed Riemannian manifold. Archiv der Mathematik,
+77(6):522–528, 2001.
+[22] John M Lee. Introduction to Smooth Manifolds. Number 218 in Graduate Texts in Mathematics. Springer, 2003.
+[23] Partha Niyogi, Stephen Smale, and Shmuel Weinberger. Finding the homology of submanifolds with high confidence from
+random samples. Discrete Computational Geometry, 39:419–441, 2008.
+[24] Jan Rataj and Luděk Zajı́ček. On the structure of sets with positive reach. Mathematische Nachrichten, 290(11-12):1806–
+1829, 2017.
+[25] Katsuro Sakai. Geometric aspects of general topology. Springer, 2013.
+13
+
+[26] Edwin H Spanier. Algebraic topology, volume 55. Springer Science & Business Media, 1994.
+[27] Christoph Thäle. 50 years sets with positive reach. Surveys in Mathematics and Its Applications, 3:123–165, 2008.
+[28] Anatoly Moiseevich Vershik. Long history of the Monge–Kantorovich transportation problem. The Mathematical Intelligencer, 35(4):1–9, 2013.
+Department of Mathematics, Colorado State University, Fort Collins, CO 80523, United States
+E-mail address: adams@math.colostate.edu
+Department of Mathematics, Colorado State University, Fort Collins, CO 80523, United States
+E-mail address: mirth@math.colostate.edu
+
+14
+
+

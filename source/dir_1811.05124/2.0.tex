@@ -1,0 +1,142 @@
+
+Our first result shows that, if $F\in \text{AGG}(\nu)$ with $\nu>0$, then regardless of the error dependence structure, (asymptotic) perfect support recovery is achieved by applying Bonferroni's procedure with appropriately calibrated FWER, as long as the signal sizes are above the boundary in \eqref{eq:strong-classification-boundary} below.
+
+\begin{theorem} \label{thm:sufficient}
+Suppose $F\in \text{AGG}(\nu)$ with $\nu>0$;
+let the signal $\mu$ have $|S_p| = \lfloor p^{(1-\beta)} \rfloor$ non-zero entries where $\beta\in(0,1]$, where the magnitudes of non-zero signal entries are at least $\underline{\Delta} = \left(\nu\underline{r}\log p\right)^{1/\nu}$.
+Let also $\widehat{S}_p$ be the Bonferroni's procedure (defined in \eqref{eq:Bonferroni-procedure}) with vanishing FWER $\alpha = \alpha(p) \to 0$, such that %\fbox{slower than any polynomial}
+$\alpha p^\delta\to \infty$ for every $\delta>0$.
+If
+\begin{equation} \label{eq:signal-above-boundary}
+    \underline{r} > g(\beta) = (1 + (1 - \beta)^{1/\nu})^\nu,
+\end{equation}
+then we have
+\begin{equation} \label{eq:exact-supporot-recovery}
+    \lim_{p\to\infty}\mathbb P[\widehat{S}_p = S_p] = 1.
+\end{equation}
+\end{theorem}
+\begin{corollary}[Classes of procedures attaining the boundary]
+\label{cor:FWER-controlling_procedures}  Relation \eqref{eq:exact-supporot-recovery} holds for any FWER-controlling procedure that is strictly more powerful than Bonferroni's procedure. 
+This includes Holm's procedure \citep*{holm1979simple}, and in the case of independent errors, Hochberg's procedure \citep*{hochberg1988sharper}, and the {\v{S}}id{\'a}k procedure \citep*{vsidak1967rectangular}.
+\end{corollary}
+
+\begin{example} \label{exmp:FWER-controlling_procedures}
+Under Gaussian errors, the particular choice of the thresholding at $t_p = \sqrt{2\log{p}}$ in \eqref{eq:Bonferroni-procedure} corresponds to a Bonferroni's procedure with FWER decreasing at a rate of $(\log{p})^{-1/2}$. By the Corollary \ref{cor:FWER-controlling_procedures}, Holm's procedure, and when the errors are independent, the {\v{S}}id{\'a}k, and Hochberg procedures with FWER controlled at $(\log{p})^{-1/2}$ all achieve perfect support recovery provided that $r>g(\beta)$.
+\end{example}
+
+The claims in Example \ref{exmp:FWER-controlling_procedures} are proved in Appendix \ref{subsec:proofs-examples}.
+We now turn to the proof of Theorem \ref{thm:sufficient}.
+
+\begin{proof}[Proof of Theorem \ref{thm:sufficient}]
+Under the AGG model, it is easy to see from equation \eqref{eq:AGG-quantiles} that the thresholds in Bonferroni's procedure are 
+\begin{equation}\label{e:AGG-threshold}
+t_p = F^{\leftarrow}(1 - \alpha/p) = (\nu\log{(p/\alpha)})^{1/\nu}(1+o(1)).
+\end{equation}
+Define $\widehat{S}_p = \left\{j:x(j)>t_p\right\}$ as our estimator for the support set. 
+Dependence on $p$ will be suppressed to simplify notations when such omissions do not lead to ambiguity.
+
+The Bonferroni's procedure controls the FWER.  Indeed, we have
+\begin{align}\label{eq:Bonferroni-FWER-control}
+    \P\left[\widehat{S} \subseteq S\right] 
+        &= 1 - \P\left[\max_{j\in S^c}x(j) > t_p\right] = 1 - \P\left[\max_{j\in S^c}\epsilon(j) > t_p\right]\nonumber \\
+      % \ge 1 - \P\left[\max_{j\in\{1,\ldots,p\}}\epsilon(j) > t_p\right] \nonumber \\
+        &\ge 1 - \sum_{j\in\{1,\ldots,p\}}\P\left[\epsilon(j)>t_p\right] \ge 1 - \alpha(p) \to 1,
+\end{align}
+where we used the union bound in the second inequality. This shows that the probability of no false inclusion converges to $1$.
+
+On the other hand, for the probability of no missed detection, we have:
+\begin{equation*}
+    \P\left[\widehat{S} \supseteq S\right] 
+        = \P\left[\min_{j\in S}x(j) > t_p\right]
+        = \P\left[\min_{j\in S}x(j) - (\nu\underline{r}\log p)^{1/\nu} > t_p - (\nu\underline{r}\log p)^{1/\nu} \right].
+\end{equation*}
+Since the signal sizes are no smaller than $(\nu\underline{r}\log p)^{1/\nu}$, we have
+\begin{equation*}
+    x(j) - \left(\nu\underline{r}\log{p}\right)^{1/\nu} \ge \epsilon(j), \quad \text{for all }j\in S,
+\end{equation*}
+and hence we obtain
+\begin{equation} \label{eq:sufficient-proof-eq1}
+    \P\left[\widehat{S} \supseteq S\right] \ge 
+    \P\left[\min_{j\in S}\epsilon(j) > (\nu\log{(p/\alpha)})^{1/\nu}(1+o(1)) - (\nu\underline{r}\log p)^{1/\nu} \right],
+\end{equation}
+where we plugged in the expression for $t_p$ in \eqref{e:AGG-threshold}.
+Now, since the minimum signal size is bounded below by $\underline{r} > \left(1 + (1-\beta)^{1/\nu}\right)^\nu$, we have $\underline{r}^{1/\nu}-(1-\beta)^{1/\nu}>1$, and so we can pick a $\delta > 0$ such that 
+\begin{equation} \label{eq:choice-of-delta}
+    \delta < \left(\underline{r}^{1/\nu} - (1-\beta)^{1/\nu}\right)^\nu - 1.
+\end{equation}
+Since, by assumption, for all $\delta>0$, we have $p^{-\delta} = o\left(\alpha(p)\right)$, there is an
+$M=M(\delta)$ such that $p/\alpha(p) < p^{1+\delta}$ for all $p\ge M$. Thus, from \eqref{eq:sufficient-proof-eq1}, we further conclude that for $p\ge M$,
+\begin{align}
+    \P\Big[\widehat{S} \supseteq S\Big]
+      &\ge \P\Big[\min_{j\in S}\epsilon(j) > \left((1+\delta)\nu\log{p}\right)^{1/\nu}(1+o(1)) - (\nu\underline{r}\log p)^{1/\nu} \Big] \nonumber\\
+      &= \P\Big[\max_{j\in S}\left(-\epsilon(j)\right) < \left(\underline{r}^{1/\nu} - (1+\delta)^{1/\nu}\right)(\nu\log{p})^{1/\nu}(1+o(1)) \Big] \nonumber\\
+      &= \P\Big[\frac{\max_{j\in S}(-\epsilon(j))}{u_{|S|}} < \underbrace{\frac{\underline{r}^{1/\nu} - (1+\delta)^{1/\nu}}{(1-\beta)^{1/\nu}}\left(1+o(1)\right)}_{=:\text{A}}\Big], \label{eq:sufficient-proof-eq2}
+\end{align}
+where in the last equality we used the parametrization $|S_p| = \lfloor p^{1-\beta}\rfloor$, and the expression for the quantiles \eqref{eq:AGG-quantiles} to obtain
+\begin{equation}
+    u_{|S_p|} = u_{\lfloor p^{1-\beta}\rfloor} \sim \left(\nu(1-\beta)\log{p}\right)^{1/\nu}.
+\end{equation}
+
+Observe that for the expression $\text{A}$ in the right-hand-side of \eqref{eq:sufficient-proof-eq2} we have $\text{A}\to c>1$ by our choice of $\delta$ in \eqref{eq:choice-of-delta}.
+Since the $-\epsilon(j)$'s are also AGG, by Proposition \ref{prop:rapid-varying-tails} (to be stated next in Section \ref{sec:URS}), we conclude that the last probability in \eqref{eq:sufficient-proof-eq2}, and hence,
+$\P\left[\widehat{S} \supseteq S\right]$ converges to 1. 
+This shows that $\P\left[\widehat{S}\supseteq S\right]\to 1$, as $p\to\infty$, which completes the proof.
+\end{proof}
+
+
+Before further commenting on the implications of Theorem \ref{thm:sufficient}, we shall review some related work on sparse signal detection and approximate support recovery.
+
+The problem of sparse signal detection was first studied by \citet*{ingster1998minimax} under independent Gaussian errors.
+Specifically, under the parametrization \eqref{eq:sparsity-parametrized} and \eqref{eq:signal-size-parametrized} (with $\nu=2$), it was shown that the detection problem can be answered perfectly as $p\to\infty$, when signal size $r$ is above a threshold $f(\beta)$, where
+\begin{equation} \label{eq:detection-boundary}
+f(\beta) = \begin{cases}
+\left(1 - \sqrt{1 - \beta}\right)^2 &,\ \beta\ge3/4\\
+\beta - 0.5 &,\ 1/2<\beta<3/4.
+\end{cases}
+\end{equation}
+Conversely, when $r<f(\beta)$, we can do no better than random guessing. 
+Thus, the function $f(\beta)$ fully characterizes the so-called \emph{detection boundary} of the signal detection problem, and demonstrates a phase-transition phenomenon. 
+\citet*{donoho2004higher} showed that the Higher Criticism statistic, originally proposed by Tukey, is a procedure that achieves the detection boundary asymptotically, without prior knowledge of the sparsity and the signal size.
+
+In this context of approximate support recovery, the corresponding concept to type I error is the \emph{False Discovery Proportion} (FDP), defined as $\text{FDP} = |\widehat{S}\setminus S|\big/|\widehat{S}|$ (with \emph{False Discovery Rate} (FDR) being the expectation of FDP), 
+and the counterpart of type II error in this context being the \emph{False Non-discovery Proportion} (FNP), defined $\text{NDP} = |S\setminus\widehat{S}|\big/|S|$.
+\citet*{haupt2011distilled} showed that for signal size $r > \beta$, the sum of FDP and FNP can be made to vanish as $p\to\infty$; while if $r < \beta$, no thresholding procedure can succeed asymptotically. We shall call this boundary 
+\begin{equation} \label{eq:weak-classification-boundary}
+    h(\beta) = \beta
+\end{equation}
+the \emph{weak classification boundary}. Recently, \citet*{arias2017distribution} showed that the Benjamini-Hochberg procedure \citep*{benjamini1995controlling} and the Barber-Cand{\`e}s procedure \citep*{barber2015controlling} are practical procedures that achieve this weak classification boundary.
+These procedures are special cases of \emph{thresholding procedures}.
+
+An even more stringent notion of false discovery is the \emph{Family-Wise Error Rate} (FWER), defined $\text{FWER} = 1 - \mathbb P[\widehat{S} \subseteq S]$, which is probability of falsely reporting any signal not in the support set.
+Observe that vanishing FDP and NDP does not imply $\P\left[\widehat{S} = S\right]\to 1$;
+the latter, stronger, notion of set consistency requires that the FWER vanish as well.
+
+\begin{remark}[Gap between FDR and FWER under sparsity] \label{rmk:gap-when-signal-sparse}
+Although it is believed that FWER control is sometimes too stringent a requirement compared to, say, FDR control in support recovery problems, 
+the fact that all three thresholds (detection, weak, and strong classification) involve the same scaling indicates that the difficulties of the three problems (signal detection, approximate, and exact support recovery) are comparable when signals are truly sparse.
+This is illustrated with the next example.
+\end{remark}
+
+\begin{example}[Power analysis for variable selection] \label{exmp:gap-when-signal-sparse}
+For Gaussian errors (AGG with $\nu = 2$), when $\beta = 3/4$, for signal detection the boundary \eqref{eq:detection-boundary} says that signals will have to be at least of magnitude $\sqrt{\log{p}/2}$, 
+while approximate support recovery \eqref{eq:weak-classification-boundary} requires signal sizes of at least $\sqrt{3\log{p}/2}$, 
+and exact support recovery \eqref{eq:strong-classification-boundary} calls for signal sizes of at least $\sqrt{9\log{p}/2}$. 
+
+If $m$ (independent) observations $x_1,\ldots,x_m$ were made on the same set of $p$ locations, then by taking location-wise averages, $$\overline{x}_{m}(j) = \frac{1}{m}\sum_{i=1}^{m} x_i(j), \quad j=1,\ldots,p$$
+we can reduce error standard deviation, and hence boost the signal-to-noise ratio by a factor of $\sqrt{m}$.
+By the simple calculations above, if one were to perform a power analysis to determine the sample size needed to detect (sparse) signals of a certain magnitude, increasing the sample size by a factor of $3$ will enable approximate support recovery with FDR control; and in fact, exact support recovery with FWER control can be achieved by increasing the sample size by a factor of $9$.
+\end{example}
+
+\begin{remark}[Gap between FDR and FWER under dense signals]
+If the signals are only \emph{approximately} sparse, i.e., having a few components above \eqref{eq:strong-classification-boundary-Gaussian} but many smaller components above \eqref{eq:weak-classification-boundary}, then FDR-controlling procedures will discover substantially larger proportion of signals than FWER-controlling procedures.
+
+Indeed, as $\beta\to0$, the required signal size for approximate support recovery \eqref{eq:weak-classification-boundary} tends to 0, while the required signal size for exact support recovery \eqref{eq:strong-classification-boundary-Gaussian} tends to $2^\nu$ in AGG models.
+While Example \ref{exmp:gap-when-signal-sparse} indicates that the exact support recovery is not much more stringent than approximate support recovery when signals are sparse, the gap between required signal sizes widens when signals are dense. 
+\end{remark}
+
+Finally, we emphasize that Theorem \ref{thm:sufficient} holds for errors with \emph{arbitrary} 
+dependence structures. Intuitively, this is because the maxima of the errors grow at their 
+fastest in the case of independence. Formally, the result stems from Proposition \ref{prop:rapid-varying-tails} below, which is valid under arbitrary dependence.
+% Thus, the support recovery problem is hardest under independent errors.
+The relationship between dependence and the behavior of maxima is discussed next in Section \ref{sec:URS}, where we will see that the phase-transition phenomenon is not limited to just the AGG models and independent errors; such phenomenon exists for all error models with rapidly varying tails, and under a surprisingly large class of dependent structures.
+% On the other hand, converse of Theorem \ref{thm:sufficient} will have to stated with assumptions on dependence structures of the $\epsilon$'s, as we will see in Section \ref{sec:necessary}. 

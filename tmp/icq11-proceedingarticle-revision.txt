@@ -1,0 +1,920 @@
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION
+TILINGS
+
+Shigeki Akiyama
+
+a
+
+and Jeong-Yup Lee
+
+b∗
+
+a: Department of Mathematics, Faculty of Science, Niigata University, 8050 Ikarashi-2,
+Nishi-ku, Niigata, Japan (zip: 950-2181); akiyama@math.sc.niigata-u.ac.jp
+b: KIAS 207-43, Cheongnyangni 2-dong, Dongdaemun-gu, Seoul 130-722, Korea;
+jylee@kias.re.kr
+
+Abstract. Quasicrystals are characterized by the diﬀraction patterns which consist of pure bright
+peaks. Substitution tilings are commonly used to obtain geometrical models for quasicrystals. We
+consider certain substitution tilings and show how to determine a quasicrystalline structure for the
+substitution tilings computationally. In order to do this, it is important to have the Meyer property
+on the substitution tilings. We use the recent result of Lee-Solomyak in [18] which determines the
+Meyer property on the substitution tilings from the expansion maps.
+Keywords: Quasicrystals, Pure point diﬀraction, Self-aﬃne tilings, Overlap coincidence, Meyer
+sets, Algorithm.
+
+1. Introduction
+For the study of geometric structures of quasicrystals, substitutions are commonly used to create
+mathematical models. Many known examples such as the Penrose tiling and the Robinson tiling
+can be created by this method. Mathematically quasicrystals are characterized as the structures of
+models whose diﬀraction patterns consist purely of Bragg peaks without diﬀuse background. The
+diﬀraction is described by the diﬀraction measure of the point sets representing the models and the
+diﬀraction measure is a Fourier transformation of an autocorrelation of a Dirac measure deﬁned on
+the point sets.
+Let Λ = (Λi )i≤m be a multi-colour point set in Rd . We consider a measure of the form ν =
+∑
+i≤m ai δΛi , where δΛi =
+x∈Λi δx and ai ∈ C. The autocorrelation of ν is
+
+∑
+
+γ(ν) = lim
+
+n→∞
+
+1
+(ν|Bn ∗ νe|Bn ),
+Vol(Bn )
+
+where ν|Bn is a measure of ν restricted on the ball Bn of radius n and νe is the measure, deﬁned
+by νe(f ) = ν(fe), where f is a continuous function with compact support and fe(x) = f (−x). The
+d of the autocorrelation (see [10]). When the
+diﬀraction measure of ν is the Fourier transform γ(ν)
+d is a pure point measure, we say that Λ has pure point diﬀraction spectrum
+diﬀraction measure γ(ν)
+and so the structures of quasicrystals.
+There are many criteria in literature which characterize the structures of quasicrystals. One of
+the criteria is that the pure point diﬀractivity of Λ is equivalent to pure point dynamical spectral
+property of Λ [8, 20, 15, 11, 3, 19]. Another criterion is that regular model sets are pure point
+Date: July 20, 2010.
+*Corresponding author.
+1
+
+2
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+diﬀractive [10, 21, 4, 13]. A third criterion is ‘almost periodicity’, which says that if a uniformly
+discrete set Λ admits an autocorrelation, then Λ is pure point diﬀractive if and only if for all ϵ > 0,
+the set
+{t ∈ Rd : density(Λ \ (Λ − t + Bϵ )) ≤ ϵ}
+is relatively dense (see [22, 4, 11]). When we restrict to the setting of substitution tilings or point
+sets, the equivalent criterion to the almost periodicity can be described by the notion of overlap
+coincidence [22, 13]. This overlap coincidence plays an important role on getting the computational
+algorithm to determine the pure point diﬀractivity on the substitution tilings. The detail justiﬁcation
+about the algorithm and the main theorem can be found in [1]. We provide a few examples in the
+last section some of which are not mentioned there.
+2. Preliminary
+2.1. Tilings. We begin with a set of types (or colours) {1, . . . , m}, which we ﬁx once and for all. A
+tile in Rd is deﬁned as a pair T = (A, i) where A = supp(T ) (the support of T ) is a compact set in Rd ,
+which is the closure of its interior, and i = l(T ) ∈ {1, . . . , m} is the type of T . We say that a set P of
+tiles is a patch if the number of tiles in P is ﬁnite and the tiles of P have mutually disjoint interiors. We
+say that two patches P1 and P2 are translationally equivalent if P2 = g+P1 for some g ∈ Rd . A tiling of
+∪
+Rd is a set T of tiles such that Rd = {supp(T ) : T ∈ T } and distinct tiles have disjoint interiors. We
+always assume that any two T -tiles with the same colour are translationally equivalent (hence there
+are ﬁnitely many T -tiles up to translations). Let Ξ(T ) := {x ∈ Rd : T = x + T ′ for some T, T ′ ∈ T }.
+We say that T has ﬁnite local complexity(FLC) if for each radius R > 0 there are only ﬁnitely many
+equivalent classes of patches whose support lies in some ball of radius R. We say that T is repetitive
+if for every compact set K ⊂ Rd , {t ∈ Rd : T ∩ K = (t + T ) ∩ K} is relatively dense.
+2.2. Substitutions.
+2.2.1. Example of a substitution tiling. The Fibonacci substitution tiling is deﬁned by the following
+substitution rule
+τ
+
+0
+
+→
+
+0
+
+→
+
+0
+
+A1
+0
+
+τ
+A1
+
+1
+A2
+
+q
+
+τ + 1(= τ 2 )
+A2
+
+τ
+A1
+
+where τ 2 − τ − 1 = 0. The tiles A1 and A2 satisfy the following tile-equations
+τ A1
+
+= A1 ∪ (A2 + τ )
+
+τ A2
+
+= A1
+
+Continuously iterating the tiles and subdividing them, we can construct a tiling.
+2.2.2. Substitutions on tilings. We say that a linear map Q : Rd → Rd is expansive if all its eigenvalues
+lie outside the closed unit disk in C.
+Definition 2.1. Let A = {T1 , . . . , Tm } be a ﬁnite set of tiles in Rd such that Ti = (Ai , i); we will
+call them prototiles. Denote by PA the set of non empty patches. We say that Ω : A → PA is a
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+3
+
+tile-substitution (or simply substitution) with an expansive map Q if there exist ﬁnite sets Dij ⊂ Rd
+for i, j ≤ m such that
+Ω(Tj ) = {u + Ti : u ∈ Dij , i = 1, . . . , m}
+
+(2.1)
+with
+(2.2)
+
+QAj =
+
+m
+∪
+
+(Dij + Ai )
+
+for j ≤ m.
+
+i=1
+
+Here all sets in the right-hand side must have disjoint interiors; it is possible for some of the Dij to
+be empty.
+We say that T is a substitution tiling if T is a tiling and Ω(T ) = T with some substitution Ω. We
+say that substitution tiling is primitive if the corresponding substitution matrix S, with Sij = ♯(Dij ),
+is primitive, i.e. S ℓ is a positive matrix for some ℓ ∈ Z+ . A repetitive primitive substitution tiling
+with FLC is called a self-aﬃne tiling. Let ΛT = (Λi )i≤m be the multi-colour point set representing
+T . For any self-aﬃne tiling which satisﬁes (2.2), we deﬁne an m × m array Φ for which each entry
+is Φij ,
+Φij = {f : x 7→ Qx + d : d ∈ Dij }
+and call Φ a matrix function system (MFS) for the substitution Ω. We compose
+Φ ◦ Φ = ((Φ ◦ Φ)ij ),
+where
+(Φ ◦ Φ)ij =
+
+∪m
+k=1
+
+{
+Φik ◦ Φkj and Φik ◦ Φkj :=
+
+{ g ◦ f : g ∈ Φik , f ∈ Φkj }
+∅ if Φik = ∅ or Φkj = ∅ .
+
+We write Φ2 for Φ ◦ Φ and similarly Φn for n-fold composition of Φ for n ∈ Z+ . We write Φn (x) for
+(Φn ij (x))i≤m where x ∈ Λj and n ∈ Z+ .
+2.3. Overlaps. Overlap and overlap coincidence are originally deﬁned with tiles in substitution
+tilings [22]. For computational reason, we deﬁne overlaps with the corresponding representative
+points of tiles here. A triple (u, y, v), with u + Ti , v + Tj ∈ T and y ∈ Ξ(T ), is called an overlap (or
+real overlap) if
+(2.3)
+
+(u + Ai − y)◦ ∩ (v + Aj )◦ ̸= ∅,
+
+where Ai = supp(Ti ) and Aj = supp(Tj ). We deﬁne (u + Ai − y) ∩ (v + Aj ) the support of an overlap
+(u, y, v) and denote it by supp(u, y, v). We say that two overlaps (u, y, v) and (u′ , y ′ , v ′ ) are equivalent
+if there exists g ∈ Rd such that u − y = g + u′ − y ′ and v = g + v ′ , where u + Ti , u′ + Ti ∈ T and
+v + Tj , v ′ + Tj ∈ T for some 1 ≤ i, j ≤ m. Denote by [(u, y, v)] the equivalence class of an overlap.
+An overlap (u, y, v) is a coincidence if
+u − y = v and u + Ti , v + Ti ∈ T for some i ≤ m.
+For an overlap O = (u, y, v) in T , we deﬁne k-th inﬂated overlap
+Φk O = {(u′ , Qk y, v ′ ) : u′ ∈ Φk (u), v ′ ∈ Φk (v), and (u′ , Qk y, v ′ ) is an overlap}.
+Definition 2.2. We say that a self-aﬃne tiling T admits an overlap coincidence if there exists
+ℓ ∈ Z+ such that for each overlap O in T , Φℓ O contains a coincidence.
+
+4
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+We say that a discrete point set Ξ is a Meyer set if Ξ is relatively dense and Ξ − Ξ is uniformly
+discrete. For α ∈ Ξ(T ), deﬁne
+Eα := {(u, Qn α, v) : (u, Qn α, v) is overlap in T and n ∈ N }.
+Theorem 2.3. [16, 13] Let T be a self-aﬃne tiling in Rd such that Ξ(T ) is a Meyer set. Then the
+following are equivalent;
+(i) ΛT is pure point diﬀractive.
+(ii) T admits an overlap coincidence.
+(iii) There exists ℓ ∈ Z+ such that for any overlap O in Eα , Φℓ O contains a coincidence.
+In actual computation, it is not easy to determine whether a given triple is an overlap, since the
+interior intersection is hard to determine. So we introduce a notion of potential overlaps. From (2.3),
+for any overlap (u, y, v) in T it is easy to observe that
+|u − y − v| ≤ R := 2 · max{diam(Ai ) : i ≤ m},
+where diam(A) is the diameter of A.1 We say that a triple (u, y, v), with u + Ti , v + Tj ∈ T for some
+i, j ≤ m and y ∈ Ξ(T ), is called a potential overlap if |u − y − v| ≤ R. Similarly to the k-th iterated
+overlap, for each potential overlap O = (u, y, v) in T , we deﬁne k-th inﬂated potential overlap
+Φk O = {(u′ , Qk y, v ′ ) : u′ ∈ Φk (u), v ′ ∈ Φk (v), and (u′ , Qk y, v ′ ) is a potential overlap}
+and the equivalence class of Φk O
+[Φk O] = {[O′ ] : O′ ∈ Φk O} .
+It is proved in [22, 16] that the number of equivalence classes of overlaps for a tiling which has the
+Meyer property is ﬁnite. And it is shown in [17] that substitution tiling with pure point diﬀraction
+spectrum necessarily have the Meyer property. So to obtain overlap coincidence, we assume the
+Meyer property of Ξ(T ). The next theorem gives a criterion on Q for the Meyer property.
+A set of algebraic integers Θ = {θ1 , · · · , θr } is a Pisot family if for any 1 ≤ j ≤ r, every Galois
+conjugate γ of θj with |γ| ≥ 1 is contained in Θ.
+Theorem 2.4. [18] Let T be a self-aﬃne tiling in Rd with a diagonalizable expansion map Q.
+Suppose that all the eigenvalues of Q are algebraic conjugates with the same multiplicity. Then Ξ(T )
+is a Meyer set if and only if the set of all the eigenvalues of Q is a Pisot family.
+Under Pisot family condition on Q, it is easy to show the Meyer property in practice. The main
+new result of the above theorem is showing the partial converse.
+Let ξ ∈ Rd be a ﬁxed point under the substitution such that ξ ∈ Φ(ξ). When there is no confusion,
+we will identify ξ with a coloured point (ξ, i) in ΛT with ξ ∈ Rd . We ﬁnd a basis of Rd
+B = {α1 , . . . , αd } ⊂ Ξ(T ).
+For any α ∈ B and any M ∈ Z≥0 , deﬁne
+∪
+Gα,M :=
+{[(y, Qn α, z)] : y, z ∈ ΦN +k+n (ξ) and (y, Qn α, z) is a potential overlap} ,
+0≤n≤M
+1It is possible to take a smaller R. See [1] for details.
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+∪
+
+Gα :=
+
+Gα,M and G =
+
+M ∈Z≥0
+
+∪
+
+5
+
+Gα .
+
+α∈B
+
+From the Meyer property of Ξ(T ), there exists M ∈ Z≥0 such that Gα,M = Gα,M +1 (refer [1] to ﬁnd
+M ).
+Lemma 2.5. Let α ∈ B. If Gα,M = Gα,M +1 for some M (= Mα ) ∈ Z≥0 , then
+Gα,M = Gα .
+Let Gcoin be the set of all equivalence classes of overlaps in T which lead to coincidence after
+♯G-iterations and Gres := G \ Gcoin . Draw a graph whose vertices are elements in G and edges from
+a potential overlap O to O′ are k-multiple if the inﬂated potential overlap ΦO contains k-copies of
+O′ for some k ∈ Z+ . For simplicity, we use the same name G for the graph. Similarly Gcoin and Gres
+stand for the induced graphs of G for the corresponding set. For any graph G, we denote by ρ(G)
+the spectral radius of the graph G.
+Theorem 2.6. Let T be a self-aﬃne tiling in Rd such that Ξ(T ) is a Meyer set. Then T admits an
+overlap coincidence if and only if ρ(Gcoin ) > ρ(Gres ).
+To show the ‘only if’ part, it is inevitable to estimate the contribution of potential overlaps whose
+tiles meet only at the boundaries. So a result on the Hausdorﬀ dimension of the tile boundaries is
+shown on the way of proving the above theorem (see [1]).
+Summarizing the results, we provide an algorithm to determine the pure point diﬀraction of a
+point set which represents a substitution tiling.
+Algorithm : We assume that T is a self-aﬃne tiling in Rd with expansion map Q for which Ξ(T )
+is a Meyer set and Ti = (Ai , i), i ≤ m, are prototiles such that
+QAj =
+
+∪
+
+(Dij + Ai ) for j ≤ m.
+
+i≤m
+
+• Input: Φ is an m × m matrix whose each entry is a set of functions from Rd to Rd such
+that Φ = (Φij ), where Φij = {f : x → Qx + d, d ∈ Dij }, i.e. Φ is a MFS for T .
+• Output: True, if and only if ΛT is pure point diﬀractive.
+(i) Find an initial point x such that x ∈ Φ(x).
+(ii) Find a basis {α1 , . . . , αd } ⊂ Rd such that αk ∈
+
+∪
+
+n
+i≤m ((Φ (x))i
+
+− (Φn (x))i ) for some
+
+n ∈ Z+ , for each 1 ≤ k ≤ d.
+(iii) For each 1 ≤ k ≤ d, ﬁnd all the potential overlaps Gα,0 which occur from the translation
+αk .
+(iv) Find all the potential overlaps G which occur from the translations Qn αk with 1 ≤ k ≤ d
+and n ∈ Z+ .
+(v) Find all the potential overlaps Gcoin which lead to coincidences within ♯G-iterations.
+(vi) If ρ(Gcoin ) > ρ(Gres ) return true. Else, return false.
+
+6
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+3. Computation with an algorithm
+For one-dimension substitutions, it is not diﬃcult to determine overlaps. For this case, we use
+overlaps directly to check overlap coincidence as it is shown in Example 3.1. In higher dimension, it
+is diﬃcult to determine all the overlaps. So adopting the notion of potential overlaps, we determine
+the overlap coincidence. We implemented Mathematica programs which perform our algorithm to
+check the overlap coincidence for self-aﬃne tilings. Readers can get the Mathematica programs in
+the website given in [2]. Below, we present two examples where the algorithm was applied, the fractal
+Penrose tiling in Example 3.2 and a fractal chair tiling in Example 3.3.
+Example 3.1. There is a Pisot type substitution
+deﬁned
+
+ by a → ab, b → c, c → a (see [6, 9]). The
+1 0 1
+
+
+
+corresponding substitution matrix is M =  1 0 0 
+ . The PF-eigenvalue of M is λ for which
+0 1 0
+λ − λ − 1 = 0 and a left eigenvector of M corresponding to λ is (λ2 , 1, λ). Let T1 (T2 , or T3 ) be the
+3
+
+2
+
+intervals of length λ2 (1, or λ) starting from 0, respectively. We can construct a substitution tiling T
+attaching these intervals to a bi-inﬁnite ﬁxed sequence as tiles. For any ﬁxed repetitive substitution
+tiling T , it is enough to check overlap coincidence in one side of the tiling.
+a
+ab
+..
+.
+a b c a a b a b c a b c a a b c a a···
+λ2 + λ + 1
+
+q
+a
+0
+
+λ2
+
+q
+b
+
+λ2 + 1
+
+q
+c
+
+q
+a
+
+3λ2 + λ + 1
+2λ2 + λ + 1
+
+q
+a
+
+q
+b
+
+4λ2 + λ + 2
+
+3λ2 + λ + 2
+
+q
+a
+
+q
+b
+
+4λ2 + 2λ + 3
+
+4λ2 + λ + 3
+
+q
+c
+
+q
+a
+
+···
+
+All overlaps are [λ2 −λ+T1 , 0+T1 ], [λ+T1 , 0+T1 ], [1+T1 , 0+T1 ], [0+T2 , 0+T1 ], [λ2 −λ−1+T2 , 0+T1 ],
+[λ2 − λ + T2 , 0 + T1 ], [λ2 − 1 + T2 , 0 + T1 ], [1 + T3 , 0 + T1 ], [λ2 − λ + T3 , 0 + T1 ], [0 + T3 , 0 + T1 ],
+[−λ + 1 + T3 , 0 + T1 ], [λ2 − λ + 1 + T3 , 0 + T1 ], [−λ2 + 1 + T3 , 0 + T2 ], [−λ + 1 + T3 , 0 + T2 ]. Every
+overlap admits coincidence when Φ10 is applied to the pair of representative points of overlap tiles.
+For example, for an overlap [λ2 − λ + T1 , 0 + T1 ], we look at
+
+
+
+
+{λ2 − λ}
+{0}
+
+
+
+
+ and Φ10  ∅ 
+Φ10 
+∅
+
+
+
+
+∅
+∅
+Observe that λ9 ∈ (Φ10 )11 (λ2 − λ) ∩ (Φ10 )11 (0). Thus ΛT is pure point diﬀractive.
+Example 3.2. Bandt-Gummelt in [7] gave two fractal Penrose tilings by fractal kites and darts
+having exact matching condition (see Figure 1 (a)). We conﬁrm that these tilings admit overlap
+coincidence.
+Thus the tilings have pure point diﬀractive spectrum. The expanding matrix Q =
+(
+)
+t 0
+where t2 − t − 1 = 0 and the MFS Φ is 20 × 20 matrix such that Φ = (Fij ) and Fij = {f :
+0 t
+f = Qx+d,
+d ∈ Dij }. We give the digit set matrix (Dij ) in Figure 2, where w = cos(π/5)+i sin(π/5),
+√
+t=
+
+(1+ 5)
+,
+2
+
+and c ∈ C satisﬁes f (t2 i) = i with f (z) = zt w4 + c.
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+(a) Example 3.2
+
+7
+
+(b) Example 3.3
+
+Figure 1. Fractal Tilings
+0
+0
+0
+ä t w3
+0
+0
+0
+ä t w7
+0
+0
+0
+0
+0
+ä t w3
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w8
+0
+0
+0
+0
+0
+ä t w4
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w4
+5
+9
+5
+0
+0
+0
+ätw
+0
+0
+0
+0
+0
+ätw
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ätw
+6
+6
+ät
+0
+0
+0
+0
+0
+ätw
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ätw
+0
+0
+0
+7
+7
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ätw
+0
+0
+0 ätw
+0
+0
+0
+0
+0
+ätw
+0
+0
+ä t w2
+0
+0
+0
+0
+0
+ä t w8
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w8
+0
+0
+0
+0
+0
+0
+ä t w9 0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w9
+0
+0
+0
+ä t w3
+ät
+0
+0
+0
+ä t w4
+0
+0
+0
+0
+0
+ät
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0 ätw
+0
+0
+0
+ä t w5
+0
+0
+0
+0
+0 ätw
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w6
+0
+0
+0
+0
+0
+ä t w2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ä t w2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w6
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w6
+0
+0
+0
+0
+0
+0
+0
+c t w7
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w7
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w8
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w8
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w9 0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w9
+ct
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ct
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0 ctw
+0
+0
+0
+0
+0
+0
+0
+0
+0 ctw
+0
+0
+0
+0
+0
+0
+0
+0
+2
+2
+0
+0
+ctw
+0
+0
+0
+0
+0
+0
+0
+0
+0
+ctw
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w3
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w3
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w4
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w4
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w5
+0
+0
+0
+0
+0
+0
+0
+0
+0
+c t w5
+0
+0
+0
+0
+
+Figure 2. Digit set matrix of fractal Penrose tiling
+Example 3.3. Bandt found an aperiodic tiling by modifying the construction of crystallographic
+tiling [5]. He called it a fractal chair tiling. Note, to avoid confusion, that this tiling is not the fractal
+version of ordinary chair tiling in [12, 22, 14], not like Example 3.2. A single tile in the fractal chair
+tiling is a 3-reptile, i.e., it is subdivided into shrunk 3 similar copies, while the ordinary chair tile is
+a 4-reptile. The tile equations are given by
+λAn = An ∪ (An + αn−1 ) ∪ (An+1 + αn )
+where λ = −2α2 + α and α2 − α + 1 = 0 and n of An is a cyclic index modulo 6. The computation
+shows that the tiling does not admit overlap coincidence. So the point structure representing the
+tiling is not pure point diﬀractive, which means that there is continuous part in the diﬀraction
+pattern. Nonetheless the diﬀraction has a relatively dense set of Bragg peaks, since the tiling has
+the Meyer property (see [23, 17]). It would be interesting to know the reason why this tiling gives
+a structure which is not pure point diﬀractive and understand the continuous part of the diﬀraction
+spectrum more concretely. The ﬁgure is given in Figure 1(b).
+
+8
+
+DETERMINING QUASICRYSTAL STRUCTURES ON SUBSTITUTION TILINGS
+
+Acknowledgments
+This research was supported by Basic Research Program through the National Research Foundation
+of Korea(NRF) funded by the Ministry of Education, Science and Technology(2010-0011150) and
+the Japanese Society for the Promotion of Science (JSPS), Grant in aid 21540010.
+References
+[1] S. Akiyama and J.-Y. Lee, Algorithm for determining pure pointedness of self-aﬃne tilings, Adv. Math. Accepted.
+[2] S. Akiyama and J.-Y. Lee, http://mathweb.sc.niigata-u.ac.jp/~akiyama/Research1.html
+[3] M. Baake and D. Lenz, Dynamical systems on translation bounded measures : pure point dynamical and diﬀraction spectra, Ergod. Th. & Dynam. Sys. 24 (2004), 1867–1893.
+[4] M. Baake and R. V. Moody, Weighted Dirac combs with pure point diﬀraction, J. Reine Angew. Math. 573
+(2004), 61–94.
+[5] C. Bandt, Self-similar tilings and patterns described by mappings, in The Mathematics of Long-Range Aperiodic
+Order (Waterloo, ON, 1995), R. V. Moody, ed., NATO Adv. Sci. Inst. Ser. C Math. Phys. Sci., Vol. 489, Kluwer
+Acad. Publ., Dordrecht, 1997, 45–83.
+[6] V. Berthé and A. Siegel, Tilings associated with beta-numeration and substitutions. Integers 5(3), A2, (2005) 46
+pp. (electronic).
+[7] C. Bandt, P. Gummelt, Fractal Penrose tilings. I. Construction and matching rules, Aequationes Math. 53(3)
+(1997), 295–307.
+[8] S. Dworkin, Spectral theory and X-ray diﬀraction, J. Math. Phys. 34 (1993), 2965–2967.
+[9] N. Pytheas Fogg, Substitutions in dynamics, arithmetics and combinatorics, Lecture Notes in Mathematics. 1794,
+Springer, 2002.
+[10] A. Hof, Diﬀraction by aperiodic structures, in The Mathematics of Long-Range Aperiodic Order, (R. V. Moody,
+ed.), 239–268, Kluwer, 1997.
+[11] J.-B. Gouéré, Diﬀraction and Palm measure of point processes, C. R. Acad. Sci. Paris 336(1) (2003), 57–62.
+[12] B. Grünbaum and G. C. Shephard, Tilings and patterns, Freeman, New York, 1986.
+[13] J.-Y. Lee, Substitution Delone Sets with Pure Point Spectrum are Inter Model Sets, J. Geom. Phys. 57 (2007)
+2263-2285.
+[14] J.-Y. Lee and R. V. Moody, Lattice Substitution Systems and Model Sets, Discrete and Computational Geometry
+25 (2001), 173–201.
+[15] J.-Y. Lee, R. V. Moody, and B. Solomyak, Pure Point Dynamical and Diﬀraction Spectra, Ann. Henri Poincaré
+3 (2002), 1003–1018.
+[16] J.-Y. Lee, R. V. Moody, and B. Solomyak, Consequences of Pure Point Diﬀraction Spectra for Multiset Substitution Systems, Discrete Comp. Geom. 29 (2003), 525–560.
+[17] J.-Y. Lee and B. Solomyak, Pure point diﬀractive substitution Delone sets have the Meyer property, Discrete
+Comp. Geom. 39 (2007), 319-338.
+[18] J.-Y. Lee and B. Solomyak, Pisot family substitution tilings, discrete spectrum and the Meyer property, submitted.
+[19] D. Lenz and N. Strungaru, Pure point spectrum for measure dynamical systems on locally compact abelian
+groups. J. Math. Pures Appl. 92(4) (2009), 323–341.
+[20] M. Queﬀélec, Substitution dynamical systems — spectral analysis, Springer Lecture Notes in Math. 1294,
+Springer, 1987.
+[21] M. Schlottmann, Generalized model sets and dynamical systems, in: Directions in Mathematical Quasicrystals,
+eds. M. Baake and R. V. Moody, CRM Monograph series 13, AMS, Providence RI 2000, 143–159.
+[22] B. Solomyak, Dynamics of self-similar tilings, Ergodic Th. Dynam. Sys. 17 (1997), 695–738. Corrections to ‘
+Dynamics of self-similar tilings’, ibid. 19 (1999), 1685.
+[23] N. Strungaru, Almost periodic measures and long-range order in Meyer sets, Discrete Comput. Geom. 33(3)
+(2005), 483–505.
+
+

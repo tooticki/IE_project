@@ -1,0 +1,92 @@
+%% Miscellaneous macros, loaded at the start of each class.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{nmd/common}[2014/08/31 - Semester start edition]
+
+
+%%% Switch to turn on Nathan's features if his custom option file exists
+\newif\ifnmd
+\IfFileExists{user-is-nathan-dunfield}{\nmdtrue}{\nmdfalse}
+
+%%% Trying to make the final code somewhat readable
+\RequirePackage{ifthen}
+\newcommand{\ifthen}[2]{\ifthenelse{#1}{#2}{\relax}}
+\newcommand{\ifnotthen}[2]{\ifthenelse{#1}{\relax}{#2}}
+\newcommand{\PassDownOptionToPackage}[2]{\DeclareOption{#1}{\PassOptionsToPackage{#1}{#2}}}
+\newcommand{\PassDownOptionToClass}[2]{\DeclareOption{#1}{\PassOptionsToClass{#1}{#2}}}
+
+%%% Macros for PDF formating:
+
+% Strip off the margins for onscreen viewing
+
+\let\trimpdfpages\undefined
+\newcommand{\trimpdfpages}[1]{%
+\let\remnantmargin\undefined
+\newcommand{\remnantmargin}{#1}
+
+% First move the PDF origin to the upper-left
+% corner of the text
+
+\setlength{\pdfhorigin}{-\oddsidemargin}
+\addtolength{\pdfhorigin}{-\hoffset}
+
+\setlength{\pdfvorigin}{-\topmargin}
+\addtolength{\pdfvorigin}{-\voffset}
+
+% Now trim to the minimal page size
+\setlength{\pdfpagewidth}{\textwidth}
+\setlength{\pdfpageheight}{\textheight}
+
+\addtolength{\pdfpageheight}{\headsep}
+\addtolength{\pdfpageheight}{\headheight}
+\addtolength{\pdfpageheight}{\footskip}
+
+% Now pad out to the desired margins
+\addtolength{\pdfhorigin}{\remnantmargin}
+\addtolength{\pdfpagewidth}{\remnantmargin}
+\addtolength{\pdfpagewidth}{\remnantmargin}
+
+\addtolength{\pdfvorigin}{\remnantmargin}
+\addtolength{\pdfpageheight}{\remnantmargin}
+\addtolength{\pdfpageheight}{\remnantmargin}
+}
+\newcommand{\trimpages}[1]{%
+  % This test is for compatibility with TikZ's picture
+  % caching ("externalization") system.  
+  \ifthen{\isundefined{\tikzexternalrealjob}}{%
+    \AtBeginDocument{\trimpdfpages{#1}}
+  } 
+}
+
+% Format for printing on US Letter pages
+
+\newcommand{\printing}[1]{%
+  \setlength{\textwidth}{#1\textwidth}
+  \setlength{\textheight}{1.5\textwidth}
+  \trimpages{0.3cm}
+}
+
+\newcommand{\laptop}{%
+  \setlength{\textheight}{1.1\textwidth}
+  \trimpages{0.5cm}
+}
+
+\newcommand{\bigmonitor}{%
+  \setlength{\textheight}{1.7\textwidth}
+  \trimpages{0.5cm}
+}
+ 
+%%% Change float params as per TeX FAQ to make things more 
+%%% flexible 
+
+\newcommand{\nmd@freefloats}{%
+  \renewcommand{\topfraction}{.85}
+  \renewcommand{\bottomfraction}{.7}
+  \renewcommand{\textfraction}{.15}
+  \renewcommand{\floatpagefraction}{.66}
+  \renewcommand{\dbltopfraction}{.66}
+  \renewcommand{\dblfloatpagefraction}{.66}
+  \setcounter{topnumber}{9}
+  \setcounter{bottomnumber}{9}
+  \setcounter{totalnumber}{20}
+  \setcounter{dbltopnumber}{9}
+}

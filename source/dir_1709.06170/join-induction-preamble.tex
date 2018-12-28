@@ -1,0 +1,658 @@
+\usepackage{mathtools}
+
+\newtheoremstyle{myplain}% name
+  {0pt}%      Space above
+  {0pt}%      Space below
+  {\itshape}%         Body font
+%  {}%         Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+%  {\bfseries\itshape}% Thm head font
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {0.75em}%     Space after thm head: " " = normal interword space;
+        %       \newline = linebreak
+  {}%         Thm head spec (can be left empty, meaning `normal')
+
+\newtheoremstyle{mydefinition}% name
+  {0pt}%      Space above
+  {0pt}%      Space below
+  {}%         Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+%  {\bfseries\itshape}% Thm head font
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {0.75em}%     Space after thm head: " " = normal interword space;
+        %       \newline = linebreak
+  {}%         Thm head spec (can be left empty, meaning `normal')
+
+% Make environments pmatrix, bmatrix etc. accept optional parameters for alignment of entries
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+%\let\sectionORIG\section
+%\renewcommand{\section}{\vspace{1.5ex}\sectionORIG}
+%\let\subsectionORIG\subsection
+%\renewcommand{\subsection}[2][]{\vspace{.75ex}\subsectionORIG[#1]{\vspace{.75ex}#2}}
+
+\newlength{\defaultleftmargini}
+\setlength{\defaultleftmargini}{2em}
+\renewenvironment{items}[1]%
+  {\bgroup\setlength{\leftmargini}{\defaultleftmargini}%
+	\setbox2\hbox{#1}\advance\leftmargini by\wd2%
+	\itemizeORIG%
+	\setlength{\itemsep}{.3ex}}%
+  {\enditemizeORIG\egroup}
+
+\newenvironment{widequote}%
+	{\begin{list}{}{%
+		\setlength{\leftmargin}{\parindent}%
+		\setlength{\rightmargin}{\parindent}}%
+		\item[]\ignorespaces}%
+	{\unskip\end{list}}
+
+\theoremstyle{myplain}
+\newtheorem{theorem}{Theorem} %[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{scholium}[theorem]{Scholium}
+
+\theoremstyle{mydefinition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}{Example}
+\newtheorem{examples}[example]{Examples}
+%\newtheorem{remark}[example]{Remark}
+\newtheorem{remark}{Remark}
+\newtheorem{remarks}[remark]{Remarks}
+%\newtheorem{note}[example]{Note}
+\newtheorem{note}{Note}
+
+\newenvironment{Example}%
+	{\begin{example}}%
+	{\hfill\qed\end{example}}
+\newenvironment{Examples}%
+	{\begin{examples}}%
+	{\hfill\qed\end{examples}}
+\newenvironment{Remark}%
+	{\begin{remark}}%
+	{\hfill\qed\end{remark}}
+\newenvironment{Remarks}%
+	{\begin{remarks}}%
+	{\hfill\qed\end{remarks}}
+\newenvironment{Note}%
+	{\begin{note}}%
+	{\hfill\qed\end{note}}
+
+%\newcommand{\usesAC}{{\Large$\star$}}
+\newcommand{\noncons}{{\Large$\star$}}
+
+\theoremstyle{myplain}
+\newtheorem{*theorem}[theorem]{\noncons Theorem} %[section]
+\newtheorem{*proposition}[theorem]{\noncons Proposition}
+\newtheorem{*corollary}[theorem]{\noncons Corollary}
+\newtheorem{*lemma}[theorem]{\noncons Lemma}
+
+\renewcommand{\qed}{$~\square$}
+\renewcommand{\QED}{\hfill\qed}
+
+\renewenvironment{proof}[1][Proof.]
+	{\noindent{\bfseries #1}\hspace{.75em}\ignorespaces}
+	{\rule{0pt}{0pt}\hfill\qed}
+\newenvironment{proof*}[1][Proof.]
+	{\noindent{\bfseries #1}\hspace{.75em}\ignorespaces}
+	{\par}
+
+\newenvironment{*proof}[1][\noncons Proof.]
+	{\noindent{\bfseries #1}\hspace{.75em}\ignorespaces}
+	{\rule{0pt}{0pt}\hfill\qed}
+
+\newcommand{\skipincr}{1.5ex}
+%\newcommand{\skipincr}{1.25ex}
+%\newcommand{\skipincr}{1ex}
+\newcommand{\bigskipincr}{2ex}
+\newcommand{\incrskip}{\vspace{\skipincr}}
+\newcommand{\bigincrskip}{\vspace{\bigskipincr}}
+\newcommand{\fragskip}{\bigskip\bigskip}
+\newcommand{\annotskip}{\bigskip\incrskip}
+\newcommand{\dateskip}{\bigskip\incrskip}
+\newcommand{\thmskip}{\bigskip\incrskip}
+%\newcommand{\thmskip}{\bigskip}
+\newcommand{\noteskip}{\bigskip\bigincrskip}
+\newcommand{\lastthmskip}{\incrskip}
+\newcommand{\txtskip}{\bigskip}
+\newcommand{\interskip}{\bigskip}
+%\newcommand{\interskip}{\medskip}
+\newcommand{\smallinterskip}{\smallskip}
+\newcommand{\inskip}{\medskip}
+%\newcommand{\inskip}{\smallskip}
+\newcommand{\mednegskip}{\vspace{-1.25ex}}
+
+\newcommand{\tightdisplays}%
+	{\setlength{\abovedisplayskip}{0pt}
+	 \setlength{\belowdisplayskip}{0pt}
+	 \setlength{\abovedisplayshortskip}{0pt}
+	 \setlength{\belowdisplayshortskip}{0pt}}
+
+\newlength{\defaultdisplayskip}
+\setlength{\defaultdisplayskip}{\abovedisplayskip}
+\newcommand{\displayskip}{\vspace{\defaultdisplayskip}}
+\newcommand{\negdisplayskip}{\vspace{-\defaultdisplayskip}}
+\newlength{\defaultdisplayshortskip}
+\setlength{\defaultdisplayshortskip}{.75\defaultdisplayskip}
+\newcommand{\displayshortskip}{\vspace{\defaultdisplayshortskip}}
+\newcommand{\negdisplayshortskip}{\vspace{-\defaultdisplayshortskip}}
+\newlength{\defaultdisplayhalfskip}
+\setlength{\defaultdisplayhalfskip}{.5\defaultdisplayskip}
+\newcommand{\displayhalfskip}{\vspace{\defaultdisplayhalfskip}}
+\newcommand{\negdisplayhalfskip}{\vspace{-\defaultdisplayhalfskip}}
+
+\newcommand{\pause}{\bigskip\noindent\hspace{\stretch{1}}{\tt ---*---*---*---}\hspace{\stretch{1}}\bigskip}
+
+\newcommand{\Hrule}{\pagebreak[3]\noteskip\hrule\noteskip}
+
+\newcommand{\zerorule}{\rule{0pt}{0pt}}
+
+\newcommand{\leftt}[1]{\negtinysp#1\tinysp}
+\newcommand{\leftdt}[1]{\negdtinysp#1\dtinysp}
+\newcommand{\rightt}[1]{\tinysp#1\negtinysp}
+\newcommand{\rightdt}[1]{\dtinysp#1\negdtinysp}
+
+%\addtolength{\skip\footins}{\bigskipamount}
+%\addtolength{\skip\footins}{2ex}
+\addtolength{\skip\footins}{1.25ex}
+\renewcommand{\emph}[1]{\textsl{#1\/}}
+\newcommand{\knownas}[1]{\textit{#1\/}}
+
+\newcommand{\gogglesmiley}{($\negdtinysp$%
+	\raisebox{-.45ex}{$\overset{\text{${\scriptstyle\circ\dtinysp\circ}$}}
+					{\smash\smallsmile\rule{0pt}{.7ex}}$}%
+	$\negdtinysp$)}
+\newcommand{\smiley}{\raisebox{-0.3ex}{\includegraphics[hiresbb=true]{mp/smileys-1.mps}}}
+\newcommand{\footnotesmiley}{\raisebox{-0.3ex}{\includegraphics[hiresbb=true]{mp/smileys-2.mps}}}
+
+%!
+
+\renewcommand{\mathtextopfont}{\mathrm}
+
+\renewcommand{\anon}{\mathord{\tinysp\rule[0.5ex]{0.45em}{0.5pt}\tinysp}}
+\renewcommand{\smallanon}{\mathord{\tinysp\rule[0.25ex]{0.325em}{0.4pt}\tinysp}}
+
+\newcommand{\In}{\:\in\:}
+
+\newcommand{\overbar}{\overlinesymb}
+\newcommand{\Overbar}{\Overlinesymb}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\renewcommand{\defeq}{:=}
+\renewcommand{\Defeq}{\:\defeq\:}
+\newcommand{\eqdef}{=:}
+\newcommand{\Eqdef}{\:\eqdef\:}
+%\newcommand{\isomorph}{\cong}
+%\newcommand{\Isomorph}{\:\cong\:}
+\newcommand{\isomorph}{\simeq}
+\newcommand{\Isomorph}{\:\simeq\:}
+\newcommand{\dia}{\raisebox{.05ex}{\small{$\diamond$}}}
+\newcommand{\bul}{\raisebox{.05ex}{\small{$\bullet$}}}
+\newcommand{\anonob}{\bul}
+\newcommand{\fin}{\mathrm{f}}
+\newcommand{\Powfin}{\Pow_{\negtinysp\fin}}
+\newcommand{\tmod}[1]{(\mathrm{mod}\;#1)}
+\renewcommand{\mod}[1]{~\tmod{#1}}
+\newcommand{\tbigmod}[1]{\bigl(\mathrm{mod}\;#1\bigr)}
+\newcommand{\bigmod}[1]{~\tbigmod{#1}}
+\newcommand{\congr}{\equiv}
+\newcommand{\Congr}{\:\congr\:}
+\newcommand{\ncongr}{\not\congr}
+\newcommand{\nCongr}{\:\ncongr\:}
+\newcommand{\stab}{\mathtextop{stab}\nolimits}
+\newcommand{\Sym}{\mathtextop{Sym}\nolimits}
+\newcommand{\Center}{\mathtextop{Z}\nolimits}
+%\renewcommand{\hom}{\mathtextop{hom}\nolimits}
+\newcommand{\Hom}{\mathtextop{Hom}\nolimits}
+\newcommand{\hend}{\mathtextop{end}\nolimits}
+\newcommand{\End}{\mathtextop{End}\nolimits}
+\newcommand{\aut}{\mathtextop{aut}\nolimits}
+\newcommand{\Aut}{\mathtextop{Aut}\nolimits}
+\newcommand{\iso}{\mathtextop{iso}\nolimits}
+\newcommand{\Iso}{\mathtextop{Iso}\nolimits}
+\newcommand{\Transf}{\mathtextop{Transf}\nolimits}
+%\newcommand{\Transf}{\mathtextop{Trf}\nolimits}
+\newcommand{\Transl}{\mathtextop{Transl}\nolimits}
+%\newcommand{\Transl}{\mathtextop{Tsl}\nolimits}
+\newcommand{\GenLin}{\mathit{G\negdtinysp L\tinysp}}
+\newcommand{\SpecLin}{\mathit{SL\tinysp}}
+\newcommand{\ProjSpecLin}{\mathit{PSL\tinysp}}
+\newcommand{\Orth}{\mathit{O}}
+\newcommand{\SpecOrth}{\mathit{SO}}
+%\newcommand{\Projsp}{\mathrm{P}}
+\newcommand{\Projsp}{\PP}
+\newcommand{\punct}[1]{#1^{\raisebox{0.25ex}{$\halftinysp\scriptscriptstyle\bullet$}}}
+\newcommand{\txtmtx}[1]{\boldsymbol{[}#1\boldsymbol{]}}
+\newcommand{\bigtxtmtx}[1]%
+	{\raisebox{-0.05ex}{\larger\boldmath$[$}#1\raisebox{-0.05ex}{\larger\boldmath$]$}}
+\newcommand{\Bigtxtmtx}[1]%
+	{\mbox{\larger[2]\boldmath$[$}#1\mbox{\larger[2]\boldmath$]$}}
+\newcommand{\ProjGenLin}{\mathrm{PGL}}
+\newcommand{\Ob}{\mathtextop{Ob}\nolimits}
+\newcommand{\Mor}{\mathtextop{Mor}\nolimits}
+\renewcommand{\restr}[1]{\widet{{|}}_{#1}}
+\newcommand{\bigrestr}[1]{\widet{{\bigm|}}_{#1}}
+\newcommand{\divides}{\mid}
+%\newcommand{\fix}{\mathtextop{fix}\nolimits}
+\newcommand{\Ids}{\cal{I}}
+
+\newcommand{\cat}[1]{\text{\bf #1}}
+
+\newcommand{\catSet}{\cat{Set}}
+\newcommand{\catGrp}{\cat{Grp}}
+\newcommand{\catGroup}{\cat{Group}}
+\newcommand{\catLMAct}{\cat{MAct}}
+\newcommand{\catRMAct}{\cat{ActM}}
+\newcommand{\catLRMAct}{\cat{MActM}}
+\newcommand{\catLGAct}{\cat{GAct}}
+\newcommand{\catRGAct}{\cat{ActG}}
+\newcommand{\catLRGAct}{\cat{GActG}}
+\newcommand{\catLAct}[1]{#1\cat{-Act}}
+\newcommand{\catRAct}[1]{\cat{Act-}#1}
+\newcommand{\catLRAct}[2]{#1\cat{-Act-}#2}
+\newcommand{\catRing}{\cat{Ring}}
+\newcommand{\catRng}{\cat{Rng}}
+\newcommand{\catAb}{\cat{Ab}}
+
+\newcommand{\catAff}{\cat{Aff}}
+%\newcommand{\catLMod}[1]{#1\cat{-Mod}}
+%\newcommand{\catRMod}[1]{\cat{Mod-}#1}
+%\newcommand{\catLAff}[1]{#1\cat{-Aff}}
+%\newcommand{\catRAff}[1]{\cat{Aff-}#1}
+\newcommand{\catLMod}[1]{{}_{#1}\cat{Mod}}
+\newcommand{\catRMod}[1]{\cat{Mod}_{#1}}
+\newcommand{\catLAff}[1]{{}_{#1}\cat{Aff}}
+\newcommand{\catRAff}[1]{\cat{Aff}_{#1}}
+\newcommand{\catLAffpr}[1]{{}_#1\cat{Aff}^{\,\boldsymbol\prime}}
+\newcommand{\catRAffpr}[1]{\cat{Aff}^{\,\boldsymbol\prime}_{#1}}
+\newcommand{\catLA}[1]{{}_{#1}\boldsymbol{\mathfrak{A}}}
+\newcommand{\catRA}[1]{\boldsymbol{\mathfrak{A}}_{#1}}
+\newcommand{\catA}{\boldsymbol{\mathfrak{A}}}
+\newcommand{\catLApr}[1]{{}_{#1}\boldsymbol{\mathfrak{A}}^{\boldsymbol\prime}}
+\newcommand{\catRApr}[1]{\boldsymbol{\mathfrak{A}}_{#1}^{\boldsymbol\prime}}
+\newcommand{\catGroud}{\cat{Groud}}
+\newcommand{\catAbGroud}{\cat{AbGroud}}
+\newcommand{\catAG}{\boldsymbol{\mathfrak{AG}}}
+\newcommand{\catAFF}{\boldsymbol{\mathfrak{Aff}}}
+\newcommand{\catGrd}{\cat{Grd}}
+\newcommand{\catLSP}[1]{{}_{#1}\cat{SP}}
+\newcommand{\catRSP}[1]{\cat{SP}_{#1}}
+\newcommand{\catPOSet}{\cat{POSet}}
+
+\newcommand{\commacat}[2]{(#1\mathbin{\downarrow}#2)}
+\newcommand{\bigcommacat}[2]{\bigl(#1\narrt{\mathbin{\big\downarrow}}#2\bigr)}
+
+\newcommand{\nattransf}{\xto{\raisebox{-.35ex}{.}}}
+\newcommand{\hash}{\mathop{\#}}
+
+\newcommand{\insubloc}{\natural}
+\newcommand{\bimply}{\mathbin{\Rightarrow}}
+\newcommand{\galoisconn}{\rightleftharpoons}
+\newcommand{\Galoisconn}{\xrightleftharpoons{\quad}}
+
+\newcommand{\Clsyss}{\mathtextopfont{CS}}
+\newcommand{\cs}{\mathtextopfont{cs}}
+\newcommand{\clsys}{\mathtextop{clsys}\nolimits}
+\newcommand{\nucsys}{\mathtextop{nucsys}\nolimits}
+\newcommand{\Sublocs}{\mathtextopfont{SL}}
+\newcommand{\Clops}{\mathtextopfont{Cl}}
+\newcommand{\Nuclei}{\mathtextopfont{N}}
+\newcommand{\subloc}{\mathtextopfont{sl}}
+\newcommand{\oneker}{\mathord{\nabla}\tinysp}
+\newcommand{\fitnuc}{\Delta\tinysp}
+\newcommand{\nf}{\mathtextopfont{nf}}
+\newcommand{\opnuc}{\mathtextopfont{o}}
+\newcommand{\clnuc}{\mathtextopfont{c}}
+\newcommand{\Opsubloc}{\mathtextopfont{O}}
+\newcommand{\Clsubloc}{\mathtextopfont{C}}
+%\newcommand{\regnuc}{\mathtextopfont{r}}
+\newcommand{\Regsubloc}{\mathtextopfont{R}}
+\newcommand{\core}{{\bullet}}
+\newcommand{\Tee}{\mathtextopfont{T}}
+\newcommand{\fitit}{\phi}
+\newcommand{\fit}{{\rightt{\mathtextopfont{fit}}}}
+%\newcommand{\Fitnucsyss}{\mathtextopfont{NS}_\fit}
+%\newcommand{\Fitnuclei}{\mathtextopfont{N}_\fit}
+\newcommand{\heytdiff}{-}
+\newcommand{\shortleftarrow}{\mathord{\includegraphics{shortleftarrow.1}}}
+\newcommand{\sysfromcl}{\mathtextopfont{sys}\shortlefarrow\mathtextopfont{cl}}
+\newcommand{\clfromsys}{\mathtextopfont{cl}\shortlefarrow\mathtextopfont{sys}}
+\newcommand{\sysfromrules}{\mathtextopfont{sys}\shortlefarrow\mathtextopfont{rules}}
+\newcommand{\rulesfromcl}{\mathtextopfont{rules}\shortlefarrow\mathtextopfont{cl}}
+\newcommand{\clfromrules}{\mathtextopfont{cl}\shortlefarrow\mathtextopfont{rules}}
+\newcommand{\gencl}[1]{\overlinesymb{#1}}
+\newcommand{\fixed}{\mathtextopfont{Fix}}
+\newcommand{\up}{\mathbin{\uparrow}}
+\newcommand{\upfrom}{\mathop{\smash{\uparrow}}\nolimits}
+\newcommand{\lup}{\mathop{\smash{\uparrow}}\nolimits}
+\newcommand{\rup}{\dtinysp\mathord{\uparrow}}
+\newcommand{\down}{\mathbin{\downarrow}}
+\newcommand{\downfrom}{\mathop{\smash{\downarrow}}\nolimits}
+\newcommand{\ldown}{\mathop{\smash{\downarrow}}\nolimits}
+\newcommand{\rdown}{\dtinysp\mathord{\downarrow}}
+\newcommand{\dflt}{\mathtextopfont{df}}
+\newcommand{\Rulesdflt}{\mathrm{R}_{\dtinysp\dflt}}
+\newcommand{\nuc}{\mathtextop{nuc}\nolimits}
+\newcommand{\nuccore}{\mathtextop{nuc}\nolimits}
+%\newcommand{\Rulesnuc}{\mathtextopfont{R}^{\textstyle\cdot\negtinysp}}
+\newcommand{\Rulesnuc}{\mathtextopfont{R}_{\nuc}}
+\newcommand{\closure}[1]{\overlinesymb{#1}}
+\newcommand{\precl}{\mathtextopfont{pc}}
+\newcommand{\chop}{${}'$}
+%\newcommand{\itchop}{$\tinysp{}'$}
+\renewcommand{\op}{{\tinysp\mathtextopfont{op}}}
+\newcommand{\adjoint}{\dashv}
+\newcommand{\subto}{\hookrightarrow}
+\newcommand{\eqv}{\sim}
+\newcommand{\neqv}{\nsim}
+\newcommand{\eqqv}{\approx}
+\newcommand{\neqqv}{\not\approx}
+\renewcommand{\dom}{\mathtextopfont{dom}}
+\newcommand{\Clrules}{\mathtextopfont{CR}}
+\newcommand{\dotbimpl}
+  {\mathbin{\accentset{\textstyle\text{.}\mspace{5mu}}{\smash{\Rightarrow}\rule{0pt}{0.95ex}}}}
+\newcommand{\astbimpl}
+  {\mathbin{\accentset{\scriptstyle*\mspace{7mu}}{\smash{\Rightarrow}\rule{0pt}{0.8ex}}}}
+\newcommand{\Nucsyss}{\mathtextopfont{NS}}
+\newcommand{\Nucfilts}{\mathtextopfont{NF}}
+\newcommand{\dotrightarrow}
+  {\mathbin{\accentset{\textstyle\text{.}\mspace{1mu}}{\smash{\rightarrow}\rule{0pt}{0.8ex}}}}
+\newcommand{\dotadjoins}[1]{\mathrel{{{|}\mspace{-3.5mu}{\dotrightarrow}}_{\!#1}}}
+\newcommand{\Ordinals}{\mathtextopfont{Ord}}
+\newcommand{\Ord}{\Ordinals}
+
+\newcommand{\welllt}{\prec}
+\newcommand{\wellgt}{\succ}
+\newcommand{\wellnlt}{\nprec}
+\newcommand{\wellngt}{\nsucc}
+\newcommand{\wellleq}{\preccurlyeq}
+\newcommand{\wellgeq}{\succcurlyeq}
+\newcommand{\wellnleq}{\not\wellleq}
+\newcommand{\wellngeq}{\not\wellgeq}
+\newcommand{\Welllt}{\:\welllt\:}
+\newcommand{\Wellgt}{\:\wellgt\:}
+\newcommand{\Wellnlt}{\:\wellnlt\:}
+\newcommand{\Wellngt}{\:\wellngt\:}
+\newcommand{\Wellleq}{\:\wellleq\:}
+\newcommand{\Wellgeq}{\:\wellgeq\:}
+\newcommand{\Wellnleq}{\:\wellnleq\:}
+\newcommand{\Wellngeq}{\:\wellngeq\:}
+
+\newcommand{\Lower}{\mathtextop{Low}\nolimits}
+\newcommand{\Upper}{\mathtextop{Upp}\nolimits}
+\newcommand{\Lbnds}{\mathtextop{Lbs}\nolimits}
+\newcommand{\Lbs}{\Lbnds}
+\newcommand{\Ubnds}{\mathtextop{Ubs}\nolimits}
+\newcommand{\Ubs}{\Ubnds}
+\newcommand{\Min}{\mathtextop{Min}\nolimits}
+\newcommand{\Max}{\mathtextop{Max}\nolimits}
+
+\newcommand{\Map}{\mathtextop{Map}\nolimits}
+%\newcommand{\Transf}{\mathtextop{Transf}\nolimits}
+\newcommand{\Fun}{\mathtextop{Fun}\nolimits}
+\newcommand{\Fix}{\mathtextop{Fix}\nolimits}
+\newcommand{\Inc}{\mathtextop{Inc}\nolimits}
+\newcommand{\Dec}{\mathtextop{Dec}\nolimits}
+\newcommand{\Asc}{\mathtextop{Asc}\nolimits}
+\newcommand{\Precl}{\mathtextop{Precl}\nolimits}
+\newcommand{\Cl}{\mathtextop{Cl}\nolimits}
+\newcommand{\ClOp}{\mathtextop{ClOp}\nolimits}
+\newcommand{\ClSys}{\mathtextop{ClSys}\nolimits}
+\newcommand{\Int}{\mathtextop{Int}\nolimits}
+\newcommand{\IntSys}{\mathtextop{IntSys}\nolimits}
+\newcommand{\Nuc}{\mathtextop{Nuc}\nolimits}
+\newcommand{\FNuc}{\mathtextop{FNuc}\nolimits}
+\newcommand{\Prenuc}{\mathtextop{Prenuc}\nolimits}
+\newcommand{\NucSys}{\mathtextop{NucSys}\nolimits}
+%\newcommand{\FitNuc}{\mathtextopfont{Nuc}_\fit}
+\newcommand{\FitNuc}{\Nuc_\fit}
+%\newcommand{\FitNucSys}{\mathtextopfont{NucSys}_\fit}
+\newcommand{\FitNucSys}{\NucSys_\fit}
+\newcommand{\NucFilt}{\mathtextop{NucFilt}\nolimits}
+\newcommand{\ClRul}{\mathtextop{ClRul}\nolimits}
+\newcommand{\ClTheor}{\mathtextop{ClTheor}\nolimits}
+\newcommand{\LowSets}{\mathtextop{LowSets}\nolimits}
+\newcommand{\UppSets}{\mathtextop{UppSets}\nolimits}
+
+\newcommand{\Dirhull}{\Delta}
+\newcommand{\open}{{}^\circ}
+\newcommand{\cardnum}{\mathfrak}
+\newcommand{\nucleus}{\mathtextopfont{nuc}}
+\newcommand{\clop}{\mathtextopfont{cl}}
+\newcommand{\nucfilt}{\mathtextop{nucfilt}\nolimits}
+\newcommand{\rules}{\mathtextop{rules}\nolimits}
+\newcommand{\Dirrel}{\Delta}
+\newcommand{\Explrel}{\Xi}
+\newcommand{\corresp}{\leftrightarrow}
+\newcommand{\ex}{\mathtextop{ex}\nolimits}
+\newcommand{\tJoinpr}{\tJoin^{\tinysp\prime}\negtinysp}
+\newcommand{\tMeetpr}{\tMeet\negdtinysp\!'}
+\newcommand{\uppr}{\up^{\dtinysp\prime}\negdtinysp}
+\newcommand{\intsys}{\mathtextop{intsys}\nolimits}
+\newcommand{\RanzatoPow}{\wp}
+\newcommand{\dfltcl}{\mathop{\smash{\fr{d}}}\nolimits}
+\newcommand{\nuccl}{\mathop{\fr{n}}\nolimits}
+\newcommand{\itcl}{\mathop{\smash{\mathit{cl}}}\nolimits}
+\newcommand{\lcm}{\mathtextop{lcm}\nolimits}
+\newcommand{\cldflt}{\cl_{\tinysp\dflt}}
+
+\newcommand{\POSET}{\mathit{POSET}}
+\newcommand{\PREORD}{\mathit{PREORD}}
+
+\newcommand{\Dirset}{\mathtextop{D}\nolimits}
+\newcommand{\Filt}{\F}
+\newcommand{\FBase}{\B}
+\newcommand{\Upptop}{\U}
+\newcommand{\Ideals}{\mathtextop{Id}\nolimits}
+\newcommand{\ideal}{\mathtextop{id}\nolimits}
+\newcommand{\Filters}{\mathtextop{Filt}\nolimits}
+\newcommand{\Congrs}{\mathtextop{Cong}\nolimits}
+\newcommand{\Equivs}{\mathtextop{Equiv}\nolimits}
+\newcommand{\Closeds}{\Gamma}
+\newcommand{\Opens}{\coll{O}}
+\newcommand{\Clopens}{\Closeds\Opens}
+%\newcommand{\close}{{}^-}
+\newcommand{\close}{\widedt{\overline{\phantom{\jmath}}}}
+\newcommand{\closed}{\close}
+\newcommand{\inter}{{}^\circ}
+\newcommand{\complem}{{}^{\widet{\mathrm{c}}}}
+\newcommand{\Contfuns}{\mathtextop{C}\nolimits}
+\newcommand{\nbd}{neighborhood}
+
+%\newcommand{\vcompose}{\mathbin{\bul}}
+%\newcommand{\vcompose}{\mathbin{\raisebox{.125ex}{\footnotesize{$\bullet$}}}}
+%\newcommand{\vcompose}{\mathbin{\raisebox{.2ex}{\scriptsize{$\bullet$}}}}
+\newcommand{\vcompose}{\mathbin{\raisebox{.3ex}{\tiny{$\bullet$}}}}
+
+\newcommand{\adjunction}{\galoisconn}
+\newcommand{\Adjunction}{\Galoisconn}
+
+\newcommand{\catTop}{\cat{Top}}
+\newcommand{\catFrm}{\cat{Frm}}
+\newcommand{\catFFrm}{\cat{FFrm}}
+\newcommand{\catLoc}{\cat{Loc}}
+\newcommand{\catCBool}{\cat{CBool}}
+\newcommand{\catFBool}{\cat{FBool}}
+\newcommand{\catFDLat}{\cat{FDLat}}
+
+%\newcommand{\ssOpens}{\Omega}
+\newcommand{\ssOpens}{\mathop{\smash{\Omega}}\nolimits}
+%\newcommand{\ssCloseds}{\Gamma}
+\newcommand{\ssCloseds}{\mathop{\smash{\Gamma}}\nolimits}
+%\newcommand{\ssPoints}{\mathrm{pt}}
+\newcommand{\ssPoints}{\mathtextop{pt}\nolimits}
+\newcommand{\Tzero}{$\mathrm{T}_0$}
+\newcommand{\Tone}{$\mathrm{T}_1$}
+\newcommand{\Span}[1]{\langle#1\rangle}
+\newcommand{\bigSpan}[1]{\bigl\langle#1\bigr\rangle}
+\newcommand{\itSS}{{\it Stone Spaces\/}}
+\newcommand{\itconst}{\mathit{const}}
+\newcommand{\rmconst}{\mathrm{const}}
+
+% Ranzato Cls on CPOs
+\newcommand{\ranztuple}[1]{\langle\widet{#1}\rangle}
+\newcommand{\ranzpair}{\ranztuple}
+\newcommand{\ranzop}[1]{\mathop{\smash{\mathit{#1}}}\nolimits}
+\newcommand{\uco}{\ranzop{uco}}
+\newcommand{\lst}{\ranzop{lst}}
+\renewcommand{\lub}{\ranzop{lub}}
+\newcommand{\lfp}{\ranzop{lfp}}
+\newcommand{\pwlt}{\sqsubset}
+\newcommand{\pwleq}{\sqsubseteq}
+\newcommand{\pwgt}{\sqsupset}
+\newcommand{\pwgeq}{\sqsupseteq}
+\newcommand{\tbot}{\mathtextop{bot}\nolimits}
+\newcommand{\ttop}{\mathtextop{top}\nolimits}
+\newcommand{\lbnds}[1]{#1^\downarrow}
+\newcommand{\ranzdefeq}{\mathrel{\overset{\text{def}}{=}}}
+\newcommand{\ranzDefeq}{\:\ranzdefeq\:}
+\newcommand{\ranzPow}{\mathop{\smash{\wp}}\nolimits}
+\newcommand{\weakrpc}{\rightsquigarrow}
+
+\newcommand{\lins}{{\large\boldmath$[$\,}}
+\newcommand{\rins}{{\,\large\boldmath$]$}}
+\theoremstyle{myplain}
+\newtheorem{inslemma}[theorem]{\lins Lemma}
+
+\newcommand{\AlgCl}{\mathtextop{AlgCl}\nolimits}
+\newcommand{\AlgClSys}{\mathtextop{AlgClSys}\nolimits}
+\newcommand{\AlgClTheor}{\mathtextop{AlgClTheor}\nolimits}
+\newcommand{\Conv}{\mathtextop{Conv}\nolimits}
+\newcommand{\ConvSys}{\mathtextop{ConvSys}\nolimits}
+\newcommand{\ConvTheor}{\mathtextop{ConvTheor}\nolimits}
+\newcommand{\AlgConv}{\mathtextop{AlgConv}\nolimits}
+\newcommand{\AlgConvSys}{\mathtextop{AlgConvSys}\nolimits}
+\newcommand{\AlgConvTheor}{\mathtextop{AlgConvTheor}\nolimits}
+%\newcommand{\conv}{\mathtextop{conv}\nolimits} % already defined in the general preamble
+\newcommand{\clconv}{\mathtextop{clconv}\nolimits}
+\newcommand{\ConvTheorfin}{\ConvTheor_\fin}
+
+\newcommand{\der}{\mathtextop{der}\nolimits}
+\newcommand{\rul}{\mathtextop{rul}\nolimits}
+\newcommand{\sys}{\mathtextop{sys}\nolimits}
+
+\newcommand{\forces}{\rightharpoonup}
+\newcommand{\Rul}{\mathtextop{Rul}\nolimits}
+\newcommand{\RulSys}{\mathtextop{RulSys}\nolimits}
+\newcommand{\Img}{\mathtextop{Im}\nolimits}
+\newcommand{\ScottC}{\mathtextop{ScottC}\nolimits}
+\newcommand{\ScottO}{\mathtextop{ScottO}\nolimits}
+\newcommand{\alg}{\mathrm{a}}
+\newcommand{\algcl}{\mathtextop{alg}\nolimits}
+\newcommand{\algclsys}{\mathtextop{algsys}\nolimits}
+\newcommand{\algcltheor}{\mathtextop{alg}\nolimits}
+\newcommand{\convcl}{\mathtextop{conv}\nolimits}
+\newcommand{\convclsys}{\mathtextop{conv}\nolimits}
+\newcommand{\convcltheor}{\mathtextop{convtheor}\nolimits}
+\newcommand{\ClRulfin}{\ClRul_{\dtinysp\fin}}
+\newcommand{\du}{\mathtextop{du}\nolimits}
+\newcommand{\widen}{\mathrm{w}}
+\newcommand{\ClTheorfin}{\ClTheor_\fin}
+\renewcommand{\dj}{\mathtextop{dj}\nolimits}
+\newcommand{\Chains}{\mathtextop{Chains}\nolimits}
+
+\newcommand{\PowE}{\Pow\negtinysp E}
+\newcommand{\PowPowE}{\Pow\negdtinysp\Pow\negtinysp E}
+\newcommand{\dfltclP}{\dfltcl_{\negdtinysp P}}
+
+\newcommand{\allbelow}[2]{#1\down#2}
+\newcommand{\allabove}[2]{#1\up#2}
+\newcommand{\tJoinalg}{\tJoin^\alg}
+\newcommand{\joinalg}{\join^{\tinysp\alg}}
+\newcommand{\tMeetalg}{\tMeet^{\!\alg}}
+\newcommand{\meetalg}{\meet^{\negdtinysp\alg}}
+\newcommand{\finpart}{\mathtextop{finit}\nolimits}
+\newcommand{\weakcom}{\mathtextop{weak}\nolimits}
+\newcommand{\finpartfin}{\finpart^{\fin\negdtinysp}}
+\newcommand{\weakcomfin}{\weakcom^{\rightt\fin}}
+\newcommand{\rulalg}{\rul^{\tinysp\alg}}
+\newcommand{\clalg}{\cl^{\tinysp\alg}}
+\newcommand{\sysalg}{\sys^{\tinysp\alg}}
+\newcommand{\derfin}{\der^{\rightt{\fin}}}
+\newcommand{\rulfin}{\rul^{\tinysp\fin}}
+\newcommand{\clfin}{\cl^{\tinysp\fin}}
+\newcommand{\sysfin}{\sys^{\tinysp\fin}}
+\newcommand{\sigmafin}{\sigma^{\tinysp\fin\negtinysp}}
+\newcommand{\varrhofin}{\negtinysp\varrho^{\tinysp\fin\negtinysp}}
+\newcommand{\con}{\mathrm{c}}
+\newcommand{\fincon}{\mathrm{fc}}
+\newcommand{\finpartfincon}{\finpart^\fincon}
+\newcommand{\weakcomfincon}{\weakcom^{\tinysp\fincon}}
+\newcommand{\bilin}[2]{\langle#1,#2\rangle}
+\newcommand{\bigbilin}[2]{\bigl\langle#1,#2\bigr\rangle}
+\newcommand{\bigclseg}[2]{\bigl[\widet{#1\widet\frompttopt#2}\bigr]}
+\newcommand{\bigopseg}[2]{\bigl(#1\widet\frompttopt#2\bigr)}
+
+\newcommand{\dotjoin}{\mathbin{\setbox0=\hbox{${\join}{\cdot}$}\setbox1=\hbox{${\join}$}%
+	\makebox[\wd1][l]{${\join}\hspace{-.5\wd0}\raisebox{.5ex}{${\cdot}$}$}}}
+\newcommand{\dotmeet}{\mathbin{\setbox0=\hbox{${\meet}{\cdot}$}\setbox1=\hbox{${\meet}$}%
+	\makebox[\wd1][l]{${\meet}\hspace{-.5\wd0}\raisebox{-.3ex}{${\cdot}$}$}}}
+\newcommand{\dottJoin}{\mathop{\setbox0=\hbox{${\Join}{\cdot}$}\setbox1=\hbox{${\Join}$}%
+	\makebox[\wd1][l]{${\Join}\hspace{-.5\wd0}\raisebox{.8ex}{${\cdot}$}$}}\nolimits}
+\newcommand{\dottMeet}{\mathop{\setbox0=\hbox{${\Meet}{\cdot}$}\setbox1=\hbox{${\Meet}$}%
+	\smash{\makebox[\wd1][l]{${\Meet}\hspace{-.5\wd0}\raisebox{-.7ex}{${\cdot}$}$}}\vphantom{{\Meet}}%
+										}\nolimits}
+\newcommand{\dotJoin}{\mathop{\setbox0=\hbox{${\displaystyle\Join}{\cdot}$}\setbox1=\hbox{${\displaystyle\Join}$}%
+	\makebox[\wd1][l]{${\displaystyle\Join}\hspace{-.5\wd0}\raisebox{1.1ex}{${\cdot}$}$}\tinysp}}
+\newcommand{\dotMeet}{\mathop{\setbox0=\hbox{${\displaystyle\Meet}{\cdot}$}\setbox1=\hbox{${\displaystyle\Meet}$}%
+	\makebox[\wd1][l]{${\displaystyle\Meet}\hspace{-.5\wd0}\raisebox{-1ex}{${\cdot}$}$}\tinysp}}
+
+\newcommand{\Scottcont}{Scott-continuous}
+\newcommand{\Scottconty}{Scott-continuity}
+\newcommand{\Sc}{\mathtextop{Sc}\nolimits}
+\newcommand{\ScCl}{\mathtextop{ScCl}\nolimits}
+\newcommand{\ScNuc}{\mathtextop{ScNuc}\nolimits}
+\newcommand{\ScPrecl}{\mathtextop{ScPrecl}\nolimits}
+\newcommand{\DcClSys}{\mathtextop{DcClSys}\nolimits}
+\newcommand{\dcclsys}{\mathtextop{dcclsys}\nolimits}
+\newcommand{\sccore}{\mathtextop{sc}\nolimits}
+
+\newcommand{\waybelow}{\ll}
+\newcommand{\wayabove}{\gg}
+\newcommand{\notwaybelow}{\mathrel{\,\not{\!\!\!{\ll}}}}
+\newcommand{\notwayabove}{\mathrel{\tinysp\not{\!\negdtinysp{\gg}}}}
+\newcommand{\ddown}{\mathop{\rotatebox[origin=c]{-90}{\ensuremath{\twoheadrightarrow}}}\nolimits\negtinysp}
+\newcommand{\uup}{\mathop{\rotatebox[origin=c]{90}{\ensuremath{\twoheadrightarrow}}}\nolimits\negtinysp}
+
+\newcommand{\Joinable}{\!\J\negdtinysp}
+\newcommand{\Meetable}{\M}
+
+\newcommand{\catFilt}{\cat{Filt}}
+\newcommand{\Nbds}{\fr{V}}
+\newcommand{\filtweb}{\varepsilon}
+\newcommand{\tPow}{\mathtextop{Pow}\nolimits}
+\newcommand{\Sp}{\mathrm{S}_{\mathrm{p}}}
+\newcommand{\tSp}{\mathtextop{Sp}\nolimits}
+\newcommand{\Preord}{\mathtextop{Preord}\nolimits}
+\newcommand{\ClRulone}{\ClRul_{\rightt1}}
+\newcommand{\SubCLat}{\mathtextop{SubCLat}\nolimits}
+\newcommand{\UnCl}{\mathtextop{UnCl}\nolimits}
+\newcommand{\subclat}{\mathtextop{subclat}\nolimits}
+\newcommand{\un}{\mathtextop{un}\nolimits}
+\newcommand{\ents}{\sqsupseteq}
+\newcommand{\isentd}{\sqsubseteq}
+\newcommand{\Con}{\mathtextop{Con}\nolimits}
+\newcommand{\rep}{\boldsymbol{\mathfrak{r}}}
+\newcommand{\emb}{\boldsymbol{\mathfrak{e}}}
+\newcommand{\catPoset}{\cat{Poset}}
+\newcommand{\catGalcon}{\cat{Galcon}}
+
+\newcommand{\gdom}{g_\prime}
+\newcommand{\gcod}{\gpr}
+\newcommand{\gdomcod}{g'_\prime}
+\newcommand{\fdom}{f_{\negtinysp\prime}}
+\newcommand{\fcod}{\fpr}
+\newcommand{\fdomcod}{f'_\prime}
+
+\newcommand{\regnuc}{\mathtextop{r}\nolimits}
+\newcommand{\RegNuc}{\mathtextop{RegNuc}\nolimits}

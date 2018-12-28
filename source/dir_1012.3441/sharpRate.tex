@@ -1,0 +1,1536 @@
+\section{Proof of the sharp rate theorem}\label{sec:rate}
+
+On the way to proving the sharp rate theorem, we have to establish few additional 
+propositions.
+
+\begin{prop}[Sub-linearity]\label{prop:subLin}
+Let $\Probb = \sum_{i=1}^m s_i \Probb_i$ where $s_1,\ldots,s_m\!\in [0,1]$,  $\sum_{i=1}^m s_i = 1$ and let $n_1,\ldots,n_m\!\in \N$ such that $\sum_{i=1}^m n_i \leq n$.
+Then
+\[
+d_{n}^p(\Probb) \leq \sum_{i=1}^m s_i\, d_{n_i}^p(\Probb_i).
+\]
+\end{prop}
+\begin{proof}
+For $\varepsilon > 0$ and every $i = 1, \ldots, m$, choose $\Gammai \subset
+\R^d,\,\abs{\Gammai} \leq n_i$ such that 
+\[
+d^p(\Probb_i; \Gammai) \leq (1+\varepsilon)\, d_{n_i}^p(\Probb_i).
+\]
+% 
+% Let $\alpha_i$ be an optimal dual $n_i$-quantizer for $\Probb_i,\, \Gamma =
+% \bigcup_{i=1}^m \Gammai$ (see Proposition~?? in~\cite{DQ1}). 
+Set $\Gamma =
+\bigcup_{i=1}^m \Gammai$~; from Proposition~\ref{prop:PtsInsertion} we get
+\begin{eqnarray*}
+\begin{split}
+  d_{n}^p(\Probb) & \leq d_{n}^p(\Probb; \Gamma) = \sum_{i=1}^m s_i \int F^p(\xi; \Gamma)\,\Probb_i(d\xi)\\
+  & \leq \sum_{i=1}^m s_i \int F^p(\xi; \Gammai)\,\Probb_i(d\xi)  \leq (1+\varepsilon) \sum_{i=1}^m s_i\, d_{n_i}^p(\Probb_i).
+\end{split}
+\end{eqnarray*}
+Letting $\varepsilon\to 0$ completes the proof.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:subLin} does not hold for $\bar d_n^p$ since $\bar F^p$ is not decreasing for the inclusion order on grids.
+%
+% and $\tilde d_n^p$
+This induces substantial difficulties in the proof of the
+sharp rate compared to the regular quantization setting.
+\end{remark}
+
+
+\begin{prop}[Scaling property]\label{prop:scaleProp}
+Let $C= a+\rho [0,1]^d$ ($a\!\in \R^d$, $\rho>0$) be a $d$-dimensional hypercube, with edges parallel to the coordinate axis and edge-length $\rho > 0$. Then
+\[
+	d_{n,p}(\U(C)) = \rho \cdot d_{n,p}(\Unifd).
+\]
+\end{prop}
+%\begin{proof}
+\noindent {\it Proof.} Keeping in mind that $\lambda_d([0,\rho]^d)=\rho^d$, it
+holds that
+\begin{eqnarray*}
+\begin{split}
+\hskip 1,5 cm  \dqp(\U(C); \{a+\rho x_1, \ldots, a+ \rho x_n\}) & = \int_{[0, \rho]^d} \underset{
+  \text{s.t. } \left[  \begin{smallmatrix} \rho x_1 & \ldots & \rho x_n\\
+          1 & \ldots & 1\\
+        \end{smallmatrix}  \right] \lambda =
+      \left[\begin{smallmatrix}
+         \xi\\ 1\\
+        \end{smallmatrix} \right],\,
+      \lambda \geq 0 }{\min_{\lambda\in \R^n }\sum_{i=1}^n \lambda_i
+      \,
+  \norm{\xi-\rho x_i}^p}
+  \frac{\lambda_d(d\xi)}{\lambda_d\bigl([0,\rho]^d\bigr)}\\ & =  \int_{[0,
+  1]^d} \underset{ \text{s.t. } \left[  \begin{smallmatrix} \rho x_1 & \ldots &
+  \rho x_n\\ 1 & \ldots & 1\\
+        \end{smallmatrix}  \right] \lambda =
+      \left[\begin{smallmatrix}
+         \rho u\\ 1\\
+        \end{smallmatrix} \right],\,
+      \lambda \geq 0 }{\min_{\lambda\in \R^n }\sum_{i=1}^n \lambda_i
+      \,
+  \norm{\rho u-\rho x_i}^p} \lambda_d(du)\\
+  & = \rho^p \int_{[0, 1]^d} \LP{u} \lambda_d(du)\\
+  & = \rho^p \cdot \dqp(\Unifd; \{x_1, \ldots, x_n\}).\hskip 3 cm \Box
+\end{split} 
+\end{eqnarray*}
+%which completes the proof.
+%\end{proof}
+
+% \begin{lemma}\label{lem:radius}
+% Let $K \subset  \opSuppP$ be a compact set  and let $\Gamma_n$ be   a sequence
+% of quantizers such that $\bar d_{n,p}(\Probb,\Gamma_n)\to 0$ as $n\to \infty$.
+% Then there exists $n_0\in\N$ such that for all $n\geq n_0$
+% \[
+% K \subset \conv(\Gamma_n).
+% \]
+% \end{lemma}
+% \begin{proof}
+% % {\it I have a proof for a depreciated version of this lemma for $\Unifd$, but
+% % it should hold in the same way for general $\Probb$}.
+% {\rm Step~1:} Let $x\!\in \mathring{K}$. There exists $(x_i)_{i=1,\ldots,d+1}$ a
+% system of affinely independent points of $K$ (an affine basis) such that $x=
+% \frac{1}{d+1} \sum_{i=1}^{d+1} x_i$.
+% 
+% For every $i\!\in \{1,\ldots,d+1\}$ there exists a sequence $(x^{n}_i)_{n\ge 1}$
+% having values in $\conv(\Gamma_n)$ and converging to $x_i$.  Otherwise there
+% would be $\varepsilon_0>0$ and a subsequence $(n')$ such that
+% $B(x_i,\varepsilon_0)\subset \conv(\Gamma_{n'})^c$. Then $\bar
+% d_{n',p}(X,\Gamma_{n'}) \ge
+% \left(\frac{\varepsilon_0}{2}\right)^pP(B(x_i,\varepsilon_0/2))$ since $x_0\!\in
+% {\rm supp}(P)$ which contradicts the assumption on the sequence $(\Gamma_n)_{n\ge
+% 1})$.
+% 
+% Now, for large enough $n$, $(x^n_i)_{i=1,\ldots,d+1}$ is an affine basis since 
+% $(x_i)_{i=1,\ldots,d+1}$ is.  So we may write
+% 
+% \[ x_i= \sum_{j=1}^{d+1} \mu^{n,i}_jx^n_j,\quad
+% \sum_{i=1}^{d+1}\mu^{n,i}_j=1,\quad i=1,\ldots,d+1. \] Furthermore one easily
+% checks that $\mu^{n,i}_j\to \delta_{il}$ (Kronecker symbol). As a consequence \[
+% x=\sum_{j=1}^{d+1} \frac{1}{d+1} \left(\sum_{i=1}^{d+1} \mu^{n,i}_j  \right)
+% x^n_j. \] Then, $\frac{1}{d+1}\sum_{i=1}^{d+1} \mu^{n,i}_j >0$ for every
+% $i=1,\ldots,d+1$ for large enough $n$ since these quantities converge toward
+% $\frac{1}{d+1}$.
+% 
+% Hence, there exists an integer $n_1$ such that for every $n\ge n_1$, $x\!\in
+% \mathring{\overbrace{\conv(\Gamma_n)}}$.
+% 
+% \smallskip \noindent {\rm Step~2:} Let $\eta>0$. Then $K^{\eta}:= \{\xi\!\in K,
+% \; d(\xi, K^c)\le  \eta\}\subset   \mathring{K}$  is a (nonempty) compact set
+% (for small enough $\eta$). Let $(n')$ be a subsequence. For every $n_0$,
+% $K^{\eta}\subset \bigcup_{n\ge n_0} \conv(\Gamma_{n'})$ so there exists $n_1'\ge
+% n'_0$ such that $K^{\eta}\subset \conv(\Gamma_{n_1'})$. By induction, there
+% exists a second subsequence $n''$ of $n'$ such that $K^{\eta}\subset
+% \conv(\Gamma_{n''})$. This double extraction criterion implies that, in fact,
+% $K^{\eta}\subset \conv(\Gamma_{n})$ for large enough $n$.
+% 
+% \smallskip \noindent {\rm Step~3:} On concludes by noting that if $K\subset 
+% \opSuppP$ then, for small enough $\eta>0$, its closed $\eta$-neighbourhood
+% $K_{\eta}$ is still included into  $\opSuppP$ and one concludes by noting that
+% $K\subset (K_{\eta})^{\eta}$.
+% \end{proof}
+
+The following lemma shows that also for $\bar d_{n,p}$ the convex hull 
+spanned by a sequence of ``semi-optimal'' quantizers asymptotically covers the
+interior of $\supp(\ProbX)$. This fact is trivial for $d_{n,p}$ if $X$ has  a compact
+support.  
+
+\begin{lemma}\label{lem:radius} Let $K  = \conv\{a_1, \ldots, a_k\} \subset  \opSuppP$ be a set with $\mathring
+K \neq \emptyset$ and let $\Gamman$ be a sequence of quantizers such that $\bar
+d_{n,p}(\Probb,\Gamman)\to 0$ as $n\to +\infty$. Then there exists $n_0\in\N$ such that for all $n\geq n_0$
+\[
+K \subset \conv(\Gamman).
+\]
+\end{lemma}
+%\begin{proof}
+
+\noindent {\it Proof.} Set $a_0 = \frac{1}{k} \sum_{i=1}^k a_i$ and define for every $\rho > 0$
+\[
+\tilde K(\rho) = \conv\{\tilde a_1(\rho), \ldots, \tilde a_k(\rho)\}
+\quad \text{with}\quad
+\tilde a_i(\rho)= a_0 + (1+\rho) (a_i - a_0).
+\]
+
+Since $K\subset\opSuppP$ there exists  $\rho_0 > 0$ such that $\tilde K =
+\tilde K(\rho_0) \subset \supp(\Probb)$. From now on, we denote $\tilde
+a_i(\rho_0)$ by $\tilde a_i$.
+Since moreover $\tilde a_i \!\in \supp(\Probb)$, there exists a sequence
+$(a^{n}_i)_{n\ge 1}$ having values in $\conv(\Gamman)$ and converging to
+$\tilde a_i$. Otherwise there would exist $\varepsilon_0>0$ and a subsequence
+$(n')$ such that $B(\tilde a_i,\varepsilon_0)\subset (\conv(\Gamma_{\!n'}))^c$.
+Then 
+$$
+\bar d_{n'}^p(X,\Gamma_{\!n'}) \ge \E\, {\rm dist}(X,\Gamma_{\!n'})^p\mbox{\bf 1}_{\{X\in B(\tilde a_i,\varepsilon_0/2)\}}
+\left(\frac{\varepsilon_0}{2}\right)^p \Probb(B(\tilde a_i,\varepsilon_0/2))>0
+$$
+since $\tilde a_i\!\in {\rm supp}(\Probb)$. This contradicts the assumption on the sequence
+$(\Gamman)_{n\ge 1}$.  
+
+Since $K$ has a nonempty interior, it follows that $\adim
+\{a_1, \ldots, a_k\} = \adim \{\tilde a_1, \ldots, \tilde a_k\} = d$. Consequently,
+we may choose a subset $I^\ast \subset\{1, \ldots, k\}, \,\abs{I^\ast} = d+1$, so
+that $\{\tilde a_j: j\in I^\ast\}$ is an affinely independent system in $\R^d$
+and furthermore there exists  $n_0 \in \N$ such that the same holds for
+$\{a^n_j: j\in I^\ast\}$, $n \geq n_0$.
+%, $(a^n_i)_{i\in I^}$ is an affinely
+%independent 
+Hence, we may write for $n\geq n_0$
+\begin{equation}\label{eq:lemmaoneproofLS}
+ \tilde a_i= \sum_{j\in I^\ast} \mu^{n,i}_ja^n_j,\quad
+ \sum_{j\in I^\ast}\mu^{n,i}_j=1,\quad i=1,\ldots,k. 
+ \end{equation}
+ This linear system has the unique asymptotic solution $\mu^{\infty,i}_j =
+ \delta_{ij}$ (Kronecker symbol), which implies $\mu^{n,i}_j\to \delta_{ij}$
+when  $n\to+\infty$.
+
+Now let $\xi\in K\subset \tilde K$ and write
+\[
+	\xi = \sum_{i=1}^k \lambda_i a_i\;
+	\text{ for some }\; \lambda_i \geq 0, \sum_{i=1}^k \lambda_i = 1.
+\]
+One easily checks that it also holds 
+\[
+	\xi = \sum_{i=1}^k \tilde \lambda_i \tilde a_i\, \text{ with  } \, \tilde
+	\lambda_i = \frac{\rho_0}{k(1+\rho_0)} + \frac{\lambda_i}{ 1+\rho_0} \geq \frac{\rho_0}{k(1+\rho_0)} > 0 \quad  \text{and}\quad \sum_{i=1}^k
+	\tilde \lambda_i = 1.
+\]
+
+Furthermore, we may choose  $n_1 \geq n_0$ such that, for every $n\geq n_1$,
+\[
+\mu^{n,i}_i > \frac{1}{2} \quad \text{ and } \quad  \forall j \neq i,\; \abs{\mu^{n,i}_j} \leq
+\frac{\rho_0}{4k(1+\rho_0)}.
+\]
+
+Using (\ref{eq:lemmaoneproofLS}),  this leads to
+%Writing $x$ for $n\geq n_1$ in the coordinates of $x^{n,i}$ then leads to
+\[
+ \xi = \sum_{j\in I^\ast} \Bigl(\sum_{i=1}^k \tilde \lambda_i  \mu^{n,i}_j
+ \Bigr) a^n_j
+\]
+and 
+\[
+	\sum_{i=1}^k \tilde \lambda_i  \mu^{n,i}_j > \tilde \lambda_j  \mu^{n,j}_j -
+	\sum_{i=1,i\neq j}^k \tilde \lambda_i  \abs{\mu^{n,i}_j} >
+	\frac{\rho_0}{2k(1+\rho_0)} - \frac{\rho_0}{4k(1+\rho_0)} =
+	\frac{\rho_0}{4k(1+\rho_0)} > 0, \;j \in I^\ast.
+\]
+Finally, one completes the proof by noting that 
+%\[
+$\displaystyle 	\sum_{j\in I^\ast} \sum_{i=1}^k \tilde \lambda_i  \mu^{n,i}_j = \sum_{i=1}^k \tilde
+	\lambda_i \sum_{j\in I^\ast} \mu^{n,i}_j = 1.  \quad \Box$
+%\]
+%finally completes the proof.
+%\end{proof}
+
+%\noindent{\bf Remark.} The case where $K$ is not convex seems not so clear to me.
+
+% \begin{lemma}\label{lem:dualOptCdtBds}
+% Let $u, \xi, b, a \in\R^d, b\neq a$.
+% \begin{enumerate}
+%   \item If
+% \[
+% (b-a)^Tu  \leq \norm{\xi -b}^p - \norm{\xi -a}^p, 
+% \]
+% then it holds
+% \[
+% 	\norm{\xi-a}^p - a^Tu \leq \max\bigl\{ \norm{\xi -b}^p; \norm{\xi -a}^p
+% 	\bigr\}.
+% \] 
+% \item If moreover
+% \[
+% (b-a)^Tu  = \norm{\xi -b}^p - \norm{\xi -a}^p, 
+% \]
+% then
+% \[
+% 	\norm{\xi-a}^p - a^Tu \geq \frac{1}{2} \max\bigl\{ \norm{\xi -b}^p; \norm{\xi
+% 	-a}^p \bigr\}.
+% \] 
+% \end{enumerate}
+% \end{lemma}
+% \begin{proof}
+% W.l.o.g. there is an ONS $(e_i)$ such that for an $\alpha > 0$
+% \[
+% a = - \alpha e_1, \qquad b = \alpha e_1, \qquad u = \sum_{i=1}^d \lambda_i e_i. 
+% \]
+% Consequently, the first assumptions
+% \[
+% 	(b-a)^Tu  \leq \norm{\xi -b}^p - \norm{\xi -a}^p =: R
+% \] 
+% yields
+% \[
+% \lambda_1 \leq \frac{R}{2\alpha}.
+% \]
+% Thus, we arrive at
+% \begin{eqnarray*}
+% \begin{split}
+%   \norm{\xi-a}^p - a^Tu & = \norm{\xi-a}^p + \alpha \lambda_1 \leq
+%   \norm{\xi-a}^p + \frac{R}{2}\\
+%   & \leq \max\bigl\{ \norm{\xi -b}^p; \norm{\xi -a}^p
+% 	\bigr\}.
+% \end{split}
+% \end{eqnarray*}
+% 
+% In the second case, we derive as above
+% \[
+% \lambda_1 = \frac{R}{2\alpha},
+% \]
+% so that
+% \begin{eqnarray*}
+% \begin{split}
+%   \norm{\xi-a}^p - a^Tu & = 
+%   \norm{\xi-a}^p + \frac{R}{2} = \frac{\norm{\xi -b}^p + \norm{\xi -a}^p}{2} \\
+%   & \geq \frac{1}{2} \max\bigl\{ \norm{\xi -b}^p; \norm{\xi -a}^p
+% 	\bigr\}
+% \end{split}
+% \end{eqnarray*}
+% completes the proof.
+% \end{proof}
+% 
+% \begin{lemma}[Firewall]\label{lem:firewall}
+% Let $C$ be a closed hypercube in $\R^d$ with edge-length $l$ and $C_\varepsilon,
+% \varepsilon > 0$ be a closed hypercube with same origin as $C$ but edge-length $l-
+% 2\varepsilon$.
+% 
+% Let $\beta$ be an arbitrary quantizer with $C_\varepsilon \subset
+% \conv\{\beta\}$ and set $\mathring \beta = \beta \cap \mathring C$.
+% 
+% For $0 < \varepsilon' < \eta/2 $ and $\eta = \dist(C^c, C_\varepsilon)$, let
+% $\gamma = \gamma(\varepsilon')$ be a grid such that $\forall\xi C_\varepsilon: F(\xi;
+% \gamma) \leq \varepsilon'$ and there exists $g,g'\in\gamma, g\neq g'$ with
+% $\norm{\xi-g}^p,\norm{\xi-g'}^p \leq \varepsilon'$.
+% 
+% Then for every $\xi \in C_\varepsilon \setminus \mathcal{H}(\beta\cup \gamma)$
+% \[
+% F(\xi;\beta\cup\gamma) = F(\xi;\mathring \beta\cup\gamma).
+% \]
+% \end{lemma}
+% 
+%  \noindent \textcolor{red}{BEGIN Suggestion for the statement of the firewall
+% lemma}  By the way: what do we call hypercube in this lemma? in my opinion it
+% is clearly $C= a + [-l/2,l/2]^d$, $a\!\in \R^d$, $l\ge0$\dots
+% \begin{lemma}[Firewall]\label{lem:firewall} Let $C$ be a closed hypercube in
+% $\R^d$ with edge-length $l$. for every $\varepsilon \!\in (0,l/2)$, let  
+% $C_\varepsilon$ be the closed hypercube with the same origin as $C$ but edge
+% length $l- 2\varepsilon$.  \smallskip For every $ \eta\!\in (0,
+% \delta_{C,\varepsilon})$ with $\delta_{C,\varepsilon}= {\rm
+% dist}(C^c,C_{\varepsilon})$, there exists a grid  $\Gamma_{\eta}$   such that 
+% \smallskip \noindent $(i)$ $\forall\,\xi \!\in  C_\varepsilon$, $F(\xi;\gamma)
+% \leq \eta$,  \smallskip \noindent $(ii)$  $\forall\,\xi \!\in C_\varepsilon$, 
+% there exists $g$, $g'\!\in\Gamma_{\eta}$,  $g\neq g'$ such that
+% $\max(\norm{\xi-g}^p,\norm{\xi-g'}^p )\leq \eta$.   \medskip Furthermore, for
+% any such grid and any grid  $\Gamma$ such that $\conv{\Gamma}\supset
+% C_{\varepsilon}$, % %\smallskip %\noindent $(\alpha)$   $C_{\varepsilon}
+% \subset %\conv(\Gamma_{\eta})$ [[??? In fact $C\subset \conv(\Gamma_{\eta})$ I
+% do no remeber why/if  we need that explictely somewhere.]] % and set
+% $\mathring \Gamma = \beta \cap \mathring C$. % %\smallskip %\noindent
+% $(\beta)$   Then for every $\xi \in C_\varepsilon \setminus
+% \mathcal{H}(\Gamma\cup \Gamma_{\eta})$ \[ \Fp(\xi;\Gamma\cup\Gamma_{\eta}) =
+% \Fp(\xi; ( \Gamma \cap \mathring{C})\cup\Gamma_{\eta}).
+% \]
+% \end{lemma}   In my opinion a explicit example of grid $\Gamma_{\eta}$ should
+% be provided. $E.g.$, if $C= a + [-l/2,l/2]^d$, it seems that the lattice grid
+% $$ \Gamma_{\eta'} =\left\{a+\eta \mathbf{k},\, \mathbf{k}\!\in\Big
+% \{-\Big\lceil \frac{l}{2\eta'}\Big\rceil, \ldots,-1,0,1,\ldots, \Big\lceil
+% \frac{l}{2\eta'}\Big\rceil\Big\}^d\right\} $$ does the job for $\eta'$ small
+% enough (depending on $p$, $d$ and the norm $\|\,.\,\|$).  \medskip WARNING! I
+% did not include my handwritten suggestions already mentioned on formerly. And
+% I did not change the notations in the proof below since we did not come to a
+% final agreement about the notations.  \noindent  \textcolor{red}{END
+% Suggestion for the statement of the firewall lemma}
+% \begin{proof}
+% Since $\xi\notin \mathcal{H}(\beta\cup \gamma)$, there exist $d+1$ affinely
+% independent points $\{a_1, \ldots,
+% a_{d+1}\} \subset \{x_1, \ldots, x_n \} = \beta \cup \gamma $ (a basis!), such
+% that
+% \[
+% F(\xi; \beta \cup \gamma) = \sum_{i=1}^{d+1} \lambda_i \norm{\xi - a_i}^p
+% \]
+% with $\lambda = \left(\begin{array}{ccc}
+%                 a_1 & \ldots & a_{d+1}\\
+%                 1&  \ldots & 1
+%                 \end{array} \right)^{-1} 
+% \left(\begin{array}{c}
+%                 \xi \\ 1
+%                 \end{array} \right) \geq 0$, (Primal feasibility)
+% 
+% and 
+% \[
+% \left(\begin{array}{cc}
+% x_1^T & 1\\
+% \vdots & \vdots\\
+% x_n^T & 1\\
+% \end{array}\right)
+% \left(\begin{array}{c}
+% u_1\\
+% u_2\\
+% \end{array}\right) \leq
+% \left(\begin{array}{c}
+%                 \norm{\xi-x_1}^p\\
+%                 \vdots\\
+%                 \norm{\xi-x_{n}}^p
+%                 \end{array} \right)
+% \]
+% for
+% \[
+% \left(\begin{array}{c}
+% u_1\\
+% u_2\\
+% \end{array}\right)
+% =
+% \left(\begin{array}{cc}
+% a_1^T & 1\\
+% \vdots & \vdots\\
+% a_{d+1}^T & 1\\
+% \end{array}\right)^{-1}
+% \left(\begin{array}{c}
+%                 \norm{\xi-a_1}^p\\
+%                 \vdots\\
+%                 \norm{\xi-a_{d+1}}^p
+%                 \end{array} \right),
+% \] 
+% i.e. $(u_1, u_2)$ is the unique solution to
+% \[
+% \left(\begin{array}{cc}
+% a_1^T & 1\\
+% \vdots & \vdots\\
+% a_{d+1}^T & 1\\
+% \end{array}\right)
+% \left(\begin{array}{c}
+% u_1\\
+% u_2\\
+% \end{array}\right)
+% =
+% \left(\begin{array}{c}
+%                 \norm{\xi-a_1}^p\\
+%                 \vdots\\
+%                 \norm{\xi-a_{d+1}}^p
+%                 \end{array} \right).
+% \]
+% (Dual feasibility)
+% 
+% But the latter optimality conditions are nothing else then $u_2 = \norm{\xi -
+% a_1}^p - a_1^Tu_1$,
+% \[
+% \norm{\xi -a_1}^p - a_1^Tu_1 = \norm{\xi -a_i}^p - a_i^Tu_1, \qquad i = 2,
+% \ldots, d+1
+% \]
+% or
+% \begin{equation}\label{eq:dualOptCdt1}
+%   (a_i - a_1)^T u_1 = \norm{\xi -a_i}^p - \norm{\xi -a_1}^p, \qquad i = 2,
+% \ldots, d+1
+% \end{equation}
+% and 
+% \[
+% \norm{\xi -a_1}^p - a_1^Tu_1 \leq \norm{\xi -x_i}^p - x_i^Tu_1, \qquad i = 2,
+% \ldots, n
+% \]
+% or equivently
+% \begin{equation}\label{eq:dualOptCdt2}
+%   (x_i - a_1)^T u_1 \leq \norm{\xi -x_i}^p - \norm{\xi -a_1}^p, \qquad i = 2,
+% \ldots, n.
+% \end{equation}
+% 
+% Since
+% \[
+% F(\xi; \beta\cup\gamma) = \sum_{i=1}^{d+1} \lambda_i \norm{\xi - a_i}^p \leq
+% \varepsilon'
+% \]
+% and $0 \leq \lambda_i \leq 1$, there exists $a \in \{a_1, \ldots, a_{d+1}\}$
+% such that $\norm{\xi - a}^p \leq \varepsilon'$.
+% Moreover $a \in \mathring \beta \cup \gamma$, since $\dist(\xi, \beta \setminus
+% \mathring \beta) \geq \eta > \varepsilon'$.
+% 
+% Furthermore, there is by assumption a $y\in \gamma$, such that
+% \[
+% y\neq a \quad\text{ and }\quad \norm{\xi - y}\leq \varepsilon'.
+% \]
+% 
+% Since $u_1$ satisfies due to~(\ref{eq:dualOptCdt2})
+% \[
+% (y-a)^Tu_1 \leq \norm{\xi - y}^p - \norm{\xi - a}^p
+% \]
+% we derive from Lemma~\ref{lem:dualOptCdtBds}
+% \begin{equation}\label{eq:dualOptCdtUpBnd}
+% u_2 = \norm{\xi - a}^p - a^Tu_1 \leq \max \bigl\{ \norm{\xi-y}^p; \norm{\xi -
+% a}^p \bigr\} \leq \varepsilon'.
+% \end{equation}
+% 
+% Suppose now
+% \[
+% F(\xi; \beta\cup\gamma) < F(\xi; \mathring \beta \cup \gamma).
+% \]
+% 
+% This implies the existence of a point $b \in \{ a_1, \ldots, a_{d+1} \cap
+% (\beta \setminus \mathring \beta)$, for which it holds due to
+%~(\ref{eq:dualOptCdt1})
+% \[
+% (b-a)^T u_1 = \norm{\xi - b}^p - \norm{\xi - a}^p.
+% \] 
+% 
+% Again by Lemma~\ref{lem:dualOptCdtBds} we derive
+% \begin{eqnarray*}
+% \begin{split}
+%   u_2 & = \norm{\xi-a}^p - a^Tu_1 \geq \frac{1}{2} \max \bigl\{ \norm{\xi-b}^p;
+%   \norm{\xi - a}^p \bigr\}\\
+%   & \geq \eta/2 > \varepsilon',
+% \end{split}
+% \end{eqnarray*}
+% which contradicts~(\ref{eq:dualOptCdtUpBnd}).
+% 
+% Hence, it holds $F(\xi; \beta\cup\gamma) \geq F(\xi; \mathring \beta \cup
+% \gamma)$, which actually yields
+% \[
+% F(\xi; \beta\cup\gamma) = F(\xi; \mathring \beta \cup \gamma).
+% \]
+% since $\mathring \beta \cup  \gamma \subset \beta \cup \gamma$.
+% \end{proof}
+
+As already said, Proposition~\ref{prop:subLin} does not hold anymore for $\bar
+d_{n,p}$. As a consequence we have to establish a 
+%non-asymptotic 
+``firewall Lemma",
+which will be a useful tool to overcome this problem  in the
+non-compact setting.
+
+\begin{lemma}[Firewall]\label{lem:firewall} Let $K \subset \R^d$ be compact and convex with $\mathring K \neq \emptyset$.
+Moreover, let $\varepsilon > 0$ be small enough so that 
+\[
+	K_\varepsilon = \{ x\in K : \dist_{\ell^{\infty}}(x, K^c) \geq \varepsilon \} \neq \emptyset.
+\]
+Let $\Gae$ be a subset of the lattice $\alpha \Z^d$ with edge-length $\alpha > 0$
+satisfying
+\[
+ K \setminus K_\varepsilon \subset \conv(\Gae)\;\mbox{ and }\; \forall\, x\!\in K\setminus K_{\varepsilon},\;{\rm
+dist}_{\norm{\cdot}}(x,\Gamma_{\alpha,\varepsilon})\le C_{\norm{\cdot}}\alpha
+\] 
+%and, for every $x\!\in K\setminus K_{\varepsilon}$, ${\rm
+%dist}(x,\Gamma_{\alpha,\varepsilon})\le C_{\norm{\cdot}}\alpha$ 
+where $C_{\norm{\cdot}} > 0$ is  a real  constant   only  depending on the norm $\norm{\cdot}$.
+
+Then, for every grid $\Gamma\subset \R^d$ containing $K$ and every $\eta \in (0,1)$, it holds
+\[
+\forall\, \xi \in
+K_\varepsilon,\quad 	\Fp(\xi; \Gamma) \geq \frac{1}{(1+\eta)^{p+d+1}} \Fp(\xi; (\Gamma \cap \mathring K)
+	\cup \Gae )   - (1+\eta)^{-d-1}\eta^{-p} 
+	(d+1)\, C^p_{\norm{\cdot}}  \alpha^p.
+\]
+\end{lemma}
+
+\begin{remark} The lattice $\Gamma_{\alpha,\varepsilon}$ and its size will be carefully defined and estimated  for the specified compact sets $K$ when calling upon the firewall lemma  in what follows.
+%A natural choice   for $\Gae$ is
+%\[
+%\Gae = \alpha \Z^d\cap(K\setminus K_{\varepsilon})+\{0, \pm \alpha e^i\, i=1,\ldots,d\}
+%\]
+%where $(e^1,\ldots,e^d)$ denotes the canonical basis of $\R^d$.
+\end{remark}
+
+%\begin{proof}
+{\sc Proof.}
+Let $\Gamma = \{ x_1, \ldots, x_n\}$ and let $\xi\!\in K_\varepsilon$.
+Then we may choose $I=I(\xi)\subset \{1, \ldots, n\}$, $|I|\le d+1$ such that
+\[
+\Fp(\xi; \Gamma) = \sum_{i\in I} \lambda_j \norm{\xi - x_i}^p, \quad
+\sum_{i\in I} \lambda_i x_i= \xi,\, \lambda_i \geq 0,\, \sum_{i\in I} \lambda_i
+= 1.
+\]
+If for every $x_i \!\in \Gamma \setminus \mathring K$ $\lambda_i=0$ then $F^p(\xi,\Gamma)= F^p(\Gamma\cap \mathring K)$ and our claim is trivial.
+Therefore, let $J(\xi)=\{i\,:\, x_i \!\in \Gamma \setminus \mathring K, \,
+\lambda_i>0\}\subset I(\xi)$ and choose one fixed  $i_0 \in J(\xi)$.
+% such that 
+%$x_{i_0} \!\in \Gamma \setminus \mathring K$ and $\lambda_{i_0} > 0$.
+%(otherwise the assertion is trivial). 
+%Note that there are at most $d$ such components in $I(\xi)$
+ Let  $\theta= \theta(i_0)\! \in (0,1)$ such that 
+ \[ \tilde x_{i_0} = \xi +
+\theta (x_{i_0} - \xi) \in K \setminus K_\varepsilon \quad\mbox{and}\quad \frac{\theta^{p\wedge 1}}{\theta+\lambda_{i_0}(1-\theta)} \le 1+\eta
+\]
+(when $p\ge 1$ the   right constraint is
+empty).
+Setting
+\[
+	\tilde \lambda^0_i = \frac{\lambda_i \theta}{\theta + \lambda_{i_0}(1-\theta)},\,
+	i \in I\setminus\{i_0\}, \quad \tilde \lambda^0_{i_0} =
+	\frac{\lambda_{i_0}}{\theta + \lambda_{i_0}(1-\theta)}
+\]
+we arrive at
+\[ 
+\tilde \lambda^0_{i_0} \tilde x_{i_0} +\sum_{i\in I \setminus \{i_0\}} \tilde
+\lambda^0_i x_i = \xi, \;\tilde \lambda^0_i \geq 0, \;\sum_{i\in I}
+\tilde \lambda^0_i = 1.
+\] 
+Consequently 
+\begin{equation*}
+\begin{split}
+\tilde \lambda^0_{i_0} \norm{\xi - \tilde x_{i_0}}^p + \sum_{j\in I \setminus
+\{i_0\}} \tilde \lambda^0_i \norm{\xi - x_i}^p  &=
+\frac{\lambda_{i_0}\theta^p}{\theta + \lambda_{i_0}(1-\theta)} \norm{\xi -
+x_{i_0}}^p
+%\\ 
+%& \qquad 
++ \sum_{i\in I \setminus
+		\{i_0\}}\frac{\lambda_i \theta}{\theta + \lambda_{i_0}(1-\theta)}\norm{\xi - x_i}^p \\
+& \leq \frac{\theta^{p\wedge 1}}{\theta + \lambda_{i_0}(1-\theta)} \sum_{i\in I}\lambda_i
+		\norm{\xi - x_i}^p\\
+&		\le(1+\eta)\sum_{i\in I}\lambda_i
+		\norm{\xi - x_i}^p.
+%		& < \Fp(\xi; \Gamma)
+\end{split}
+\end{equation*}
+%\noindent where we used that $\theta^p\le \theta$ since $p\ge 1$. 
+Repeating the
+procedure 
+%(at most $d+1$ times) 
+for every $i\!\in J(\xi)$ 
+%$x_{i}\!\in\Gamma\setminus \mathring{K}$
+finally yields by induction the existence of $\tilde{x}_i\!\in K\setminus
+K_{\varepsilon}$ and  $\tilde \lambda_i$, $i\in I$ such that
+ \[ \sum_{i\in I :
+x_i\notin \mathring{K}} \tilde \lambda_{i} \tilde x_{i} +\sum_{i\in I : x_i\in
+\mathring{K}} \tilde \lambda_i x_i = \xi, \;\tilde \lambda_i \geq 0,
+\;\sum_{i\in I} \tilde  \lambda_i = 1 
+\] 
+and 
+\begin{equation}\label{eq:FirewallProofIneq}
+(1+\eta)^{|J(\xi)|} \Fp(\xi; \Gamma)\ge \sum_{i\in I :
+x_i\notin \mathring{K}} \tilde \lambda_{i} \norm{\xi - \tilde x_{i}}^p
++\sum_{i\in I : x_i\in \mathring{K}} \tilde \lambda_i \norm{\xi -  x_{i}}^p. 
+\end{equation}
+
+Let us denote $\Gae = \{a_1, \ldots, a_m\}$ and let   $i_0\!\in J(\xi)$ so that $\tilde x_{i_0}$ is a
+``modified" $x_{i_0}$ (originally lying in $\Gamma\setminus \mathring K$). By
+construction $\tilde x_{i_0}\in K \setminus K_\varepsilon\subset\conv(\Gae)$ and there is
+$J_{i_0}\subset \{1, \ldots, m\}$ such that 
+\[ \Fp(\tilde x_{i_0}, \Gae) =
+\sum_{j\in J_{i_0}} \mu^{i_0}_j \norm{\tilde x_{i_0} - a_j}^p, \; \sum_{j\in
+J_{i_0}} \mu^{i_0}_j x_j = \tilde x_{i_0},\, \mu^{i_0}_j \geq 0,\, \sum_{j\in
+J_{i_0}} \mu^{i_0}_j = 1 
+\] 
+and 
+\[ \forall\, j\!\in J_{i_0},\quad \norm{\tilde
+x_{i_0}-a_j}\le C_{\norm{\cdot}}\,\alpha. 
+\] 
+%for a real constant $C_{\norm{\cdot}}
+%> 0$, which only depends  on the norm $\norm{\cdot}$.
+
+%A possible explicit construction (when $\Gae$ is as in the above  remark) is the
+%following: one may select $\underline k\!\in \Z^d$ such that
+%$\alpha\underline{k}$ is the nearest neighbour of $\tilde x_{i_0}$ in $\Gae \cap
+%K\setminus K_{\varepsilon}$. Then there exists
+%$\varepsilon^{j_0}_1,\ldots,\varepsilon^{j_0}_d\!\in \{\pm 1\}$ such that 
+%\[
+%\tilde x_{i_0} \!\in \conv(\alpha \underline{k}, \alpha
+%\underline{k}+\varepsilon^{i_0}_je^j). 
+%\] 
+%The resulting index set $J_{i_0}$
+%clearly satisfies the above claim.
+
+ \smallskip Using the elementary inequality
+\[ 
+\forall\,p>0, \; \forall \eta > 0, \;\forall\, u,v \geq 0,\quad (u+v)^p \leq (1+\eta)^p u^p +
+\Bigl(1+\frac{1}{\eta} \Bigr)^p v^p, 
+\] 
+we derive that for every $j\!\in J_{i_0}$
+\begin{equation*}
+%\begin{split}
+  \norm{\xi - a_j}^p  \leq \bigl( \norm{\xi - \tilde x_{i_0}} + \norm{\tilde
+  x_{i_0} - a_j}  \bigr)^p  \leq (1+\eta)^p \norm{\xi - \tilde x_{i_0}}^p + \Bigl(1+\frac{1}{\eta}
+  \Bigr)^p\, C^p_{\norm{\cdot}}\, \alpha^p.
+%\end{split}
+\end{equation*}
+
+As a consequence, 
+\[ 
+\sum_{j\in J_{i_0}} \mu^{i_0}_j \norm{\xi - a_j}^p  \leq
+(1+\eta)^p \norm{\xi - \tilde x_{i_0}}^p + \Bigl(1+\frac{1}{\eta}
+  \Bigr)^p\, C^p_{\norm{\cdot}}\, \alpha^p
+\] 
+which in turn implies
+ \[
+\norm{\xi - \tilde x_{i_0}}^p\ge \frac{1}{(1+\eta)^p}\sum_{j\in J_{i_0}} \mu^{i_0}_j \norm{\xi - a_j}^p- \eta^{-p}\, C^p_{\norm{\cdot}}\, \alpha^p.
+\] 
+Plugging this inequality in~(\ref{eq:FirewallProofIneq}) yields and using that
+$|J(\xi)|\le d+1$, we finally get
+\begin{equation*}
+\begin{split}
+ (1+\eta)^{|J(\xi)|} \Fp(\xi; \Gamma) 
+  \ge &  \sum_{i\in I : x_i\in \mathring{K}} \tilde \lambda_i  \norm{\xi -  x_{i}}^p  +  \frac{1}{(1+\eta)^p}\sum_{i\in I : x_i\notin \mathring{K}}\tilde \lambda_i\sum_{j\in J_{i}}\mu^i_j\norm{\xi-a_j}^p\\
+		&- |J(\xi)|\eta^{-p} d\, C^p_{\norm{\cdot}}\, \alpha^p\\
+   \geq  &\; \frac{1}{(1+\eta)^p} \Fp\bigl(\xi; (\Gamma \cap \mathring K\})
+  \cup \Gae \bigr) -\eta^{-p}\,(d+1)\,   C^p_{\norm{\cdot}}\, \alpha^p.\hfill \Box
+\end{split}
+\end{equation*}
+%One concludes by noting that $|J(\xi)|\le d+1$. 
+%where $ \tilde C^p_{\norm{\cdot}}=d C^p_{\norm{\cdot}}>0$. 
+%\end{proof}
+
+Now we can establish
+% like in a first step the optimal 
+the sharp rate for the uniform distribution $U([0,1]^d)$.
+
+\begin{prop}[Uniform distribution]\label{prop:rateU} For every $p\ge 1$,
+\[
+\Qpn:= \inf_{n\geq 0} n^{1/d}\,
+d_{n,p}\bigl(\Unifd \bigr) = \limn n^{1/d}\, d_{n,p}\bigl(\Unifd \bigr).
+\]
+\end{prop}
+%\begin{proof}
+{\sc Proof.}
+Let $n,m \in \N,\, m<n$ and set $k = k(n,m) = \left\lfloor
+\bigl(\frac{n}{m}\bigr)^{1/d} \right\rfloor \ge 1$.
+
+Covering the unit hypercube $[0,1]^d$ by $k^d$ translates $C_1, \ldots,
+C_{k^d}$ of the hypercube $\bigl[0,\frac{1}{k}\bigr]^d$,
+we arrive at $\Unifd = k^{-d} \sum_{i=1}^{k^d} \U(C_i)$. Hence, Proposition~\ref{prop:subLin} yields
+\[
+d_{n,p}^p\bigl(\Unifd \bigr) \leq k^{-d}\sum_{i=1}^{k^d} \dqp_m(\U(C_i)).
+\]
+%
+Furthermore, Proposition~\ref{prop:scaleProp} implies
+\[
+d_{m,p}(\U(C_i)) = k^{-1}\, d_{m,p}\bigl(\Unifd \bigr),
+\]
+so that we may conclude for all $n,m\in\N,\, m<n$,
+\[
+	d_{n,p}\bigl(\Unifd \bigr) \leq k^{-1}\, d_{m,p}\bigl(\Unifd \bigr).
+\]
+Thus, we get 
+\begin{eqnarray*}
+\begin{split}
+  n^{1/d}\,d_{n,p}\bigl(\Unifd \bigr) & \leq k^{-1}\, n^{1/d}\,d_{m,p}\bigl(\Unifd
+  \bigr)\\
+  	& \leq  \frac{k+1}{k} \, m^{1/d}\, d_{m,p}\bigl(\Unifd
+  \bigr), 
+\end{split}
+\end{eqnarray*}
+which yields for every fixed integer $m \geq 1$%\in\N$
+\[
+	\limsn n^{1/d}\, d_{n,p}\bigl(\Unifd \bigr) \leq m^{1/d}\, d_{m,p}\bigl(\Unifd
+	\bigr),
+\]
+since $\limn k(n,m) = +\infty$. This finally implies
+\[
+\limn n^{1/d}\,d_{n,p}\bigl(\Unifd \bigr)  = \inf_{m\geq 0} m^{1/d}\,
+d_{m,p}\bigl(\Unifd \bigr).\hskip 3 cm  \Box
+\]
+%\end{proof}
+
+\begin{prop}\label{prop:rateUNN} For every $p\ge 1$, 
+\[ 
+\Qpn = \limn n^{1/d}\, d_{n,p}\bigl(\Unifd \bigr)  = \limn n^{1/d}\,
+\bar d_{n,p}\bigl(\Unifd \bigr) 
+\]
+\end{prop}
+\begin{proof}
+Since for every compactly supported distribution $\Probb$ we have $\bar d_{n,p}(\Probb) \leq  d_{n,p}(\Probb)$
+% \leq d_{n,p}(X) 
+%\]
+it remains to show
+\[
+	\Qpn \leq \limin n^{1/d}\, \bar d_{n,p}\bigl(\Unifd \bigr).
+\]
+
+%Let $(\Gamman)$ be a sequence of optimal quantizers for $\bar d_{n,p}(\Unifd)$
+%and 
+
+For $0 < \varepsilon < 1/2$ let $C_\varepsilon= (1/2,\ldots,1/2)+
+\frac{1-\varepsilon}{2}[-1,1]^d$ be the centered hypercube in $[0,1]^d$ with
+edge-length $1-\varepsilon$ and midpoint $(1/2,\ldots,1/2)$.
+Moreover let $(\Gamman)$ be a sequence of quantizers such that, for every $n\ge 1$, 
+\[
+\bar d_{p}(\Unifd; \Gamman) \leq (1+\varepsilon) \bar d_{n,p}(\Unifd).
+\]
+
+Owing to Lemma~\ref{lem:radius}, as $C_{\varepsilon} \subset (1,1)^d$, there is an integer $n_\varepsilon \in \N$ such
+that \[ \forall n \geq n_\varepsilon, \quad C_\varepsilon \subset
+\conv(\Gamman) . 
+\]
+
+We therefore get for any $n\geq n_\varepsilon$
+ \begin{eqnarray*}
+ (1+\varepsilon)^d\bar d^p_{n}\bigl(\Unifd \bigr)& \geq &\bar d^p\bigl(\Unifd;\Gamman \bigr)\\
+ &\ge & \int _{C_{\varepsilon}}\bar F^p(\xi,\Gamma_n)^pd\xi=\int _{C_{\varepsilon}} F^p(\xi,\Gamma_n)^pd\xi= \lambda_d(C_{\varepsilon}) d^p \bigl(\U(C_\varepsilon), \Gamma_n\bigr) \\
+&\ge& (1 - \varepsilon)^{d} d^p_{n}\bigl(\U(C_\varepsilon)\bigr)  = (1 - \varepsilon)^{d+p} d^p_{n}\bigl(\Unifd \bigr) 
+\end{eqnarray*}
+where we used the scaling property (Proposition~\ref{prop:scaleProp}) in the last line.
+%, we get
+% arrive %for $n\geq n_\varepsilon$  at
+%\[
+% (1+\varepsilon)d_{n,p}\bigl(\Unifd \bigr) \geq 
+% d_{n,p}\bigl(\Unifd_{|C_\varepsilon}\bigr) =( \lambda_d(C_\varepsilon))^{\frac1p}  d_{n,p}\bigl(\U(C_\varepsilon)\bigr) =
+%(1 - \varepsilon)^{1+d/p} d_{n,p}\bigl(\Unifd \bigr).
+% \]
+
+Hence, we obtain for all $0 < \varepsilon < 1/2$
+\[
+\limin n^{1/d}\, \bar d_{n,p}\bigl(\Unifd \bigr) \geq \frac{(1 -
+\varepsilon)^{1+d/p}}{(1+\varepsilon)^{d/p}}\, \Qpn,
+\]
+so that letting $\varepsilon \to 0$ completes the proof. 
+\end{proof}
+
+\begin{prop}\label{prop:rateCubewise}
+Let $\Probb = \sum_{i=1}^m s_i\, \U(C_i),\, \sum_{i=1}^m s_i = 1$,  $s_i>0$, $i=1,\ldots,m$,
+where $C_i=a_i+[0,l]^d$,  $i=1,\ldots,m$, are pairwise disjoint hypercubes in $\R^d$ with common edge-length
+$l$. Set 
+\[
+h := \frac{d\Probb}{d\lambda_d}= \sum_{i=1}^m s_i
+l^{-d}\ind{C_i}.
+\]
+Then
+\[
+ \limn n^{1/d}\, d_{n,p}(\Probb)=  \limn n^{1/d}\, \bar d_{n,p}(\Probb)= \Qpn\cdot \normdp{h}^{\frac 1p} .
+\]
+\end{prop}
+\begin{proof}Since $d_{n,p}(\Probb)\ge \bar d_{n,p}(\Probb)$ it suffices to show that 
+\[
+%\begin{enumerate}
+%  \item[(a)] $\;\displaystyle
+ \limsn n^{1/d}\, d_{n,p}(\Probb) \leq \Qpn\cdot \normdp{h}^{\frac 1p} \quad 
+ % $.
+ % \item[(b)] $\;\displaystyle
+ \mbox{ and } \quad \limin n^{1/d}\, \bar d_{n,p}(\Probb) \geq \Qpn\cdot \normdp{h}^{\frac 1p} .
+%\end{enumerate}
+\]
+%$(a)$ 
+For $n\in\N$, set
+\[
+t_i = \frac{s_i^{d/(d+p)}}{\sum_{j=1}^m s_j^{d/(d+p)}} \qquad\text{ and }\qquad
+n_i = \lfloor t_i n\rfloor, \,1\leq i \leq m.
+\]
+
+Then, by Proposition~\ref{prop:subLin} and Proposition~\ref{prop:scaleProp}, we
+get for every $n\geq \max_{1\leq i \leq m}(1/t_i)$
+\[
+d_{n}^p(\Probb) \leq \sum_{i=1}^m s_i\, d_{n}^p(\U(C_i)) = l^p \sum_{i=1}^m s_i\,
+d^p_{n_i}(\Unifd).
+\]
+
+Proposition~\ref{prop:rateU} then yields
+\[
+n^{\frac pd}\, \dqp_{n_i}(\Unifd) = \biggl(\frac{n}{n_i}\biggr)^{\frac pd}\,
+n_i^{\frac pd}\,\dqp_{n_i}(\Unifd) \longrightarrow  t_i^{-\frac pd} \Qpn \quad\text{ as } n\to+\infty.
+\]
+Noting that  $\normdp{h} = l^p \Bigl( \sum s_i^{d/(d+p)} 
+\Bigr)^{(d+p)/d}$,
+we get
+\[
+\limsn n^{\frac pd}\, \dqpn(\Probb) \leq \Qpn  l^p \sum_{i=1}^m s_i\, t_i^{-\frac pd} = \Qpn\cdot
+\normdp{h}.
+\]
+
+\noindent $(b)$ Let $\varepsilon \in(0,l/2)$ and let $\Cie$ denote  the closed hypercube with
+the same center as $C_i$ but with edge-length $l-\varepsilon$.
+For $\alpha \in (0, \varepsilon/2)$, we set $\tilde \alpha = \frac{l}{\lceil l/\alpha\rceil }$ and we define the lattice 
+$$
+ \Gamma_{\alpha, \varepsilon,i} = \big(a_i+ \tilde \alpha\Z^d\big)\cap (C_i\setminus C_{i,\varepsilon}\big) \bigcup \{\mbox{vertices of }  C_i\}.
+$$
+
+ 
+It is clear that $\conv(\Gamma_{\alpha,\varepsilon,i}) = C_i \subset C_i\setminus C_{i,\varepsilon}$ since it contains the vertices of $C_i$.
+Moreover, for every $\xi\!\in C_i\setminus C_{i,\varepsilon}$, ${\rm dist}_{\ell^{\infty}}(\xi,\Gamma_{\alpha,\varepsilon,i})\le \alpha$ so that there exists a real constant $C_{\norm{\cdot}}>0$ only depending on the norm $\|.\|$ such that ${\rm dist}_{\|.\|}(\xi,\Gamma_{\alpha,\varepsilon,i})\le C_{\norm{\cdot}} \alpha$. Consequently the lattice $\Gamma_{\alpha,\varepsilon,i}$ satisfies the assumption of the firewall lemma (Lemma~\ref{lem:firewall}).
+ 
+ On the other hand, easy combinatorial arguments show that number of points $m_i$ of $\Gamma_{\alpha,\varepsilon,i}$ falling in $C_i$ satisfies $\lceil \frac{l}{\tilde \alpha}\rceil^d \le m_i \le \big(\lceil \frac{l}{\tilde \alpha}\rceil+1\big)^d +2^d$ whereas the number $m_{i,\varepsilon}$ of points falling in $C_{i,\varepsilon}$ satisfies  $\big(\lceil \frac{l-\varepsilon}{\tilde \alpha}\rceil-1\big)^d \le m_{i,\varepsilon} \le \big(\lceil \frac{l-\varepsilon}{\tilde \alpha}\rceil+1\big)^d$ so that
+ \[
+\Big\lceil\frac{l}{\tilde \alpha}\Big\rceil^d - \Big(\Big\lceil\frac{l-\varepsilon}{\tilde \alpha}\Big\rceil+1\Big)^d \le  |\Gamma_{\alpha,\varepsilon,i}| \le \Big(\Big\lceil\frac{l}{\tilde \alpha}\Big\rceil+1\Big)^d +2^d-\Big(\Big\lceil\frac{l-\varepsilon}{\tilde \alpha}\Big\rceil-1\Big)^d.
+ \]
+%the lattice with edge-length $\tilde \alpha = \frac{l}{\lceil l/\alpha \rceil}$
+%covering $C_i \setminus C_{i,\varepsilon}$.
+%
+%We then get for every $i\in\{1, \ldots, m\}$
+%\[
+%	\abs{\gaei} = \Bigl(\frac{l}{\tilde{\alpha}} + 1 \Bigr)^d - \Bigl(
+%	\frac{l}{\tilde{\alpha}}- 2 \Bigl\lceil \frac{\varepsilon/2}{\tilde{\alpha}}
+%	\Bigr\rceil - 1 \Bigr)^d
+%\]
+%
+We define for every $\varepsilon\in(0,l/2), \alpha\in(0,\varepsilon/2)$
+\[
+	g_{l,\varepsilon}(\alpha) = \alpha^d \abs{\Gamma_{\alpha,\varepsilon,i}}.
+%	 =
+%	\Bigl(\alpha \frac{l}{\tilde{\alpha}} + \alpha \Bigr)^d - \Bigl(
+%	\alpha \frac{l}{\tilde{\alpha}}- 2 \alpha \Bigl\lceil
+%	\frac{\varepsilon/2}{\tilde{\alpha}} \Bigr\rceil - \alpha \Bigr)^d. 
+\]
+Since $\frac{\alpha}{\tilde{\alpha}} \to 1$ and $2\alpha \Bigl\lceil
+	\frac{\varepsilon/2}{\tilde{\alpha}} \Bigr\rceil \to \varepsilon$ as $\alpha
+	\to 0$, we conclude from the above inequalities that
+	\begin{equation}\label{eq:proofFirewallDefgl}
+	\forall \varepsilon \in (0, l/2),\quad	\lim_{\alpha \to 0} g_{l,\varepsilon}(\alpha) = l^d - (l-\varepsilon)^d.	 
+	\end{equation}	
+Let $\eta\in(0,1)$ and denote by $\Gamman$ a sequence of
+$n$-quantizers such that $\bar d^p(\Probb; \Gamman) \leq (1+\eta)
+d^p_n(\Probb)$. It follows from Proposition~\ref{PdtQErrop} that
+$\bar d^p(\Probb; \Gamman) \to 0$ for $n\to \infty$ so that 
+Lemma~\ref{lem:radius} yields the existence of $n_\varepsilon\in\N$ such that for any $n\geq n_\varepsilon$
+\[
+\bigcup_{1\leq i \leq m} \Cie \subset \conv(\Gamman).
+\]
+
+We then derive from Lemma~\ref{lem:firewall} (firewall) %, that for every $\eta\in(0,1)$
+\begin{equation*}
+\begin{split}
+  \dqbp(\U(C_i); \Gamman) & = l^{-d} \int_{C_i} \Fbp(\xi; \Gamman)\,
+  \lambda_d(d\xi) \\
+  & \geq l^{-d} \int_{\Cie} \Fbp(\xi; \Gamman)\,
+  \lambda_d(d\xi) = l^{-d} \int_{\Cie} \Fp(\xi; \Gamman)\,
+  \lambda_d(d\xi) \\
+  & \geq \frac{l^{-d }\,(l-\varepsilon)^d}{(1+\eta)^{p+d+1}}\, \dqp\bigl(\U(\Cie);
+  (\Gamma_n\cap\mathring C_i)\cup \Gamma_{\alpha,\varepsilon,i}\bigr) -
+  l^{-d}\,(l-\varepsilon)^d \frac{(1+\eta)^{-d-1}}{\eta^{p}}\, (d+1) C_{\norm{\cdot}}\cdot\alpha^p.
+\end{split}
+\end{equation*}
+
+At this stage, we set for every $\rho > 0$
+\begin{equation}\label{eq:proofFirewallDefalpha}
+\alpha_n=\alpha_n(\rho) = \Bigl( \frac{m}{\rho n} \Bigr)^{1/d}
+\end{equation}
+and denote
+\[
+	n_i = \abs{(\Gamman\cap\mathring C_i)\cup \gaei}.
+\]
+Proposition~\ref{prop:scaleProp} yields $d_{n_i,p}(\U(\Cie)) =
+(l-\varepsilon) d_{n_i,p}(\Unifd) $, so that we get 
+\begin{equation}\label{eq:proofRateCubewiseb}
+  \begin{split}
+      n^{\frac pd}d_{n}^p(\Probb) & \geq \frac{1}{1+\eta} \sum_{i=1}^m s_i\,
+      n^{\frac pd}\,\dqbp(\U(C_i);\Gamman)\\
+      & \geq \frac{l^{-d }\,(l-\varepsilon)^d}{(1+\eta)^{p+d+2}}\, \sum_{i=1}^m s_i\, n^{\frac pd}\, \dqp\bigl(\U(\Cie);
+  (\Gamma_n\cap\mathring C_i)\cup \gaei\bigr) \\
+  & \qquad -  l^{-d}\,(l-\varepsilon)^d
+  \frac{(1+\eta)^{-d-2}}{\eta^p} \sum_{i=1}^m
+  s_i\, (d+1)\, C_{\norm{\cdot}}\cdot\alpha^p \cdot
+  n^{\frac pd} \\
+  &\geq \frac{l^{-d }\,(l-\varepsilon)^{d+p}}{(1+\eta)^{p+d+2}}\, \sum_{i=1}^m s_i\,
+      n^{\frac pd}\, \dqpnn{n_i}\bigl(\Unifd\bigr) 
+  -  l^{-d}\,(l-\varepsilon)^d
+  \frac{(1+\eta)^{-d-2}}{\eta^p}  (d+1)\,
+       C_{\norm{\cdot}} 
+  \Bigl(\frac{m}{\rho}\Bigr)^{\frac pd}.
+  \end{split}
+\end{equation}
+
+Since
+\[
+\frac{n_i}{n} \leq \frac{\abs{\Gamman\cap\mathring C_i}}{n} +
+\frac{g_{l,\varepsilon}(\alpha_n)}{n\alpha_n^d} = \frac{\abs{\Gamman\cap\mathring
+C_i}}{n} + \frac{\rho}{m} g_{l,\varepsilon}(\alpha_n),
+\]
+we conclude from (\ref{eq:proofFirewallDefgl}) and (\ref{eq:proofFirewallDefalpha}) that
+\[
+	\limsn\sum_{i=1}^m \frac{n_i}{n} \leq 1 + \rho \bigl(l^d -
+	(l-\varepsilon)^d\bigr).
+\]
+We may choose a subsequence (still denoted by $(n)$), such that
+\[
+n^{1/d}\, \bar
+d_{n,p}(\Probb) \to \limin n^{1/d}\, d_{n,p}(\Probb)
+ \qquad\text{ and }\qquad 
+\frac{n_i}{n} \to v_i \in [0,1 + \rho (l^d -
+	(l-\varepsilon)^d)].
+\]
+
+As a matter of fact, $v_i>0,$ for every $i=1,\ldots  m$: otherwise
+Proposition~\ref{prop:rateU} would yield
+\begin{equation*}
+\begin{split}
+n^{\frac pd}\, \dqbpn(\Probb)  \geq& \frac{l^{-d}\,(l-\varepsilon)^{d+p}}{(1+\eta)^{p+d+2}}
+\sum_{i=1}^m s_i\, \Bigl(\frac{n_i}{n}\Bigr)^{-\frac pd} n_i^{\frac pd}\,
+\dqpnn{n_i}\bigl(\Unifd\bigr)\\
+& \;-\,  l^{-d}\,(l-\varepsilon)^d
+  \frac{(1+\eta)^{p-d-2}}{\eta^p} (d+1) C_{\norm{\cdot}}\cdot
+  \Bigl(\frac{m}{\rho}\Bigr)^{\frac pd}\\
+  & \to +\infty \quad \mbox{ as } n\to +\infty
+  \end{split}
+\end{equation*}
+which contradicts $(a)$. Consequently, we may normalize the $v_i$'s by setting
+\[
+	\widetilde v_i = \frac{v_i}{1+\rho (l^d - (l-\varepsilon)^d)}, \; i=1,\ldots,m,
+\]
+so that $\sum_{i=1}^m \widetilde v_i \leq 1$. We derive from 
+Proposition~\ref{prop:rateU} that
+%and Lemma 6.8
+\begin{equation*}
+\begin{split}
+ % \bigl(1+\rho (l^d - (l-\varepsilon)^d)\bigr)^{\frac pd} \cdot \qquad \\
+  \limin \sum_{i=1}^m s_i\, n^{\frac pd}\,
+  \dqpnn{n_i}\bigl(\Unifd\bigr) 
+  &\ge\sum_{i=1}^m s_i\,v_i^{-\frac pd}   n_i^{\frac pd}\,
+  \dqpnn{n_i}\bigl(\Unifd\bigr) \\ 
+  & = \Qpn (1+\rho (l^d - (l-\varepsilon)^d)^{-\frac pd}\sum_{i=1}^m s_i\, \widetilde v_i^{\,-\frac pd}\\
+ &\geq \Qpn(1+\rho (l^d - (l-\varepsilon)^d)^{-\frac pd}\inf_{\sum_i y_i\le 1, y_i\ge 0} \sum_{i=1}^m s_i y_i^{-\frac pd}
+\\
+ &= \Qpn(1+\rho (l^d - (l-\varepsilon)^d)^{-\frac pd} \biggl(\sum_{i=1}^m s_i^{d/(d+p)} \biggr)^{(d+p)/d}.
+  \end{split}
+\end{equation*}
+ 
+
+Hence, we derive from 
+(\ref{eq:proofRateCubewiseb})
+\begin{equation*}
+\begin{split}
+  \limin n^{\frac pd}\, \dqbpn(\Probb) & 
+  \geq \frac{l^{-d }\,(l-\varepsilon)^{d+p}}{(1+\eta)^{p+d+2}\bigl(1+\rho (l^d -
+  (l-\varepsilon)^d)\bigr)^{\frac pd}}\,\Qpn\,\biggl(\sum_{i=1}^m s_i^{d/(d+p)}
+  \biggr)^{(d+p)/d}
+  \\ 
+ & \qquad -  l^{-d}\,(l-\varepsilon)^d
+  \frac{(1+\eta)^{-d-2}}{\eta^p} (d+1)\,        C_{\norm{\cdot}}\cdot
+  \Bigl(\frac{m}{\rho}\Bigr)^{\frac pd}. \\ 
+\end{split}
+\end{equation*}
+Letting $\varepsilon\to 0$ implies
+\begin{equation*}
+\begin{split}
+  \limin n^{\frac pd}\, \dqbpn(\Probb) & \geq
+  \frac{l^{p}}{(1+\eta)^{p+d+2}}\, \Qpn \,\biggl(\sum_{i=1}^m s_i^{d/(d+p)}
+  \biggr)^{(d+p)/d}
+ \, - \,  \frac{(1+\eta)^{-d-2}}{\eta^p}(d+1)\,  
+       C_{\norm{\cdot}} 
+  \Bigl(\frac{m}{\rho}\Bigr)^{\frac pd}\\
+  & =  \frac{1}{(1+\eta)^{p+d+2}}\,\Qpn \cdot\normdp{h} 
+ \, - \, \frac{(1+\eta)^{-d-2}}{\eta^p}d\,
+       C_{\norm{\cdot}} 
+  \Bigl(\frac{m}{\rho}\Bigr)^{\frac pd}
+\end{split}
+\end{equation*}
+and, finally, letting successively  $\rho$ go to $+\infty$ and $\eta$ go to $0$
+completes the proof.
+\end{proof}
+
+\begin{prop}\label{prop:rateCompact}
+Assume that $\Probb$
+is  absolutely continuous w.r.t. $\lambda_d$ with  compact support. Then
+\[
+ \limn n^{\frac pd}\,d_{n,p}(\Probb) = \limin n^{\frac pd}\, \bar d_{n,p}(\Probb)= \Qpn\cdot \normdp{h}^{\frac 1p}
+\]
+%\begin{enumerate}
+%  \item[(a)] $\displaystyle \qquad \limsn n^{\frac pd}\,d_{n,p}(\Probb) \leq \Qpn\cdot \normdp{h}^{\frac 1p}$.
+%  \item[(b)] $\displaystyle \qquad \limin n^{\frac pd}\, \bar d_{n,p}(\Probb) \geq \Qpn\cdot \normdp{h} ^{\frac1p}.$
+%\end{enumerate}
+\end{prop}
+%\begin{proof} 
+ {\sc Proof.} Since $d_{n,p}(\Probb)\ge \bar d_{n,p}(\Probb)$ it suffices to show that 
+\[ \limsn n^{\frac pd}\,d_{n,p}(\Probb) \leq \Qpn\cdot \normdp{h}^{\frac 1p}\; \mbox{ and }\;\displaystyle   \limin n^{\frac pd}\, \bar d_{n,p}(\Probb) \geq \Qpn\cdot \normdp{h} ^{\frac1p}.
+\]
+% \textcolor{red}{Notations are not homogeneous between the first and the second part of the proof}.
+\noindent {\em Preliminary step.} Let $C=[-l/2,l/2]^d$ be a  closed hyper hypercube centered at the origin, parallel to the coordinate axis  with
+edge-length $l$, such that $\supp(\Probb) \subset C$.
+For $k\in\N$ consider the tessellation of $C$ into $k^d$ closed hypercubes with
+common edge-length $l/k$.
+To be precise, for every $\underline i=(i_1,\ldots,i_d)\!\in \Z^d$, we set
+\[
+C_{\underline i} =\Prod_{r=1}^d\Big [-\frac l2+\frac{i_rl}{k},-\frac l2+\frac{(i_r+1)l}{k}\Big ].
+\]
+Then, set \begin{equation} 
+h = \frac{d\Probb}{d\lambda_d}\;\mbox{ and }\; 
+  \Probb_k  = \sum_{\substack{\underline i\in \Z^d\\ 0\leq i_r < k}}
+  \Probb(C_{\underline i}) \, \U(C_{\underline i}),\;h_k =
+  \frac{d\Probb_k}{d\lambda_d} = \sum_{\substack{\underline i\in \Z^d\\ 0\leq i_r < k}}
+  \frac{\Probb(C_{\underline i})}{\lambda_d(C_{\underline i})}
+  \ind{C_{\underline i}}, \; k\ge 1.
+\end{equation}
+
+By differentiation of measures we obtain $h_k \to h$, $\lambda_d$-$a.s.$ as $k\to\infty$.
+Which in turn implies, owing to  Scheff\'e's Lemma,
+\[
+\lim_{k\to + \infty} \norm{h_k-h}_1 = 0.
+\]
+Furthermore, 
+\[
+\lim_{k\to +\infty} \normdp{h_k} = \normdp{h}
+\] 
+since $\normdp{h_k - h} \leq \Bigl( \lambda_d(C) \Bigr)^{\frac pd} \norm{h_k
+- h}_1$ by  Jensen's Inequality applied to the probability measure
+$\frac{\lambda_{d\,|C}}{\lambda_d(C)}$. Moreover, by
+Proposition~\ref{prop:rateCubewise} we have
+\begin{equation}\label{eq:limit_hk}
+ \limn n^{1/d}\, d_{n,p}(\Probb_k) = \Qpn\, \normdp{h_k}^{\frac1p}.
+\end{equation}
+
+Likewise, we define an inner approximation of $\Probb$: 
+%Therefore, 
+denote by
+\[
+C^k = \bigcup_{C_{\underline i} \subset \opSuppP} C_{\underline i}
+\]
+the union of the hypercubes $C_{\underline i}$ lying  in
+the interior of $\supp(\Probb)$.
+Setting
+\begin{eqnarray*}
+\begin{split}
+  \mathring \Probb_k  = \sum_{\substack{C_{\underline i} \subset \opSuppP}}
+  \Probb(C_{\underline i} ) \, \U(C_{\underline i} )\quad &\mbox{ and }\quad 
+  \mathring h_k &= \frac{d\mathring \Probb_k}{d\lambda_d} = h_k \ind{C^k},
+\end{split}
+\end{eqnarray*}
+we have as above that 
+\[
+\mathring h_k \to h, \quad \lambda_d\mbox{-}\text{a.s.}\quad\text{ as } k\to +\infty.
+\]
+Consequently we also have
+\[
+\lim_{k\to\infty} \norm{\mathring h_k-h}_1 = 0 \quad\text{ and }\quad
+\lim_{k\to\infty} \normdp{\mathring h_k} = \normdp{h}.
+\]
+
+We   get likewise by Proposition~\ref{prop:rateCubewise} that, for every
+$k\in\N$,
+\begin{equation}\label{eq:limit_ohk}
+ \limn n^{1/d}\, d_{n,p}(\mathring \Probb_k) = \Qpn\cdot \normdp{\mathring
+ h_k}^{\frac 1p}.
+\end{equation}
+
+\noindent $(a)$ Let $0 < \varepsilon < 1$ and $n \geq 2^d/\varepsilon$.
+If we divide each edge of the hypercube $C$ into
+\[
+ m = \bigl\lfloor (\varepsilon n)^{1/d} \bigr\rfloor - 1
+\]
+intervals of equal length $l/m$, the interval endpoints define $m+1$ grid
+points on each edge. Denoting by $\Gammaone = \Gammaone(\varepsilon, n)$ the product quantizer made up
+by this procedure, we clearly have
+\[
+	\abs{\Gammaone} = (m+1)^d = \bigl\lfloor (\varepsilon n)^{1/d} \bigr\rfloor^d =:
+	n_1.
+\]
+For this product quantizer it follows from  Proposition~\ref{prop:rappels} 
+that, for all $\xi\in C$, 
+%\begin{eqnarray*}
+%\begin{split}
+ $$
+  F^p(\xi; \Gammaone)  \leq C_{\norm{\cdot}} \sum_{i=1}^d
+  \Big(\frac{l}{2m}\Big)^p  \leq C_{\norm{\cdot},p,d}\, \frac{l^p}{(\varepsilon n)^{\frac pd}}.
+$$
+%\end{split}
+%\end{eqnarray*}
+
+% Let $\Gammatwo = \Gammatwo(n_2, k)$ be an optimal quantizer for
+% $d_{n_2}^p(\Probb_k)$ and $n_2 = \lfloor(1-\varepsilon)n\rfloor$.
+%Setting $\delta = \delta(n,k,\varepsilon) = \alpha \cup \gamma$,
+
+For $n_2 = \lfloor(1-\varepsilon)n\rfloor$ let $\Gammatwo$ be an $n_2$-quantizer
+such that $d^p(\Probb_k; \Gammatwo) \leq (1+\varepsilon) d^p_{n_2}(\Probb_k)$.
+We clearly
+have $\abs{\Gammaone \cup \Gammatwo}\leq n$ and
+\begin{eqnarray*}
+\begin{split}
+ \hskip -0.5cm  n^{\frac pd} \biggabs{\int  F^p(\xi; \Gammaone \cup \Gammatwo) 
+  d\Probb_k(\xi) - \int F^p(\xi; \Gammaone \cup \Gammatwo) d\Probb(\xi) } & \leq n^{\frac pd} \int F^p(\xi; \Gammaone \cup \Gammatwo) \abs{ h_k(\xi) - h(\xi) } d\lambda_d\xi\\ & \leq  C_{\norm{\cdot},p,d}\, \frac{l^p}{\varepsilon^{\frac pd}} \norm{h_k -
+  h}_1= c_{1,\varepsilon} \norm{h_k -  h}_1 
+\end{split}
+\end{eqnarray*}
+for $k\in\N$ and $n \geq \max\Bigl\{\frac{2^d}{\epsilon}, \frac{1}{1-\varepsilon}
+\Bigr\}$. This implies
+\begin{eqnarray*}
+\begin{split}
+  n^{\frac pd} d_n^p (\Probb) & \leq  n^{\frac pd} \int F^p(\xi; \Gammaone \cup
+  \Gammatwo) d\Probb(\xi)\\ 
+  &  \leq n^{\frac pd} \int F^p(\xi; \Gammaone \cup \Gammatwo) d\Probb_k(\xi) +
+  c_1 \norm{h_k - h}_1\\ 
+  & \leq n^{\frac pd} \int F^p(\xi; \Gammatwo) d\Probb_k(\xi) + c_1 \norm{h_k -
+  h}_1\\ 
+  & \leq (1+\varepsilon)\, n^{\frac pd} d_{n_2}^p(\Probb_k) + c_{1,\varepsilon}
+  \norm{h_k - h}_1,
+\end{split}
+\end{eqnarray*}
+so that we can conclude from~(\ref{eq:limit_hk}) that
+\[
+\limsn n^{\frac pd} d_{n}^p (\Probb) \leq
+\frac{1+\varepsilon}{(1-\varepsilon)^{\frac pd}} (\Qpn)^p \normdp{h_k} +
+c_{1,\varepsilon} \norm{h_k - h}_1.
+\]
+
+Letting first $k$ go to infinity and then letting $\varepsilon$ go to zero yields
+\[
+\limsn n^{1/d} d_n^p(\Probb) \leq \Qpn \normdp{h_k}^{\frac 1p}.
+\]
+
+\noindent $(b)$ Assume now  that $\Gammathree$ is an $n_2$-quantizer such that $\bar
+d^p(\Probb;\Gammathree) \leq (1+\varepsilon) \,\bar d^p_{n_2}(\Probb)$.
+% 
+% 
+% $\Gammathree = \Gammathree(n_2)$ is an optimal dual
+% quantizer for $P$ at level $n_2$ ($i.e.$ $\bar d_{n_2,p}(\Probb)$).
+% %Setting $\tau = \tau(n,\varepsilon) = \beta \cup \gamma,\, \abs{\tau}\leq n$,
+Again it holds $\abs{\Gammaone \cup \Gammathree} \leq n$ and
+we derive as above
+\begin{equation}\label{eq:boundOpenhk}
+  n^{\frac pd} \biggabs{\int  F^p(\xi; \Gammaone \cup \Gammathree) 
+  d\mathring\Probb_k(\xi) - \int F^p(\xi; \Gammaone \cup \Gammathree)
+  d\Probb(\xi) } \leq c_{2,\varepsilon} \norm{\mathring h_k - h}_1.
+\end{equation}
+
+Moreover, Lemma~\ref{lem:radius} yields for every $k\in\N$ the existence of
+$n_{k,\varepsilon}\in\N$ such that, for all $n\geq n_{k,\varepsilon}$,
+\begin{eqnarray*}
+\begin{split}
+ (1+\varepsilon)\, \bar d_{n_2}^p(\Probb) & \geq \bar d^p(\Probb; \Gammathree)
+ \geq \int_{\conv(\Gammathree)} F^p(\xi; \Gammathree) d\Probb(\xi)\\
+  & \geq \int_{C^k}
+  F^p(\xi; \Gammathree) d\Probb(\xi) \geq \int_{C^k}
+  F^p(\xi; \Gammaone \cup \Gammathree) d\Probb(\xi).
+\end{split}
+\end{eqnarray*}
+Thus, we derive from~(\ref{eq:boundOpenhk}) that, for every $n\geq
+\max\Big(n_{k,\varepsilon}, \frac{2^d}{\varepsilon}, \frac{1}{1-\varepsilon} \Big)$,
+\begin{eqnarray*}
+\begin{split}
+  (1+\varepsilon)\,n^{\frac pd}\, \bar d_{n_2}^p(\Probb) & \geq n^{\frac pd}
+  \int_{C^k} F^p(\xi; \Gammaone \cup \Gammathree) d\Probb(\xi)  \\
+  & \geq n^{\frac pd} \int_{C^k}  F^p(\xi; \Gammaone \cup \Gammathree)
+  d\mathring \Probb_k(\xi) - c_{2,\varepsilon} \norm{\mathring h_k - h}_1\\
+  & \geq n^{\frac pd} d_n^p(\mathring \Probb_k) - c_{2,\varepsilon} \norm{\mathring h_k -
+  h}_1,
+\end{split}
+\end{eqnarray*}
+which yields, once  combined with~(\ref{eq:limit_ohk}),
+\[
+\frac{1+\varepsilon}{(1-\varepsilon)^{\frac pd}} \limin n_2^{\frac pd} \, \bar
+d_{n_2,p}^p(\Probb) \geq  \Qpn \normdp{\mathring h_k}- c_{2,\varepsilon}
+\norm{\mathring h_k - h}_1.
+\]
+Letting first $k$ go to $\infty$ and then letting $\varepsilon$ go to $0$, we get
+\[
+\limin n^{\frac 1d} \, \Dqbpn(\Probb) \geq  \Qpn
+\normdp{h}^{\frac 1p}.\hfill \Box
+\]
+%\end{proof}
+
+\begin{prop}[Singular distribution]\label{prop:rateSingular}
+Assume that $\Probb$ is singular with respect to $\lambda_d$ and has compact
+support. Then
+ \[
+  \limsn n^{\frac pd}\, \bar d_{n,p}(\Probb) = 0.
+ \]
+
+\end{prop}
+
+\begin{proof} 
+%This proof closely follows the lines of  Step 4 in Graf and
+%Luschgy's proof of Zador's Theorem (see~\cite{Foundations}). 
+Let $A$  be a Borel set such that $\Probb(A)=1$
+and $\lambda_d(A)=0$. Let $\varepsilon>0$; by the outside regularity of
+$\lambda_d$, there exists an open set $O=O(\varepsilon)\supset  A$ such that
+$\lambda_d(O)\le \varepsilon$ (and $\Probb(O)=1$). Let $C$ be an open hypercube with
+edges parallel to the coordinate axis, edge-length $\ell$ and  containing the closure of
+$A$.
+
+Let $C_k= \prod_{i=1}^d [c_{k,i}, c_{k,i}+\ell_i)$, $k\!\in \N$, be a countable
+partition of $O$ consisting of nonempty half-open hypercubes, still with edges
+parallel to the coordinate axis (see,  $e.g.$ Lemma 1.4.2 in~\cite{COH}).
+
+
+Let $m=m(\varepsilon)\!\in \N$ such that $\displaystyle \sum_{k\ge m+1}\Probb(C_k)\le
+\varepsilon^{\frac pd} \ell^{-p}$.
+
+Let $n\!\in \N$, $n\ge 2^{d+1}$ and let $n_1, \ldots, n_d\ge 2$ be integers such
+that the product $n^d_1 + \cdots + n_m^d \le n/2$. One designs a grid $\Gamma$
+as follows.
+
+For every $k\!\in \{1,\ldots,m\}$, we consider the lattice of $C_k$ of size $n_i
+^d$ defined by 
+\[ 
+\Prod_{i=1}^d \Bigl\{c_{k,i}+ \frac{r_i}{n_k-1}\ell_i,\,
+r_i=0,\ldots, n_k-1,\, i=1,\ldots, d\Bigr\}. 
+\]
+
+Then, one defines likewise the lattice of $C$ of size $n_{m+1}^d \le n/2$ 
+\[
+\Prod_{i=1}^d \Bigl\{c_{k,i}+ \frac{r_i}{n_{m+1}-1}\ell_i,\, r_i=0,\ldots,
+n_{m+1}-1,\, i=1,\ldots,d\Bigr\}. 
+\] 
+The grid $\Gamma$ is made up with all the points
+of the $m+1$ above finite lattices.
+
+Now let $\xi \!\in A$. It is clear from the definition of the function $F_p$
+that 
+\[ F_p(\xi; \Gamma) \le \left\{\begin{array}{ll}
+C_{\norm{.}} \big(\ell_k/n_k\big)^p& \mbox{if } \; \xi \!\in \bigcup_{k=1}^mC_k \\
+C_{\norm{.}} \big(\ell/n_{m+1}\big)^p& \mbox{if } \; \xi \!\in C \setminus 
+\bigcup_{k=1}^mC_k        \end{array}\right. 
+\] where $C_{\norm{.}} >0$ is a
+real constant only depending on the norm. As a consequence
+\begin{eqnarray*}
+d_{n}^p(\Probb)&=& \sum_{k=1}^m \int_{C_k}F^p(\xi;\Gamma)d\Probb(\xi) +\int_{C \setminus  \bigcup_{k=1}^mC_k } F^p(\xi; \Gamma)d\Probb(\xi)\\
+&\le& C_{\norm{.}}  \Big( \sum_{k=1}^m (\ell_k/n_k)^p\Probb(C_k) + (\ell/n_{m+1})^p\Probb (C \setminus  \bigcup_{k=1}^mC_k )\Big).
+\end{eqnarray*}
+
+Set for every $k \!\in \{1,\ldots,m\}$, $\displaystyle n_k =\left \lfloor \frac{\ell_k(n/2)^{\frac 1d}}{(\sum_{k'=1}^d\ell_{k'}^d)^{\frac 1d}}\right \rfloor$ 
+and $\displaystyle n_{m+1} = \lfloor (n/2)^{\frac 1d} \rfloor$. Note that 
+\[
+\sum_{k'=1}^d\ell_{k'}^d= \sum_{k=1}^m \lambda_d(C_k) \le \lambda_d(O)\le \varepsilon.
+\]
+Elementary computations show that for large enough $n$,  all the integers $n_k$ are greater
+than $1$ and that 
+\begin{eqnarray*} 
+\sum_{k=1}^m (\ell_k/n_k)^p\Probb(C_k) + (\ell/n_{m+1})^p\Probb(C \setminus  \bigcup_{k=1}^mC_k ) & \le & (\sum_{k'=1}^d\ell_{k'}^d)^{\frac pd}(n/2)^{-\frac pd} \Probb\big(\cup_{1\le k\le m} C_k\big) + \\
+&& +(n/2)^{-\frac pd} \ell^p \Probb\big(C \setminus  \bigcup_{k=1}^mC_k \big)\\ 
+\end{eqnarray*}
+so that \[ \limsup_n n^{\frac pd} d_{n}^p(\Probb) \le C_{\norm{.}} (\varepsilon/2)^{\frac pd}\]
+which in turn
+implies, by letting $\varepsilon $ go to $0$, that $\displaystyle \limsup_n n^{\frac pd}
+d_{n}^p(\Probb)=0$. 
+% \textcolor{red}{It remains to insert that in the global proof. In GL's proof of
+% Zador's theorem, a ``Lemma 6.5" is called upon (p. 81 in the LN). But I guess it
+% is almost trivial reasoning in $\limsup$ and easy considerations on bit allocation. \\
+% Next theoretical question is the empirical measure theorem...Probably true but
+% not as/so easy }
+\end{proof}
+
+
+% \begin{thm}
+% Let $X\in L^{p+\delta}(\Prob)$, absolutely continuous w.r.t. to $\lambda_d$ and
+% $\Probb = \ProbX = h \lambda_d$. Then
+% \[
+% n^{\frac 1d} \, \Dqbpn(\Probb) \geq  \Qpn
+% \normdp{h}^{\frac 1p}.
+% \]
+% \end{thm}
+ {\sc Proof of Theorem~\ref{thm:DQRate}:}
+ Claim~(a) follows directly from Propositions~\ref{prop:rateCompact} , 
+~\ref{prop:rateSingular} and  Proposition~\ref{prop:subLin}: Assume $\Probb = \rho \Probb_a +(1-\rho)\Probb_s$ where $\Probb_a= \frac {h}{\rho}\lambda_d$ and $\Probb_s$ denote the absolutely continuous and singular part of $\Probb$ respectively. The following inequalities hold true 
+\[
+ \rho \bar d_{n,p} (\Probb_a)\le \bar d_{n,p}(\Probb)\le \rho \bar d_{n_1,p}(\Probb_a)+(1-\rho) \bar d_{n_2,p}(\Probb_s)
+ \]
+ for every triplet of integers $(n_1,n_2,n)$ with $n_1+n_2\le n$. Set $n_1= n_1(n)= \lfloor (1- \varepsilon n) \rfloor$, $n_2= n_2(n)= \lfloor  \varepsilon n \rfloor$. Then we derive that 
+ \[
+\hskip -1cm\rho  \Qpn\cdot \normdp{\frac{h}{\rho} }^{\frac 1p} \liminf_n n^{\frac p d}\bar d_{n,p} (\Probb_a)\le  \liminf_n n^{\frac p d}\bar d_{n,p} (\Probb)\le  \limsup_n n^{\frac p d}\bar d_{n,p} (\Probb)\le \rho (1-\varepsilon)^{-\frac p d}  \Qpn\cdot \normdp{\frac{h}{\rho}}^{\frac 1p}
+ \]
+ Letting $\varepsilon $ go to $0$ completes the proof.
+ 
+%the fact that it holds $\bar d_{n,p}(X)\leq
+% d_{n,p}(X)$ for every $n\in\N$.
+ Furthermore, part $(c)$ 
+ was derived in~\cite{dualStat}, Section~5.1. 
+ %is an easy consequence of example~\ref{ex:uniform}.
+ Hence, it remains to prove $(b)$ 
+  \begin{proof} {\sc Step 1.} (Lower bound)
+If $X$ is compactly supported, the assertion follows from Proposition
+\ref{prop:rateCompact}. Otherwise, set for every $R\!\in(0,\infty)$, 
+$$
+C_{_R} = [-R,R]^d\; \mbox{ and }\; \Probb(\cdot | C_k) = \frac{h\ind{C_k}}{\Probb(C_k)} \lambda_d,\; k\in\N.
+$$
+Proposition~\ref{prop:rateCompact} yields again
+\begin{equation}\label{eq:limitCk}
+  \limn n^{\frac 1d} \, \bar d_{n,p}(\Probb(\cdot | C_k)) =  \Qpn \cdot
+\normdp{h\ind{C_k}/\Probb(C_k)}^{\frac 1p},
+\end{equation}
+so that $\dqbpn(\Probb) \geq \Probb(\cdot | C_k) \dqbpn(\Probb(\cdot |
+C_k))$ implies for all $k\in\N$
+\[
+\limin n^{\frac 1d} \, \bar d_{n,p}(\Probb) \geq  \Qpn \cdot
+\normdp{h\ind{C_k}}^{\frac 1p}.
+\]
+Sending $k$ to infinity, we get at
+\[
+\limin n^{\frac 1d} \, \bar d_{n,p}(\Probb) \geq  \Qpn \cdot
+\normdp{h}^{\frac 1p}.
+\]
+
+%\noindent {\sc Step 2.} \textcolor{red}{(Upper bound when $\supp(\Probb) = \R^d$).} Assume $\supp(\Probb) = \R^d$.
+%For the upper bound let $0<\varepsilon< 1$ and set 
+%\[
+%n_1 = \bigl\lfloor(1-\varepsilon)n\bigr\rfloor, \quad n_2 = \lfloor\varepsilon n\rfloor \quad\text{ for
+%} n\geq \max\biggl(\frac{1}{\varepsilon}, \frac{1}{1-\varepsilon} \biggr).
+%\]
+
+%Consider the decomposition
+%\[
+%\Probb = \Probb(C_k) \cdot \Probb(\cdot | C_k) + \Probb(C_k^c) \cdot \Probb(\cdot |
+%C_k^c),
+%\]
+%Let $\beta_1=\beta(n_1)$ be optimal for the compact dual quantization error
+%$d_{n_1,p}^p\bigl( \Probb(\cdot | C_k) \bigr)$ and let $\beta_2=\beta(n_2)$ be optimal for
+%$\bar d_{n_2,p}^p\bigl(\Probb(\cdot | C_k^c)\bigr)$.
+
+%  \smallskip \textcolor{red}{Let $\eta_0>0$ and $K(k,\eta_0) =
+% C_{k+\eta_0}\setminus C_{k+\eta_0/2} \subset
+% \mathring{\overbrace{\supp(\Probb)}}=\R^d$. Consequently, for $n$ large
+% enough, $K_{k,\eta_0}\subset \conv(\beta_2)$ owing to Lemma~\ref{lem:radius}.
+% Then one derives that \[ C_k \subset \conv(K_{k,\eta_0})\subset
+% \conv(\beta_2). \] % On the other hand, by the very definition of $d_n$, it is
+% clear that $C_k \subset \conv(\beta_1)$ if $n\ge d+1$. This implies that }
+
+% %For large enough $n$, this yields %\[ %\textcolor{red}{C_k \subset
+% \conv(\beta_1) \;\mbox{ and }\;  C_k \subset  \conv(\beta_2),} %\] %which
+% implies \begin{eqnarray*} \begin{split} \bar d_{n,p}^p(\Probb) & \leq
+% \int_{\conv(\beta_2)} F^p(\xi, \beta_1 \cup \beta_2)\, d\Probb(\xi) +
+% \int_{\conv(\beta_2)^c} \min_{b\in\beta_1 \cup
+%  \beta_2} \norm{\xi-b}^p\, d\Probb(\xi) \\
+% & = \Probb(C_k)  \int_{C_k} F^p(\xi; \beta_1 \cup \beta_2)\,
+% d\Probb(\xi|C_k) \\ 
+% & \quad + \Probb(C_k^c)  \int_{C_k^c \cap \conv(\beta_2)} F^p(\xi;
+% \beta_1 \cup \beta_2)\, d\Probb(\xi|C_k^c) \\
+% & \textcolor{red}{\quad + \Probb(C_k) \underbrace{\int_{C_k \cap
+% \conv(\beta_2)^c} \min_{b\in\beta_1 \cup
+%  \beta_2} \norm{\xi-b}^p\, d\Probb(\xi|C_k)}_{=0}}\\ 
+% & \quad + \Probb(C_k^c) \int_{C_k^c \cap \conv(\beta_2)^c} \min_{b\in\beta_1
+%  \cup \beta_2} \norm{\xi-b}^p\, d\Probb(\xi|C_k^c)\\
+% & \leq  \Probb(C_k)  \int_{C_k} F^p(\xi; \beta_1)\,
+% d\Probb(\xi|C_k) \\
+% & \quad + \Probb(C_k^c) \bigg[ \int_{\conv(\beta_2)} F^p(\xi;\beta_2)\,
+% d\Probb(\xi|C_k^c) + \int_{\conv(\beta_2)^c} \min_{b\in\beta_2}
+% \norm{\xi-b}^p\,
+% d\Probb(\xi|C_k^c) \biggr]\\
+% & = \Probb(C_k) \cdot d_{n_1,p}^p\bigl(\Probb(\cdot | C_k)\bigr) +
+% \Probb(C_k^c) \cdot \bar d_{n_2,p}^p\bigl(\Probb(\cdot | C_k^c)\bigr).
+% \end{split} \end{eqnarray*}
+
+% Hence we get, using~(\ref{eq:limitCk}), \begin{eqnarray*} \begin{split} \limsn
+% n^{\frac pd}\, \bar d_n^p(\Probb) &\leq (1-\varepsilon)^{-\frac pd}\,
+% (\Qpn)^p\,
+%\normdp{h\ind{C_k}}\\
+% & \qquad + \varepsilon^{-\frac pd}\, \Probb(C_k^c) \limsn n^{\frac pd}\, \bar
+% d_n^p\bigl(\Probb(\cdot|C_k^c) \bigr). \end{split} \end{eqnarray*}
+
+% \textcolor{red}{At this stage, the $d$-dimensional extended Pierce
+% Lemma~\ref{PdtQErrop} yields \[ \limsn \Probb(C_k^c)\, n^{\frac pd}\, \bar
+% d_{n,p}^p\bigl(\Probb(\cdot|C_k^c) \bigr) \leq C_{d,p, \delta} \int_{C_k^c}
+% \norm{\xi}^{p+\delta} \, d\Probb(\xi). %+ c_2 \Probb(C_k^c), \] Letting  $k$
+% go to infinity and   $\varepsilon$ go  to $0$ successively, we arrive at \[
+% \limsn n^{\frac 1d}\, \bar d_{n,p}(\Probb) \leq \Qpn \normdp{h}^{\frac 1p}. \]
+% }
+
+\noindent  {\sc Step 2} ({\em Upper bound}, ${\rm supp}(\Probb)= \R^d$). Let
+$\rho\!\in(0,1)$. Set $K=C_{k+\rho}$ and $K_{\rho}= C_k$. Let
+$\Gamma_{k,\alpha,\rho}$ be the lattice grid associated to $K\setminus K_{\rho}$
+with edge $\alpha>0$ as defined  in the proof of Proposition~\ref{prop:rateCubewise}.
+%remark that follows the ``firewall" Lemma~\ref{lem:firewall}. 
+%\textcolor{red}{This remark seems to be missing now\ldots}
+It is straightforward that there exists a real constant $C>0$ such that
+\[
+\forall\, k\in\N, \forall\, \rho\in(0,1), \forall\,\alpha\in(0,\rho):\quad
+|\Gamma_{\alpha,\rho}|\le C d\rho k^{d-1}\alpha^{-d}  .
+\] 
+% $$ |\Gamma_{\alpha,\rho}|\le C d\rho
+% k^{d-1}\alpha^{-d}\quad \mbox{ as } \quad \alpha\to 0. $$
+Let $\varepsilon\!\in (0,1)$. For every $n\ge 1$, set $\alpha_n = \tilde
+\alpha_0 n^{-\frac 1d}$ where $\tilde \alpha_0\in(0,1)$ is a real constant and
+\[ 
+n_0= |\Gamma_{k,\alpha_n,\rho}|,\quad n_1=\lfloor
+(1-\varepsilon)(n-n_0)\rfloor,\quad n_2= \lfloor \varepsilon (n-n_0)\rfloor, 
+\]
+so that $\alpha_n\in(0.\rho)$, $n_0+n_1+n_2\le n$ and $n_i\ge1$ for large enough
+$n$. 
+
+\smallskip For every $\xi\!\in K_{\rho}=C_k$, for every grid $\Gamma\subset
+\R^d$ containing $K_{\rho}$, we know by the ``firewall" 
+Lemma~\ref{lem:firewall} that
+\[ 
+F^p(\xi;(\Gamma\cap
+\mathring{K})\cup\Gamma_{\alpha,\rho})\le (1+\eta)^p F^p(\xi;\Gamma)
++(1+\eta)^p(1+1/\eta)^pC_{\norm{.}}\alpha^p. 
+\]
+
+Let $\Gammaone=\Gammaone(n_1,k)$ be an $n_1$ quantizer such that
+$d^p_{n_1}(\Probb(.|C_k); \Gammaone) \leq (1+\eta) d^p_{n_1}(\Probb(.|C_k))$.
+%Let $\Gammaone=\Gammaone(n_1)$ be an optimal dual quantizer for the error
+%modulus $d_{n_1,p}$ and the distribution $\Probb(.|C_k)$ at level $n_1$. 
+Set $\Gammaone'=((\Gammaone\cap \mathring C_{k+\rho})\cup
+\Gamma_{k,\alpha_n,\rho})$. One has $\Gammaone'\subset C_{k+2\rho}$ for large
+enough $n$ (so that $\alpha_n<\rho$).
+
+Let moreover $\Gammatwo=\Gammatwo(n_2,k)$ be an $n_2$ quantizer such that
+$\bar d^p_{n_2}(\Probb(.|C_k^c); \Gammatwo) \leq (1+\eta)
+\bar d^p_{n_2}(\Probb(.|C_k^c))$. 
+%$\Gammatwo=\Gammatwo(n_2)$ be  an optimal
+%dual quantizer for $\bar d_{n_2,p}$ at level $n_2$ for $P(.|C_k^c)$.   
+For $n\ge n_{\rho}$, we may assume that
+$C_{k+2\rho}\subset \conv{\Gammatwo}$ owing to Lemma~\ref{lem:radius} since
+$C_{k+2\rho} =\conv(C_{k+2\rho}\setminus C_{k+\frac 32\rho})$ and
+$C_{k+2\rho}\setminus C_{k+\frac 32\rho}\subset \mathring{\overbrace{{\rm supp}
+\Probb(.|C_k^c)}}$.
+As a consequence $\Gammaone'\subset \conv(\Gammatwo)$ so that
+$\conv(\Gammaone')\subset \conv (\Gammatwo)=\conv(\Gamma)$ where
+$\Gamma=\Gammaone'\cup \Gammatwo$and \[ C_{k+\rho}\subset
+\conv(\Gamma)=\conv(\Gammatwo). 
+\] 
+Now
+\begin{eqnarray*}
+\bar d_{n}^p(\Probb) & \le & \int_{C_k}\Big(F^p(\xi;\Gamma)\mbox{\bf
+1}_{\{\xi \in \conv (\Gammatwo)\}}+ \underbrace{ d(\xi,\Gamma)^p\mbox{\bf
+1}_{\{\xi \notin \conv (\Gammatwo)\}} }_{=0}\Big) d\Probb(\xi)\\ &&+
+\int_{C^c_k}\left(F^p(\xi;\Gamma)\mbox{\bf 1}_{\{\xi \in \conv (\Gammatwo)\}}+
+d(\xi,\Gamma)^p \mbox{\bf 1}_{\{\xi \notin \conv
+(\Gammatwo)\}}\right)d\Probb(\xi).
+\end{eqnarray*}
+%
+Using that, for every $\xi\!\in C_k$, 
+\begin{eqnarray*}
+F^p(\xi;\Gamma) &\le& F^p(\xi;\Gammaone')\\
+&\le& (1+\eta)^p\Big(F^p(\xi;\Gammaone)+
+(1+1/\eta)^p\,C_{\norm{.}}\,\alpha_n^p\Big)
+\end{eqnarray*}
+implies
+\begin{eqnarray*}
+\bar d_{n}^p(\Probb) & \le & \Probb(C_k) (1+\eta)^p\Big(
+(1+\eta)\,d^p_{n_1}(\Probb(.|C_k)) + (1+1/\eta)^p\,C_{\norm{.}}\,\tilde
+\alpha_0 \,n^{-\frac 1d} \Big)\\
+ && + \Probb(C^c_k)\,(1+\eta)\, \bar d^p_{n_2}(\Probb(.|C^c_k)).
+ \end{eqnarray*}
+ %
+ Consequently
+ %
+ \begin{eqnarray*}
+n^{\frac pd} \bar d_{n}^p(\Probb) & \le & \Probb(C_k)
+(1+\eta)^p\Big[(1+\eta)\, \Big(\frac{n}{n_1}\Big)^{\frac pd}\,n_1^{\frac
+pd}\,d^p_{n_1}(\Probb(.|C_k)) 
++ (1+1/\eta)^pC_{\norm{.}}\tilde \alpha_0 \Big]\\ 
+ && + (1+\eta)\,
+\Big(\frac{n}{n_2}\Big)^{\frac pd}\Probb(C^c_k)\, n_2^{\frac pd}\,\bar
+d_{n_2}^p(\Probb(.|C^c_k))
+ \end{eqnarray*}
+ which in turn implies, using Proposition~\ref{prop:rateCompact} for the modulus $d_{n,p}$ and the $d$-dimensional version of the extended Pierce
+ Lemma (Proposition~\ref{PdtQErrop}) for $\bar d_{n,p}$,
+ \begin{eqnarray*}
+ \limsup_nn^{\frac pd} \bar d_{n}^p(\Probb)  &\le&  \Probb(C_k)
+ (1+\eta)^p\left(\left(\frac{(1+\eta)^{-p/d}}{(1-\varepsilon)(1-Cd\rho
+ k^{d-1}\tilde \alpha^{-d}_0)}\right)^{\frac pd}Q^{dq}_{\norm{.}}\norm{h\mbox{\bf 1}_{C_k}}_{L^{\frac{d}{d+p}}}\right.\\ &&\left. 
+ +  (1+1/\eta)^pC_{\norm{.}}\tilde \alpha_0 \right)\\ 
+ &&+ \Probb(C^c_k) \,(1+\eta)\,\,C_{p,d}\,\norm{X \mbox{\bf 1}_{\{X\in C^c_k\}}
+ }^p_{L^{p+\delta}} \left(\frac{1}{\varepsilon(1-Cd\rho k^{d-1}\tilde \alpha^{-d}_0)}\right)^{\frac pd}.
+ \end{eqnarray*}
+ %
+ One concludes by letting successively $\rho$, $\tilde \alpha_0$, $\eta$ go
+ to $0$,   $k \to \infty$ and finally $\varepsilon$ to  $0$.
+ 
+ 
+\medskip
+\noindent {\sc Step 3.} (Upper bound: general case). Let $\rho\!\in (0,1)$. Set
+$\Probb_{\rho}= \rho \Probb+(1-\rho)\Probb_0$ where $\Probb_0= {\cal N}(0;I_d)$
+($d$-dimensional normal distribution). It is clear from the very definition of
+$\bar d_{n,p}$ that $\bar d_{n,p}(\Probb)\le \frac{1}{\rho} \bar
+d_{n,p}(\Probb_{\rho})$ since $\Probb\le \frac{1}{\rho} \Probb_{\rho}$. The
+distribution $\Probb_{\rho}$ has $h_{\rho}= \rho h+(1-\rho)h_0$ as a density (with obvious
+notations) and one concludes by noting that 
+\[ 
+\lim_{\rho\to
+0}\|h_{\rho}\|_{d/(d+p)}= \|h\|_{d/(d+p)} 
+\] 
+owing to the Lebesgue dominated convergence Theorem.
+\end{proof}
+
+{\em Proof of Proposition~\ref{prop:asymptQ}:}
+%\begin{proof}
+Using H\"older's inequality one easily checks that for $0\leq r\leq p$ and
+$x\in\R^d$ it holds
+\[
+	\abs{x}_{\ell^r} \leq d^{\frac{1}{r} - \frac{1}{p}}\, \abs{x}_{\ell^p}.
+\]
+ 
+Moreover, for $m\in\N$ set $n = m^d$ and let $\Gamma'$ be an optimal quantizer
+for $d_{m,p}(\Unif)$ (or at least $(1+\varepsilon)$-optimal for $\varepsilon > 0$).
+Denoting $\Gamma = \prod_{i=1}^d \Gamma'$, it then follows from Proposition~\ref{prop:rappels}$(b)$ that
+\[
+n^\frac{p}{d}\, d^p_n\big(\Unifd\big) \leq n^\frac{p}{d}\, d^p\big(\Unifd;\Gamma\big) = m^p
+	\sum_{i=1}^d d^p\big(\Unif; \Gamma'\big)  = d\, m^p \,d^p_m\big(\Unif\big).
+\]
+
+Combining both results and reminding that $\Qpn$ holds as an infimum, we obtain
+for $r\!\in [0,p]$,  
+\[
+\bigl(Q^{\text{dq}}_{\abs{\cdot}_{\ell^r}, p, d}\bigr)^p \leq d^{\frac{p}{r}-1}
+\, n^{\frac{p}{d}}\, d^p_{n, \abs{\cdot}_{\ell^p}}(\Unifd) \leq d^{\frac{p}{r}}
+\, m^p \,d^p_m\big(\Unif\big),
+\]
+which finally proves the assertion by sending $m\to+\infty$.$\qquad \Box$
+%\end{proof}

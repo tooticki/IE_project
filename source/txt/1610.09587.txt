@@ -1,0 +1,2968 @@
+arXiv:1610.09587v1 [math.CO] 30 Oct 2016
+
+A Counting Lemma for Binary Matroids and
+Applications to Extremal Problems
+Sammy Luo
+September 23, 2018
+Abstract
+In graph theory, the Szemerédi regularity lemma gives a decomposition
+of the indicator function for any graph G into a structured component, a
+uniform part, and a small error. This result, in conjunction with a counting lemma that guarantees many copies of a subgraph H provided a copy
+of H appears in the structured component, is used in many applications
+to extremal problems. An analogous decomposition theorem exists for
+functions over Fn
+p . Specializing to p = 2, we obtain a statement about the
+indicator functions of simple binary matroids. In this paper we extend
+previous results to prove a corresponding counting lemma for binary matroids. We then apply this counting lemma to give simple proofs of some
+known extremal results, analogous to the proofs of their graph-theoretic
+counterparts, and discuss how to use similar methods to attack a problem
+concerning the critical numbers of dense binary matroids avoiding a fixed
+submatroid.
+
+1
+
+Introduction
+
+In this paper, the term matroid refers to a simple binary matroid. A simple
+binary matroid M is, for our purposes, a full-rank subset of Fr2 \ {0} for some
+positive integer r = r(M ) called the rank of M . The critical number χ(M ),
+another important quantity, is the smallest c such that there is a copy of Fr−c
+2
+in Fr2 \ M , or equivalently such that M is contained in a union A1 ∪ · · · ∪ Ac
+where each Ai is a hyperplane Fr2 \ Fr−1
+.
+2
+Basic examples of matroids include the following.
+• The projective geometry of rank r, P G(r − 1, 2) := Fr2 \ {0}, which has
+rank r and critical number r.
+• The affine geometry of rank r, AG(r − 1, 2) := Fr2 \ Fr−1
+, which has rank
+2
+r and critical number 1.
+• The Bose-Burton geometry, BB(r, c) = Fr2 \ Fr−c
+2 , a generalization of both
+examples above, which has rank r and critical number c.
+1
+
+There is a direct connection between graphs and matroids: For any graph
+G we can deﬁne its cycle matroid M (G), whose elements correspond to edges
+of G, where a set of elements of M is linearly independent if and only if the
+corresponding edges of G contain no cycle. A matroid is called graphic if it is
+the cycle matroid of some graph. It is easy to see that χ(M (G)) = ⌊log2 (χ(G))⌋,
+where χ(G) is the chromatic number of G.
+The critical number of a matroid is analogous to the chromatic number of
+a graph. Just as the chromatic number plays a large role in many extremal
+problems in graph theory, the critical number plays a large role in extremal
+problems on matroids, which are often motivated by analogous problems for
+graphs. As there is a notion of a graph G containing a copy of a subgraph H,
+there is a corresponding notion for matroids: a matroid M contains a copy of a
+r(N )
+r(M)
+matroid N if there is a linear injection ι : F2
+→ F2
+such that ι(N ) ⊆ M .
+We often simply write this as N ⊆ M . Many extremal problems pose questions
+about criteria for the containment or avoidance of a ﬁxed matroid N in a matroid
+M.
+One example of such an extremal problem is to determine the critical threshold of a matroid, another concept inspired by a graph-theoretical analogue.
+Definition 1.1. Given a matroid N , the critical threshold θ(N ) is the inﬁmum
+of all α > 0 for which there exists c < ∞ such that |M | ≥ α2r(M) implies either
+N ⊆ M or χ(M ) ≤ c.
+The conjecture below is the extremal problem that motivates our work in
+this paper.
+Conjecture 1.2 (Geelen, Nelson, [7, Conj 1.7]). If χ(N ) = c, then θ(N ) =
+1 − i2−c , where i ∈ {2, 3, 4}.
+A more precise and technical version of this conjecture is stated as Conjecture 2.13. The technical details, and previous work towards solving the conjecture, are discussed in Section 2.
+The graph-theoretic analog of Conjecture 1.2 is Theorem 2.7, which was
+proven in [2]. The proof there makes use of the Szemerédi regularity lemma and
+a corresponding counting lemma. Roughly speaking, the regularity lemma states
+that, for any desired degree of uniformity ε, the vertices of a suﬃciently large
+graph G can be partitioned into a bounded number of parts of approximately
+the same size such that most (all but ε-fraction) pairs of parts (X, Y ) are εuniform, meaning that the edge density d(X ′ , Y ′ ) between large enough subsets
+X ′ , Y ′ of X, Y does not diﬀer too much from the edge density d(X, Y ) between
+X and Y . Given such a partition Π of G, we can construct a “reduced graph”
+R = Rε,δ (Π) whose vertices are the parts in Π, with an edge between a pair
+(X, Y ) if and only if (X, Y ) is ε-uniform and d(X, Y ) ≥ δ. The counting lemma
+states that for any graph H contained as a subgraph in R, many copies of it are
+contained in G.
+It is natural to consider approaching the critical threshold problem using
+analogous methods. Various regularity results analogous to the Szemerédi regularity lemma have been shown in the matroid setting, usually framed in terms
+2
+
+of the indicator function for a matroid M decomposing into several parts. The
+main such result we use, Theorem 3.11, is stated in Section 3.1. The statement of
+this theorem involves some technical terminology relating to nonclassical polynomial factors and Gowers norms, for which a brief introduction is given in
+Section 3.1.
+In this paper, we build on work in [3] and [10] to develop a corresponding counting lemma for matroids, Theorem 3.13. Again, stating this Counting
+Lemma in a precise form requires building up technical deﬁnitions for concepts
+like the reduced matroid, based on the results of applying Theorem 3.11. The
+Counting Lemma and its proof can be found in Section 3.2.
+In Section 4 we demonstrate a few simple applications of this counting
+lemma, giving short new proofs for the matroid analogues of the Removal
+Lemma and the Erdős-Stone Theorem in graph theory. Finally, we discuss
+an approach to applying our counting lemma and related techniques to Conjecture 1.2 in Section 5, giving a conditional result on a special case as a demonstration. Along the way, we prove the following technical result, a generalization
+of the Bose-Burton theorem stated in Section 2 which may be useful in other
+settings as well.
+Proposition 1.3. LetLn, c be positive integers, let k1 , . . . , kn be nonnegative
+integers, and let G = ni=1 2ki1+1 Z/Z. Let H be a subgroup of G. Let M1 , . . . ,
+M2c −1 be subsets of G. Then there exist H1 , . . . , Hc ∈ G/H, cosets of H, such
+that for 1 ≤ i ≤ c,
+
+
+
+i
+
+2X
+−1
+i−1
+X 
+X
+
+1
+|Mj |
+
+M i−1 Pi−1 j−1 ∩ Hi +
+
+≥
+.
+(∗)
+x
+H
+j
+j
+2
++ j=1 xj 2
+
+
+|H|
+ j=2i−1 |G|
+j=1
+x∈[0,1]i−1 
+
+2
+
+Extremal Problems on Graphs and Matroids
+
+We start by looking at a basic extremal problem on graphs, that of avoiding a
+ﬁxed subgraph H.
+Definition 2.1. The extremal number for a graph H and integer n is deﬁned
+by
+ex(H, n) = max{|E(G)| | |G| = n, H 6⊆ G}.
+The following theorem is a classical result.
+Theorem 2.2 (Erdős-Stone).
+ex(H; n)
+1
+=1−
+.
+n→∞
+|Kn |
+χ(H) − 1
+lim
+
+The special case where H = Km is a form of Turán’s theorem.
+We can analyze the situation more carefully by looking for density thresholds
+above which, though graphs G avoiding H may exist, they are constrained by
+properties like a bounded chromatic number. It turns out that for graphs, the
+3
+
+appropriate notion of density to consider here is the minimum degree δ(G) of a
+graph G.
+Definition 2.3. Given a graph H, the chromatic threshold θ(H) is the inﬁmum
+of all α > 0 for which there exists c < ∞ such that δ(G) ≥ α|G| implies either
+H ⊆ G or χ(G) ≤ c.
+The deﬁnition of the critical threshold of a matroid was motivated in analogy
+to Deﬁnition 2.3.
+The chromatic threshold was ﬁrst determined for complete graphs in [8],
+with an explicit sharp bound on the chromatic number involved.
+Theorem 2.4 (Goddard, Lyle, [8, Thm 11]). If δ(G) > (2r − 5)n/(2r − 3) and
+Kr 6⊆ G, then χ(G) ≤ r + 1. In particular, θ(G) ≤ 2r−5
+2r−3 .
+The chromatic threshold of a general graph H was determined in the general
+case by Allen et al. in [2]. To state the result, we ﬁrst need to make the following
+deﬁnitions.
+Definition 2.5. The decomposition family M(H) of an r-partite graph H is
+the set of bipartite graphs obtained by deleting all but 2 color classes in some
+r-coloring of H.
+Definition 2.6. A graph H is r-near-acyclic if χ(H) = r and deleting all but 3
+color classes in some r-coloring of H yields a graph H ′ that can be partitioned
+into a forest F and an independent set S such that every odd cycle in H ′ meets
+S in at least 2 vertices.
+Now we can state the main result of [2].
+Theorem 2.7 (Allen, et al., [2, Thm 2]). If χ(H) = r, then θ(H) = 1 −
+
+1
+r− 2i
+
+,
+
+where i = 2 if and only if M(H) contains no forest, and i = 4 if and only if H
+is r-near-acyclic.
+We can ask the same extremal questions for matroids.
+Definition 2.8. The extremal number for a matroid N and integer n is deﬁned
+by
+ex(N, n) = max{|M | | r(M ) = n, N 6⊆ M }.
+Note that if χ(N ) = c, then N is contained in BB(n, c) for some n. Geelen
+and Nelson prove the following analogue of the Erdős-Stone theorem in [4].
+Theorem 2.9 (Geometric Erdős-Stone, [4, Thm 1.3]).
+lim
+
+n→∞
+
+ex(N, n)
+= 1 − 21−χ(N ) .
+2n − 1
+
+The χ(N ) = 1 case is known as the Binary Density Hales-Jewett theorem.
+In this case, Geelen and Nelson in fact show that ex(AG(k, 2), n) < 2αk n+1 ,
+where αk = 1 − 2−(k−1) [5].
+The special case where N = P G(c − 1, 2) is a form of the Bose-Burton
+theorem, which has a more precise statement as follows.
+4
+
+Theorem 2.10. If M does not contain a copy of P G(c − 1, 2), then |M | ≤
+2r(M) − 2r(M)−c+1 .
+r(M)
+
+Note that taking G = F2 , H the trivial subgroup, and M1 = · · · =
+M2c −1 = M in Proposition 1.3 immediately yields Theorem 2.10.
+In [15], Tidor proved a result on the chromatic thresholds of projective geometries, analogous to Goddard and Lyle’s result for complete graphs.
+Theorem 2.11 (Tidor, [15, Thm 1.4]). If |M | > (1 − 3 · 2−t )2r(M) and P G(t −
+1, 2) 6⊆ M , then χ(M ) ∈ {t − 1, t}. In particular, θ(M ) ≤ 1 − 3 · 2−t .
+To formulate the precise version of Conjecture 1.2, we make the following
+deﬁnition.
+Definition 2.12. A matroid M is c-near-independent if χ(M ) = c and for some
+(c − 2)-codimensional subspace H with χ(M ∩ H) = 2, H has a 1-codimensional
+subspace S such that M ∩ S is linearly independent, and every odd circuit in
+M ∩ H contains at least four elements of H \ S.
+Now we state the precise form of the conjecture.
+Conjecture 2.13 (Geelen, Nelson, [7, Conj 5.2]). If χ(N ) = c, then θ(N ) =
+1 − i2−c , where i = 2 if and only if no (c − 1)-codimensional subspace S exists
+such that S ∩ N is a set of linearly independent vectors, i = 4 if and only if N
+is c-near-independent, and i = 3 otherwise.
+In [7], Geelen and Nelson show that the conjectured expression is a valid
+lower bound.
+Theorem 2.14 (Geelen, Nelson, [7, Thm 5.4]). If χ(N ) = c, then θ(N ) ≥
+1 − i2−c , where i = 2 if and only if no (c − 1)-codimensional subspace S exists
+such that S ∩ N is a set of linearly independent vectors, and i = 4 if and only
+if N is c-near-independent, and i = 3 otherwise.
+Combined with the trivial upper bound of θ(N ) ≤ 1 − 21−c that follows
+immediately from Theorem 2.9, it remains to show that θ(N ) ≤ 1 − 3 · 2−c when
+N has a (c−1)-codimensional ﬂat that is independent, and that θ(N ) ≤ 1−4·2−c
+when N is c-near-independent.
+For ℓ ≥ c+k−1, c > 1, deﬁne Nℓ,c,k to be the rank ℓ matroid consisting of the
+union of BB(ℓ, c − 1) with k linearly independent vectors contained inside the
+complement of BB(ℓ, c − 1) in Fℓ2 . This represents the most general maximal
+case of matroids of critical number c for which i is conjectured to be 3. In
+Section 5, we verify Conjecture 2.13 for Nℓ,2,1 and discuss, using a conditional
+result as a demonstration, how the tools in this paper could be applied to the
+general Nℓ,c,1 case.
+
+3
+
+Regularity and Counting
+
+A regularity or decomposition result, in general, splits a generic object (e.g.
+a graph, a subset of an abelian group, or a function) into a structured part,
+5
+
+a uniform part, and possibly a small error. A corresponding counting lemma
+then guarantees that the number of copies of a suitable subobject contained
+in this object can be well-approximated by the number of copies contained in
+the structured part. The most well-known example of such a pair of results
+is the Szemerédi regularity lemma and the corresponding counting lemma for
+subgraphs contained in the reduced graph. As mentioned in the introduction,
+the use of this pair of lemmas is key to the argument used in [2] to prove
+Theorem 2.7.
+A simple example of an analogous regularity result for matroids is Green’s
+regularity lemma (specialized to Fn2 ). To state it, we make a few preliminary
+deﬁnitions.
+Definition 3.1. Let V = Fn2 . A set X ⊂ V is linearly ε-uniform in V if
+|1c
+X (ξ)| ≤ ε for all nonzero ξ ∈ V̂ = V , or equivalently if for each hyperplane
+H ≤V,
+||X ∩ H| − |X \ H|| ≤ ε|V |.
+Definition 3.2. Let X ⊆ V = Fn2 . A subspace W ≤ V is linearly ε-regular
+with respect to X if for all but ε|V | values of v ∈ V , X − v ∩ W is linearly
+ε-uniform in W .
+Green’s regularity result is the following.
+Theorem 3.3 (Geometric Regularity Lemma, [9, Thm 2.1]). For any ε ∈ (0, 12 )
+there is a T > 0 such that for any V = Fn2 and any subset X ⊂ V there is a
+subspace W ⊆ V of codimension at most T that is linearly ε-regular with respect
+to X.
+This notion of regularity readily yields a counting lemma for triangles (and
+indeed, all odd circuits) in matroids, which Geelen and Nelson use in their
+proofs that θ(P G(1, 2)) ≤ 14 [7] and that odd circuits have critical threshold 0
+[6]. In Section 5.1, we use a method along the same lines as their proof to verify
+Conjecture 2.13 for Nℓ,2,1 .
+Unfortunately, the linear Fourier-analytic notion of regularity provided by
+Theorem 3.3 is not strong enough for a counting lemma to hold for general
+submatroids N . In attempting to translate the ideas of [2] into tools for the
+matroid threshold problem, we therefore need a stronger regularity statement,
+one that admits a corresponding, more general counting lemma.
+
+3.1
+
+Regularity on Matroids
+
+After the inverse conjecture for the Gowers norm over ﬁnite ﬁelds of low characteristic was established [14], stronger regularity results, using regularity with
+respect to the Gowers norms, came within reach. The primary regularity result that we will use is stated in [3] as a decomposition theorem for bounded
+functions on Fn . To work with this result, we will ﬁrst need to introduce a few
+technical concepts from higher-order Fourier analysis.
+6
+
+We will only be concerned with the ﬁeld F = F2 , though most of the concepts
+below also extend to prime-ordered ﬁelds Fp in general. Given a function f :
+Fn → {0, 1}, in our case usually the indicator function of some matroid M ⊆
+Fn \ {0}, the decomposition theorem will split it into a sum of three parts: a
+structured part, a uniform part, and a small error. Here we will address the
+technical issues that arise in working with the ﬁrst two parts. In the sections
+below, we largely quote the terminology and notation used in [3] and [10].
+3.1.1
+
+The Gowers norm and nonclassical polynomials
+
+Definition 3.4. Given a function f : Fn → C and an integer d ≥ 1, the Gowers
+norm of order d for f is
+
+kf kU d
+
+
+1/2d
+
+
+
+
+d
+X
+Y
+
+
+i1 +···+id 
+
+
+
+
+,
+i
+h
+C
+f
+x
++
+= 
+E
+j
+j
+
+
+h1 ,...,hd ,x∈Fn i1 ,...,id ∈{0,1}
+j=1
+
+where C denotes the conjugation operator.
+
+It is easy to see that kf kU d is increasing in d and is indeed a norm for d ≥ 2,
+and that kf kU 1 = | E[f ]| and kf kU 2 = kfˆkl4 . So, the Gowers norm of order
+2 is related to the Fourier bias used in Green’s regularity lemma, a measure
+of correlation with exponentials of linear polynomials: kf kU 2 is large if and
+only if supξ6=0 |fˆ(ξ)| is large, i.e. if and only if f is strongly correlated with the
+exponential of some linear polynomial. It is natural to expect the Gowers norm
+of order d + 1 to be similarly related to polynomials of degree d; conjectures
+that a large Gowers-(d + 1) norm implies correlation with the exponential of a
+degree d polynomial, in various settings, were known as inverse conjectures for
+the Gowers norms.
+For large d over ﬁelds of small characteristic, it turns out that the inverse
+conjectures are not true as stated; the right notion to consider, over which an
+inverse theorem for the Gowers norms actually holds, is that of a nonclassical
+polynomial.
+Definition 3.5. Let T = R/Z. Given an integer d ≥ 0, a function P : Fn → T
+is called a (non-classical) polynomial of degree at most d if for all h1 , . . . , hd , x ∈
+Fn ,
+
+
+d
+X
+X
+ij hj  = 0.
+(−1)i1 +···+id P x +
+j=1
+
+i1 ,...,id ∈{0,1}
+
+Since we will be working mostly with non-classical polynomials, it should be
+assumed that any use of the word “polynomial” refers to a possibly non-classical
+polynomial unless otherwise speciﬁed.
+Let e (x) = e2πix . It follows from deﬁnition that kf kU d+1 = 1 if and only
+if f = e (P ) for some non-classical polynomial P of degree at most d, and
+kf · e (P )kU d+1 = kf kU d+1 for any function f and non-classical polynomial P of
+7
+
+degree at most d. Non-classical polynomials can be characterized in terms of
+classical ones by the following lemma of Tao and Ziegler [14].
+Lemma 3.6 ([14, Lemma 1.7]). Let | · | denote the standard map from Fp to
+{0, 1, . . . , p − 1}. A function P : Fnp → T is a polynomial of degree at most d if
+and only if P can be represented as
+X
+cd1 ,...,dn ,k |x1 |d1 · · · |xn |dn
+P (x1 , . . . , xn ) = α +
+mod 1,
+pk+1
+0≤d
+P1 ,...,dn <p;k≥0:
+0< i di ≤d−k(p−1)
+
+for a unique choice of cd1 ,...,dn,k ∈ {0, 1, . . . , p − 1} and α ∈ T. The element α
+is called the shift of P , and the largest integer k such that there exist d1 , . . . , dn
+for which cd1 ,...,dn ,k 6= 0 is called the depth of P . A depth-k polynomial P
+1
+takes values in a coset of the subgroup Uk+1 := pk+1
+Z/Z. Classical polynomials
+correspond to polynomials with 0 shift and 0 depth.
+For convenience we will assume henceforth that all polynomials have shift 0,
+so that all polynomials of depth k take values in Uk+1 ; this will not aﬀect our
+arguments.
+3.1.2
+
+Polynomial factors and rank
+
+Definition 3.7. A polynomial factor B of Fn is a partition of Fn into ﬁnitely
+many pieces, called atoms, such that for some polynomials P1 , . . . , PC , each
+atom is deﬁned as the solution set {x|∀i ∈ {1, . . . , C}Pi (x) = bi } for some
+(b1 , . . . , bC ) ∈ TC . The complexity of B is the number of deﬁning polynomials
+|B| = C, and the degree is the highest degree among P1 , . . . , PC . If Pi has depth
+QC
+ki , the order of B is kBk = i=1 pki +1 , an upper bound on the number of atoms
+in B.
+
+Definition 3.8. The d-rank rankd (P ) of a polynomial P is the smallest integer
+r such that P can be expressed as a function of r polynomials of degree at most
+d − 1. The rank of a polynomial factor deﬁned by P1 , . . . , PC is the least integer
+r for which there is a tuple (λ1 , . . . , λC ) ∈ ZC , with (λ1 mod pk1 +1 , . . . , λC
+P
+mod pkC +1 ) 6= 0C , such that rankd ( C
+i=1 λi Pi ) ≤ r, where d = maxi deg(λi Pi ).
+Given a polynomial factor B and a function r : Z>0 → Z>0 , we say that B
+is r-regular if B is of rank larger than r(|B|).
+We can also deﬁne an analytic notion of uniformity for polynomial factors.
+Definition 3.9. For ε > 0, we say that B is ε-uniform if for all (λ1 , . . . , λC ) ∈
+ZC with (λ1 mod pk1 +1 , . . . , λC mod pkC +1 ) 6= 0C ,
+
+!
+
+ X
+
+
+λi Pi  < ε.
+e
+ d
+
+i
+
+U
+
+The following fact, noted in [10], follows from Theorem 1.20 of [14].
+
+Proposition 3.10. For every ε > 0, d ∈ Z>0 there exists an integer r = r(d, ε)
+such that every r-regular degree d polynomial factor B is ε-uniform.
+8
+
+3.1.3
+
+The Strong Decomposition Theorem
+
+We can ﬁnally state the main regularity result we will use, the strong decomposition theorem of [3].
+Theorem 3.11 (Strong Decomposition Theorem, [3, Theorem 5.1]). Suppose
+δ > 0 and d ≥ 1 are integers. Let η : N → R+ be an arbitrary non-increasing
+function and r : N → N be an arbitrary non-decreasing function. Then there
+exist N = N (δ, η, r, d) and C = C(δ, η, r, d) such that the following holds.
+Given f : Fn → {0, 1} where n > N , there exist three functions f1 , f2 , f3 :
+n
+F → R and a polynomial factor B of degree at most d and complexity at most
+C such that the following conditions hold:
+(i) f = f1 + f2 + f3 .
+(ii) f1 = E[f |B], the expected value of f on an atom of B.
+(iii) kf2 kU d+1 ≤ η(|B|).
+(iv) kf3 k2 ≤ δ.
+(v) f1 and f1 + f3 have range [0, 1]; f2 and f3 have range [−1, 1].
+(vi) B is r-regular.
+In analogy with the terminology for the Szemerédi regularity lemma, we will
+call a decomposition of f = 1M with the properties given by Theorem 3.11 for
+parameters δ, η, r, d a (δ, η, r, d)-regular partition of f (or of M ), and we say
+that B is its corresponding factor. Similarly, an (η, r, d)-regular partition of f
+(or of M ) is the same thing with an unspeciﬁed value for δ.
+Theorem 3.11 is strong enough to help us prove a corresponding counting
+lemma for general binary matroids.
+
+3.2
+
+The Counting Lemma
+
+Before stating our Counting Lemma, we ﬁrst we deﬁne the notion of a reduced
+matroid, in analogy to the reduced graph used in the graph counting lemma.
+Definition 3.12 (Reduced Matroid). Given a matroid M ⊆ Fn \ {0} and an
+(η, r, d)-regular partition f1 + f2 + f3 of M with corresponding factor B, for any
+ε, ζ > 0 deﬁne the (ε, ζ)-reduced matroid R = Rε,ζ to be the subset of Fn whose
+indicator function F is constant on each atom b of B and equals 1 if and only if
+1. E[|f3 (x)|2 | x ∈ b] ≤ ε2 , and
+2. E[f (x) | x ∈ b] ≥ ζ.
+So, R gives the atoms of the decomposition in which M has high density
+and the L2 error term is small.
+As in the counting lemma for graphs, it will turn out that we do not need the
+hypothesis of having a copy of N in Rε,ζ , i.e. an injective linear map sending
+N inside Rε,ζ . Rather, we only need there to be a homomorphism from N to
+Rε,ζ , i.e. any linear map ι such that ι(N ) ⊆ Rε,ζ .
+9
+
+Theorem 3.13 (Counting Lemma). For every matroid N , positive real number
+ζ, and integer d ≥ |N | − 2, there exist positive real numbers β and ε0 , a positive
+nonincreasing function η : Z+ → R+ , and positive nondecreasing functions
+r, ν : Z+ → Z+ such that the following holds for all ε ≤ ε0 . Let M ⊆ Fn \ {0}
+be a matroid with an (η, r, d)-regular partition f1 + f2 + f3 with corrresponding
+factor B. If n ≥ ν(|B|) and there exists a homomorphism from N to the reduced
+n r(N )
+
+matroid Rε,ζ , then there exist at least β (2kBk) |N | copies of N in M .
+The case where N is an aﬃne matroid (i.e. χ(N ) = 1) is proved in [3] in
+the context of property testing; here we prove the lemma in full generality using
+a very similar argument. The basic idea is to obtain a lower bound for the
+probability that a linear map ι : Fr(N ) → Fn chosen uniformly at random sends
+N to a set contained entirely within M , by splitting f = 1M into its three parts
+and expanding out the product we get in the expectation expression. Letting
+N = {N1 , . . . , Nm } and r(N ) = ℓ we have
+
+Pr [ι(N ) ⊆ M ] = E
+
+ι:Fℓ →Fn
+
+ι
+
+"m
+Y
+
+i=1
+
+#
+
+
+
+f (ι(Ni ) = E 
+ι
+
+m
+Y
+
+X
+
+(j1 ,...,jm )∈[1,3]m i=1
+
+
+
+fji (ι(Ni )) .
+
+For ease of notation in the proof that follows, we will introduce the concept
+of a linear form, as used in [3] and [10].
+Definition 3.14. A linear form on k variables is a linear map L : (Fn )k → Fn .
+Pk
+If it is given by L(x1 , . . . , xk ) =
+i=1 ℓi xi , where ℓi ∈ F ∀i, we write L =
+(ℓ1 , . . . , ℓk ).
+Note that a linear form on k variables can be thought of as a vector in Fk .
+Conversely, we can think of each element Nj of N as a linear form Lj on ℓ variables. Each linear map ι : Fℓ → Fn corresponds to a point X = (x1 , . . . , xℓ ) ∈
+(Fn )ℓ such that ι(Nj ) = Lj (X). So, instead of taking an expectation over linear
+maps, we can take the more intuitive approach of taking an expectation over
+tuples of points. The expression from before is the same as
+
+Pr
+
+X∈(Fn )ℓ
+
+[Lj (X) ∈ M ∀j ∈ [1, m]] = E
+X
+
+"m
+Y
+
+f (Lj (X))
+
+i=1
+
+
+
+= E
+X
+
+#
+
+X
+
+m
+Y
+
+(i1 ,...,im )∈[1,3]m i=1
+
+
+
+fij (Lj (X)) .
+
+The terms involving the Gowers uniform part f2 are the easiest to deal with;
+we will simply invoke the following result.
+
+10
+
+Lemma 3.15 ([10, Lemma 3.12]). Let f1 , . . . , fm : Fn → D. Let N = {L1 , . . . , Lm }
+be a system of linear forms in ℓ variables. Then for s ≥ m − 2,
+
+
+
+
+
+m
+Y
+
+
+ ≤ min kfj kU s+1 .
+ E 
+
+f
+(L
+(X))
+j
+j
+ 1≤j≤m
+X∈(Fn )ℓ
+
+
+j=1
+
+To deal with the remaining terms, we will use a near-orthogonality theorem
+from [10]. To state this near-orthogonality theorem, we ﬁrst need to introduce
+the notion of consistency as deﬁned in [10]. By a homogeneous polynomial over
+Fp we mean a polynomial P such that for all c ∈ Fp there exists a c′ ∈ Fp such
+that P (cx) ≡ c′ P (x). In the case of F = F2 , this restriction is equivalent to
+simply requiring P (0) = 0.
+Definition 3.16 (Consistency). Let N = {L1 , . . . , Lm } be a system of linear
+forms in ℓ variables. A vector (β1 , . . . , βm ) ∈ Tm is said to be (d, k)-consistent
+with N if there exists a homogeneous polynomial P of degree d and depth k and
+a point X ∈ (Fn )ℓ such that P (X(Lj )) = βj for every j ∈ [m]. Let Φd,k (N )
+denote the set of all such vectors. This is a subgroup of Um
+k+1 ; we deﬁne
+Φd,k (N )⊥
+n
+o
+X
+λj βj = 0 ,
+:= (λ1 , . . . , λm ) ∈ [0, 2k+1 − 1]m : ∀(β1 , . . . , βm ) ∈ Φd,k (N ),
+
+Pm
+the set of all (λ1 , . . . , λm ) ∈ [0, 2k+1 − 1]m such that k=1 λj P (Lj (X)) ≡ 0 for
+every homogeneous polynomial P of degree d and depth k and every point X.
+Call Φd,k (N )⊥ the (d, k)-dependency set of N .
+Theorem 3.17 (Near Orthogonality, [10, Theorem 3.7]). Let N = {L1 , . . . , Lm }
+be a system of linear forms in ℓ variables, and let B = (P1 , . . . , PC ) be an
+ε-uniform polynomial factor for some ε ∈ (0, 1] defined only by homogeneous
+polynomials. For every tuple Λ of integers (λi,j )i∈[C],j∈[m] , define
+PΛ (X) =
+
+X
+
+λi,j Pi (Lj (X)).
+
+i∈[C],j∈[m]
+
+Then one of the following two statements holds:
+• PΛ ≡ 0, and furthermore for every i ∈ [C], we have (λi,j )j∈[m] ∈ Φdi ,ki (N )⊥ ,
+where di , ki are the degree and depth of Pi , respectively.
+
+
+• PΛ is non-constant and EX∈(Fn )ℓ [e (PΛ )] < ε.
+
+Remark. Over a general prime-ordered ﬁeld Fp , the restriction of homogeneity
+is dealt with by modifying the decomposition theorem to only use homogeneous
+polynomials in the factor B. The situation is even simpler over F = F2 , where
+any polynomial factor can be rewritten in terms of homogeneous polynomials
+simply by shifting each polynomial by a constant.
+
+11
+
+Directly applying Theorem 3.17 yields the following result, which estimates
+the number of copies of N with each element in a speciﬁed atom of B.
+Theorem 3.18 (Near-equidistribution, [10, Theorem 3.10]). Given ε > 0, let
+B be an ε-uniform polynomial factor of degree d > 0 and complexity C that
+is defined by a tuple of homogeneous polynomials P1 , . . . , PC : Fn → T having
+respective degrees d1 , . . . , dC and depths k1 , . . . , kC . Let N = {L1 , . . . , Lm } be a
+system of linear forms on ℓ variables.
+Suppose (βi,j )i∈[C],j∈[m] ∈ TC×m is such that (βi,1 , . . . , βi,m ) ∈ Φdi ,ki (N ) for
+every i ∈ [C]. Then
+
+
+
+
+ Pr [Pi (Lj (X)) = βi,j ∀i ∈ [C], j ∈ [m]] − 1  ≤ ε,
+X∈(Fn )ℓ
+K
+QC
+where K = i=1 |Φdi ,ki (N )|.
+In particular, taking N to have a single element yields an estimate on the
+size of each atom.
+
+Corollary 3.19 (Size of atoms, [3, Lemma 3.2]). Given ε > 0, let B be an
+ε-uniform polynomial factor of degree d > 0 and complexity C that is defined
+by a tuple of homogeneous polynomials P1 , . . . , PC : Fn → T having respective
+depths k1 , . . . , kC .
+Suppose b = (b1 , . . . , bC ) ∈ TC is such that bi ∈ Uki +1 for every i ∈ [C].
+Then
+
+
+
+
+Pr [Pi (x) = bi ∀i ∈ [C]] − 1  ≤ ε.
+x
+kBk 
+Now we proceed with the proof of the Counting Lemma.
+
+Proof of Theorem 3.13. Let ℓ = r(N ) and α(C) = 2−2dCm . We set r(C) to
+be the integer r(d, α(C)) given by Proposition 3.10 such that every r-regular
+degree d polynomial factor is α(C)-uniform. Let B = (P1 , . . . , PC ). So, B is
+QC
+α(C)-uniform. Notice that kBk = i=1 2ki +1 ≤ 2dC .
+We want a lower bound for the probability that for a linear map ι : Fℓ →
+n
+F chosen uniformly at random, each element of N is sent inside M . Since
+degenerate maps (ones where the image of N is of lower rank than N ) are sparse,
+this will give us that a constant fraction of the copies of N in Fn (depending on
+kBk in an appropriate way) are contained in M .
+As before, we represent N as a system {L1 , . . . , Lm } of linear forms on ℓ
+variables. The probability we want to bound is then
+
+Pr
+
+X∈(Fn )ℓ
+
+=
+
+
+
+[Lj (X) ⊆ M ∀j ∈ [1, m]] = E 
+X
+
+X
+
+(i1 ,...,im
+
+)∈[1,3]m
+
+
+
+E
+X
+
+m
+Y
+
+j=1
+
+
+
+fij (Lj (X)) .
+12
+
+m
+Y
+
+j=1
+
+
+
+f (Lj (X))
+
+There are 3m terms in the sum. One of these, the one that will turn out to be
+the main term, involves only f1 . Of the rest, 2m − 1 involve f1 and f3 but not
+f2 , and the other 3m − 2m terms involve f2 .
+If one of the ij is 2, then since d ≥ m − 2, by Lemma 3.15 we have
+ 
+
+
+
+m
+Y
+
+
+E 
+
+fij (Lj (X))  ≤ min kfij kU d+1 ≤ kf2 kU d+1 ≤ η(|B|).
+X
+ 1≤j≤m
+
+j=1
+
+We can choose η later to make all of these terms suﬃciently small. Our
+probability is thus at least
+
+
+m
+X
+Y
+fij (Lj (X)) − 3m η(|B|).
+E
+X
+
+(i1 ,...,im )∈{1,3}m
+
+j=1
+
+To deal with the remaining terms, we restrict to counting within certain
+“good” atoms of the decomposition. Speciﬁcally, let Y be a point such that
+L1 (Y ), . . . , Lm (Y ) ∈ Rε,ζ , i.e. (L1 (Y ), . . . , Lm (Y )) forms a copy of the matroid
+N in Rε,ζ . Let βi,j = Pi (Lj (Y )), and let bj = (β1,j , . . . , βC,j ) be the atom of B
+that Lj (Y ) is in. We restrict to counting across tuples X such that Lj (X) ∈ bj
+for all j. Since f1 + f3 is always nonnegative,
+X
+
+(i1 ,...,im
+
+)∈{1,3}m
+
+X
+
+≥
+
+(i1 ,...,im
+
+
+
+E
+X
+
+)∈{1,3}m
+
+m
+Y
+
+j=1
+
+
+
+E
+X
+
+
+
+fij (Lj (X))
+
+m
+Y
+
+j=1
+
+
+
+fij (Lj (X))1[B(Lj (X))=bj ]  .
+
+We next deal with the main term. Since f1 ≥ 0, applying Theorem 3.18
+with ε = α(C) gives
+
+
+m
+Y
+f1 (Lj (X))1[B(Lj (X))=bj ] 
+E
+X
+
+=
+
+j=1
+
+Pr
+
+[Pi (Lj (X)) = βi,j ∀i ∈ [C], j ∈ [m]] ·
+
+
+
+
+m
+Y
+
+f1 (Lj (X))∀j ∈ [m], B(Lj (X)) = bj 
+E
+X
+
+j=1
+
+
+1
+≥
+− α(C) ζ m .
+K
+X∈(Fn )ℓ
+
+Now we deal with the terms involving f3 , following the argument used in
+the corresponding part of the proof of Theorem 5.10 in [3].
+13
+
+hQ
+i
+m
+Take such a term EX
+j=1 fij (Lj (X))1[B(Lj (X))=bj ] , and suppose ik = 3.
+Without loss of generality we can take a linear transformation of coordinates
+and assume Lk (x1 , . . . , xℓ ) = x1 . We can also assume without loss of generality
+that k = 1. Then, since |f1 |, |f3 | ≤ 1, we have
+ 
+
+
+
+
+
+m
+m
+Y
+Y
+
+
+E 
+fij (Lj (X))1[B(Lj (X))=bj ]  ≤ E |f3 (x1 )|
+1[B(Lj (X))=bj ] 
+X
+X
+
+
+j=1
+j=1
+
+
+
+m
+Y
+1[B(Lj (X))=bj ]  .
+= E |f3 (x1 )| 1[B(x1 )=b1 ] E 
+x2 ,...,xℓ
+
+x1
+
+j=1
+
+By Cauchy-Schwarz,
+ 
+
+E |f3 (x1 )|
+X
+
+m
+Y
+
+j=1
+
+2
+
+1[B(Lj (X))=bj ] 
+
+
+h
+i
+2
+≤ E |f3 (x1 )| 1[B(x1 )=b1 ] E 
+x1
+
+x1
+
+E
+
+x2 ,...,xℓ
+
+By Corollary 3.19, Prx1 [B(x1 ) = b1 ] ≤
+in the deﬁnition of the reduced matroid,
+
+1
+kBk
+
+
+
+
+m
+Y
+
+j=1
+
+2
+
+1[B(Lj (X))=bj ]  .
+
+(*)
+
++ α(C). Thus by condition (1)
+
+i
+h
+h
+i
+2
+2
+E |f3 (x1 )| 1[B(x1 )=bk ] = E |f3 (x1 )| | x1 ∈ b1 Pr[B(x1 ) = b1 ]
+x1
+x1
+x1
+
+
+2
+1
+2ε
+≤ ε2
++ α(C) ≤
+.
+kBk
+kBk
+Let Y = (y2 , . . . , yℓ ) ∈ (Fn )ℓ−1 , so that (x1 , Y ) forms another input to the
+linear forms Lj such that Lk (x1 , Y ) = Lk (X) = x1 . The second term in the
+right hand side of (*) expands as
+
+14
+
+
+
+E
+
+x1
+
+E
+
+x2 ,...,xl
+
+
+
+
+
+
+m
+Y
+
+j=1
+
+
+
+=
+
+≤
+
+
+1
+
+E
+2m
+kBk x1 
+1
+kBk2m
+
+2
+
+
+
+
+Y
+
+
+
+1[Pi (Lj (X))=βi,j ] 
+E
+1[B(Lj (X))=bj ]  = E 
+
+x1 x2 ,...,xl 
+
+ Y
+
+1
+
+E
+= E
+x1 x2 ,...,xl 
+2ki +1
+
+
+
+
+2
+
+i∈[C]
+j∈[m]
+
+Q
+
+2ki +1 −1
+
+λi,j =0
+
+X
+
+(λi,j )∈
+ki +1
+−1]
+i,j [0,2
+
+X
+
+(λ ),(τ )∈
+Q i,j k i,j
+i +1 −1]
+i,j [0,2
+
+X
+
+
+
+
+
+ E
+X,Y
+
+
+
+i∈[C]
+j∈[m]
+
+2
+
+
+
+e (λi,j (Pi (Lj (X)) − βi,j ))
+
+
+2
+
+X
+
+ X
+
+E e
+λi,j Pi (Lj (X))
+λi,j βi,j 
+e
+ x2 ,...,x
+
+
+−
+
+l
+
+
+
+
+
+
+i∈[C]
+j∈[m]
+
+i∈[C]
+j∈[m]
+
+ 
+
+
+ X
+ X
+ 
+
+
+e 
+
+
+
+λ
+P
+(L
+(X))
+e
+τ
+P
+(L
+(x
+,
+Y
+))
+i,j i
+j
+i,j i
+j 1
+ 
+ 
+  .
+
+i∈[C]
+i∈[C]
+
+j∈[m]
+j∈[m]
+ 
+
+ 
+
+To bound this expression, we will interpret it as an expectation of the form
+for which Theorem 3.17 gives upper bounds, for some system of linear forms N ′
+that we construct. Speciﬁcally, let N ′ be a system of linear forms L̃1 , . . . , L̃2m−1
+on 2ℓ − 1 variables, where L̃i (X, Y ) = Li (X) for i ∈ {1, . . . , m} and L̃i (X, Y ) =
+Li−m+1 (x1 , Y ) for i ∈ {m + 1, . . . , 2m − 1}. That is, N ′ corresponds to a rank(2ℓ − 1) matroid consisting of the union of two copies of N with L1 = N1 as the
+only shared element.
+Lemma 3.20. For each i, |Φdi ,ki (N ′ )⊥ | = |Φdi ,ki (N )⊥ |2 .
+Proof. The proof is essentially the same as that of Lemma 5.13 in [3], except
+that a key step now uses relevant polynomials being homogeneous instead of
+relevant linear forms being aﬃne.
+Consider the map ϕ : Φdi ,ki (N )⊥ × Φdi ,ki (N )⊥ → Φdi ,ki (N ′ )⊥ given by
+
+ϕ((λ1 , . . . , λm ), (τ1 , . . . , τm )) = (λ1 + τ1 , λ2 , . . . , λm , τ2 , . . . , τm ).
+Pm
+If λ = (λ1 , . . . , λm ), τ = (τ1 , . . . , τm ) ∈ Φdi ,ki (N )⊥ , then j=1 λj P (Lj (X)) =
+Pm
+j=1 τj P (Lj (X)) = 0 for all P and X. So, for all (X, Y ),
+2m−1
+X
+j=1
+
+ϕ(λ, τ )j P (L̃j (X, Y )) =
+
+m
+X
+
+λj P (Lj (X)) +
+
+j=1
+
+m
+X
+
+τj P (Lj (x1 , Y )) = 0.
+
+j=1
+
+Thus ϕ indeed maps Φdi ,ki (N )⊥ ×Φdi ,ki (N )⊥ to Φdi ,ki (N ′ )⊥ . We claim that
+ϕ is a bijection, which then implies the desired equality.
+15
+
+Suppose λ ∈ Φdi ,ki (N )⊥ . By the deﬁnition of a linear form, for each i either
+Li (x1 , 0, . . . , 0) ≡ 0 or Li (x1 , 0, . . . , 0) ≡ x1 . Let S be the set of i such that
+Li (x1 , 0, . . . , 0) ≡ x1 . Note that 1 ∈ S. Setting x2 = · · · = xℓ = 0 and setting
+P, x1 such that P is a linear polynomial with P (x1 ) = 1, P (0) = 0 gives
+
+
+
+
+
+
+X
+X
+X
+0=
+λj  P (0) = 
+λj  P (x1 ) + 
+λj  x1 ,
+so
+
+P
+
+j∈S
+
+j∈S
+
+j∈S
+
+j ∈S
+/
+
+λj = 0, meaning λ1 = −
+
+P
+
+j∈S
+j6=1
+
+λj . Thus λ is uniquely determined
+
+given λ2 , . . . , λm , and so both λ and τ are uniquely determined given ϕ(λ, τ ),
+meaning ϕ is injective.
+Pm
+Now suppose (λ1 , . . . , λm , τ2 , . . . , τm ) ∈ Φdi ,ki (N ′ )⊥ , so j=1 (λj Q(Lj (X))+
+Pm
+j=2 τj Q(x1 , Y )) = 0 for every Q and (X, Y ). For convenience, let τ1 = λ1 .
+Similarly to before, setting x2 = · · · = xℓ = 0 gives
+X
+
+λj Q(x1 ) +
+
+m
+X
+
+τj Q(Lj (x1 , Y )) = 0,
+
+j=2
+
+j∈S
+
+for any x1 , Y and any homogeneous Q, while setting y2 = · · · = yℓ = 0 gives
+m
+X
+
+λj Q(Lj (X)) +
+
+j=2
+
+X
+
+τj Q(x1 ) = 0,
+
+j∈S
+
+for any X and any homogeneous Q. Here we have used the fact that Q(0) = 0.
+In particular, setting x2 = · · · = xℓ = y2 = · · · = yℓ = 0 and setting
+Q,
+x
+that Q is a linear
+Ppolynomial with Q(x1 ) = 1, Q(0) = 0 gives 0 =
+P 1 such P
+j∈S (λj + τj ) − λ1 . So, ﬁxing X,
+j∈S τj − λ1 =
+j∈S λj +
+j6=1
+
+0=
+
+m
+X
+
+λj Q(Lj (X)) +
+
+j=2
+
+τj Q(x1 ) =
+
+m
+X
+
+λj Q(Lj (X)) −
+
+j=2
+
+j∈S
+
+
+
+
+
+X
+
+X
+
+λj Q(x1 )) + λ1 Q(x1 )
+
+j∈S
+
+m
+X
+ X 
+ Q(x1 ) +
+λj Q(Lj (X)).
+=
+−
+λ
+j
+
+
+j=2
+
+j∈S
+j6=1
+
+
+
+
+
+P
+P
+⊥
+Thus − j∈S λj , λ2 , . . . , λm ∈ Φdi ,ki (N ) , and − j∈S τj , τ2 , . . . , τm ∈
+j6=1
+
+j6=1
+
+Φdi ,ki (N )⊥ likewise. But
+ 
+
+
+
+
+  X
+
+ X
+
+ , −
+−
+τj , τ2 , . . . , τm 
+ϕ
+λ
+,
+λ
+,
+.
+.
+.
+,
+λ
+j
+2
+m
+ 
+ = (λ1 , . . . , λm , τ2 , . . . , τm ).
+
+j∈S
+j6=1
+
+j∈S
+j6=1
+
+So ϕ is surjective, and thus bijective as desired.
+
+16
+
+Now, let µi = ϕ(λi , τi ). We have
+
+ 
+ 
+ 
+
+
+
+
+X
+ X
+ X
+ 
+
+
+
+
+
+ E e 
+λi,j Pi (Lj (X))e 
+τi,j Pi (Lj (x1 , Y ))
+X,Y  
+
+
+i∈[C]
+(λ ),(τ )∈ 
+i∈[C]
+
+Q i,j k i,j
+j∈[m]
+i +1 −1]
+j∈[m]
+[0,2
+i,j
+
+ 
+ 
+
+
+!
+
+
+C
+X
+X
+Y
+
+
+
+
+
+
+ki +1
+
+
+
+
+
+µi,j Pi (L̃j (X, Y ))
+E e 
+2
+=
+X,Y
+
+
+i=1
+i∈[C]
+(µi,j )∈
+
+
+Q
+ki +1
+j∈[2m−1]
+i∈[C],j∈[2m−1] [0,2
+
+C
+Y
+
+≤
+
+2ki +1
+
+i=1
+
+= kBk
+
+2m
+
+!2m
+
+α(C) +
+
+
+
+kBk
+α(C) + 2 ,
+K
+
+where K =
+rem 3.17.
+Thus,
+ 
+
+QC
+
+i=1
+
+2ki +1
+
+i=1
+
+!
+
+C
+Y
+
+|Φdi ,ki (N ′ )⊥ |
+
+i=1
+
+|Φdi ,ki (N )|, and the third line is an application of Theo-
+
+E |f3 (x1 )|
+X
+
+C
+Y
+
+−1]
+
+m
+Y
+
+j=1
+
+2
+
+1[B(Lj (X))=bj ]  ≤ ε2
+
+
+
+1
+2
+≤ 2ε α(C) + 2 ,
+K
+
+
+
+2
+kBk
+
+
+
+kBk
+α(C) + 2
+K
+
+so each term in our original sum that involves f3 has magnitude at most
+s
+s 
+
+
+
+1
+1
+2
+2ε α(C) + 2 ≤ ε 2 α(C) + 2 .
+K
+K
+QC
+Finally, we bring everything together. Note that
+m K ≤ i=1 |Φdi ,ki (N
+ )|m≤
+ζ
+1
+1
+−dCm−3
+m
+dCm
+2
+, ε0 = 16 2ζ
+,
+kBk ≤ 2
+, so α(C) ≤ K 2 . Setting η(C) = 3
+we have
+
+
+E
+X
+
+m
+Y
+
+j=1
+
+
+
+f (Lj (X)) ≥
+
+
+
+r
+
+1
+1
+m
+m+ 12
+ε α(C) + 2 − 3m η(|B|)
+− α(C) ζ − 2
+K
+K
+
+1 m
+1
+1 m
+ζ − 2m+1 ε −
+ζ
+2K
+K
+8K
+ζm 1
+1
+≥
+.
+≥ ζm
+4K
+4 kBkm
+≥
+
+17
+
+m
+
+n ℓ
+
+(2 )
+So, there are at least ζ4 kBk
+m linear maps ι such that ι(N ) ⊆ M . At most
+ℓ(2n )ℓ−1 2ℓ−1 such linear maps are not injections. When n is suﬃciently large
+compared to ℓ and C, this is negligible compared to the number of linear maps
+we obtained, so for some choice of ν, the number of injections ι taking N into M
+m
+(2n )ℓ
+ℓ2
+is at least ζ5 kBk
+automorphisms,
+m for large enough n. Since N has at most 2
+m
+
+n ℓ
+
+(2 )
+ζ
+there are at least 5·2
+distinct copies of N in M . Taking β =
+ℓ2 kBkm
+concludes the proof of the Counting Lemma.
+
+4
+
+ζm
+5·2ℓ2
+
+, this
+
+Basic Applications
+
+4.1
+
+The Removal Lemma
+
+As a ﬁrst application of our Counting Lemma, we give a simple proof of a
+removal lemma for matroids. This removal lemma is a special case of a removal
+lemma for linear equations that appears in [11] and [13], in both cases proven
+using a hypergraph removal lemma.
+We say that a matroid M ⊆ Fr(M) \ {0} is ε-far from being N -free if for any
+matroid M ′ ⊆ Fr(M) \{0} that does not contain a copy of N , Ex [|1M −1M ′ |] ≥ ε.
+Theorem 4.1 (Removal Lemma). For any ζ > 0 and matroid N there is a
+α > 0 such that if a matroid M of sufficiently high rank r(M ) is ζ-far from
+being N -free, then M contains at least α(2r(M) )r(N ) copies of N .
+Proof. Let ζ ′ = ζ4 , and let d = |N | − 2. By the Counting Lemma, there exist
+β, η, ε, r, ν such that if the reduced matroid R = Rε,ζ ′ given by an (η, r, d)regular partition of a matroid M with corresponding factor B contains a copy
+r(M ) r(N )
+)
+of N and r(M ) ≥ ν(|B|), then M contains at least β (2 kBk|N
+copies of N . Fix
+|
+such a choice of β, η, ε, r, ν.
+Let M be a matroid of rank n. Suppose that M is ζ-far from being N -free.
+By Theorem 3.11, we have a (εζ ′1/2 , η, r, d)-regular partition of M , 1M =
+f1 + f2 + f3 , whose corresponding factor B has complexity at most C, where C
+depends on only ζ ′ , ε, η, r, d, i.e. depends on only ζ, N . Let M ′ = M ∩ Rε,ζ ′ .
+The only elements in M \ M ′ are either
+(i) In an atom b of B such that E[|f3 (x)|2 | x ∈ b] > ε2 , or
+(ii) In an atom b of B such that E[f (x) | x ∈ b] < ζ ′ .
+Let S be the subset of Fn contained in atoms b of B such that E[|f3 (x)|2 |
+x ∈ b] > ε2 . Then by condition (iv) of Theorem 3.11,
+|S| 2
+ε ,
+2n
+so |S| ≤ ζ ′ 2n . Likewise, let T be the subset of Fn contained in atoms b of B
+such that E[f (x) | x ∈ b] < ζ ′ . Then |T ∩ M | < ζ ′ |T | ≤ ζ ′ 2n .
+ε2 ζ ′ ≥ kf3 k22 = Ex [|f3 (x)|2 ] ≥
+
+18
+
+|
+So, Ex |1M − 1M ′ | ≤ |S|+|T
+< 2ζ ′ = ζ2 . Since M is ζ-far from being N 2n
+′
+free, M cannot be N -free, so M ′ contains a copy of N . If we take n ≥ ν(C),
+then the Counting Lemma argument above yields that M contains at least
+n r(N )
+1
+1
+n r(N )
+copies of N , so we are done by taking α = 2dC|N
+β (2kBk) |N | ≥ 2dC|N
+| (2 )
+|.
+
+4.2
+
+The Doubling Lemma and the Geometric Erdős-Stone
+Theorem
+
+We extend the argument in the proof of the removal lemma to prove a simple
+result we will call the doubling lemma. To state it, we deﬁne the double of a
+matroid.
+Definition 4.2. Let N be a matroid of rank ℓ. Deﬁne its double 2N to be the
+matroid of rank ℓ + 1 consisting of the union of N with {x + v|x ∈ N }, where
+v is a nonzero element not contained in the span of the elements of N . So, for
+example, 2BB(n, c) = BB(n + 1, c). The matroid 2k N is the result of starting
+with N and doubling k times.
+The matroid 2k N corresponds to the result of replacing each element of N
+with an aﬃne cube of dimension k. Note that if there is a homomorphism from
+N to R, then for any k > 1 there is a homomorphism from 2k N to R because
+we can simply ﬁrst contract each of the aﬃne hypercubes into a point.
+Lemma 4.3 (Doubling Lemma). For any α > 0 and matroid N there exists
+α′ > 0 such that for sufficiently large n, if a matroid M ⊆ Fn \ 0 contains at
+least α(2n )r(N ) copies of N , then it contains at least α′ (2n )r(N )+1 copies of 2N .
+Proof. Let M be a matroid of rank n, and suppose that M contains at least
+α(2n )r(N ) copies of N . Any element v ∈ M can be contained in at most
+α n
+|N |(2n )r(N )−1 copies of N , so if M ′ is a subset of M with |M ′ | < |N
+| 2 , then
+α
+α
+′
+M \ M contains a copy of N . So M is |N | -far from being N -free. Set ζ := |N
+|.
+Let ζ ′ = ζ4 , d = 2|N | − 2. By the Counting Lemma, there exist β, η, ε, r, ν
+such that if there exists a homomorphism from 2N to the reduced matroid R =
+Rε,ζ ′ given by an (η, r, d)-regular partition of a matroid M with corresponding
+r(M ) r(N )+1
+
+factor B, and r(M ) ≥ ν(|B|), then M contains at least β (2 kBk)|2N |
+copies of
+2N . Fix such a choice of β, η, ε, r, ν.
+By Theorem 3.11, we have a (εζ ′1/2 , η, r, d)-regular partition of M , 1M =
+f1 + f2 + f3 , whose corresponding factor B has complexity at most C, where C
+depends on only ζ ′ , ε, η, r, d, i.e. depends on only ζ, N . Let M ′ = M ∩ Rε,ζ ′ .
+By the same argument as in the proof of the removal lemma, M ′ contains a
+copy of N . Thus there is a homomorphism from 2N to Rε,ζ ′ .
+So, if we take n ≥ ν(C), by the Counting Lemma argument above, M
+n r(N )+1
+
+)
+≥
+contains at least β (2kBk
+|2N |
+′
+
+taking α =
+
+1
+22dC|N |
+
+1
+(2n )r(N )+1
+22dC|N |
+
+.
+
+19
+
+copies of N , so we are done by
+
+Remark. We could also have directly gotten a (nondegenerate) copy of 2N in
+Rε,ζ ′ by using an extension of the Chevalley-Warning Theorem to prime power
+moduli, such as Theorem B in [12].
+One particular special case of this result is of interest.
+Corollary 4.4. For any α > 0 and positive integers s, t there exists α′ > 0 such
+that for sufficiently large n, if a matroid M ⊆ Fn \ 0 contains at least α(2n )s
+copies of P G(s − 1, 2), then it contains at least α′ (2n )s+t copies of BB(s + t, s).
+Corollary 4.4 should be compared with the following analogous graph-theoretic
+lemma, used in the proof of results on the chromatic threshold in [2].
+Lemma 4.5 ([1, Lemma 7]). For every r, s and ε > 0 there exists δ = δr,s (ε) > 0
+such that the following holds for sufficiently large n. If the n-vertex graph G
+contains at least εnr copies of Kr , then G contains at least δr,s (ε)nrs copies of
+Kr (s).
+Along the same lines, our Counting Lemma gives a short proof of the Geometric Erdős-Stone theorem, Theorem 2.9, using the Bose-Burton theorem,
+Theorem 2.10, analogous to the proof of the Erdős-Stone theorem using Turán’s
+theorem.
+Proof of Theorem 2.9. Let r(M ) = n, χ(N ) = c, and r(N ) = ℓ, and suppose
+|M | ≥ (1 − 21−c + ζ)2n . It suﬃces to show that if n is suﬃciently large, M must
+contain a copy of BB(ℓ, c), so without loss of generality N = BB(ℓ, c).
+Let ζ ′ = ζ4 , and let d = |N | − 2. By the Counting Lemma, there exist
+β, η, ε, r, ν such that if there is a homomorphism from N to the reduced matroid R = Rε,ζ ′ given by an (η, r, d)-regular partition of a matroid M with corn l
+
+(2 )
+responding factor B, and r(M ) ≥ ν(|B|), then M contains at least β kBk
+|N | > 0
+copies of N . Fix such a choice of β, η, ε, r, ν.
+By Theorem 3.11, we have a (εζ ′1/2 , η, r, d)-regular partition of M , 1M =
+f1 + f2 + f3 , whose corresponding factor B has complexity at most C, where C
+depends on only ζ ′ , ε, η, r, d, i.e. depends on only ζ, N . Let M ′ = M ∩ Rε,ζ ′ .
+As in the proof of the Removal Lemma, we see that Ex |1M − 1M ′ | < 2ζ , so that
+|M ′ | ≥ (1 − 21−c + ζ2 )2n . By the Bose-Burton theorem, M ′ ⊆ Rε,ζ ′ contains a
+copy of P G(c − 1, 2). So there is a homomorphism from N = 2ℓ−c P G(c − 1, 2)
+to Rε,ζ ′ , and thus the Counting Lemma gives us at least one copy of N in M ,
+as desired.
+
+5
+
+Applications to the Critical Threshold Problem
+
+The strong decomposition theorem and our Counting Lemma allow us to extend
+the arguments using Green’s regularity lemma in [7] and [6] to address more
+general cases of Conjecture 2.13. To illustrate the approach we take, we ﬁrst
+extend the argument in [7] to the case of Nℓ,2,1 . This case is simple enough that
+it suﬃces to only use Green’s regularity lemma, but we phrase it in terms of the
+20
+
+d = 1 case of the strong decomposition theorem to highlight the similarity with
+our approach to a more general case, in the next section.
+
+5.1
+
+Verifying the Conjecture for Nℓ,2,1
+
+Proposition 5.1. θ(Nℓ,2,1 ) = 41 .
+Proof. Fix δ > 0.
+Let ζ = 2δ , and let d = 1. By the Counting Lemma, there exist β, η, ε, r, ν
+such that if the reduced matroid R = Rε,ζ given by an (η, r, d)-regular partition
+of a matroid M with corresponding factor B contains a copy of P G(1, 2) and
+r(M ) 2
+
+r(M ) ≥ ν(|B|), then M contains at least β (2kBk3) copies of P G(1, 2). Fix such
+a choice of β, η, ε, r, ν.
+Let M be a matroid of rank n ≥ ν(|B|) with |M | ≥ ( 41 + δ)2n . By Theorem 3.11, we have an (εζ 1/2 , η, r, 1)-regular partition of M , 1M = f1 + f2 + f3 ,
+whose corresponding factor B has complexity at most C, where C depends only
+on ζ, ε, η, r, d, i.e. depends only on δ. Let R = Rε,ζ and let D = Rε, 12 +ζ . We
+have two cases, depending on whether D is nonempty.
+Case 1 : D is nonempty; that is, for some atom b of B, |b ∩ M | ≥ ( 12 + ζ)|b|
+and E[|f3 (x)|2 | x ∈ b] ≤ ε2 . Since B is a factor deﬁned by linear polynomials, if
+h is any element of the atom b0 containing 0, then shifting by h preserves each
+atom. If χ(M ) > C, then there exists such an element h in M ∩ b0 . Consider
+the submatroid Mh = {w ∈ M | w + h ∈ M }. Since |M ∩ b| ≥ ( 12 + ζ)|b|,
+ζ
+2n . By the Density Hales-Jewett Theorem, for suﬃciently
+|Mh ∩ b| ≥ ζ|b| ≥ kBk
+large n, Mh contains a copy A of AG(m − 1, 2). Then A ∪ (A + h) ∪ {h} contains
+a copy of Nℓ,2,1 . So, either χ(M ) ≤ C or M contains a copy of Nℓ,2,1 , as desired.
+Case 2 : D is empty.
+Then for each atom b of B, either E[|f3 (x)|2 | x ∈ b] > ε2 or |b ∩ M | < 12 + ζ.
+Since |f3 |L2 ≤ εζ 1/2 , the former is true for less than a fraction ζ of the atoms b.
+We can use this to give a lower bound on the size of R. Indeed, we have
+1
+1
+( + δ)2n ≤ |M | < (ζ2n + |D|) · 1 + (|R| − |D|) · ( + ζ) + (2n − |R|) · ζ,
+4
+2
+so |R| > ( 21 + 2(δ − 2ζ))2n > 12 2n .
+By Theorem 2.10, R contains a copy of P G(1, 2). So, by the Counting
+n 2
+)
+Lemma, M contains at least β (2
+kBk3 copies of P G(1, 2). Then some element h
+n
+
+2
+is part of at least β kBk
+3 copies of P G(1, 2), so Mh , as deﬁned in Case 1, has
+β
+density at least kBk
+3 . Applying the Density Hales-Jewett Theorem again gives
+a copy of AG(ℓ − 1, 2) in Mh , and thus a copy of Nℓ,2,1 in M , as desired.
+
+5.2
+
+Conditional Result on Nℓ,c,1
+
+The case c > 2 is more diﬃcult to address because using the Counting Lemma
+now requires polynomial factors of higher degrees, with which the construction
+
+21
+
+of Mh from before does not interact in as simple a manner. To make progress
+on this case, we will need to make additional assumptions on the polynomial
+factors that we obtain.
+Here, we will illustrate our techniques by verifying Conjecture 2.13 in the
+case where N = Nℓ,c,1 , assuming the following conjecture on the regularity of
+factors formed by intersecting two shifts of a given polynomial factor.
+Conjecture 5.2. For any nondecreasing function r′ : Z≥0 → Z≥0 and parameters δ, η, r, d, there exists a constant K such that the polynomial factor B of V =
+Fn given by Theorem 3.11 can be chosen to satisfy the following property. Let
+B be defined by polynomials P1 , . . . , PC , let ∆h Pi (x) = Pi (x + h) − Pi (x) − Pi (h)
+for 1 ≤ i ≤ C, and let S be the set of values h ∈ V for which the factor defined
+by polynomials P1 , . . . , PC , ∆h P1 , . . . , ∆h PC is r′ -regular. Then S contains a
+subspace of V of codimension at most K.
+We remark that we are not conﬁdent in the truth of this conjecture. However,
+we believe that the arguments that follow are useful in demonstrating some
+new techniques that seem promising for future work on the critical threshold
+problem.
+Theorem 5.3. Assuming Conjecture 5.2 holds, θ(Nℓ,c,1 ) = 1 − 3 · 2−c for all
+c ≥ 2.
+Proof. Assume c ≥ 3, since the case c = 2 is Proposition 5.1. Fix δ > 0.
+Let N = Nℓ,c,1 , and let N ∗ = BB(ℓ − 1, c − 1), so N = N ∗ ∪ (N ∗ + v) ∪
+{v} for some element v. Let ζ = 2δ and let d = |N | − 2. By the Counting
+Lemma, there exist β1 , η1 , ε1 , r1 , ν1 such that if the reduced matroid R = Rε1 ,ζ
+given by an (η1 , r1 , d)-regular partition of a matroid M with corresponding
+factor B contains a copy of N and r(M ) ≥ ν1 (|B|), then M contains at least
+r(M ) r(N )
+
+)
+copies of N . Let β2 , η2 , ε2 , r2 , ν2 be parameters we will pick later,
+β1 (2 kBk|N
+|
+and deﬁne β = min(β1 , β2 ), η(C) = min(η1 (C), η2 (C)), ε = min(ε1 , ε2 ), r(C) =
+max(r1 (C), r2 (C)), ν(C) = max(ν1 (C), ν2 (C)). Let ε′ = 12 εζ 1/2 .
+Let M be a matroid of rank n ≥ ν(|B|) with |M | ≥ (1 − 3 · 2−c + δ)2n . By
+Theorem 3.11, we have a ( 21 ε′ ζ 1/2 , η, r, 1)-regular partition of M , 1M = f1 +f2 +
+f3 , whose corresponding factor B has complexity at most C, where C depends
+only on ζ, ε, η, r, d, i.e. depends only on δ, |N |. Assuming Conjecture 5.2, for
+some K, r2 depending on only N and d, we can pick B such that the set S
+of elements h for which Bh is r2′ -regular contains a subspace W of V = Fn of
+codimension at most K as long as B is r2 -regular, where r2′ is another parameter
+to be determined later. Let R = Rε′ ,ζ and let D = Rε′ , 21 +ζ . We have two cases,
+depending on the density of D.
+Case 1 : |D| ≤ (1 − 22−c + ζ)2n .
+For each atom b of B, either E[|f3 (x)|2 | x ∈ b] > ε′2 , b ⊆ D, or |b ∩ M | <
+1
+1 ′ 1/2
+2
+, the atoms b for which the ﬁrst is true span in
+2 + ζ. Since kf3 kL ≤ 2 ε ζ
+ζ
+total less than a fraction 4 of the elements of Fn . We can use this to give a
+lower bound on the size of R. Indeed, we have
+
+ζ
+1
+(1 − 3 · 2−c + δ)2n ≤ |M | < ( 2n + |D|) · 1 + (|R| − |D|) · ( + ζ) + (2n − |R|) · ζ,
+4
+2
+22
+
+so
+
+
+
+
+1
+5 n
+−c
+n
+|R| > 2 (1 − 3 · 2 + δ)2 − |D|
+− ζ − ζ2
+2
+4
+
+
+5
+2−c
+1−c
++ ζ) 2n
+≥ 1−2
++ 2(δ − ζ) − ζ + 2ζ(1 − 2
+4
+≥ (1 − 21−c + ζ)2n .
+
+By the Bose-Burton Theorem, R contains a copy of P G(c − 1, 2), and thus
+there exists a homomorphism from 2ℓ−c P G(c − 1, 2) to R. Since N is a submatroid of 2ℓ−c P G(c − 1, 2), there is a homomorphism from N to R. So, since
+R ⊆ Rε,ζ , by the Counting Lemma, M contains a positive number of copies of
+N , as desired.
+Case 2 : |D| > (1 − 22−c + ζ)2n .
+We will introduce a few new technical tools to deal with this case.
+Assume without loss of generality that |B| = C. Given an element h ∈ V , let
+Bh be the factor deﬁned by the polynomials P1 , . . . , PC , ∆h P1 , . . . , ∆h PC . Note
+that the indicator function for D ∩ (D + h) is constant on each atom of Bh .
+We represent N ∗ as a system of linear forms on ℓ−1 variables, {L1 , . . . , Lm },
+where without loss of generality {L1 , . . . , L2c−1 −1 } forms a copy of P G(c − 1, 2).
+Let Mh = {w ∈ M | w + h ∈ M }. For an appropriately chosen h, we will derive
+a lower bound for the number of copies of N ∗ contained in Mh . If h ∈ M , we
+will then end up with a copy of N in M .
+Let g(x) = f (x)f (x + h) be the indicator function for Mh , so the expression
+we wish to give a lower bound for is
+
+
+m
+Y
+
+f (Lj (X))f (Lj (X) + h) .
+E
+X∈(Fn )ℓ−1
+
+j=1
+
+Note that
+
+f (x)f (x + h) = (1 − f (x))(1 − f (x + h)) + (f (x) + f (x + h) − 1)
+= ((1 − f (x))(1 − f (x + h)) + f1 (x) + f1 (x + h) − 1)
++ (f2 (x) + f2 (x + h)) + (f3 (x) + f3 (x + h)).
+Let g1 (x) = (1 − f (x))(1 − f (x + h)) + f1 (x) + f1 (x + h) − 1, g2 (x) =
+f2 (x)+f2 (x+h), and g3 (x) = f3 (x)+f3 (x+h). So, g(x) = g1 (x)+g2 (x)+g3 (x).
+Similarly to the approach in the proof of the Counting Lemma, we will
+restrict to counting within certain “good” atoms of Bh . Speciﬁcally, suppose we
+have a point Y ∈ (Fn )ℓ−1 such that L1 (Y ), . . . , Lm (Y ) are in atoms b̃1 , . . . , b̃m of
+Bh contained in D ∩(D +h) such that E[|f3 (x)|2 | x ∈ b̃j ], E[|f3 (x+h)|2 | x ∈ b̃j ]
+are at most ε2 for 1 ≤ j ≤ m. Then
+
+23
+
+
+
+E
+X
+
+=
+
+m
+Y
+
+j=1
+
+
+
+
+
+f (Lj (X))f (Lj (X) + h) ≥ E 
+X
+
+(i1 ,...,im )∈[1,3]m
+
+
+
+E
+X
+
+m
+Y
+
+j=1
+
+X
+
+m
+Y
+
+j=1
+
+
+
+f (Lj (X))f (Lj (X) + h)1[Bh (Lj (X))=b̃j ] 
+
+
+gij (Lj (X))1[Bh (Lj (X))=b̃j ]  .
+
+To handle the terms where ij = 2 for some j, we use the following lemma.
+Lemma 5.4. Let s ≥ 1. For any (nonclassical) polynomial P of degree at most
+s, constant β ∈ T, and function g : Fn → C, we have
+kg1P (x)=β kU s+1 ≤ kgkU s+1 .
+Proof. Let P have depth k. We have
+g(x)1P (x)=β (x) =
+
+1
+2k+1
+
+2k+1
+X−1
+
+g(x)e (λ(P (x) − β)).
+
+λ=0
+
+Since s + 1 ≥ 2, the triangle inequality holds for the Gowers norm, so
+
+
+k+1
+
+
+
+ 1 2 X−1
+
+g(x)e (λ(P (x) − β))
+kg1P (x)=β kU s+1 =  k+1
+
+
+2
+λ=0
+
+U s+1
+
+k+1
+
+≤
+
+1
+
+2k+1
+
+2
+
+X−1
+
+kg(x)e (λ(P (x) − β))kU s+1 = kgkU s+1 ,
+
+λ=0
+
+since kg · P (x)kU s+1 = kgkU s+1 when P has degree ≤ s.
+Repeated application of Lemma 5.4, followed by the triangle inequality, gives
+that
+kg2 (x)1[Bh (x)=b̃j ] kU d+1 ≤ kg2 kU d+1 ≤ 2kf2kU d+1 ,
+for 1 ≤ j ≤ m. So, since maxx |gi (x)| ≤ 2 for 1 ≤ i ≤ 3, applying Lemma 3.15
+on { 21 gij }m
+j=1 gives
+ 
+
+
+
+
+
+m
+Y
+1
+
+
+
+m
+
+
+
+E 
+
+≤
+2
+min
+(x)1
+g
+(L
+(X))1
+g
+ij
+j
+ij
+[B
+(x)=
+b̃
+]
+[Bh (Lj (X))=b̃j ] 
+
+ d+1
+X
+j
+h
+1≤j≤m 2
+
+
+U
+j=1
+
+
+1
+
+m
+m
+
+≤ 2m 
+ 2 g2 (x)1[Bh (x)=b̃j ]  d+1 ≤ 2 kf2 kU d+1 ≤ 2 η(|B|),
+U
+
+for each term where at least one of the ij is 2.
+Our probability is thus at least
+24
+
+X
+
+(i1 ,...,im
+
+)∈{1,3}m
+
+
+
+E
+X
+
+m
+Y
+
+j=1
+
+
+
+gij (Lj (X))1[Bh (Lj (X))=b̃j ]  − 6m η(|B|).
+
+When x ∈ b̃j , we have f1 (x), f1 (x+h) ≥ 12 +ζ, so g1 (x) = (1−f (x))(1−f (x+
+h))+f1 (x)+f1 (x+h) ≥ 2ζ. The argument after this is exactly as in the proof of
+the Counting Lemma, assuming that Bh is r′ -regular for r′ suﬃciently large. We
+get a lower bound on the main term by applying Theorem 3.18, and use CauchySchwarz followed by Lemma 3.20 and Theorem 3.17 to deal with the terms
+(2n )ℓ−1
+involving g3 but not g2 . By that argument, we are guaranteed at least β kBk
+|N ∗ |
+copies of N ∗ in Mh as long as β ≤ β2 , η(|Bh |) ≤ η2 (|Bh |), ε ≤ ε2 , r′ (|Bh |) ≥
+r2′ (|Bh |), and n ≥ ν2 (|Bh |) for some parameters β2 , η2 , ε2 , r2′ , ν2 depending only
+on N, d. At most Oℓ ((2n )ℓ−2 ) of these copies intersect themselves when shifted
+by h, so without loss of generality ν2 is big enough such that a copy A exists
+where A is disjoint from A + h, and so A ∪ (A + h) ∪ {h} forms a copy of N in
+M.
+It remains to show that, when χ(M ) is suﬃciently large, there exists an h ∈
+M where Bh is r2′ -regular and a point Y ∈ (Fn )ℓ−1 such that L1 (Y ), . . . , Lm (Y )
+are in atoms b̃1 , . . . , b̃m of Bh contained in D ∩ (D + h) such that E[|f3 (x)|2 | x ∈
+b̃j ], E[|f3 (x+ h)|2 | x ∈ b̃j ] are at most ε2 for 1 ≤ j ≤ m. By Proposition 3.10 we
+can, without loss of generality, require r2 , r2′ to be large enough (depending only
+ζ
+-uniform. In this case, by Corollary 3.19,
+on ζ, d, C) so that B and Bh are 16kBk
+every potential atom of Bh consistent
+with the
+ deﬁning polynomials is nonempty,
+
+ζ
+2n .
+and in fact has size at least kB1h k − 16kB
+hk
+Recall that W is a subspace of V = Fn of codimension at most K such that
+Bh is r2′ -regular for all h ∈ W . For any h ∈ W and i ∈ [1, C], by our choice
+of r2′ , ∆h Pi attains all values in k′1+1 Z/Z, where ki′ is the depth of ∆h Pi . So,
+2
+
+i
+
+Pi (x + h) − Pi (x) = ∆h Pi (x) + Pi (h) attains all values in a coset of
+1
+
+1
+Z/Z
+′
+2ki +1
+
+in
+
+Z/Z ⊂ T. We will use the following proposition to narrow down our choice
+2ki +1
+of h to a slightly smaller subspace, in order to ensure that Pi (h) ∈ k′1+1 Z/Z.
+2
+
+i
+
+Proposition 5.5. Let P be a (nonclassical) polynomial of depth at most k on
+V = Fn and let W be a subspace of V such that for all h ∈ W , ∆h P attains
+all values in k′1+1 Z/Z, where kh′ is the depth of ∆h P . Then there exists a
+2 h
+subspace W ′ of W with codimension at most k + 1 in W , such that for h ∈ W ′ ,
+P (h) ∈ k′1+1 Z/Z.
+2
+
+h
+
+Proof. Without loss of generality let P have depth k, so for each h, ∆h P has
+depth kh ≤ k. We use induction on i to show that, for 0 ≤ i ≤ k + 1, the set
+1
+of h for which P (x + h) − P (x) attains no value in 2k+1−i
+Z/Z is contained in
+the complement of a subspace of W of codimension i. This gives a subspace of
+codimension at most k + 1 where P (x + h) − P (x) attains the value 0, which
+implies P (h) ∈ k′1+1 Z/Z.
+2
+
+h
+
+25
+
+The statement is trivial for i = 0 since by assumption, ∆h P attains some
+1
+value in k′1+1 Z/Z ⊆ 2k+1
+Z/Z for all h ∈ W .
+2 h
+Assume the statement is true for i = j ≤ k, so there is some subspace
+Wj ≤ W of codimension j such that for all h ∈ Wj , P (x + h) − P (x) attains
+1
+Z/Z. Let Z be the subset of Wj consisting of the values
+some value in 2k+1−j
+1
+Z/Z. Since the
+of h for which P (x + h) − P (x) attains no value in 2k+1−(j+1)
+values attained by P (x + h) − P (x) form a coset of some subgroup k′1+1 Z/Z
+2
+
+h
+
+1
+Z/Z but avoid 0, we
+of T, and this coset must contain some element of 2k+1−j
+′
+must have kh < k − j. So, for all h ∈ Z, all values attained by P (x + h) − P (x)
+1
+1
++ 2k−j
+Z/Z.
+are contained in 2k+1−j
+Assume for the sake
+of
+contradiction
+that Z contains an odd circuit, so for
+Pt
+some h1 , . . . , ht ∈ Z, s=1 hs = 0, where t is odd. But
+!!
+!
+!
+s−1
+s
+t
+t
+X
+X
+X
+X
+,
+hu
+P x+
+hu − P x +
+0 =P x+
+hs − P (x) =
+s=1
+
+u=1
+
+s=1
+
+u=1
+
+
+1
+1
+1
+1
+which must take only values in s=1 2k+1−j
++ 2k−j
+Z/Z = 2k+1−j
++ 2k−j
+Z/Z.
+This is a contradiction. So Z contains no odd circuits, and is thus contained in
+the complement of a hyperplane Wj+1 of Wj . Thus the statement is true for
+i = j + 1 as well, and by induction is true for all j ≤ k + 1. This proves the
+proposition.
+Pt
+
+So, for each Pi we have a subspace Wi′ of codimension at most ki + 1 in W
+on which Pi (h) ∈ k′1+1 Z/Z. Intersecting all of these gives a subspace W ′ of W
+2 i
+PC
+of codimension at most K + i=1 (ki + 1) ≤ K + dC on which Pi (h) ∈ k′1+1 Z/Z
+2 i
+for all i.
+If χ(M ) > K + dC, we can pick a ﬁxed h ∈ M ∩ W ′ , and let ki′ be the depth
+of ∆h Pi for each i. Since h ∈ W ′ , and Bh is suﬃciently regular, the range of
+Pi (x + h) − Pi (x) is k′1+1 Z/Z, with each value attained approximately equally
+2 i
+often.
+Let D′ be the union of the atoms b of B that are contained in D and satisfy
+E[|f3 (x + h)|2 | x ∈ b] ≤ ε′2 . Since kf3 kL2 ≤ 12 ε′ ζ 1/2 , at most a fraction
+ζ
+n
+4 of elements of F are contained in an atom b of B that does not satisfy
+n
+2
+E[|f3 (x + h)| | x ∈ b] ≤ ε′2 . Thus |D′ | ≥ |D| − ζ4 2n > (1 − 22−c + 3ζ
+4 )2 .
+We will now prove and use the following proposition, ﬁrst stated in the
+introduction, which has a technical statement but a simple proof.
+Proposition 1.3. LetLn, c be positive integers, let k1 , . . . , kn be nonnegative
+integers, and let G = ni=1 2ki1+1 Z/Z. Let H be a subgroup of G. Let M1 , . . . ,
+M2c −1 be subsets of G. Then there exist H1 , . . . , Hc ∈ G/H, cosets of H, such
+that for 1 ≤ i ≤ c,
+
+
+
+i
+
+
+2X
+−1
+i−1
+X
+X 
+
+|Mj |
+1
+M i−1 Pi−1 j−1 ∩ Hi +
+
+
+≥
+x
+H
+.
+(∗)
+j
+j
+2
++ j=1 xj 2
+
+
+|H|
+ j=2i−1 |G|
+j=1
+x∈[0,1]i−1 
+26
+
+Proof. We will choose H1 , . . . , Hc in order, greedily. For 1 ≤ i0 ≤ c, suppose
+H1 , . . . , Hi0 −1 have already been chosen such that (∗) holds for 1 ≤ i ≤ i0 − 1.
+Consider a uniformly random choice of Hi0 ∈ G/H. Taking an expectation
+gives
+
+E
+
+Hi0 ∈G/H
+
+=
+
+=
+
+1
+|H|
+
+1
+|H|
+
+
+
+
+
+
+iX
+0 −1
+
+
+M i −1 Pi0 −1 j−1 ∩ Hi0 +
+
+xj Hj 
+ 2 0 + j=1 xj 2
+
+j=1
+x=(x1 ,...,xi0 −1 )∈[0,1]i0 −1 
+
+
+X
+
+
+E M2i0 −1 +Pi0 −1 xj 2j−1 ∩ H ′ 
+′
+X
+
+x=(x1 ,...,xi0 −1 )∈[0,1]i0 −1
+
+i
+2X
+−1
+
+j=2i−1
+
+H ∈G/H
+
+j=1
+
+|Mj |
+,
+|G|
+
+so for some choice of Hi0 , the inequality (∗) holds. Continuing in this fashion,
+we can successfully pick Hi for all i ∈ [1, c], as desired.
+LC
+1
+Let G =
+i=1 2ki +1 Z/Z, and let H be the subgroup of G isomorphic to
+LC
+1
+i=1 2ki′ +1 Z/Z, where each term is a subgroup of the corresponding term in
+G. To see how this relates to the problem at hand, consider a ﬁxed tuple
+b = (b1 , . . . , bm ) ∈ Gm , where bj = (bj,1 , . . . , bj,C ). When Bh is suﬃciently
+regular, the set of tuples b′ = (b′1 , . . . , b′m ) ∈ Gm for which there is a point
+X ∈ (Fn )ℓ−1 satisfying Pi (Lj (X)) = bj,i ,Pi (Lj (X) + h) = b′j,i for all i, j is
+exactly those for which bj , b′j are in the same coset of H for all j.
+Let S be the subset of G consisting of the points g = (g1 , . . . , gC ) such that
+the atom where Pi = gi for all i is contained in D′ .
+By Corollary 3.19 and our choice of r2 , every atom of B has size at most
+ζ
+1
+n
+( kBk
++ 16kBk
+)2n . So, since |D′ | > (1 − 22−c + 3ζ
+4 )2 and |G| = kBk, we have
+|S|
+|G|
+
+>
+
+1−22−c + 3ζ
+4
+ζ
+1+ 16
+
+> 1 − 22−c + 85 ζ.
+
+By Proposition 1.3 with M1 = · · · = M2c−1 −1 = S, we have cosets H1 , . . . ,
+Hc−1 of H for which (∗) holds for 1 ≤ i ≤ c − 1. So, for 1 ≤ i ≤ c − 1,
+
+1
+|H|
+
+
+
+
+
+
+i−1
+X
+
+
+|S|
+5
+S ∩ Hi +
+
+> 2i−1 (1 − 22−c + ζ).
+xj Hj  ≥ 2i−1
+
+|G|
+8
+
+j=1
+x∈[0,1]i−1 
+X
+
+Pick representatives h1 , . . . , hc−1 for P
+the cosets H1 , . .P
+. , Hc−1 . For nonzero
+c−1
+c−1
+x ∈ [0, 1]c−1 , let MPc−1 xj 2j−1 = (S ∩ ( j=1 xj Hj )) − j=1 xj hj . Applying
+j=1
+Proposition 1.3 again with H as the group, the trivial group as the subgroup,
+2c−1 −1
+and the {Mj }j=1
+just deﬁned, we get points e1 , . . . , ec−1 ∈ H such that for
+
+27
+
+1 ≤ i ≤ c − 1,
+
+
+
+i
+
+2X
+−1
+i−1
+
+
+X
+
+|Mj |
+
+M i−1 Pi−1 j−1 ∩ ei +
+x
+e
+≥
+.
+j j 
+ 2 + j=1 xj 2
+
+
+ j=2i−1 |H|
+j=1
+x∈[0,1]i−1 
+X
+
+The right hand side is
+
+X
+
+|M2i +Pi−1 xj 2j−1 |
+
+x∈[0,1]i−1
+
+=
+
+X
+
+j=1
+
+|H|
+
+|S ∩ (Hi +
+
+Pi−1
+
+j=1
+
+xj Hj )|
+
+|H|
+
+
+5
+2−c
+i−1
+1−2
++ ζ ,
+>2
+8
+x∈[0,1]i−1
+
+where the last inequality is from the ﬁrst application of Proposition 1.3. Since
+i ≤ c − 1, this is strictly greater than 2i−1 − 1. On the other hand, the left hand
+side is
+
+
+
+
+i−1
+
+
+X
+
+M i−1 Pi−1 j−1 ∩ ei +
+xj ej 
+ 2 + j=1 xj 2
+
+
+
+j=1
+x∈[0,1]i−1
+
+
+ 
+ 
+
+
+i−1
+i−1
+i−1
+
+
+X 
+X
+X
+X
+
+
+
+
+
+
+
+
+
+xj ej 
+=
+xj hj
+∩ ei +
+xj Hj
+− hi +
+S ∩ Hi +
+
+
+
+
+j=1
+j=1
+j=1
+x∈[0,1]i−1
+
+
+
+
+
+i−1
+i−1
+
+X
+X
+
+i−1
+,
+
+
+
+
+
+xj (hj + ej ) ∈ S ∩ Hi +
+xj Hj
+| (hi + ei ) +
+=  x ∈ [0, 1]
+
+
+j=1
+j=1
+X
+
+which is an integer in the interval [0, 2i−1 ]. So this integer must be 2i−1 , meaning
+P
+P
+that for each nonzero x ∈ [0, 1]c−1 , we have c−1
+j−1 ⊆
+j=1 xj (hj + ej ) ∈ M c−1
+j=1 xj 2
+S.
+Pc−1
+Let bPc−1 xj 2j−1 = j=1 xj (hj +ej ) for each nonzero x ∈ [0, 1]c−1 . We claim
+j=1
+that, for 1 ≤ i ≤ C, the atoms of G corresponding to b1 , . . . , b2c−1 −1 are (di , ki )consistent with the system of linear forms {L1 , . . . , L2c−1 −1 } corresponding to
+P G(c−1, 2). Indeed, letting vj = hj +ej = (vj,1 , . . . , vj,C ), the function Qi (X) =
+Pc−1
+j=1 vj,i |xj | is a polynomial of depth at most ki and degree at most ki + 1 ≤ di .
+Thus, there is a copy of P G(c − 1, 2) in D′ whose elements lie in the atoms
+b1 , . . . , b2c−1 −1 of B.
+The next step is to ﬁnd appropriate atoms b̃1 , . . . , b̃2c−1 −1 of Bh contained in
+these atoms of B. If we ﬁx points g1 , . . . , g2c−1 −1 ∈ H, where gj = (gj,1 , . . . , gj,C ),
+then for j ∈ [1, 2c−1 − 1] we can let b̃j be the atom of Bh on which Pi = bj,i ,
+∆h Pi = gj,i + bj,i for all i ∈ [1, C]. For j ∈ [1, 2c−1 − 1], let Sj be the subset of
+28
+
+H consisting of the points gj for which bj + gj ∈ S and the atom b̃j so deﬁned
+satisﬁes E[|f3 (x)|2 | x ∈ b̃j ], E[|f3 (x + h)|2 | x ∈ b̃j ] ≤ ε2 .
+Since for bj ∈ S we have E[|f3 (x)|2 | x ∈ bj ], E[|f3 (x + h)|2 | x ∈ bj ] ≤ ε′2 =
+ζ
+1 2
+4 ε ζ, at most a fraction 4 of the elements of bj are in an atom b̃j of Bh satisfying
+2
+2
+E[|f3 (x)| | x ∈ b̃j ] > ε , and similarly at most a fraction ζ4 of the elements of bj
+are in an atom b̃j of Bh satisfying E[|f3 (x + h)|2 | x ∈ b̃j ] > ε2 . By our choice of
+ζ
+1
+r2 and r2′ , every atom of B has size at most ( kBk
++ 16kBk
+)2n and every atom of Bh
+ζ
+)2n , so the number of atoms of Bh for which one of
+has size at least ( kB1h k − 16kB
+hk
+ζ
+( 1 + 16kBk
+)2n
+1+ ζ
+17
+= 2ζ 1− 16
+the two bounds is exceeded is at most ζ2  kBk
+ζ |H| ≤ 30 ζ|H|.
+ζ
+1
+n
+kBh k
+
+17
+30 ζ|H|.
+
+− 16kB
+
+hk
+
+2
+
+16
+
+Applying Proposition 1.3 with H for the
+That is, |Sj | ≥ |(S − bj ) ∩ H| −
+group, the trivial group for the subgroup, and sets S1 , . . . , S2c−1 −1 gives points
+p1 , . . . , pc−1 ∈ H such that such for 1 ≤ i ≤ c − 1,
+
+
+
+i
+2X
+−1
+i−1
+
+
+X 
+X
+|Sj |
+
+S i−1 Pi−1 j−1 ∩ pi +
+x
+p
+≥
+.
+j
+j
+
+ 2 + j=1 xj 2
+
+
+|H|
+i−1
+i−1 
+j=1
+j=2
+
+x∈[0,1]
+
+The right hand side is
+X
+
+x∈[0,1]i−1
+
+≥
+
+
+
+
+
+S2i−1 +Pi−1
+j−1 
+x
+2
+j=1 j
+
+X
+
+x∈[0,1]i−1
+
+=
+
+X
+
+|H|
+
+|(S − b2i−1 +Pi−1 xj 2j−1 ) ∩ H| −
+j=1
+
+|H|
+
+
+
+Pi−1
+
+
+S ∩ Hi + j=1 xj Hj  −
+
+17
+30 ζ|H|
+
+17
+30 ζ|H|
+
+|H|
+
+
+5
+17
+> 2i−1 1 − 22−c + ζ − ζ|H| > 2i−1 (1 − 22−c ).
+8
+30
+x∈[0,1]i−1
+
+This is greater than 2i−1 − 1. So, by the P
+same argument as before, if for all
+nonzero x ∈ [0, 1]c−1 we let gPc−1 xj 2j−1 = c−1
+j=1 xj pj , then gj ∈ Sj for all j.
+j=1
+Also as before, for i ∈ [1, C], (g1,i , . . . , g2c−1 −1,i ) is (d′i , ki′ )-consistent with the
+system of linear forms {L1 , . . . , L2c−1 −1 }. So as long as r2′ is suﬃciently large,
+by Theorem 3.18, there is a copy of P G(c − 1, 2) whose elements are contained
+in the atoms b̃1 , . . . , b̃2c−1 −1 of Bh , respectively. Thus there is a homomorphism
+from N ∗ into the union of these atoms, so by the Counting Lemma, if n ≥ v2
+is suﬃciently large, there is a copy of N ∗ in the union of these atoms. By
+construction, these atoms satisfy the conditions on f1 and f3 that we were
+looking for, so applying the ﬁrst part of our argument ﬁnishes the proof of our
+conditional result.
+
+29
+
+6
+
+Future Steps
+
+The Counting Lemma has potential for giving simple proofs to other extremal
+results on matroids whose graph theory analogues are proven using the Szemerédi regularity lemma and its associated counting lemma, including giving
+short new proofs for known results (as for Theorem 2.9). A search through
+more such results in extremal graph theory which yield matroid analogues may
+well prove fruitful.
+In terms of the critical threshold problem, if Conjecture 5.2 is shown to be
+true, then Theorem 5.3 constitutes a proof of a somewhat more general subcase of the i = 3 case of Conjecture 2.13 than that given by Theorem 2.11.
+Regardless of whether Conjecture 5.2 is true (or simple to prove), the methods
+used in the proof of Theorem 5.3 seem to oﬀer a new approach to the critical
+threshold problem, that of using a strong form of regularity and attempting
+to analyze constructions like M ∩ (M + h) through counting lemma-type arguments. The same types of arguments seem equally suited for some special
+subcases of the i = 4 case of Conjecture 2.13, and could perhaps be adapted
+for more general cases as well. Finally, Proposition 1.3, as a simple generalization of the Bose-Burton theorem that makes its proof completely transparent,
+may be applicable to computing critical thresholds independently of the more
+sophisticated machinery we have developed.
+
+Acknowledgements
+This research was conducted at the University of Minnesota Duluth REU and
+was supported by NSF grant 1358659 and NSA grant H98230-16-1-0026. The
+author thanks Joe Gallian for suggesting the problem and for helpful comments
+on the manuscript. .
+
+References
+[1] Allen, P. Dense H-free graphs are almost (χ(H) − 1)-partite. Electron.
+J. Combin. 17, 1 (2010), R21.
+[2] Allen, P., Böttcher, J., Griffiths, S., Kohayakawa, Y., and
+Morris, R. The chromatic thresholds of graphs. Adv. Math. 235 (2013),
+261–295.
+[3] Bhattacharyya, A., Fischer, E., Hatami, H., Hatami, P., and
+Lovett, S. Every locally characterized aﬃne-invariant property is
+testable. In Proceedings of the forty-fifth annual ACM symposium on Theory of computing (2013), ACM, pp. 429–436.
+[4] Geelen, J., and Nelson, P. An analogue of the Erdős-Stone theorem
+for ﬁnite geometries. Combinatorica 35, 2 (2015), 209–214.
+
+30
+
+[5] Geelen, J., and Nelson, P. A density Hales–Jewett theorem for matroids. J. Combin. Theory Ser. B 112 (2015), 70–77.
+[6] Geelen, J., and Nelson, P. Odd circuits in dense binary matroids.
+Combinatorica (2015), 1–7.
+[7] Geelen, J., and Nelson, P. The critical number of dense triangle-free
+binary matroids. J. Combin. Theory Ser. B 116 (2016), 238–249.
+[8] Goddard, W., and Lyle, J. Dense graphs with small clique number. J.
+Graph Theory 66, 4 (2011), 319–331.
+[9] Green, B. A Szemerédi-type regularity lemma in abelian groups, with
+applications. Geom. Funct. Anal. 15, 2 (2005), 340–376.
+[10] Hatami, H., Hatami, P., and Lovett, S. General systems of linear
+forms: equidistribution and true complexity. Adv. Math. 292 (2016), 446–
+477.
+[11] Král’, D., Serra, O., and Vena, L. A removal lemma for systems of
+linear equations over ﬁnite ﬁelds. Israel J. Math. 187, 1 (2012), 193–207.
+[12] Schanuel, S. H. An extension of Chevalley’s theorem to congruences
+modulo prime powers. J. Number Theory 6, 4 (1974), 284–290.
+[13] Shapira, A. A proof of Green’s conjecture regarding the removal properties of sets of linear equations. J. Lond. Math. Soc. (2010), jdp076.
+[14] Tao, T., and Ziegler, T. The inverse conjecture for the Gowers norm
+over ﬁnite ﬁelds in low characteristic. Ann. Comb. 16, 1 (2012), 121–188.
+[15] Tidor, J. Dense binary P G(t − 1, 2)-free matroids have critical number
+t − 1 or t. arXiv:1508.07278 (2015).
+
+31
+
+

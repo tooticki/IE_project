@@ -1,0 +1,4786 @@
+<!DOCTYPE html><html>
+<head>
+<title></title>
+<style type="text/css">
+<!--
+.xflip {
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: fliph;
+}
+.yflip {
+    -moz-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: flipv;
+}
+.xyflip {
+    -moz-transform: scaleX(-1) scaleY(-1);
+    -webkit-transform: scaleX(-1) scaleY(-1);
+    -o-transform: scaleX(-1) scaleY(-1);
+    transform: scaleX(-1) scaleY(-1);
+    filter: fliph + flipv;
+}
+-->
+</style>
+</head>
+<body>
+<a name=1></a><img class="yflip" src="html/1806.00458-1_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-1_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-1_3.png"/><br/>
+Improved&#160;Oracle&#160;Complexity&#160;for&#160;Stochastic&#160;Compositional&#160;Variance<br/>
+Reduced&#160;Gradient<br/>
+Tianyi&#160;Lin&#160;∗<br/>
+Chenyou&#160;Fan&#160;†<br/>
+Mengdi&#160;Wang&#160;‡<br/>
+Michael&#160;I.&#160;Jordan&#160;§<br/>
+June&#160;4,&#160;2018<br/>
+Abstract<br/>
+We&#160;propose&#160;an&#160;accelerated&#160;stochastic&#160;compositional&#160;variance&#160;reduced&#160;gradient&#160;method&#160;for&#160;optimiz-<br/>
+ing&#160;the&#160;sum&#160;of&#160;a&#160;composition&#160;function&#160;and&#160;a&#160;convex&#160;nonsmooth&#160;function.&#160;We&#160;provide&#160;an&#160;incremental<br/>first-order&#160;oracle&#160;(IFO)&#160;complexity&#160;analysis&#160;for&#160;the&#160;proposed&#160;algorithm&#160;and&#160;show&#160;that&#160;it&#160;is&#160;provably<br/>faster&#160;than&#160;all&#160;the&#160;existing&#160;methods.&#160;Indeed,&#160;we&#160;show&#160;that&#160;our&#160;method&#160;achieves&#160;an&#160;asymptotic&#160;IFO<br/>complexity&#160;of&#160;O&#160;(m&#160;+&#160;n)&#160;log&#160;(1/ε)&#160;+&#160;1/ε3&#160;where&#160;m&#160;and&#160;n&#160;are&#160;the&#160;number&#160;of&#160;inner/outer&#160;compo-<br/>nent&#160;functions,&#160;improving&#160;the&#160;best-known&#160;results&#160;of&#160;O&#160;m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε2&#160;and&#160;achieving&#160;for<br/>the&#160;best&#160;known&#160;linear&#160;run&#160;time&#160;for&#160;convex&#160;composition&#160;problem.&#160;Experiment&#160;results&#160;on&#160;sparse&#160;mean-<br/>variance&#160;optimization&#160;with&#160;21&#160;real-world&#160;financial&#160;datasets&#160;confirm&#160;that&#160;our&#160;method&#160;outperforms<br/>other&#160;competing&#160;methods.<br/>
+1<br/>
+Introduction<br/>
+We&#160;consider&#160;a&#160;general&#160;nonsmooth&#160;convex&#160;composition&#160;problem&#160;in&#160;which&#160;the&#160;objective&#160;is&#160;the&#160;sum&#160;of&#160;a<br/>composition&#160;function&#160;and&#160;a&#160;nonsmooth&#160;convex&#160;function:<br/>
+<a href="http://arxiv.org/abs/1806.00458v1">arXiv:1806.00458v1 &#160;[math.OC] &#160;1 Jun 2018</a><br/>
+min&#160;Φ(x)&#160;=&#160;F&#160;(x)&#160;+&#160;r(x),<br/>
+(1)<br/>
+x∈Rd<br/>
+where&#160;r&#160;:&#160;Rd&#160;→&#160;R&#160;∪&#160;{+∞}&#160;is&#160;an&#160;extended&#160;real-valued&#160;closed&#160;convex&#160;function&#160;and&#160;F&#160;:&#160;Rd&#160;→&#160;R&#160;is&#160;a<br/>continuously&#160;differentiable&#160;convex&#160;function,&#160;given&#160;by<br/>
+<br/>
+<br/>
+n<br/>
+m<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+F&#160;(x)&#160;=<br/>
+f<br/>
+g<br/>
+n<br/>
+i&#160;&#160;m<br/>
+j&#160;(x)&#160;.<br/>
+i=1<br/>
+j=1<br/>
+∗Department&#160;of&#160;Industrial&#160;Engineering&#160;and&#160;Operations&#160;Research,&#160;UC&#160;Berkeley,&#160;Berkeley,&#160;CA&#160;94720,&#160;USA.<br/>
+†School&#160;of&#160;Informatics&#160;and&#160;Computing,&#160;Indiana&#160;University,&#160;Bloomington,&#160;IN&#160;47405,&#160;USA.<br/>‡Department&#160;of&#160;Operations&#160;Research&#160;and&#160;Financial&#160;Engineering,&#160;Princeton&#160;University,&#160;Princeton,&#160;NJ&#160;08544,&#160;USA.<br/>§Department&#160;of&#160;Electrical&#160;Engineering&#160;and&#160;Computer&#160;Science&#160;and&#160;Department&#160;of&#160;Statistics,&#160;UC&#160;Berkeley,&#160;Berkeley,&#160;CA<br/>
+94720,&#160;USA.<br/>
+1<br/>
+<hr/>
+<a name=2></a><img class="yflip" src="html/1806.00458-2_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-2_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-2_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-2_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-2_5.png"/><br/>
+Here&#160;fi&#160;:&#160;Rl&#160;→&#160;R&#160;(i&#160;∈&#160;[n])&#160;and&#160;gj&#160;:&#160;Rd&#160;→&#160;Rl&#160;(j&#160;∈&#160;[m])&#160;are&#160;continuously&#160;differentiable.&#160;Problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>is<br/>highly&#160;structured&#160;but&#160;also&#160;quite&#160;general;&#160;indeed,&#160;various&#160;special&#160;cases&#160;have&#160;been&#160;studied&#160;in&#160;a&#160;host&#160;of<br/>applications,&#160;including&#160;reinforcement&#160;learning&#160;<a href="1806.00458s.html#13">[25]</a>,&#160;nonparametric&#160;statistics&#160;<a href="1806.00458s.html#12">[8]</a>,&#160;risk&#160;management&#160;<a href="1806.00458s.html#12">[18]</a>,<br/>multi-stage&#160;stochastic&#160;programming&#160;<a href="1806.00458s.html#13">[24]</a>,&#160;system&#160;control&#160;<a href="1806.00458s.html#12">[11]</a>,&#160;model-based&#160;stochastic&#160;search&#160;<a href="1806.00458s.html#12">[7]&#160;</a>and&#160;deep<br/>neural&#160;nets&#160;<a href="1806.00458s.html#12">[6,&#160;</a><a href="1806.00458s.html#13">29]</a>.&#160;Here&#160;are&#160;two&#160;typical&#160;examples:<br/>
+Example&#160;1.1&#160;(Risk-Averse&#160;Learning).&#160;Consider&#160;the&#160;mean-variance&#160;minimization&#160;problem<br/>
+n<br/>
+n&#160;&#34;<br/>
+n<br/>
+#2<br/>
+1&#160;X<br/>
+λ&#160;X<br/>
+1&#160;X<br/>
+min<br/>
+h(x,&#160;ai,&#160;bi)&#160;+<br/>
+h(x,&#160;ai,&#160;bi)&#160;−<br/>
+h(x,&#160;ai,&#160;bi)<br/>
+,<br/>
+x<br/>
+n<br/>
+n<br/>
+n<br/>
+i=1<br/>
+i=1<br/>
+i=1<br/>
+where&#160;h(x,&#160;ai,&#160;bi)&#160;is&#160;the&#160;loss&#160;on&#160;a&#160;sample&#160;data&#160;point&#160;(ai,&#160;bi)&#160;and&#160;λ&#160;&gt;&#160;0&#160;is&#160;a&#160;regularization&#160;parameter.<br/>
+Example&#160;1.2&#160;(On-Policy&#160;Reinforcement&#160;Learning&#160;<a href="1806.00458s.html#13">[25,&#160;</a><a href="1806.00458s.html#12">15]</a>).&#160;Given&#160;a&#160;controllable&#160;Markov&#160;chain&#160;with<br/>states&#160;{1,&#160;2,&#160;.&#160;.&#160;.&#160;,&#160;S},&#160;estimate&#160;the&#160;value-per-state&#160;of&#160;a&#160;fixed&#160;control&#160;policy&#160;π&#160;that&#160;satisfies&#160;the&#160;Bellman<br/>equation:<br/>
+γP&#160;πV&#160;π&#160;+&#160;rπ&#160;=&#160;V&#160;π,<br/>
+where&#160;γ&#160;∈&#160;(0,&#160;1)&#160;is&#160;a&#160;discount&#160;factor,&#160;P&#160;π<br/>
+s˜<br/>
+s&#160;is&#160;the&#160;transition&#160;probability&#160;from&#160;state&#160;s&#160;to&#160;state&#160;˜<br/>
+s&#160;and&#160;rπs&#160;is<br/>
+the&#160;expected&#160;state&#160;transition&#160;reward&#160;at&#160;state&#160;s.&#160;The&#160;solution&#160;V&#160;π&#160;is&#160;a&#160;vector&#160;with&#160;each&#160;entry&#160;V&#160;π<br/>
+s&#160;being&#160;the<br/>
+total&#160;expected&#160;reward&#160;starting&#160;at&#160;state&#160;s.&#160;In&#160;a&#160;black-box&#160;simulation&#160;environment,&#160;solving&#160;the&#160;Bellman<br/>equation&#160;is&#160;a&#160;special&#160;case&#160;of&#160;the&#160;stochastic&#160;composition&#160;optimization&#160;problem:<br/>
+<br/>
+<br/>
+<br/>
+m<br/>
+1<br/>
+X<br/>
+min&#160;L<br/>
+<br/>
+<br/>
+<br/>
+I&#160;−&#160;γP&#160;π<br/>
+j<br/>
+x&#160;−&#160;rπj&#160;,<br/>
+x∈X<br/>
+m&#160;j=1<br/>
+where&#160;L&#160;is&#160;a&#160;general&#160;loss&#160;function,&#160;x&#160;is&#160;a&#160;policy,&#160;and&#160;P&#160;π<br/>
+j&#160;and&#160;rπ<br/>
+j&#160;are&#160;sampled&#160;from&#160;a&#160;simulator.<br/>
+Despite&#160;its&#160;usefulness,&#160;problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>is&#160;more&#160;computationally&#160;challenging&#160;than&#160;its&#160;noncompositional&#160;coun-<br/>terpart;&#160;i.e.,&#160;problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>with&#160;gj(x)&#160;=&#160;x&#160;for&#160;all&#160;j&#160;∈&#160;[m].&#160;Indeed,&#160;stochastic-gradient-type&#160;methods<br/>deteriorate&#160;in&#160;the&#160;former&#160;setting&#160;since&#160;the&#160;sampled&#160;gradients&#160;are&#160;biased&#160;in&#160;general,&#160;being&#160;unbiased&#160;only<br/>if&#160;gj(x)&#160;=&#160;x&#160;for&#160;all&#160;j&#160;∈&#160;[m].&#160;The&#160;alternative&#160;of&#160;using&#160;the&#160;stochastic&#160;variance-reduced&#160;gradient&#160;method<br/>(SVRG)&#160;<a href="1806.00458s.html#12">[10]&#160;</a>leads&#160;to&#160;a&#160;very&#160;high&#160;computational&#160;burden&#160;as&#160;it&#160;needs&#160;to&#160;compute&#160;1&#160;Pm&#160;g<br/>
+m<br/>
+j=1&#160;j&#160;(x)&#160;at&#160;each<br/>
+iteration.&#160;In&#160;response&#160;to&#160;such&#160;concerns,&#160;a&#160;number&#160;of&#160;computationally&#160;efficient&#160;stochastic&#160;compositional<br/>variance&#160;reduced&#160;gradient&#160;methods&#160;have&#160;been&#160;proposed&#160;for&#160;solving&#160;problem&#160;<a href="1806.00458s.html#1">(1)</a>.&#160;Notably,&#160;Huo&#160;et&#160;al.<br/><a href="1806.00458s.html#12">[9]&#160;</a>presented&#160;a&#160;method&#160;having&#160;an&#160;IFO&#160;complexity&#160;of&#160;O&#160;m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε2&#160;for&#160;convex&#160;objectives;<br/>this&#160;is&#160;the&#160;best&#160;known&#160;complexity&#160;to&#160;date.&#160;See&#160;Table&#160;<a href="1806.00458s.html#3">1&#160;</a>for&#160;comparisons&#160;to&#160;various&#160;algorithms.<br/>
+While&#160;there&#160;has&#160;been&#160;abundant&#160;work&#160;on&#160;strongly&#160;convex&#160;objectives&#160;and&#160;nonconvex&#160;objectives,&#160;there<br/>has&#160;been&#160;relatively&#160;little&#160;investigation&#160;of&#160;convex&#160;(but&#160;not&#160;strongly&#160;convex)&#160;objectives.&#160;In&#160;particular,&#160;the<br/>following&#160;important&#160;case&#160;has&#160;been&#160;neglected:&#160;the&#160;composition&#160;function&#160;F&#160;is&#160;convex&#160;while&#160;some&#160;of&#160;the<br/>composition&#160;terms&#160;are&#160;nonconvex.&#160;Perhaps&#160;counterintuitively,&#160;it&#160;has&#160;been&#160;observed&#160;in&#160;that&#160;the&#160;average<br/>of&#160;loss&#160;functions&#160;can&#160;be&#160;convex&#160;even&#160;if&#160;some&#160;loss&#160;functions&#160;are&#160;nonconvex&#160;<a href="1806.00458s.html#12">[21,&#160;</a><a href="1806.00458s.html#11">4]</a>.&#160;This&#160;can&#160;occur&#160;when<br/>some&#160;of&#160;the&#160;loss&#160;functions&#160;are&#160;strongly&#160;convex.&#160;Similarly,&#160;F&#160;can&#160;be&#160;convex&#160;when&#160;there&#160;are&#160;nonconvex<br/>terms,&#160;when&#160;some&#160;of&#160;the&#160;other&#160;composition&#160;terms&#160;are&#160;strongly&#160;convex.&#160;In&#160;the&#160;SVRG&#160;setting,&#160;<a href="1806.00458s.html#11">[4]&#160;</a>has<br/>shown&#160;that&#160;the&#160;dependence&#160;of&#160;the&#160;IFO&#160;complexity&#160;of&#160;SVRG&#160;on&#160;n&#160;can&#160;be&#160;n&#160;log(1/ε)&#160;when&#160;the&#160;objective<br/>is&#160;convex.&#160;What&#160;remains&#160;unknown&#160;is&#160;whether&#160;this&#160;conclusion&#160;holds&#160;true&#160;in&#160;the&#160;compositional&#160;setting.<br/>This&#160;is&#160;the&#160;central&#160;question&#160;of&#160;the&#160;current&#160;paper:<br/>
+2<br/>
+<hr/>
+<a name=3></a><img class="yflip" src="html/1806.00458-3_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_28.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_29.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_30.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_31.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_32.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_33.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_34.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_35.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_36.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_37.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_38.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_39.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_40.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_41.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_42.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_43.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_44.png"/><br/>
+<img class="yflip" src="html/1806.00458-3_45.png"/><br/>
+Table&#160;1:&#160;The&#160;IFO&#160;complexity&#160;of&#160;stochastic&#160;composition&#160;optimization&#160;methods.&#160;ε&#160;is&#160;the<br/>tolerance.&#160;m&#160;is&#160;the&#160;number&#160;of&#160;inner&#160;functions.&#160;n&#160;is&#160;the&#160;number&#160;of&#160;outer&#160;functions.&#160;In&#160;order&#160;to&#160;provide<br/>a&#160;clean&#160;comparison,&#160;we&#160;hide&#160;the&#160;dependence&#160;of&#160;the&#160;IFO&#160;complexity&#160;on&#160;the&#160;Lipschitz&#160;constants&#160;of&#160;f&#160;,&#160;fi<br/>and&#160;gj,&#160;the&#160;upper&#160;bound&#160;of&#160;the&#160;norm&#160;of&#160;∇fi&#160;and&#160;∂gj,&#160;and&#160;the&#160;distance&#160;between&#160;the&#160;initial&#160;point&#160;and<br/>the&#160;optimal&#160;set.&#160;We&#160;also&#160;omit&#160;the&#160;dependence&#160;on&#160;the&#160;dimension&#160;d&#160;since&#160;it&#160;is&#160;linear&#160;for&#160;all&#160;methods.<br/>
+Convex&#160;Objective<br/>
+Method<br/>
+r&#160;6=&#160;0?&#160;Shrinking&#160;Step&#160;Size?<br/>
+Criterion:&#160;E&#160;[Φ(x)]&#160;−&#160;Φ(x∗)&#160;≤&#160;ε<br/>
+√<br/>
+AGD&#160;<a href="1806.00458s.html#12">[14]</a><br/>
+O&#160;((m&#160;+&#160;n)/&#160;ε)<br/>
+Yes<br/>
+No<br/>
+SCGD&#160;<a href="1806.00458s.html#13">[26]</a><br/>
+O&#160;1/ε4<br/>
+No<br/>
+Yes<br/>
+ASC-PG&#160;<a href="1806.00458s.html#13">[27]</a><br/>
+O&#160;1/ε3.5<br/>
+Yes<br/>
+Yes<br/>
+VRSC-PG&#160;<a href="1806.00458s.html#12">[9]</a><br/>
+O&#160;m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε2<br/>
+Yes<br/>
+No<br/>
+ASCVRG&#160;(This&#160;paper)<br/>
+O&#160;(m+n)&#160;log&#160;(1/ε)&#160;+&#160;1/ε3<br/>
+Yes<br/>
+No<br/>
+Can&#160;we&#160;develop&#160;an&#160;accelerated&#160;stochastic&#160;compositional&#160;variance&#160;reduced&#160;gradient&#160;method&#160;with<br/>the&#160;IFO&#160;complexity&#160;where&#160;the&#160;dependence&#160;of&#160;m&#160;+&#160;n&#160;is&#160;(m&#160;+&#160;n)&#160;log(1/ε)&#160;in&#160;the&#160;convex&#160;setting?<br/>
+1.1<br/>
+Related&#160;Work<br/>
+Since&#160;the&#160;seminal&#160;work&#160;on&#160;SVRG&#160;<a href="1806.00458s.html#12">[10]</a>,&#160;stochastic&#160;average&#160;gradient&#160;<a href="1806.00458s.html#12">[19]&#160;</a>and&#160;stochastic&#160;dual&#160;coordinate<br/>ascent&#160;<a href="1806.00458s.html#12">[22]</a>,&#160;variance&#160;reduction&#160;has&#160;been&#160;successfully&#160;applied&#160;to&#160;solve&#160;problem&#160;<a href="1806.00458s.html#1">(1)</a>,&#160;in&#160;the&#160;special&#160;case&#160;of<br/>gj(x)&#160;=&#160;x&#160;for&#160;all&#160;j&#160;∈&#160;[m],&#160;in&#160;a&#160;variety&#160;of&#160;settings&#160;<a href="1806.00458s.html#11">[4,&#160;</a><a href="1806.00458s.html#12">23,&#160;</a><a href="1806.00458s.html#11">3,&#160;</a><a href="1806.00458s.html#12">17,&#160;</a><a href="1806.00458s.html#11">2,&#160;</a><a href="1806.00458s.html#12">12]</a>.&#160;Allen-Zhu&#160;<a href="1806.00458s.html#11">[4]&#160;</a>provided&#160;an&#160;improved<br/>IFO&#160;complexity&#160;of&#160;O(n&#160;log(1/ε)&#160;+&#160;1/ε))&#160;for&#160;convex&#160;objectives,&#160;and&#160;Reddi&#160;et&#160;al.&#160;<a href="1806.00458s.html#12">[17]&#160;</a>and&#160;Allen-Zhu&#160;and<br/>Hazan&#160;<a href="1806.00458s.html#11">[3]&#160;</a>obtained&#160;an&#160;IFO&#160;complexity&#160;of&#160;O(n&#160;+&#160;n2/3/ε))&#160;for&#160;nonconvex&#160;objectives.&#160;However,&#160;all&#160;of&#160;these<br/>methods&#160;are&#160;computationally&#160;inefficient&#160;as&#160;putative&#160;solutions&#160;to&#160;problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>in&#160;general&#160;because&#160;they<br/>need&#160;to&#160;compute&#160;1&#160;Pm&#160;g<br/>
+m<br/>
+j=1&#160;j&#160;(x)&#160;at&#160;each&#160;iteration.<br/>
+To&#160;solve&#160;problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>efficiently,&#160;Wang&#160;et&#160;al.&#160;<a href="1806.00458s.html#13">[26]&#160;</a>proposed&#160;and&#160;analyzed&#160;a&#160;class&#160;of&#160;stochastic&#160;compo-<br/>sitional&#160;gradient/subgradient&#160;(SCGD)&#160;methods&#160;with&#160;iterates&#160;at&#160;two&#160;different&#160;time&#160;scales&#160;instead&#160;of&#160;a<br/>single&#160;iterate&#160;as&#160;in&#160;the&#160;case&#160;of&#160;stochastic&#160;gradient&#160;descent.&#160;Wang&#160;et&#160;al.&#160;<a href="1806.00458s.html#13">[27]&#160;</a>proposed&#160;an&#160;accelerated<br/>SCGD&#160;method&#160;which&#160;improved&#160;the&#160;IFO&#160;complexity&#160;over&#160;SCGD.&#160;On&#160;the&#160;other&#160;hand,&#160;variance&#160;reduction<br/>has&#160;been&#160;proposed&#160;to&#160;accelerate&#160;stochastic&#160;compositional&#160;gradient&#160;method&#160;in&#160;<a href="1806.00458s.html#12">[13]&#160;</a>for&#160;strongly&#160;convex<br/>objectives.&#160;Yu&#160;and&#160;Huang&#160;<a href="1806.00458s.html#13">[30]&#160;</a>proposed&#160;another&#160;stochastic&#160;compositional&#160;variance&#160;reduced&#160;gradient<br/>method,&#160;named&#160;com-SVRADMM,&#160;for&#160;strongly&#160;convex&#160;objectives.&#160;Very&#160;recently,&#160;Huo&#160;et&#160;al.&#160;<a href="1806.00458s.html#12">[9]&#160;</a>analyzed<br/>a&#160;new&#160;class&#160;of&#160;stochastic&#160;compositional&#160;variance&#160;reduced&#160;gradient&#160;methods&#160;with&#160;an&#160;IFO&#160;complexity&#160;of<br/>
+h<br/>
+O(m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε)&#160;for&#160;nonconvex&#160;objectives,&#160;yielding&#160;a&#160;solution&#160;x&#160;satisfying&#160;E&#160;k∇Φ(x)k2i&#160;≤&#160;ε.<br/>However,&#160;in&#160;real&#160;applications&#160;with&#160;convex&#160;objectives,&#160;the&#160;quality&#160;of&#160;training&#160;or&#160;testing&#160;depends&#160;on&#160;the<br/>objective&#160;gap&#160;rather&#160;than&#160;the&#160;norm&#160;of&#160;the&#160;gradient.&#160;So&#160;a&#160;solution&#160;x&#160;satisfying&#160;E&#160;[Φ(x)]&#160;−&#160;Φ(x∗)&#160;≤&#160;ε<br/>would&#160;be&#160;preferred.&#160;On&#160;the&#160;other&#160;hand,&#160;we&#160;have<br/>
+1<br/>
+h<br/>
+E&#160;k∇Φ(x)k2i&#160;≤&#160;E&#160;[Φ(x)]&#160;−&#160;Φ(x∗)&#160;≤&#160;E&#160;[k∇Φ(x)k&#160;kx&#160;−&#160;x∗k]&#160;,<br/>
+(2)<br/>
+2Lφ<br/>
+where&#160;Lφ&#160;is&#160;defined&#160;in&#160;Assumption&#160;<a href="1806.00458s.html#7">3.3,&#160;</a>implying&#160;that&#160;the&#160;IFO&#160;complexity&#160;of&#160;Huo&#160;et&#160;al.&#160;’s&#160;method&#160;is<br/>O(m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε2)&#160;in&#160;terms&#160;of&#160;the&#160;objective&#160;gap.<br/>
+3<br/>
+<hr/>
+<a name=4></a><img class="yflip" src="html/1806.00458-4_1.png"/><br/>
+In&#160;contrast,&#160;our&#160;method&#160;can&#160;provide&#160;a&#160;solution&#160;x&#160;satisfying&#160;E&#160;[Φ(x)]&#160;−&#160;Φ(x∗)&#160;≤&#160;ε&#160;and&#160;achieve&#160;an<br/>IFO&#160;complexity&#160;of&#160;O&#160;(m&#160;+&#160;n)&#160;log&#160;(1/ε)&#160;+&#160;1/ε3.&#160;This&#160;is&#160;important,&#160;suggesting&#160;the&#160;best&#160;linear&#160;time<br/>complexity&#160;for&#160;approximately&#160;solving&#160;convex&#160;composition&#160;problem.<br/>
+1.2<br/>
+Contributions<br/>
+We&#160;summarize&#160;our&#160;major&#160;contributions&#160;as&#160;follows:<br/>
+1.&#160;We&#160;develop&#160;an&#160;accelerated&#160;SCVRG&#160;method&#160;and&#160;prove&#160;that&#160;it&#160;achieves&#160;an&#160;asymptotic&#160;IFO&#160;complex-<br/>
+ity&#160;of&#160;O&#160;(m&#160;+&#160;n)&#160;log&#160;(1/ε)&#160;+&#160;1/ε3&#160;when&#160;the&#160;objective&#160;is&#160;nonsmooth&#160;and&#160;convex.&#160;This&#160;improves&#160;the<br/>best&#160;known&#160;IFO&#160;complexity&#160;in&#160;<a href="1806.00458s.html#12">[9]&#160;</a>and&#160;provides&#160;an&#160;accelerated&#160;stochastic&#160;compositional&#160;variance<br/>reduced&#160;gradient&#160;algorithm&#160;for&#160;nonsmooth&#160;convex&#160;stochastic&#160;composition&#160;optimization.<br/>
+2.&#160;We&#160;present&#160;a&#160;new&#160;iterative&#160;stochastic&#160;analysis&#160;approach&#160;to&#160;achieve&#160;ε-optimal&#160;solutions&#160;in&#160;terms<br/>
+of&#160;the&#160;objective&#160;gap.&#160;As&#160;discussed&#160;earlier,&#160;this&#160;is&#160;more&#160;reasonable&#160;in&#160;real&#160;application&#160;problems<br/>involving&#160;convex&#160;composition&#160;optimization.<br/>
+3.&#160;We&#160;conduct&#160;extensive&#160;experiments&#160;on&#160;sparse&#160;mean-variance&#160;optimization&#160;with&#160;21&#160;real-world&#160;fi-<br/>
+nancial&#160;datasets&#160;to&#160;show&#160;that&#160;our&#160;methods&#160;outperform&#160;other&#160;competing&#160;methods.<br/>
+1.3<br/>
+Notation&#160;and&#160;Organization<br/>
+Throughout&#160;the&#160;paper,&#160;we&#160;denote&#160;vectors&#160;by&#160;bold&#160;lower&#160;case&#160;letters,&#160;e.g.,&#160;x,&#160;and&#160;matrices&#160;by&#160;regular<br/>upper&#160;case&#160;letters,&#160;e.g.,&#160;X.&#160;The&#160;transpose&#160;of&#160;a&#160;real&#160;vector&#160;x&#160;is&#160;denoted&#160;as&#160;x⊤.&#160;kxk&#160;and&#160;kXk&#160;denote<br/>the&#160;vector&#160;ℓ2&#160;norm&#160;and&#160;the&#160;matrix&#160;spectral&#160;norm&#160;for&#160;a&#160;vector&#160;x&#160;and&#160;a&#160;matrix&#160;X.&#160;For&#160;a&#160;scalar&#160;x&#160;∈&#160;R,<br/>⌊x⌋&#160;is&#160;the&#160;largest&#160;integer&#160;which&#160;is&#160;smaller&#160;than&#160;x.&#160;For&#160;two&#160;non-negative&#160;sequences&#160;{at}&#160;and&#160;{bt},&#160;we<br/>write&#160;at&#160;=&#160;O(bt)&#160;if&#160;there&#160;exists&#160;a&#160;constant&#160;N&#160;&gt;&#160;0&#160;such&#160;that&#160;at&#160;≤&#160;Nbt&#160;for&#160;each&#160;t&#160;≥&#160;0,&#160;and&#160;at&#160;=&#160;o(bt)&#160;if<br/>there&#160;exists&#160;a&#160;non-negative&#160;sequence&#160;{ct}&#160;such&#160;that&#160;at&#160;≤&#160;ctbt&#160;for&#160;each&#160;t&#160;≥&#160;0&#160;and&#160;ct&#160;→&#160;0&#160;as&#160;t&#160;→&#160;∞.&#160;We<br/>denote&#160;the&#160;gradien<a href="1806.00458s.html#4">t1&#160;</a>of&#160;F&#160;:&#160;Rd&#160;→&#160;R&#160;at&#160;x&#160;as&#160;∇F&#160;(x)&#160;=&#160;[∂g(x)]⊤∇f&#160;(g(x))&#160;∈&#160;Rd,&#160;where&#160;∂g(x)&#160;∈&#160;Rl×d&#160;is<br/>the&#160;Jacobian&#160;of&#160;g&#160;:&#160;Rd&#160;→&#160;Rl&#160;at&#160;x.&#160;We&#160;use&#160;subscript&#160;t&#160;and&#160;superscript&#160;s&#160;to&#160;denote&#160;a&#160;iterate,&#160;e.g.,&#160;xst,&#160;at<br/>the&#160;t-th&#160;iteration&#160;in&#160;the&#160;s-th&#160;epoch.&#160;The&#160;sets&#160;At,&#160;Bt&#160;and&#160;Ct&#160;are&#160;randomly&#160;selected&#160;indices&#160;at&#160;the&#160;t-th<br/>iteration&#160;with&#160;batch&#160;sizes&#160;A,&#160;B&#160;and&#160;C.&#160;E&#160;[·&#160;|&#160;ζ]&#160;is&#160;a&#160;conditional&#160;expectation&#160;given&#160;the&#160;variable&#160;ζ&#160;and&#160;E<br/>is&#160;an&#160;expectation&#160;over&#160;all&#160;randomness.<br/>
+The&#160;rest&#160;of&#160;the&#160;paper&#160;is&#160;organized&#160;as&#160;follows.&#160;Section&#160;<a href="1806.00458s.html#5">2&#160;</a>presents&#160;our&#160;incremental&#160;first-order&#160;oracle&#160;(IFO)<br/>framework&#160;and&#160;our&#160;proposed&#160;SCVRG&#160;method.&#160;Section&#160;<a href="1806.00458s.html#6">3&#160;</a>states&#160;the&#160;IFO&#160;complexity&#160;bound&#160;for&#160;our<br/>method,&#160;with&#160;complete&#160;proofs&#160;and&#160;technical&#160;details&#160;deferred&#160;to&#160;the&#160;appendices.&#160;Section&#160;<a href="1806.00458s.html#9">4&#160;</a>demonstrates<br/>an&#160;application&#160;of&#160;our&#160;method&#160;to&#160;sparse&#160;mean-variance&#160;optimization&#160;problem&#160;and&#160;presents&#160;numerical<br/>results.&#160;Conclusions&#160;and&#160;future&#160;directions&#160;are&#160;presented&#160;in&#160;Section&#160;<a href="1806.00458s.html#10">5.</a><br/>
+1The&#160;gradient&#160;operator&#160;always&#160;calculates&#160;the&#160;gradient&#160;with&#160;respect&#160;to&#160;the&#160;first-level&#160;variable.&#160;More&#160;specifically,&#160;∇f(g(x))<br/>
+refers&#160;to&#160;the&#160;gradient&#160;of&#160;f&#160;(y)&#160;at&#160;y&#160;=&#160;g(x),&#160;not&#160;the&#160;gradient&#160;of&#160;F&#160;(x)&#160;=&#160;f&#160;(g(x))&#160;at&#160;x.<br/>
+4<br/>
+<hr/>
+<a name=5></a><img class="yflip" src="html/1806.00458-5_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-5_11.png"/><br/>
+Algorithm&#160;1&#160;Accelerated&#160;Stochastic&#160;Compositional&#160;Variance&#160;Reduced&#160;Gradient&#160;Method<br/>
+Input:&#160;˜<br/>
+x0=x0k&#160;=x0&#160;∈&#160;Rd,&#160;first&#160;epoch&#160;length&#160;k0,&#160;step&#160;size&#160;η&#160;&gt;&#160;0&#160;and&#160;the&#160;number&#160;of&#160;epochs&#160;S.<br/>
+0<br/>
+Initialization:&#160;l&#160;=&#160;0&#160;and&#160;T&#160;=&#160;k0&#160;·&#160;2S&#160;−&#160;k0.<br/>for&#160;s&#160;=&#160;0,&#160;1,&#160;.&#160;.&#160;.&#160;,&#160;S&#160;do<br/>
+xs+1&#160;=&#160;xs&#160;,&#160;˜<br/>
+gs+1=g(˜<br/>
+xs),&#160;˜<br/>
+Gs+1=∂g(˜<br/>
+xs),<br/>
+0<br/>
+ks<br/>
+˜<br/>
+vs+1=&#160;[∂g(˜<br/>
+xs)]⊤&#160;∇f&#160;(˜gs+1)&#160;and&#160;ks+1&#160;=&#160;2s+1&#160;·&#160;k0.<br/>
+for&#160;t&#160;=&#160;0,&#160;1,&#160;.&#160;.&#160;.&#160;,&#160;ks+1&#160;−&#160;1&#160;do<br/>
+Sample&#160;from&#160;IFO&#160;with&#160;gj&#160;(xs+1<br/>
+(˜<br/>
+xs),&#160;then&#160;update&#160;gs+1<br/>
+t<br/>
+t<br/>
+)&#160;and&#160;gjt<br/>
+t<br/>
+according&#160;to&#160;<a href="1806.00458s.html#5">(3)</a>.<br/>
+Sample&#160;from&#160;IFO&#160;with&#160;∂gj&#160;(xs+1<br/>
+(˜<br/>
+xs),&#160;then&#160;update&#160;Gs+1<br/>
+t<br/>
+t<br/>
+)&#160;and&#160;∂gjt<br/>
+t<br/>
+according&#160;to&#160;<a href="1806.00458s.html#5">(4)</a>.<br/>
+Sample&#160;from&#160;IFO&#160;with&#160;∇fi&#160;(gs+1<br/>
+(˜<br/>
+gs+1),&#160;then&#160;update&#160;vs+1<br/>
+t<br/>
+t<br/>
+)&#160;and&#160;∇fit<br/>
+t<br/>
+according&#160;to&#160;<a href="1806.00458s.html#6">(5)</a>.<br/>
+√<br/>
+Set&#160;l&#160;=&#160;l&#160;+&#160;1&#160;and&#160;ηs+1<br/>
+T<br/>
+t<br/>
+=&#160;η<br/>
+√<br/>
+,&#160;then&#160;update&#160;xs+1&#160;according&#160;to&#160;<a href="1806.00458s.html#6">(6)</a>.<br/>
++1<br/>
+2T&#160;−l<br/>
+t+1<br/>
+end&#160;for<br/>
+˜<br/>
+xs+1&#160;=<br/>
+1<br/>
+Pks+1−1&#160;xs+1<br/>
+ks<br/>
+t<br/>
+.<br/>
++1<br/>
+t=0<br/>
+end&#160;for<br/>Output:&#160;˜<br/>
+xS.<br/>
+2<br/>
+Algorithm<br/>
+In&#160;this&#160;section,&#160;we&#160;focus&#160;on&#160;the&#160;algorithmic&#160;design&#160;of&#160;stochastic&#160;composition&#160;optimization&#160;methods&#160;under<br/>a&#160;black-box&#160;sampling&#160;environment&#160;with&#160;the&#160;access&#160;to&#160;an&#160;incremental&#160;first-order&#160;oracle&#160;(IFO).&#160;The&#160;IFO<br/>is&#160;a&#160;typical&#160;simulation&#160;oracle&#160;studied&#160;in&#160;both&#160;online&#160;and&#160;batch&#160;learning&#160;<a href="1806.00458s.html#12">[20]</a>;&#160;it&#160;is&#160;also&#160;widely&#160;used&#160;in<br/>complexity&#160;theory&#160;<a href="1806.00458s.html#11">[1,&#160;</a><a href="1806.00458s.html#13">28]</a>.<br/>
+Definition&#160;2.1&#160;(Incremental&#160;First-order&#160;Oracle&#160;(IFO)).&#160;Given&#160;some&#160;x&#160;∈&#160;Rd&#160;and&#160;j&#160;∈&#160;[m],&#160;the&#160;IFO<br/>returns&#160;a&#160;vector&#160;gj(x)&#160;or&#160;a&#160;matrix&#160;∂gj(x).&#160;Alternatively,&#160;given&#160;some&#160;y&#160;∈&#160;Rl&#160;and&#160;i&#160;∈&#160;[n],&#160;the&#160;IFO<br/>returns&#160;a&#160;value&#160;fi(y)&#160;or&#160;a&#160;vector&#160;∇fi(y).<br/>
+We&#160;propose&#160;the&#160;Accelerated&#160;Stochastic&#160;Compositional&#160;Variance&#160;Reduced&#160;Gradient&#160;method,&#160;denoted&#160;as<br/>ASCVRG&#160;for&#160;short;&#160;see&#160;Algorithm&#160;<a href="1806.00458s.html#5">1.&#160;</a>A&#160;variance&#160;reduction&#160;scheme,&#160;it&#160;involves&#160;the&#160;estimation&#160;of&#160;three<br/>unknown&#160;quantities.&#160;First,&#160;it&#160;computes&#160;an&#160;estimate&#160;of&#160;the&#160;value&#160;of&#160;g(xs+1<br/>
+t<br/>
+).&#160;Given&#160;a&#160;reference&#160;point&#160;˜<br/>
+xs,<br/>
+˜<br/>
+gs+1&#160;=&#160;g(˜<br/>
+xs),&#160;we&#160;approximate&#160;g(xs+1<br/>
+t<br/>
+)&#160;by<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+gs+1<br/>
+t<br/>
+=<br/>
+g&#160;(xs+1<br/>
+g&#160;(˜<br/>
+xs)&#160;+&#160;˜<br/>
+gs+1,<br/>
+(3)<br/>
+A<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;A<br/>
+jt<br/>
+jt∈At<br/>
+jt∈At<br/>
+where&#160;At&#160;⊂&#160;[m]&#160;is&#160;a&#160;subset&#160;of&#160;cardinality&#160;A.&#160;Furthermore,&#160;it&#160;computes&#160;an&#160;estimate&#160;of&#160;the&#160;Jacobian<br/>matrix&#160;∂g(xs+1<br/>
+t<br/>
+),&#160;which&#160;plays&#160;a&#160;key&#160;role&#160;in&#160;the&#160;acceleration&#160;of&#160;convergence.&#160;Given&#160;a&#160;reference&#160;Jacobian<br/>
+matrix&#160;˜<br/>
+Gs+1&#160;=&#160;∂g(˜<br/>
+xs),&#160;we&#160;approximate&#160;∂g(xs+1<br/>
+t<br/>
+)&#160;by<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+Gs+1<br/>
+t<br/>
+=<br/>
+∂g&#160;(xs+1<br/>
+∂g&#160;(˜<br/>
+xs)&#160;+&#160;˜<br/>
+Gs+1,<br/>
+(4)<br/>
+B<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;B<br/>
+jt<br/>
+jt∈Bt<br/>
+jt∈Bt<br/>
+where&#160;Bt&#160;⊂&#160;[m]&#160;is&#160;a&#160;subset&#160;of&#160;cardinality&#160;B.&#160;Also,&#160;the&#160;method&#160;estimates&#160;the&#160;gradient&#160;vector&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇f&#160;(g(xs+1<br/>
+t<br/>
+)).<br/>
+5<br/>
+<hr/>
+<a name=6></a><img class="yflip" src="html/1806.00458-6_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-6_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-6_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-6_4.png"/><br/>
+Given&#160;a&#160;reference&#160;gradient&#160;vector&#160;˜<br/>
+vs+1&#160;=&#160;[∂g(˜<br/>
+xs)]⊤&#160;∇f&#160;(˜gs+1),&#160;we&#160;estimate&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇f&#160;(g(xs+1<br/>
+t<br/>
+))&#160;by<br/>
+&#160;<br/>
+!<br/>
+&#160;<br/>
+!<br/>
+1&#160;X<br/>
+h<br/>
+i⊤<br/>
+1&#160;X<br/>
+vs+1<br/>
+⊤<br/>
+˜<br/>
+t<br/>
+=&#160;Gs+1<br/>
+t<br/>
+∇f&#160;(gs+1<br/>
+−&#160;Gs+1<br/>
+∇f&#160;(˜gs+1)&#160;+&#160;˜vs+1,<br/>
+(5)<br/>
+C<br/>
+it<br/>
+t<br/>
+)<br/>
+C<br/>
+it<br/>
+it∈Ct<br/>
+it∈Ct<br/>
+where&#160;Ct&#160;⊂&#160;[n]&#160;is&#160;a&#160;subset&#160;of&#160;cardinality&#160;C.&#160;We&#160;then&#160;compute&#160;ηs+1<br/>
+t<br/>
+,&#160;update&#160;xs+1&#160;by<br/>
++1<br/>
+t+1<br/>
+(<br/>
+)<br/>
+1<br/>
+2<br/>
+xs+1<br/>
+
+<br/>
+<br/>
+<br/>
+t<br/>
+=&#160;argmin<br/>
+vs+1<br/>
++&#160;r(x)&#160;,<br/>
+(6)<br/>
++1<br/>
+t<br/>
+,&#160;x&#160;+<br/>
+x&#160;−&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+x∈Rd<br/>
+t+1<br/>
+and&#160;use&#160;the&#160;average&#160;of&#160;all&#160;iterates&#160;xs+1<br/>
+t<br/>
+for&#160;0&#160;≤&#160;t&#160;≤&#160;ks+1&#160;−&#160;1&#160;as&#160;the&#160;reference&#160;point&#160;for&#160;the&#160;next&#160;epoch.<br/>
+The&#160;final&#160;output&#160;is&#160;the&#160;reference&#160;point&#160;of&#160;the&#160;last&#160;iteration,&#160;i.e.,&#160;˜<br/>
+xS.<br/>
+Discussion:&#160;In&#160;terms&#160;of&#160;IFO&#160;complexity&#160;per&#160;epoch,&#160;a&#160;full&#160;gradient&#160;vector&#160;and&#160;a&#160;full&#160;Jacobian&#160;matrix<br/>are&#160;computed&#160;at&#160;the&#160;point&#160;˜<br/>
+xs,&#160;requiring&#160;m&#160;+&#160;n&#160;IFO&#160;queries.&#160;Therefore,&#160;the&#160;IFO&#160;complexity&#160;of&#160;ASCVRG<br/>
+for&#160;the&#160;s-th&#160;epoch&#160;is&#160;m&#160;+&#160;n&#160;+&#160;ks&#160;(A&#160;+&#160;B&#160;+&#160;C)&#160;since&#160;ASCVRG&#160;carries&#160;out&#160;a&#160;variance&#160;reduction&#160;scheme<br/>for&#160;both&#160;the&#160;value&#160;and&#160;the&#160;Jacobian&#160;matrix.<br/>
+3<br/>
+Main&#160;Result<br/>
+3.1<br/>
+Assumptions<br/>
+For&#160;clarity&#160;of&#160;presentation,&#160;we&#160;defer&#160;the&#160;proofs&#160;for&#160;the&#160;theorems&#160;and&#160;technical&#160;lemmas&#160;to&#160;the&#160;appendices.<br/>Throughout&#160;this&#160;paper,&#160;we&#160;measure&#160;the&#160;efficiency&#160;of&#160;different&#160;algorithms&#160;by&#160;comparing&#160;the&#160;number&#160;of<br/>IFO&#160;queries&#160;to&#160;achieve&#160;an&#160;ε-optimal&#160;solution&#160;defined&#160;by&#160;Definition&#160;<a href="1806.00458s.html#6">3.1;&#160;</a>recall&#160;that&#160;this&#160;is&#160;stronger&#160;than<br/>the&#160;criterion&#160;E&#160;[kΦ(x)k]&#160;≤&#160;ε&#160;defined&#160;in&#160;<a href="1806.00458s.html#12">[9]</a>.<br/>
+Definition&#160;3.1.&#160;Given&#160;ε&#160;∈&#160;(0,&#160;1),&#160;we&#160;say&#160;x&#160;∈&#160;Rd&#160;is&#160;an&#160;ε-optimal&#160;solution&#160;to&#160;problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>if<br/>
+E&#160;[Φ(x)]&#160;−&#160;Φ(x∗)&#160;≤&#160;ε,<br/>
+where&#160;x∗&#160;∈&#160;Rd&#160;is&#160;an&#160;optimal&#160;solution&#160;to&#160;problem&#160;<a href="1806.00458s.html#1">(1)</a>.<br/>
+We&#160;make&#160;the&#160;following&#160;assumptions&#160;on&#160;F&#160;,&#160;fi&#160;and&#160;gj&#160;for&#160;i&#160;∈&#160;[n]&#160;and&#160;j&#160;∈&#160;[m].<br/>
+Assumption&#160;3.1.&#160;The&#160;objective&#160;F&#160;and&#160;r&#160;are&#160;both&#160;convex,&#160;i.e.,<br/>
+F&#160;(x)&#160;−&#160;F&#160;(y)&#160;−&#160;h∇F&#160;(y),&#160;x&#160;−&#160;yi&#160;≥&#160;0,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+r(x)&#160;−&#160;r(y)&#160;−&#160;hξ,&#160;x&#160;−&#160;yi&#160;≥&#160;0,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+where&#160;ξ&#160;∈&#160;∂r(y)&#160;is&#160;a&#160;subgradient&#160;of&#160;r.<br/>
+Assumption&#160;3.2.&#160;The&#160;proximal&#160;mapping&#160;of&#160;the&#160;objective&#160;r,&#160;given&#160;by<br/>
+<br/>
+1<br/>
+<br/>
+argmin&#160;hg,&#160;xi&#160;+<br/>
+kx&#160;−&#160;yk2&#160;+&#160;r(x)&#160;,<br/>
+2η<br/>
+x∈Rd<br/>
+is&#160;easily&#160;computed&#160;for&#160;any&#160;given&#160;g&#160;∈&#160;Rd&#160;and&#160;y&#160;∈&#160;Rd&#160;and&#160;η&#160;&gt;&#160;0.<br/>
+6<br/>
+<hr/>
+<a name=7></a><img class="yflip" src="html/1806.00458-7_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-7_11.png"/><br/>
+Assumption&#160;3.3.&#160;For&#160;i&#160;∈&#160;[n]&#160;and&#160;j&#160;∈&#160;[m],&#160;there&#160;exist&#160;constants&#160;0&#160;&lt;&#160;Lf&#160;,&#160;Lg,&#160;Lφ&#160;&lt;&#160;∞&#160;such&#160;that<br/>
+k∇fi(x)&#160;−&#160;∇fi(y)k&#160;≤&#160;Lf&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rl,<br/>
+k∂gj(x)&#160;−&#160;∂gj(y)k&#160;≤&#160;Lg&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+and<br/>
+<br/>
+<br/>
+[∂gj(x)]⊤&#160;∇fi(g(x))&#160;−&#160;[∂gj(y)]⊤&#160;∇fi(g(y))&#160;≤&#160;Lφ&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rd.<br/>
+<br/>
+<br/>
+Intuitively,&#160;the&#160;constants&#160;Lf&#160;,&#160;Lg&#160;and&#160;Lφ&#160;jointly&#160;characterize&#160;the&#160;smoothness&#160;and&#160;complexity&#160;of&#160;stochastic<br/>composition&#160;optimization.<br/>
+Assumption&#160;3.4.&#160;For&#160;i&#160;∈&#160;[n]&#160;and&#160;j&#160;∈&#160;[m],&#160;there&#160;exist&#160;two&#160;constants&#160;0&#160;&lt;&#160;Bf&#160;,&#160;Bg&#160;&lt;&#160;∞&#160;such&#160;that<br/>
+k∂gj(x)k&#160;≤&#160;Bg,&#160;x&#160;∈&#160;Rd,<br/>
+k∇fi(x)k&#160;≤&#160;Bf&#160;,&#160;x&#160;∈&#160;Rl.<br/>
+Assumptions&#160;<a href="1806.00458s.html#6">3.1-</a><a href="1806.00458s.html#7">3.4&#160;</a>are&#160;standard&#160;ones&#160;in&#160;the&#160;literature&#160;of&#160;composition&#160;optimization&#160;<a href="1806.00458s.html#12">[13,&#160;</a><a href="1806.00458s.html#13">30,&#160;</a><a href="1806.00458s.html#12">9]</a>.<br/>
+3.2<br/>
+Improved&#160;IFO&#160;Complexity<br/>
+We&#160;present&#160;an&#160;asymptotic&#160;IFO&#160;complexity&#160;of&#160;Algorithm&#160;<a href="1806.00458s.html#5">1&#160;</a>in&#160;this&#160;subsection,&#160;showing&#160;that&#160;it&#160;is&#160;an<br/>accelerated&#160;algorithm&#160;with&#160;an&#160;IFO&#160;complexity&#160;where&#160;the&#160;dependence&#160;on&#160;m&#160;+&#160;n&#160;is&#160;O((m&#160;+&#160;n)&#160;log(1/ε))<br/>and&#160;ε&#160;is&#160;better&#160;than&#160;SCGD&#160;and&#160;ASC-PG.<br/>
+Theorem&#160;3.5.&#160;Given&#160;the&#160;initial&#160;vector&#160;x0&#160;∈&#160;Rd&#160;satisfies&#160;that<br/>
+<br/>
+2<br/>
+x0&#160;−&#160;x∗<br/>
+<br/>
+≤&#160;Dx,<br/>
+Φ(x0)&#160;−&#160;Φ(x∗)&#160;≤&#160;Dφ,<br/>
+and&#160;the&#160;first&#160;epoch&#160;length&#160;k0&#160;&gt;&#160;0&#160;and&#160;the&#160;number&#160;of&#160;epochs&#160;S&#160;&gt;&#160;0&#160;satisfy&#160;that<br/>
+<br/>
+D<br/>
+<br/>
+<br/>
+&#160;6D&#160;<br/>
+k<br/>
+x<br/>
+φ<br/>
+0&#160;=<br/>
++&#160;1,<br/>
+S&#160;=&#160;log<br/>
++&#160;1,<br/>
+2ηD<br/>
+2<br/>
+φ<br/>
+ε<br/>
+and&#160;the&#160;sample&#160;sizes&#160;A&#160;&gt;&#160;0,&#160;B&#160;&gt;&#160;0&#160;and&#160;C&#160;&gt;&#160;0&#160;satisfy<br/>
+12B4gL2<br/>
+12B2<br/>
+12<br/>
+A&#160;=<br/>
+f&#160;,<br/>
+B&#160;=<br/>
+f&#160;L2<br/>
+g&#160;,<br/>
+C&#160;=<br/>
+,<br/>
+η2αL2<br/>
+η2αL2<br/>
+η2α<br/>
+φ<br/>
+φ<br/>
+for&#160;some&#160;α&#160;&gt;&#160;1&#160;and&#160;η&#160;&gt;&#160;0&#160;satisfies<br/>
+<br/>
+1&#160;<br/>
+1<br/>
+&#160;<br/>
+!<br/>
+<br/>
+<br/>
+α<br/>
+<br/>
+1<br/>
+2D<br/>
+α<br/>
+ε<br/>
+<br/>
+η&#160;=&#160;min<br/>
+,<br/>
+φ<br/>
+,<br/>
+√<br/>
+,<br/>
+2L<br/>
+3L<br/>
+60&#160;2L<br/>
+<br/>
+φ<br/>
+φDx<br/>
+φ&#160;(Dx&#160;+&#160;2Dφ)<br/>
+<br/>
+and&#160;ε&#160;∈&#160;(0,&#160;1)&#160;is&#160;a&#160;tolerance,&#160;then&#160;the&#160;total&#160;IFO&#160;complexity,&#160;i.e.,&#160;the&#160;number&#160;of&#160;IFO&#160;queries&#160;to&#160;achieve<br/>an&#160;ε-optimal&#160;solution&#160;that&#160;satisfies<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;≤&#160;ε,<br/>
+7<br/>
+<hr/>
+<a name=8></a><img class="yflip" src="html/1806.00458-8_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-8_12.png"/><br/>
+is<br/>
+<br/>
+&#160;1&#160;<br/>
+1&#160;<br/>
+O&#160;(m&#160;+&#160;n)&#160;log<br/>
++<br/>
+,<br/>
+ε<br/>
+ε3+&#160;1α<br/>
+where&#160;we&#160;omit&#160;the&#160;dependence&#160;of&#160;the&#160;IFO&#160;complexity&#160;on&#160;the&#160;Lipschitz&#160;constants&#160;Lφ,&#160;Lf&#160;,&#160;Lg,&#160;the&#160;upper<br/>bound&#160;of&#160;the&#160;norm&#160;of&#160;gradient&#160;and&#160;Jacobian&#160;Bf&#160;,&#160;Bg,&#160;the&#160;distances&#160;between&#160;the&#160;initial&#160;point&#160;and&#160;the<br/>optimal&#160;set,&#160;i.e.,&#160;Dx&#160;(the&#160;iterative&#160;gap)&#160;and&#160;Dφ&#160;(the&#160;objective&#160;gap).<br/>
+Remark&#160;3.6.&#160;We&#160;highlight&#160;that&#160;our&#160;goal&#160;is&#160;to&#160;develop&#160;an&#160;efficient&#160;algorithm&#160;that&#160;targets&#160;the&#160;case&#160;when<br/>m&#160;and&#160;n&#160;are&#160;very&#160;large.&#160;In&#160;this&#160;case,&#160;we&#160;observe&#160;that&#160;A,&#160;B&#160;and&#160;C&#160;are&#160;independent&#160;of&#160;m&#160;and&#160;n&#160;and&#160;can<br/>assume&#160;that&#160;A,&#160;B&#160;≪&#160;m&#160;and&#160;C&#160;≪&#160;n.&#160;This&#160;implies&#160;that&#160;our&#160;method&#160;will&#160;achieve&#160;superior&#160;performance<br/>compared&#160;to&#160;AGD,&#160;an&#160;assertion&#160;confirmed&#160;by&#160;our&#160;experimental&#160;results.<br/>
+Remark&#160;3.7.&#160;This&#160;holds&#160;true&#160;for&#160;any&#160;α&#160;&gt;&#160;1&#160;so&#160;the&#160;total&#160;asymptotic&#160;IFO&#160;complexity&#160;is<br/>
+<br/>
+&#160;1&#160;<br/>
+1&#160;<br/>
+O&#160;(m&#160;+&#160;n)&#160;log<br/>
++<br/>
+.<br/>
+ε<br/>
+ε3<br/>
+1<br/>
+1<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+<br/>
+Furthermore,<br/>
+ε<br/>
+α<br/>
+D<br/>
+α<br/>
+√<br/>
+→&#160;1&#160;and<br/>
+φ<br/>
+→&#160;1&#160;as&#160;α&#160;→&#160;+∞,&#160;implying&#160;that<br/>
+120<br/>
+2L<br/>
+3L<br/>
+φDx<br/>
+φDx<br/>
+1<br/>
+η&#160;=<br/>
+.<br/>
+2Lφ<br/>
+On&#160;the&#160;other&#160;hand,&#160;since&#160;η&#160;&lt;&#160;1&#160;and&#160;α&#160;→&#160;+∞,&#160;we&#160;have&#160;A,&#160;B,&#160;C&#160;→&#160;+∞.&#160;This&#160;makes&#160;sense&#160;since&#160;the<br/>IFO&#160;complexity&#160;turns&#160;out&#160;to&#160;be&#160;better&#160;if&#160;we&#160;allow&#160;a&#160;large&#160;step&#160;size&#160;and&#160;increase&#160;the&#160;sample&#160;size.<br/>
+3.3<br/>
+Comparison&#160;with&#160;Previous&#160;Work<br/>
+We&#160;provide&#160;a&#160;comprehensive&#160;comparison&#160;among&#160;AGD,&#160;ASC-PG,&#160;VRSC-PG&#160;and&#160;ASCVRG&#160;based&#160;on<br/>the&#160;IFO&#160;complexity&#160;for&#160;achieving&#160;an&#160;ε-optimal&#160;solution.<br/>
+1.&#160;Dependence&#160;on&#160;m&#160;+&#160;n:&#160;The&#160;number&#160;of&#160;IFO&#160;queries&#160;of&#160;AGD,&#160;VRSC-PG&#160;and&#160;ASCVRG&#160;depend<br/>
+explicitly&#160;on&#160;m&#160;+&#160;n.&#160;In&#160;contrast,&#160;the&#160;IFO&#160;complexity&#160;of&#160;ASC-PG&#160;is&#160;independent&#160;of&#160;m&#160;+&#160;n&#160;while<br/>this&#160;comes&#160;at&#160;the&#160;expense&#160;of&#160;worse&#160;dependence&#160;on&#160;ε.&#160;The&#160;IFO&#160;complexity&#160;of&#160;AGD&#160;is&#160;proportional<br/>to&#160;m&#160;+&#160;n&#160;and&#160;that&#160;of&#160;VRSC-PG&#160;is&#160;proportional&#160;to&#160;(m&#160;+&#160;n)2/3&#160;while&#160;m&#160;+&#160;n&#160;is&#160;independent&#160;of&#160;1/ε3<br/>for&#160;ASCVRG.&#160;In&#160;fact,&#160;ASCVRG&#160;is&#160;the&#160;best&#160;known&#160;linear-time&#160;algorithm&#160;since&#160;log(1/ε)&#160;is&#160;nearly<br/>a&#160;constant.&#160;This&#160;makes&#160;ASCVRG&#160;clearly&#160;superior&#160;to&#160;AGD&#160;and&#160;VRSC-PG&#160;as&#160;m&#160;+&#160;n&#160;is&#160;large.<br/>
+2.&#160;Dependence&#160;on&#160;ε:&#160;The&#160;complexity&#160;bound&#160;of&#160;ASC-PG&#160;depends&#160;as&#160;O(1/ε3.5)&#160;while&#160;ASCVRG<br/>
+√<br/>
+converges&#160;as&#160;O(1/ε3)&#160;and&#160;AGD&#160;converge&#160;as&#160;O(1/&#160;ε).&#160;This&#160;speedup&#160;of&#160;ASCVRG&#160;in&#160;convergence<br/>over&#160;ASC-PG&#160;is&#160;especially&#160;significant&#160;when&#160;medium&#160;to&#160;high&#160;accuracy&#160;solutions&#160;are&#160;required.<br/>
+3.&#160;Dependence&#160;on&#160;shrinking&#160;step&#160;size:&#160;It&#160;is&#160;beneficial&#160;to&#160;compare&#160;the&#160;step&#160;sizes&#160;used&#160;by&#160;different<br/>
+algorithms.&#160;It&#160;is&#160;undesirable&#160;that&#160;the&#160;step&#160;size&#160;of&#160;ASC-PG&#160;shrinks&#160;to&#160;zero&#160;as&#160;the&#160;number&#160;of<br/>iterations&#160;t&#160;increases,&#160;while&#160;the&#160;step&#160;sizes&#160;of&#160;AGD,&#160;VRSC-PG&#160;and&#160;ASCVRG&#160;can&#160;remain&#160;constant.<br/>The&#160;usage&#160;of&#160;the&#160;constant&#160;step&#160;size&#160;is&#160;crucial&#160;to&#160;the&#160;effectiveness&#160;and&#160;robustness&#160;of&#160;the&#160;algorithms<br/>when&#160;a&#160;huge&#160;number&#160;of&#160;iterations&#160;are&#160;required—which&#160;is&#160;the&#160;case&#160;in&#160;many&#160;real-world&#160;learning<br/>problems.<br/>
+8<br/>
+<hr/>
+<a name=9></a><img class="yflip" src="html/1806.00458-9_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_28.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_29.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_30.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_31.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_32.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_33.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_34.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_35.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_36.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_37.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_38.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_39.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_40.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_41.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_42.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_43.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_44.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_45.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_46.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_47.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_48.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_49.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_50.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_51.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_52.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_53.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_54.png"/><br/>
+<img class="yflip" src="html/1806.00458-9_55.png"/><br/>
+4<br/>
+Experiments<br/>
+In&#160;this&#160;section,&#160;we&#160;present&#160;the&#160;results&#160;of&#160;experiments&#160;on&#160;21&#160;US&#160;Research&#160;Returns&#160;datasets&#160;from&#160;the<br/>Center&#160;for&#160;Research&#160;in&#160;Security&#160;Prices&#160;(CRSP)&#160;websit<a href="1806.00458s.html#9">e2</a>,&#160;including&#160;three&#160;large&#160;100-porfolio&#160;datasets&#160;and<br/>18&#160;medium&#160;datasets&#160;for&#160;Developed&#160;Market&#160;Factors&#160;and&#160;Returns;&#160;see&#160;Table&#160;<a href="1806.00458s.html#9">2&#160;</a>for&#160;details.<br/>
+Table&#160;2:&#160;The&#160;Statistics&#160;of&#160;21&#160;CRSP&#160;Real&#160;Datasets<br/>
+Type<br/>
+N<br/>
+d<br/>
+Problems<br/>
+100&#160;Portfolios<br/>
+13781<br/>
+100<br/>
+Book-to-Market&#160;(BM),&#160;Operating&#160;Profitability&#160;(OP),&#160;Investment&#160;(INV)<br/>BM:&#160;Asia&#160;Pacific&#160;ex&#160;Japan,&#160;Europe,&#160;Global&#160;ex&#160;US,&#160;Global,&#160;Japan,&#160;North&#160;America<br/>
+Market&#160;Factors<br/>
+7240<br/>
+25<br/>
+OP:&#160;Asia&#160;Pacific&#160;ex&#160;Japan,&#160;Europe,&#160;Global&#160;ex&#160;US,&#160;Global,&#160;Japan,&#160;North&#160;America<br/>INV:&#160;Asia&#160;Pacific&#160;ex&#160;Japan,&#160;Europe,&#160;Global&#160;ex&#160;US,&#160;Global,&#160;Japan,&#160;North&#160;America<br/>
+Given&#160;d&#160;assets&#160;and&#160;the&#160;reward&#160;vectors&#160;observed&#160;at&#160;N&#160;time&#160;points,&#160;i.e.,&#160;{ri}N<br/>
+i=1&#160;⊂&#160;Rd,&#160;the&#160;goal&#160;of<br/>
+portfolio&#160;management&#160;optimization&#160;is&#160;to&#160;maximize&#160;the&#160;return&#160;of&#160;the&#160;investment&#160;as&#160;well&#160;as&#160;to&#160;control<br/>the&#160;investment&#160;risk.&#160;This&#160;can&#160;be&#160;formulated&#160;as&#160;sparse&#160;mean-variance&#160;optimization&#160;<a href="1806.00458s.html#12">[16]&#160;</a>in&#160;the&#160;form&#160;of<br/>problem&#160;<a href="1806.00458s.html#1">(1)&#160;</a>with&#160;m&#160;=&#160;n&#160;=&#160;N&#160;,&#160;given&#160;by<br/>
+<br/>
+2<br/>
+N<br/>
+N<br/>
+N<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+min&#160;Φ(x)&#160;=<br/>
+hri,&#160;xi&#160;−<br/>
+hrj,&#160;xi&#160;−<br/>
+hri,&#160;xi&#160;+&#160;λ&#160;kxk<br/>
+(7)<br/>
+1<br/>
+x∈Rd<br/>
+N<br/>
+N<br/>
+N<br/>
+i=1<br/>
+j=1<br/>
+i=1<br/>
+<br/>
+<br/>
+n<br/>
+m<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+=<br/>
+f<br/>
+g<br/>
+,<br/>
+n<br/>
+i&#160;&#160;m<br/>
+j&#160;(x)&#160;+&#160;λ&#160;kxk1<br/>
+i=1<br/>
+j=1<br/>
+with&#160;fi(z,&#160;y)&#160;=&#160;(hri,&#160;zi&#160;+&#160;y)2&#160;−hri,&#160;zi&#160;and&#160;gj(x)&#160;=&#160;x⊤,&#160;−&#160;hrj,&#160;xi⊤,&#160;for&#160;x,&#160;z&#160;∈&#160;Rd&#160;and&#160;y&#160;∈&#160;R.&#160;Problem&#160;<a href="1806.00458s.html#9">(7)<br/></a>satisfies&#160;Assumption&#160;<a href="1806.00458s.html#6">3.1-</a><a href="1806.00458s.html#7">3.4&#160;</a>so&#160;that&#160;it&#160;serves&#160;as&#160;a&#160;good&#160;example&#160;for&#160;our&#160;experiment.<br/>
+We&#160;compare&#160;our&#160;ASCVRG&#160;method&#160;with&#160;AGD,&#160;SCGD&#160;<a href="1806.00458s.html#13">[26]</a>,&#160;ASC-PG&#160;<a href="1806.00458s.html#13">[27]&#160;</a>and&#160;VRSC-PG&#160;<a href="1806.00458s.html#12">[9]</a>.&#160;Except<br/>that&#160;we&#160;use&#160;our&#160;own&#160;implementation&#160;of&#160;AGD,&#160;we&#160;use&#160;official&#160;implementation&#160;of&#160;other&#160;methods&#160;provided<br/>by&#160;the&#160;authors&#160;and&#160;run&#160;the&#160;experiments&#160;with&#160;default&#160;parameters&#160;<a href="1806.00458s.html#9">3</a>.&#160;We&#160;exclude&#160;the&#160;method&#160;in&#160;<a href="1806.00458s.html#12">[13]&#160;</a>since<br/>problem&#160;<a href="1806.00458s.html#9">(7)&#160;</a>is&#160;neither&#160;smooth&#160;nor&#160;strongly&#160;convex.&#160;On&#160;the&#160;other&#160;hand,&#160;although&#160;problem&#160;<a href="1806.00458s.html#9">(7)&#160;</a>can&#160;be<br/>formulated&#160;as&#160;a&#160;saddle&#160;point&#160;problem,&#160;<a href="1806.00458s.html#12">[9]&#160;</a>has&#160;shown&#160;that&#160;VRSC-PG&#160;is&#160;superior&#160;to&#160;prior&#160;work&#160;based&#160;on<br/>the&#160;saddle-point&#160;formulation,&#160;e.g.,&#160;<a href="1806.00458s.html#13">[30]</a>,&#160;so&#160;we&#160;do&#160;not&#160;consider&#160;such&#160;approaches.<br/>
+We&#160;set&#160;λ&#160;=&#160;5&#160;×&#160;10−7&#160;in&#160;problem&#160;<a href="1806.00458s.html#9">(7)&#160;</a>and&#160;A&#160;=&#160;B&#160;=&#160;C&#160;=&#160;5&#160;and&#160;η&#160;=&#160;1/2Lφ&#160;in&#160;ASCVRG.&#160;For&#160;the<br/>x-axis,&#160;we&#160;use&#160;the&#160;number&#160;of&#160;gradient&#160;oracles&#160;divided&#160;by&#160;the&#160;number&#160;of&#160;samples,&#160;denoted&#160;as&#160;#grad/n,<br/>which&#160;is&#160;proportional&#160;to&#160;the&#160;query&#160;complexity.&#160;For&#160;the&#160;y-axis,&#160;we&#160;use&#160;the&#160;log-scale&#160;of&#160;the&#160;objective&#160;gap<br/>Φ(x)&#160;−&#160;Φ(x∗)&#160;where&#160;x∗&#160;is&#160;obtained&#160;by&#160;running&#160;ASCVRG&#160;for&#160;enough&#160;iterations&#160;until&#160;convergence&#160;and&#160;is<br/>used&#160;as&#160;the&#160;optimal&#160;solution&#160;for&#160;all&#160;methods.<br/>
+Figure&#160;<a href="1806.00458s.html#10">1&#160;</a>shows&#160;that,&#160;on&#160;three&#160;large&#160;datasets,&#160;ASCVRG&#160;consistently&#160;outperforms&#160;the&#160;other&#160;four&#160;methods<br/>in&#160;terms&#160;of&#160;the&#160;IFO&#160;complexity.&#160;Moreover,&#160;ASCVRG&#160;and&#160;VRSC-PG&#160;are&#160;more&#160;robust&#160;than&#160;SCGD&#160;and<br/>ASC-PG,&#160;showing&#160;that&#160;the&#160;use&#160;of&#160;variance&#160;reduction&#160;together&#160;with&#160;constant&#160;step&#160;size&#160;stabilizes&#160;the<br/>behavior&#160;of&#160;the&#160;stochastic&#160;algorithms.&#160;Although&#160;SCGD&#160;and&#160;ASC-PG&#160;perform&#160;well&#160;on&#160;some&#160;datasets,<br/>
+2http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data&#160;Library/changes&#160;crsp.html<br/>3We&#160;will&#160;release&#160;our&#160;code&#160;to&#160;facilitate&#160;future&#160;research&#160;once&#160;the&#160;paper&#160;gets&#160;accepted.<br/>
+9<br/>
+<hr/>
+<a name=10></a><b>ME, &#160;n=13781, d=100</b><br/>
+<b>OP, &#160;n=13781, d=100</b><br/>
+<b>INV, &#160;n=13781, d=100</b><br/>
+102<br/>
+102<br/>
+102<br/>
+100<br/>
+100<br/>
+100<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+10-4<br/>
+VRSC-PG<br/>
+10-4<br/>
+VRSC-PG<br/>
+10-4<br/>
+VRSC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+10-6<br/>
+10-6<br/>
+10-6<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+(a)&#160;Book-to-Market<br/>
+(b)&#160;Operating&#160;Profitability<br/>
+(c)&#160;Investment<br/>
+Figure&#160;1:&#160;The&#160;Performance&#160;of&#160;All&#160;Methods&#160;on&#160;three&#160;Large&#160;100-Portfolio&#160;Datasets<br/>
+pure&#160;stochastic&#160;gradient-type&#160;methods&#160;can&#160;be&#160;sensitive&#160;to&#160;choices&#160;of&#160;shrinking&#160;step&#160;sizes&#160;and&#160;thus&#160;require<br/>effort&#160;to&#160;tune&#160;parameters&#160;in&#160;practice&#160;<a href="1806.00458s.html#11">[5]</a>.&#160;In&#160;contrast,&#160;the&#160;step&#160;sizes&#160;of&#160;ASCVRG&#160;and&#160;VRSC-PG&#160;are<br/>not&#160;shrinking,&#160;yielding&#160;improved&#160;robustness&#160;in&#160;practice.&#160;As&#160;expected,&#160;AGD&#160;performs&#160;worse&#160;than&#160;other<br/>methods,&#160;having&#160;the&#160;highest&#160;IFO&#160;complexity&#160;on&#160;large&#160;datasets.<br/>
+Figures&#160;<a href="1806.00458s.html#11">2-4&#160;</a>further&#160;show&#160;that,&#160;on&#160;18&#160;different&#160;medium&#160;datasets,&#160;ASCVRG&#160;consistently&#160;outperforms<br/>the&#160;other&#160;four&#160;methods&#160;in&#160;terms&#160;of&#160;the&#160;IFO&#160;complexity&#160;even&#160;if&#160;the&#160;margin&#160;is&#160;smaller&#160;than&#160;that&#160;on<br/>large&#160;datasets.&#160;Actually&#160;ASCVRG&#160;and&#160;VRSC-PG&#160;are&#160;comparable&#160;on&#160;nearly&#160;half&#160;of&#160;the&#160;datasets,<br/>significantly&#160;outperforming&#160;the&#160;other&#160;three&#160;methods&#160;by&#160;a&#160;large&#160;margin.&#160;This&#160;is&#160;consistent&#160;with&#160;the<br/>theoretical&#160;IFO&#160;complexity&#160;of&#160;ASCVRG&#160;and&#160;VRSC-PG.&#160;In&#160;comparison&#160;to&#160;ASCVRG’s&#160;IFO&#160;complexity<br/>of&#160;O&#160;(m&#160;+&#160;n)&#160;log(1/ε)&#160;+&#160;1/ε3,&#160;VRSC-PG’s&#160;IFO&#160;complexity&#160;of&#160;O(m&#160;+&#160;n&#160;+&#160;(m&#160;+&#160;n)2/3/ε2)&#160;is&#160;favorable<br/>when&#160;m&#160;+&#160;n&#160;is&#160;not&#160;very&#160;large.&#160;On&#160;the&#160;other&#160;hand,&#160;we&#160;observe&#160;from&#160;Figures&#160;<a href="1806.00458s.html#11">2-4&#160;</a>that&#160;VRSC-PG&#160;is&#160;less<br/>robust&#160;than&#160;ASCVRG.&#160;One&#160;possible&#160;reason&#160;is&#160;that&#160;VRSC-PG&#160;uses&#160;a&#160;constant&#160;step&#160;size&#160;while&#160;ASCVRG<br/>uses&#160;an&#160;adaptive&#160;but&#160;not&#160;shrinking&#160;step&#160;size.&#160;In&#160;sum,&#160;the&#160;ASCVRG&#160;method&#160;has&#160;the&#160;potential&#160;to&#160;be&#160;a<br/>benchmark&#160;algorithm&#160;for&#160;nonsmooth&#160;convex&#160;composition&#160;optimization.<br/>
+5<br/>
+Conclusions<br/>
+We&#160;propose&#160;an&#160;accelerated&#160;stochastic&#160;compositional&#160;variance&#160;reduced&#160;gradient&#160;method&#160;for&#160;convex&#160;com-<br/>position&#160;optimization.&#160;We&#160;establish&#160;a&#160;better&#160;IFO&#160;complexity&#160;than&#160;the&#160;best-known&#160;result&#160;prior&#160;to&#160;this<br/>paper&#160;under&#160;the&#160;same&#160;reasonable&#160;conditions.&#160;Experimental&#160;results&#160;on&#160;sparse&#160;mean-variance&#160;optimiza-<br/>tion&#160;with&#160;21&#160;real-world&#160;financial&#160;datasets&#160;demonstrate&#160;that&#160;our&#160;method&#160;outperforms&#160;other&#160;competing<br/>methods.&#160;An&#160;important&#160;direction&#160;for&#160;future&#160;work&#160;is&#160;to&#160;study&#160;the&#160;possibility&#160;of&#160;a&#160;lower&#160;oracle&#160;complexity<br/>for&#160;stochastic&#160;composition&#160;optimization&#160;and&#160;the&#160;optimal&#160;compositional&#160;gradient&#160;method.<br/>
+10<br/>
+<hr/>
+<a name=11></a><img class="yflip" src="html/1806.00458-11_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-11_18.png"/><br/>
+<b>Asia Pacific ex Japan ME, &#160;n=7240, d=25</b><br/>
+<b>Europe ME, &#160;n=7240, d=25</b><br/>
+<b>Global ex US ME, &#160;n=7240, d=25</b><br/>
+<b>Global ME, &#160;n=7240, d=25</b><br/>
+<b>Europe ME, &#160;n=7240, d=25</b><br/>
+<b>North America ME, &#160;n=7240, d=25</b><br/>
+100<br/>
+100<br/>
+100<br/>
+100<br/>
+101<br/>
+101<br/>
+100<br/>
+100<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+10-2<br/>
+ASCVRG<br/>
+10-2<br/>
+ASCVRG<br/>
+10-2<br/>
+ASCVRG<br/>
+10-2<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+10-2<br/>
+VRSC-PG<br/>
+10-2<br/>
+VRSC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+(a)&#160;Asia&#160;Pacific&#160;ex&#160;Japan<br/>
+(b)&#160;Europe<br/>
+(c)&#160;Global&#160;ex&#160;US<br/>
+(d)&#160;Global<br/>
+(e)&#160;Japan<br/>
+(f)&#160;North&#160;America<br/>
+Figure&#160;2:&#160;The&#160;Performance&#160;of&#160;All&#160;Methods&#160;on&#160;six&#160;25-Portfolio&#160;Book-to-Market&#160;Datasets<br/>
+<b>Asia Pacific ex Japan OP, &#160;n=7240, d=25</b><br/>
+<b>Europe OP, &#160;n=7240, d=25</b><br/>
+<b>Global ex US OP, &#160;n=7240, d=25</b><br/>
+<b>Global OP, &#160;n=7240, d=25</b><br/>
+<b>Japan OP, &#160;n=7240, d=25</b><br/>
+<b>North America OP, &#160;n=7240, d=25</b><br/>
+100<br/>
+100<br/>
+100<br/>
+100<br/>
+101<br/>
+101<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+100<br/>
+100<br/>
+10-1<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+10-1<br/>
+10-1<br/>
+10-2<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+10-2<br/>
+10-2<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+VRSC-PG<br/>
+10-3<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+10-3<br/>
+ASC-PG<br/>
+10-3<br/>
+ASC-PG<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+10-5<br/>
+10-4<br/>
+10-5<br/>
+10-5<br/>
+10-4<br/>
+10-4<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+(a)&#160;Asia&#160;Pacific&#160;ex&#160;Japan<br/>
+(b)&#160;Europe<br/>
+(c)&#160;Global&#160;ex&#160;US<br/>
+(d)&#160;Global<br/>
+(e)&#160;Japan<br/>
+(f)&#160;North&#160;America<br/>
+Figure&#160;3:&#160;The&#160;Performance&#160;of&#160;All&#160;Methods&#160;on&#160;six&#160;25-Portfolio&#160;Operating&#160;Profitability&#160;Datasets<br/>
+<b>Asia Pacific ex Japan INV, &#160;n=7240, d=25</b><br/>
+<b>Europe INV, &#160;n=7240, d=25</b><br/>
+<b>Global ex US INV, &#160;n=7240, d=25</b><br/>
+<b>Global INV, &#160;n=7240, d=25</b><br/>
+<b>Japan INV, &#160;n=7240, d=25</b><br/>
+<b>North America INV, &#160;n=7240, d=25</b><br/>
+100<br/>
+100<br/>
+100<br/>
+100<br/>
+102<br/>
+102<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+10-1<br/>
+100<br/>
+100<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+10-2<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+10-3<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+ASCVRG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+VRSC-PG<br/>
+10-4<br/>
+VRSC-PG<br/>
+10-4<br/>
+VRSC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+10-4<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+ASC-PG<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+Objective Gap in Log-Scale<br/>
+SCGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+AGD<br/>
+10-5<br/>
+10-5<br/>
+10-5<br/>
+10-5<br/>
+10-6<br/>
+10-6<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+0<br/>
+2<br/>
+4<br/>
+6<br/>
+8<br/>
+10<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+#grad/n<br/>
+(a)&#160;Asia&#160;Pacific&#160;ex&#160;Japan<br/>
+(b)&#160;Europe<br/>
+(c)&#160;Global&#160;ex&#160;US<br/>
+(d)&#160;Global<br/>
+(e)&#160;Japan<br/>
+(f)&#160;North&#160;America<br/>
+Figure&#160;4:&#160;The&#160;Performance&#160;of&#160;All&#160;Methods&#160;on&#160;six&#160;25-Portfolio&#160;Investment&#160;Datasets<br/>
+References<br/>
+[1]&#160;A.&#160;Agarwal&#160;and&#160;L.&#160;Bottou.&#160;A&#160;lower&#160;bound&#160;for&#160;the&#160;optimization&#160;of&#160;finite&#160;sums.&#160;In&#160;ICML,&#160;pages<br/>
+78–86,&#160;2015.<br/>
+[2]&#160;Z.&#160;Allen-Zhu.&#160;Natasha:&#160;Faster&#160;non-convex&#160;stochastic&#160;optimization&#160;via&#160;strongly&#160;non-convex&#160;param-<br/>
+eter.&#160;In&#160;ICML,&#160;pages&#160;89–97,&#160;2017.<br/>
+[3]&#160;Z.&#160;Allen-Zhu&#160;and&#160;E.&#160;Hazan.&#160;Variance&#160;reduction&#160;for&#160;faster&#160;non-convex&#160;optimization.&#160;In&#160;ICML,&#160;pages<br/>
+699–707,&#160;2016.<br/>
+[4]&#160;Z.&#160;Allen-Zhu&#160;and&#160;Y.&#160;Yuan.&#160;Improved&#160;SVRG&#160;for&#160;non-strongly-convex&#160;or&#160;sum-of-non-convex&#160;objec-<br/>
+tives.&#160;In&#160;ICML,&#160;pages&#160;1080–1089,&#160;2016.<br/>
+[5]&#160;A.&#160;S.&#160;Berahas,&#160;R.&#160;Bollapragada,&#160;and&#160;J.&#160;Nocedal.&#160;An&#160;investigation&#160;of&#160;Newton-sketch&#160;and&#160;subsampled<br/>
+Newton&#160;methods.&#160;ArXiv&#160;Preprint:&#160;1705.06211,&#160;2017.<br/>
+11<br/>
+<hr/>
+<a name=12></a>[6]&#160;I.&#160;Goodfellow,&#160;Y.&#160;Bengio,&#160;and&#160;A.&#160;Courville.&#160;Deep&#160;Learning.&#160;MIT&#160;press,&#160;2016.<br/>
+[7]&#160;J.&#160;Hu.&#160;Model-based&#160;stochastic&#160;search&#160;methods.&#160;In&#160;Handbook&#160;of&#160;Simulation&#160;Optimization,&#160;pages<br/>
+319–340.&#160;Springer,&#160;2015.<br/>
+[8]&#160;J.&#160;Huang,&#160;J.&#160;L.&#160;Horowitz,&#160;and&#160;F.&#160;Wei.&#160;Variable&#160;selection&#160;in&#160;nonparametric&#160;additive&#160;models.&#160;Annals<br/>
+of&#160;Statistics,&#160;38(4):2282,&#160;2010.<br/>
+[9]&#160;Z.&#160;Huo,&#160;B.&#160;Gu,&#160;and&#160;H.&#160;Huang.&#160;Accelerated&#160;method&#160;for&#160;stochastic&#160;composition&#160;optimization&#160;with<br/>
+nonsmooth&#160;regularization.&#160;ArXiv&#160;Preprint:&#160;1711.03937,&#160;2017.<br/>
+[10]&#160;R.&#160;Johnson&#160;and&#160;T.&#160;Zhang.&#160;Accelerating&#160;stochastic&#160;gradient&#160;descent&#160;using&#160;predictive&#160;variance&#160;re-<br/>
+duction.&#160;In&#160;NIPS,&#160;pages&#160;315–323,&#160;2013.<br/>
+[11]&#160;P.&#160;Kundur,&#160;N.&#160;J.&#160;Balu,&#160;and&#160;M.&#160;G.&#160;Lauby.&#160;Power&#160;System&#160;Stability&#160;and&#160;Control,&#160;volume&#160;7.&#160;McGraw-<br/>
+hill&#160;New&#160;York,&#160;1994.<br/>
+[12]&#160;L.&#160;Lei,&#160;C.&#160;Ju,&#160;J.&#160;Chen,&#160;and&#160;M.&#160;I.&#160;Jordan.&#160;Nonconvex&#160;finite-sum&#160;optimization&#160;via&#160;SCSG&#160;methods.<br/>
+ArXiv&#160;Preprint:&#160;1706.09156,&#160;2017.<br/>
+[13]&#160;X.&#160;Lian,&#160;M.&#160;Wang,&#160;and&#160;J.&#160;Liu.&#160;Finite-sum&#160;composition&#160;optimization&#160;via&#160;variance&#160;reduced&#160;gradient<br/>
+descent.&#160;In&#160;AISTATS,&#160;pages&#160;1159–1167,&#160;2017.<br/>
+[14]&#160;Y.&#160;Nesterov.&#160;Introductory&#160;Lectures&#160;on&#160;Convex&#160;Optimization:&#160;A&#160;Basic&#160;Course,&#160;volume&#160;87.&#160;Springer<br/>
+Science&#160;&amp;&#160;Business&#160;Media,&#160;2013.<br/>
+[15]&#160;M.&#160;L.&#160;Puterman.&#160;Markov&#160;Decision&#160;Processes:&#160;Discrete&#160;Stochastic&#160;Dynamic&#160;Programming.&#160;John<br/>
+Wiley&#160;&amp;&#160;Sons,&#160;2014.<br/>
+[16]&#160;P.&#160;Ravikumar,&#160;J.&#160;Lafferty,&#160;H.&#160;Liu,&#160;and&#160;L.&#160;Wasserman.&#160;Sparse&#160;additive&#160;models.&#160;Journal&#160;of&#160;the&#160;Royal<br/>
+Statistical&#160;Society.&#160;Series&#160;B,&#160;Statistical&#160;Methodology,&#160;pages&#160;1009–1030,&#160;2009.<br/>
+[17]&#160;S.&#160;J.&#160;Reddi,&#160;A.&#160;Hefny,&#160;S.&#160;Sra,&#160;B.&#160;Poczos,&#160;and&#160;A.&#160;Smola.&#160;Stochastic&#160;variance&#160;reduction&#160;for&#160;nonconvex<br/>
+optimization.&#160;In&#160;ICML,&#160;pages&#160;314–323,&#160;2016.<br/>
+[18]&#160;R.&#160;T.&#160;Rockafellar&#160;and&#160;S.&#160;Uryasev.&#160;Optimization&#160;of&#160;conditional&#160;value-at-risk.&#160;Journal&#160;of&#160;Risk,<br/>
+2:21–42,&#160;2000.<br/>
+[19]&#160;M.&#160;Schmidt,&#160;N.&#160;Le&#160;Roux,&#160;and&#160;F.&#160;Bach.&#160;Minimizing&#160;finite&#160;sums&#160;with&#160;the&#160;stochastic&#160;average&#160;gradient.<br/>
+Mathematical&#160;Programming,&#160;162(1-2):83–112,&#160;2017.<br/>
+[20]&#160;S.&#160;Shalev-Shwartz.&#160;Online&#160;learning&#160;and&#160;online&#160;convex&#160;optimization.&#160;Foundations&#160;and&#160;Trends&#160;R<br/>
+&#160;in<br/>
+Machine&#160;Learning,&#160;4(2):107–194,&#160;2012.<br/>
+[21]&#160;S.&#160;Shalev-Shwartz.&#160;SDCA&#160;without&#160;duality,&#160;regularization,&#160;and&#160;individual&#160;convexity.&#160;In&#160;ICML,<br/>
+pages&#160;747–754,&#160;2016.<br/>
+[22]&#160;S.&#160;Shalev-Shwartz&#160;and&#160;T.&#160;Zhang.&#160;Stochastic&#160;dual&#160;coordinate&#160;ascent&#160;methods&#160;for&#160;regularized&#160;loss<br/>
+minimization.&#160;Journal&#160;of&#160;Machine&#160;Learning&#160;Research,&#160;14(Feb):567–599,&#160;2013.<br/>
+[23]&#160;O.&#160;Shamir.&#160;Fast&#160;stochastic&#160;algorithms&#160;for&#160;SVD&#160;and&#160;PCA:&#160;Convergence&#160;properties&#160;and&#160;convexity.<br/>
+In&#160;ICML,&#160;pages&#160;248–256,&#160;2016.<br/>
+12<br/>
+<hr/>
+<a name=13></a><img class="yflip" src="html/1806.00458-13_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-13_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-13_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-13_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-13_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-13_6.png"/><br/>
+[24]&#160;A.&#160;Shapiro,&#160;D.&#160;Dentcheva,&#160;and&#160;A.&#160;Ruszczy´<br/>
+nski.&#160;Lectures&#160;on&#160;Stochastic&#160;Programming:&#160;Modeling<br/>
+and&#160;Theory.&#160;SIAM,&#160;2009.<br/>
+[25]&#160;R.&#160;S.&#160;Sutton&#160;and&#160;A.&#160;G.&#160;Barto.&#160;Reinforcement&#160;Learning:&#160;An&#160;Introduction,&#160;volume&#160;1.&#160;MIT&#160;press<br/>
+Cambridge,&#160;1998.<br/>
+[26]&#160;M.&#160;Wang,&#160;E.&#160;X.&#160;Fang,&#160;and&#160;H.&#160;Liu.&#160;Stochastic&#160;compositional&#160;gradient&#160;descent:&#160;algorithms&#160;for<br/>
+minimizing&#160;compositions&#160;of&#160;expected-value&#160;functions.&#160;Mathematical&#160;Programming,&#160;161(1-2):419–<br/>449,&#160;2017.<br/>
+[27]&#160;M.&#160;Wang,&#160;J.&#160;Liu,&#160;and&#160;E.&#160;X.&#160;Fang.&#160;Accelerating&#160;stochastic&#160;composition&#160;optimization.&#160;Journal&#160;of<br/>
+Machine&#160;Learning&#160;Research,&#160;18:1–23,&#160;2017.<br/>
+[28]&#160;B.&#160;E.&#160;Woodworth&#160;and&#160;N.&#160;Srebro.&#160;Tight&#160;complexity&#160;bounds&#160;for&#160;optimizing&#160;composite&#160;objectives.&#160;In<br/>
+NIPS,&#160;pages&#160;3639–3647,&#160;2016.<br/>
+[29]&#160;S.&#160;Yang,&#160;M.&#160;Wang,&#160;and&#160;E.&#160;X.&#160;Fang.&#160;Multi-level&#160;stochastic&#160;gradient&#160;methods&#160;for&#160;nested&#160;compositon<br/>
+optimization.&#160;ArXiv&#160;Preprint:&#160;1801.03600,&#160;2018.<br/>
+[30]&#160;Y.&#160;Yu&#160;and&#160;L.&#160;Huang.&#160;Fast&#160;stochastic&#160;variance&#160;reduced&#160;ADMM&#160;for&#160;stochastic&#160;composition&#160;opti-<br/>
+mization.&#160;ArXiv&#160;Preprint:&#160;1705.04138,&#160;2017.<br/>
+A<br/>
+Proof&#160;Outline<br/>
+We&#160;list&#160;the&#160;assumptions&#160;in&#160;our&#160;paper&#160;and&#160;some&#160;major&#160;steps&#160;to&#160;give&#160;a&#160;whole&#160;picture&#160;of&#160;the&#160;proof.<br/>
+Proof&#160;Outlines:<br/>
+1.&#160;We&#160;provide&#160;two&#160;basic&#160;lemmas,&#160;which&#160;concerns&#160;with&#160;convex&#160;objective&#160;and&#160;common<br/>
+variance;&#160;see&#160;Lemmas&#160;<a href="1806.00458s.html#14">B.1&#160;</a>and&#160;<a href="1806.00458s.html#16">B.2.</a><br/>
+h<br/>
+2<br/>
+i<br/>
+2.&#160;We&#160;bound&#160;the&#160;term&#160;of&#160;E&#160;<br/>
+vs+1<br/>
+t<br/>
+−&#160;∇f&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;using&#160;the&#160;term&#160;k˜xs&#160;−&#160;x∗k2,<br/>
+<br/>
+2<br/>
+xs+1<br/>
+t<br/>
+−&#160;x∗&#160;and&#160;the&#160;size&#160;of&#160;At,&#160;Bt&#160;and&#160;Ct,&#160;i.e.,&#160;A,&#160;B&#160;and&#160;C;&#160;see&#160;Lemma&#160;<a href="1806.00458s.html#17">B.3.</a><br/>
+2<br/>
+3.&#160;We&#160;bound&#160;the&#160;term&#160;of&#160;E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;using&#160;the&#160;term&#160;Φ(x0)&#160;−&#160;Φ(x∗),&#160;<br/>
+x0&#160;−&#160;x∗<br/>
+<br/>
+and&#160;the&#160;parameters&#160;η&#160;and&#160;k0;&#160;see&#160;Lemmas&#160;<a href="1806.00458s.html#19">C.1&#160;</a>and&#160;<a href="1806.00458s.html#20">C.2.</a><br/>
+4.&#160;We&#160;provide&#160;the&#160;explicit&#160;IFO&#160;complexity&#160;in&#160;terms&#160;of&#160;m&#160;+&#160;n,&#160;Lφ,&#160;Lf&#160;,&#160;Lg,&#160;Bf&#160;and&#160;Bg;<br/>
+see&#160;Theorem&#160;<a href="1806.00458s.html#24">C.3.</a><br/>
+Assumption&#160;A.1.&#160;The&#160;objective&#160;F&#160;and&#160;r&#160;are&#160;both&#160;convex,&#160;i.e.,<br/>
+F&#160;(x)&#160;−&#160;F&#160;(y)&#160;−&#160;h∇F&#160;(y),&#160;x&#160;−&#160;yi&#160;≥&#160;0,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+r(x)&#160;−&#160;r(y)&#160;−&#160;hξ,&#160;x&#160;−&#160;yi&#160;≥&#160;0,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+where&#160;ξ&#160;∈&#160;∂r(y)&#160;is&#160;a&#160;subgradient&#160;of&#160;r.<br/>
+13<br/>
+<hr/>
+<a name=14></a><img class="yflip" src="html/1806.00458-14_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-14_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-14_3.png"/><br/>
+Assumption&#160;A.2.&#160;The&#160;proximal&#160;mapping&#160;of&#160;the&#160;objective&#160;r,&#160;given&#160;by<br/>
+<br/>
+1<br/>
+<br/>
+argmin&#160;hg,&#160;xi&#160;+<br/>
+kx&#160;−&#160;yk2&#160;+&#160;r(x)&#160;,<br/>
+2η<br/>
+x∈Rd<br/>
+is&#160;easily&#160;computed&#160;for&#160;any&#160;given&#160;g&#160;∈&#160;Rd&#160;and&#160;y&#160;∈&#160;Rd&#160;and&#160;η&#160;&gt;&#160;0.<br/>
+Assumption&#160;A.3.&#160;For&#160;i&#160;∈&#160;[n]&#160;and&#160;j&#160;∈&#160;[m],&#160;there&#160;exist&#160;constants&#160;0&#160;&lt;&#160;Lf&#160;,&#160;Lg,&#160;Lφ&#160;&lt;&#160;∞&#160;such&#160;that<br/>
+k∇fi(x)&#160;−&#160;∇fi(y)k&#160;≤&#160;Lf&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rl,<br/>
+k∂gj(x)&#160;−&#160;∂gj(y)k&#160;≤&#160;Lg&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rd,<br/>
+and<br/>
+<br/>
+<br/>
+[∂gj(x)]⊤&#160;∇fi(g(x))&#160;−&#160;[∂gj(y)]⊤&#160;∇fi(g(y))&#160;≤&#160;Lφ&#160;kx&#160;−&#160;yk&#160;,<br/>
+x,&#160;y&#160;∈&#160;Rd.<br/>
+<br/>
+<br/>
+Intuitively,&#160;the&#160;constants&#160;Lf&#160;,&#160;Lg&#160;and&#160;Lφ&#160;jointly&#160;characterize&#160;the&#160;smoothness&#160;and&#160;complexity&#160;of&#160;stochastic<br/>composition&#160;optimization.<br/>
+Assumption&#160;A.4.&#160;For&#160;i&#160;∈&#160;[n]&#160;and&#160;j&#160;∈&#160;[m],&#160;there&#160;exist&#160;two&#160;constants&#160;0&#160;&lt;&#160;Bf&#160;,&#160;Bg&#160;&lt;&#160;∞&#160;such&#160;that<br/>
+k∂gj(x)k&#160;≤&#160;Bg,&#160;x&#160;∈&#160;Rd,<br/>
+k∇fi(x)k&#160;≤&#160;Bf&#160;,&#160;x&#160;∈&#160;Rl.<br/>
+B<br/>
+Proof&#160;of&#160;Technical&#160;Lemmas<br/>
+Lemma&#160;B.1.&#160;The&#160;following&#160;statement&#160;holds&#160;true,<br/>
+&#160;<br/>
+!<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+4B4gL2<br/>
+4B2L2<br/>
+f<br/>
+f<br/>
+g<br/>
+h<br/>
+2i<br/>
+E<br/>
+<br/>
+⊤<br/>
+&#160;Gs+1<br/>
+∇fi&#160;(gs+1<br/>
+(g(xs+1&#160;&#160;|&#160;xs+1<br/>
+≤<br/>
++<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;xs+1<br/>
+.<br/>
+<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+A<br/>
+B<br/>
+t<br/>
+−&#160;x∗<br/>
+where&#160;x∗&#160;is&#160;one&#160;optimal&#160;solution.<br/>
+Proof.&#160;We&#160;observe&#160;that<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+E<br/>
+<br/>
+⊤<br/>
+&#160;Gs+1<br/>
+∇fi&#160;(gs+1<br/>
+(g(xs+1&#160;&#160;|&#160;xs+1<br/>
+<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;2E<br/>
+<br/>
+⊤<br/>
+&#160;Gs+1<br/>
+∇fi&#160;(gs+1<br/>
+(gs+1&#160;&#160;|&#160;xs+1<br/>
+<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fit&#160;t&#160;)<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
++2E<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+(gs+1<br/>
+(g(xs+1&#160;&#160;|&#160;xs+1<br/>
+<br/>
+t<br/>
+)⊤&#160;∇fit&#160;t&#160;)&#160;−&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+h<br/>
+2<br/>
+2<br/>
+≤&#160;2E&#160;Gs+1<br/>
+t<br/>
+−&#160;∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+·&#160;∇fi&#160;(gs+1<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+h<br/>
+2<br/>
+2<br/>
++2E&#160;<br/>
+∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+·&#160;∇fi&#160;(gs+1<br/>
+(g(xs+1<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∇fit<br/>
+t<br/>
+))<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+≤&#160;2B2<br/>
+<br/>
+<br/>
+f&#160;E&#160;Gs+1<br/>
+t<br/>
+−&#160;∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;+&#160;2B2gE&#160;∇fi&#160;(gs+1<br/>
+(g(xs+1<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∇fit<br/>
+t<br/>
+))<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+≤&#160;2B2<br/>
+<br/>
+<br/>
+f&#160;E&#160;Gs+1<br/>
+t<br/>
+−&#160;∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;+&#160;2B2gL2f&#160;E&#160;gs+1<br/>
+t<br/>
+−&#160;g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;,<br/>
+14<br/>
+<hr/>
+<a name=15></a><img class="yflip" src="html/1806.00458-15_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-15_14.png"/><br/>
+where&#160;the&#160;first&#160;inequality&#160;comes&#160;from&#160;the&#160;Cauchy-Schwarz&#160;inequality,&#160;the&#160;third&#160;inequality&#160;comes&#160;from<br/>Assumption&#160;<a href="1806.00458s.html#14">A.4&#160;</a>and&#160;the&#160;last&#160;inequality&#160;comes&#160;from&#160;Assumption&#160;<a href="1806.00458s.html#14">A.3.&#160;</a>So&#160;it&#160;suffices&#160;to&#160;bound&#160;the&#160;terms<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+<br/>
+Gs+1<br/>
+t<br/>
+−&#160;∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+and&#160;E&#160;gs+1<br/>
+t<br/>
+−&#160;g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;.<br/>
+Indeed,&#160;we&#160;have<br/>
+<br/>
+2<br/>
+<br/>
+<br/>
+<br/>
+h<br/>
+2<br/>
+1&#160;X<br/>
+1&#160;X<br/>
+E&#160;<br/>
+<br/>
+<br/>
+gs+1<br/>
+t<br/>
+−&#160;g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+=&#160;E&#160;<br/>
+gj&#160;(xs+1<br/>
+g&#160;(˜<br/>
+xs)&#160;+&#160;˜<br/>
+gs+1&#160;−&#160;g(xs+1<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+)&#160;−<br/>
+jt<br/>
+t<br/>
+)<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+&#160;A<br/>
+A<br/>
+<br/>
+<br/>
+jt∈At<br/>
+jt∈At<br/>
+<br/>
+<br/>
+2<br/>
+<br/>
+1<br/>
+<br/>
+<br/>
+X<br/>
+=<br/>
+E&#160;<br/>
+<br/>
+<br/>
+g&#160;(xs+1<br/>
+(˜<br/>
+xs)&#160;−&#160;g(xs+1<br/>
+<br/>
+|&#160;xs+1<br/>
+A2&#160;<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;gjt<br/>
+t<br/>
+)&#160;+&#160;˜<br/>
+gs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+jt∈At<br/>
+<br/>
+1&#160;X<br/>
+h<br/>
+2<br/>
+=<br/>
+E&#160;<br/>
+g<br/>
+(xs+1<br/>
+(˜<br/>
+xs)&#160;−&#160;g(xs+1<br/>
+|&#160;xs+1<br/>
+A2<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;gjt<br/>
+t<br/>
+)&#160;+&#160;˜<br/>
+gs+1<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+jt∈At<br/>
+1&#160;X<br/>
+h<br/>
+2<br/>
+≤<br/>
+E&#160;<br/>
+g<br/>
+(xs+1<br/>
+(˜<br/>
+xs)<br/>
+<br/>
+|&#160;xs+1<br/>
+A2<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;gjt<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+jt∈At<br/>
+B2&#160;X<br/>
+2<br/>
+≤<br/>
+g<br/>
+<br/>xs+1<br/>
+A2<br/>
+t<br/>
+−&#160;˜xs<br/>
+j∈At<br/>
+2B2&#160;h<br/>
+2<br/>
+≤<br/>
+g<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2i&#160;,<br/>
+A<br/>
+t<br/>
+−&#160;x∗<br/>
+where&#160;the&#160;third&#160;equality&#160;holds&#160;true&#160;since&#160;the&#160;indices&#160;in&#160;At&#160;are&#160;drawn&#160;independently&#160;without&#160;replacement,<br/>the&#160;first&#160;inequality&#160;holds&#160;true&#160;since&#160;E&#160;kξ&#160;−&#160;E&#160;[ξ]k2&#160;≤&#160;E&#160;kξk2,&#160;and&#160;the&#160;second&#160;inequality&#160;comes&#160;from<br/>Assumption&#160;<a href="1806.00458s.html#14">A.4.&#160;</a>Furthermore,&#160;we&#160;have<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+Gs+1<br/>
+t<br/>
+−&#160;∂g(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+<br/>
+2<br/>
+<br/>
+&#160;1<br/>
+<br/>
+X<br/>
+1&#160;X<br/>
+=&#160;E&#160;<br/>
+<br/>
+<br/>
+∂gj&#160;(xs+1<br/>
+∂g&#160;(˜<br/>
+xs)&#160;+&#160;˜<br/>
+Gs+1&#160;−&#160;∂g(xs+1<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+)&#160;−<br/>
+jt<br/>
+t<br/>
+)<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+&#160;B<br/>
+B<br/>
+<br/>
+<br/>
+jt∈Bt<br/>
+jt∈Bt<br/>
+<br/>
+<br/>
+2<br/>
+<br/>
+1<br/>
+<br/>
+<br/>
+X&#160;<br/>
+<br/>
+=<br/>
+E&#160;<br/>
+<br/>
+<br/>
+∂g&#160;(xs+1<br/>
+(˜<br/>
+xs)&#160;−&#160;∂g(xs+1<br/>
+<br/>
+|&#160;xs+1<br/>
+B2&#160;<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;∂gjt<br/>
+t<br/>
+)&#160;+&#160;˜<br/>
+Gs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+jt∈Bt<br/>
+<br/>
+1<br/>
+<br/>
+2<br/>
+<br/>
+X<br/>
+<br/>
+<br/>
+=<br/>
+E&#160;∂g&#160;(xs+1<br/>
+(˜<br/>
+xs)&#160;−&#160;∂g(xs+1<br/>
+<br/>
+|&#160;xs+1<br/>
+B2<br/>
+j<br/>
+<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∂gjt<br/>
+t<br/>
+)&#160;+&#160;˜<br/>
+Gs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+jt∈Bt<br/>
+1&#160;X<br/>
+h<br/>
+2<br/>
+≤<br/>
+E&#160;<br/>
+∂g<br/>
+(xs+1<br/>
+(˜<br/>
+xs)<br/>
+<br/>
+|&#160;xs+1<br/>
+B2<br/>
+jt<br/>
+t<br/>
+)&#160;−&#160;∂gjt<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+jt∈Bt<br/>
+L2&#160;X<br/>
+2<br/>
+≤<br/>
+g<br/>
+<br/>xs+1<br/>
+B2<br/>
+t<br/>
+−&#160;˜xs<br/>
+jt∈Bt<br/>
+2L2&#160;h<br/>
+2<br/>
+≤<br/>
+g<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2i&#160;,<br/>
+B<br/>
+t<br/>
+−&#160;x∗<br/>
+15<br/>
+<hr/>
+<a name=16></a><img class="yflip" src="html/1806.00458-16_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-16_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-16_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-16_4.png"/><br/>
+where&#160;the&#160;third&#160;equality&#160;holds&#160;true&#160;since&#160;the&#160;indices&#160;in&#160;Bt&#160;are&#160;drawn&#160;independently&#160;without&#160;replacement,<br/>the&#160;first&#160;inequality&#160;holds&#160;true&#160;since&#160;E&#160;kξ&#160;−&#160;E&#160;[ξ]k2&#160;≤&#160;E&#160;kξk2,&#160;and&#160;the&#160;second&#160;inequality&#160;comes&#160;from<br/>Assumption&#160;<a href="1806.00458s.html#14">A.3.&#160;</a>This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+Lemma&#160;B.2.&#160;For&#160;i&#160;∈&#160;[n],&#160;we&#160;have<br/>
+&#34;<br/>
+#<br/>
+<br/>
+2<br/>
+h<br/>
+i⊤<br/>
+E&#160;<br/>
+˜<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fi&#160;(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+))&#160;−<br/>
+it<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;4L&#160;<br/>
+<br/>
+φ&#160;Φ(xs+1<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;Φ(˜xs)&#160;−&#160;Φ(x∗)&#160;+&#160;4L2φ&#160;xs+1<br/>
+t<br/>
+−&#160;x∗&#160;+&#160;k˜xs&#160;−&#160;x∗k2&#160;.<br/>
+where&#160;x∗&#160;is&#160;an&#160;optimal&#160;solution&#160;to&#160;the&#160;objective&#160;Φ.<br/>
+Proof.&#160;Given&#160;any&#160;z&#160;∈&#160;Rd&#160;and&#160;an&#160;optimal&#160;solution&#160;x∗&#160;to&#160;the&#160;objective&#160;Φ,&#160;we&#160;define&#160;ϕi&#160;(z)&#160;as<br/>
+t<br/>
+D<br/>
+L<br/>
+ϕ<br/>
+φ<br/>
+i&#160;(z)&#160;=&#160;f&#160;(g(z))&#160;−<br/>
+[∂g(x∗)]⊤&#160;∇f&#160;(g(x∗)),&#160;z&#160;−&#160;x∗E&#160;+<br/>
+kz&#160;−&#160;x∗k2&#160;.<br/>
+t<br/>
+it<br/>
+it<br/>
+2<br/>
+It&#160;is&#160;clear&#160;that&#160;ϕi&#160;(z)&#160;is&#160;a&#160;convex&#160;function&#160;with&#160;the&#160;gradient&#160;being&#160;Lipschitz&#160;continuous&#160;with&#160;2L<br/>
+t<br/>
+φ&#160;&gt;&#160;0<br/>
+and&#160;has&#160;a&#160;minimzer&#160;x∗.&#160;Therefore,&#160;we&#160;obtain&#160;from&#160;Theorem&#160;2.1.5&#160;in&#160;the&#160;textbook&#160;<a href="1806.00458s.html#12">[14]&#160;</a>that<br/>
+1<br/>
+ϕi&#160;(z)&#160;−&#160;ϕ&#160;(x∗)&#160;≥<br/>
+k∇ϕ&#160;(z)k2&#160;.<br/>
+t<br/>
+it<br/>
+2L<br/>
+it<br/>
+φ<br/>
+Equivalently,&#160;we&#160;have<br/>
+D<br/>
+L<br/>
+f<br/>
+φ<br/>
+i&#160;(g(z))&#160;−&#160;f&#160;(g(x∗))&#160;−<br/>
+[∂g(x∗)]⊤&#160;∇f&#160;(g(x∗)),&#160;z&#160;−&#160;x∗E&#160;+<br/>
+kz&#160;−&#160;x∗k2<br/>
+t<br/>
+it<br/>
+it<br/>
+2<br/>
+1&#160;<br/>
+2<br/>
+≥<br/>
+[∂g(z)]⊤&#160;∇f&#160;(g(z))&#160;−&#160;[∂g(x∗)]⊤&#160;∇f&#160;(g(x∗))&#160;+&#160;L<br/>
+<br/>
+.<br/>
+(8)<br/>
+2L<br/>
+i<br/>
+i<br/>
+φ&#160;(z&#160;−&#160;x∗)<br/>
+<br/>
+t<br/>
+t<br/>
+<br/>
+φ<br/>
+Therefore,&#160;we&#160;have<br/>
+<br/>
+2<br/>
+[∂g(z)]⊤&#160;∇fi&#160;(g(z))&#160;−&#160;[∂g(x∗)]⊤&#160;∇fi&#160;(g(x∗))<br/>
+<br/>
+t<br/>
+t<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;2&#160;[∂g(z)]⊤&#160;∇fi&#160;(g(z))&#160;−&#160;[∂g(x∗)]⊤&#160;∇fi&#160;(g(x∗))&#160;+&#160;Lφ&#160;(z&#160;−&#160;x∗)&#160;+&#160;2L2<br/>
+<br/>
+t<br/>
+t<br/>
+<br/>
+φ&#160;kz&#160;−&#160;x∗k2<br/>
+h<br/>
+D<br/>
+Ei<br/>
+≤&#160;4Lφ&#160;fi&#160;(g(z))&#160;−&#160;f&#160;(g(x∗))&#160;−&#160;[∂g(x∗)]⊤&#160;∇f&#160;(g(x∗)),&#160;z&#160;−&#160;x∗<br/>
++&#160;4L2<br/>
+t<br/>
+it<br/>
+it<br/>
+φ&#160;kz&#160;−&#160;x∗k2&#160;.<br/>
+where&#160;the&#160;second&#160;inequality&#160;comes&#160;from&#160;<a href="1806.00458s.html#16">(8)</a>.&#160;Letting&#160;z&#160;=&#160;xs+1<br/>
+t<br/>
+and&#160;z&#160;=&#160;˜<br/>
+xs&#160;and&#160;taking&#160;the&#160;conditional<br/>
+expectation&#160;on&#160;xs+1<br/>
+t<br/>
+and&#160;˜<br/>
+xs&#160;yields&#160;that<br/>
+&#34;<br/>
+#<br/>
+<br/>
+2<br/>
+h<br/>
+i⊤<br/>
+E&#160;<br/>
+˜<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fi&#160;(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+))&#160;−<br/>
+it<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;E<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+(g(xs+1<br/>
+(g(x∗))&#160;|&#160;xs+1<br/>
+<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−&#160;[∂g(x∗)]⊤&#160;∇fit<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+&#34;<br/>
+#<br/>
+<br/>
+2<br/>
+h<br/>
+i⊤<br/>
++E&#160;&#160;˜<br/>
+<br/>
+<br/>
+Gs+1<br/>
+∇fi&#160;(˜gs+1)&#160;−&#160;[∂g(x∗)]⊤&#160;∇f&#160;(g(x∗))<br/>
+|&#160;xs+1<br/>
+t<br/>
+it<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;4L&#160;<br/>
+<br/>
+φ&#160;F&#160;(xs+1<br/>
+t<br/>
+)&#160;−&#160;F&#160;(x∗)&#160;−&#160;
+∇F&#160;(x∗),&#160;xs+1<br/>
+t<br/>
+−&#160;x∗&#160;+&#160;4L2φ&#160;xs+1<br/>
+t<br/>
+−&#160;x∗<br/>
++4Lφ&#160;[F&#160;(˜<br/>
+xs)&#160;−&#160;F&#160;(x∗)&#160;−&#160;h∇F&#160;(x∗),&#160;˜<br/>
+xs&#160;−&#160;x∗i]&#160;+&#160;4L2φ&#160;k˜xs&#160;−&#160;x∗k2&#160;.<br/>
+16<br/>
+<hr/>
+<a name=17></a><img class="yflip" src="html/1806.00458-17_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-17_7.png"/><br/>
+In&#160;addition,&#160;we&#160;have<br/>
+−&#160;h∇F&#160;(x∗),&#160;x&#160;−&#160;x∗i&#160;=&#160;hξ,&#160;x&#160;−&#160;x∗i&#160;≤&#160;r(x)&#160;−&#160;r(x∗),<br/>
+where&#160;the&#160;first&#160;equality&#160;since&#160;x∗&#160;is&#160;an&#160;optimal&#160;solution&#160;to&#160;the&#160;objective&#160;Φ&#160;and&#160;the&#160;inequality&#160;comes&#160;from<br/>Assumption&#160;<a href="1806.00458s.html#13">A.1.&#160;</a>Therefore,&#160;we&#160;conclude&#160;that<br/>
+&#34;<br/>
+#<br/>
+<br/>
+2<br/>
+h<br/>
+i⊤<br/>
+E&#160;<br/>
+˜<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fi&#160;(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)<br/>
+|&#160;xs+1<br/>
+t<br/>
+t<br/>
+))&#160;−<br/>
+it<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+≤&#160;4L&#160;<br/>
+<br/>
+φ&#160;Φ(xs+1<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;Φ(˜xs)&#160;−&#160;Φ(x∗)&#160;+&#160;4L2φ&#160;xs+1<br/>
+t<br/>
+−&#160;x∗&#160;+&#160;k˜xs&#160;−&#160;x∗k2&#160;.<br/>
+This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+Lemma&#160;B.3.&#160;The&#160;gap&#160;between&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)&#160;and&#160;its&#160;approximation&#160;vs+1<br/>
+t<br/>
+is&#160;upper&#160;bounded&#160;by&#160;k˜xs&#160;−&#160;x∗k2<br/>
+2<br/>
+and&#160;<br/>
+xs+1<br/>
+t<br/>
+−&#160;x∗&#160;in&#160;terms&#160;of&#160;conditional&#160;expectation,&#160;given&#160;by<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+vs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+&#160;<br/>
+!<br/>
+8L<br/>
+8L<br/>
+8B4gL2<br/>
+8B2L2g<br/>
+8L2<br/>
+h<br/>
+2<br/>
+≤<br/>
+φ&#160;Φ(<br/>
+φ<br/>
+f<br/>
+f<br/>
+φ<br/>
+xs+1<br/>
+[Φ(˜<br/>
+xs)&#160;−&#160;Φ(x∗)]&#160;+<br/>
++<br/>
++<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2i&#160;.<br/>
+C<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;C<br/>
+A<br/>
+B<br/>
+C<br/>
+t<br/>
+−&#160;x∗<br/>
+Proof.&#160;Let&#160;us+1<br/>
+t<br/>
+be&#160;an&#160;unbiased&#160;estimate&#160;of&#160;∇F&#160;(xs+1<br/>
+t<br/>
+),&#160;i.e.,<br/>
+1&#160;X<br/>
+1&#160;X&#160;h<br/>
+i⊤<br/>
+us+1<br/>
+<br/>
+˜<br/>
+t<br/>
+=<br/>
+∂g(xs+1<br/>
+(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)&#160;+&#160;˜vs+1,<br/>
+C<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−&#160;C<br/>
+it<br/>
+it∈Ct<br/>
+it∈Ct<br/>
+then&#160;we&#160;have<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+<br/>
+<br/>
+<br/>
+vs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;≤&#160;2E&#160;vs+1<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi+2E&#160;us+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;.<br/>
+So&#160;it&#160;suffices&#160;to&#160;bound&#160;the&#160;terms<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+<br/>
+<br/>
+vs+1<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+and&#160;E&#160;us+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;.<br/>
+17<br/>
+<hr/>
+<a name=18></a><img class="yflip" src="html/1806.00458-18_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-18_17.png"/><br/>
+Indeed,&#160;we&#160;have<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+<br/>
+vs+1<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+&#160;1&#160;X<br/>
+1&#160;X<br/>
+<br/>
+=&#160;E<br/>
+<br/>
+⊤<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+Gs+1<br/>
+∇fi&#160;(gs+1<br/>
+∂g(xs+1<br/>
+(g(xs+1<br/>
+|&#160;xs+1<br/>
+<br/>
+&#160;C<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;C<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+i<br/>
+<br/>
+t∈Ct<br/>
+it∈Ct<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+1<br/>
+&#160;X<br/>
+X<br/>
+<br/>
+=<br/>
+E<br/>
+<br/>
+⊤<br/>
+<br/>
+<br/>
+Gs+1<br/>
+∇f&#160;(gs+1<br/>
+∂g(xs+1<br/>
+(g(xs+1&#160;&#160;|&#160;xs+1<br/>
+C2&#160;<br/>
+i<br/>
+<br/>
+<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+i<br/>
+<br/>
+t∈Ct<br/>
+it∈Ct<br/>
+1<br/>
+<br/>
+2<br/>
+<br/>
+X<br/>
+<br/>
+<br/>
+≤<br/>
+E<br/>
+<br/>
+⊤<br/>
+&#160;Gs+1<br/>
+∇f&#160;(gs+1<br/>
+(g(xs+1&#160;&#160;|&#160;xs+1<br/>
+C<br/>
+i<br/>
+<br/>
+t<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;∂g(xs+1<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+i∈Ct<br/>
+&#160;<br/>
+!<br/>
+1<br/>
+4B4<br/>
+4B2L2<br/>
+X<br/>
+g&#160;L2<br/>
+g<br/>
+h<br/>
+2i<br/>
+≤<br/>
+f&#160;+<br/>
+f<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;xs+1<br/>
+C<br/>
+A<br/>
+B<br/>
+t<br/>
+−&#160;x∗<br/>
+i∈Ct<br/>
+&#160;&#160;4B4<br/>
+!<br/>
+g&#160;L2<br/>
+4B2<br/>
+h<br/>
+2i<br/>
+=<br/>
+f&#160;+<br/>
+f&#160;L2<br/>
+g<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;xs+1<br/>
+,<br/>
+A<br/>
+B<br/>
+t<br/>
+−&#160;x∗<br/>
+where&#160;the&#160;first&#160;inequality&#160;comes&#160;from&#160;Cauchy-Schwarz&#160;inequality&#160;and&#160;the&#160;second&#160;inequality&#160;comes&#160;from<br/>Lemma&#160;<a href="1806.00458s.html#14">B.1.&#160;</a>Furthermore,&#160;we&#160;have<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+us+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+&#160;1&#160;X<br/>
+1&#160;X&#160;h<br/>
+i⊤<br/>
+<br/>
+=&#160;E<br/>
+<br/>
+<br/>
+˜<br/>
+<br/>
+<br/>
+∂g(xs+1<br/>
+(g(xs+1<br/>
+Gs+1<br/>
+∇fi&#160;(˜gs+1)&#160;+&#160;˜vs+1&#160;−&#160;∇F&#160;(xs+1<br/>
+|&#160;xs+1<br/>
+<br/>
+&#160;C<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−&#160;C<br/>
+t<br/>
+t<br/>
+)<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+i<br/>
+<br/>
+t∈Ct<br/>
+it∈Ct<br/>
+<br/>
+<br/>
+<br/>
+2<br/>
+1<br/>
+<br/>
+<br/>
+&#160;X<br/>
+h<br/>
+i⊤<br/>
+<br/>
+=<br/>
+E<br/>
+<br/>
+<br/>
+∂g(xs+1<br/>
+(g(xs+1<br/>
+˜<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)&#160;+&#160;˜vs+1&#160;−&#160;∇F&#160;(xs+1<br/>
+<br/>
+|&#160;xs+1<br/>
+C2&#160;<br/>
+i<br/>
+<br/>
+<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−<br/>
+t<br/>
+t<br/>
+)&#160;<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+i<br/>
+<br/>
+t∈Ct<br/>
+&#34;<br/>
+#<br/>
+1<br/>
+<br/>
+2<br/>
+X<br/>
+h<br/>
+i⊤<br/>
+=<br/>
+E&#160;<br/>
+˜<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)&#160;+&#160;˜vs+1&#160;−&#160;∇F&#160;(xs+1&#160;&#160;|&#160;xs+1<br/>
+C2<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−<br/>
+it<br/>
+t<br/>
+)<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+it∈Ct<br/>
+&#34;<br/>
+#<br/>
+1<br/>
+<br/>
+2<br/>
+X<br/>
+h<br/>
+i⊤<br/>
+≤<br/>
+E&#160;<br/>
+˜<br/>
+<br/>
+&#160;∂g(xs+1<br/>
+(g(xs+1<br/>
+Gs+1<br/>
+∇f&#160;(˜gs+1)&#160;|&#160;xs+1<br/>
+C2<br/>
+t<br/>
+)⊤&#160;∇fit<br/>
+t<br/>
+))&#160;−<br/>
+it<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+<br/>
+it∈Ct<br/>
+1&#160;X&#160;h<br/>
+<br/>
+2<br/>
+≤<br/>
+4L&#160;Φ(xs+1<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2i<br/>
+C2<br/>
+φ<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;Φ(˜xs)&#160;−&#160;Φ(x∗)&#160;+&#160;4L2φ<br/>
+t<br/>
+−&#160;x∗<br/>
+it∈Ct<br/>
+4L<br/>
+4L2&#160;<br/>
+2<br/>
+=<br/>
+φ&#160;Φ(<br/>
+φ<br/>
+xs+1<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2<br/>
+C<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;Φ(˜xs)&#160;−&#160;Φ(x∗)&#160;+&#160;C<br/>
+t<br/>
+−&#160;x∗<br/>
+where&#160;the&#160;third&#160;equality&#160;holds&#160;true&#160;since&#160;the&#160;indices&#160;in&#160;Ct&#160;are&#160;drawn&#160;independently&#160;without&#160;replacement,<br/>the&#160;first&#160;inequality&#160;holds&#160;true&#160;since&#160;E&#160;kξ&#160;−&#160;E&#160;[ξ]k2&#160;≤&#160;E&#160;kξk2&#160;and&#160;the&#160;second&#160;inequality&#160;comes&#160;from<br/>
+18<br/>
+<hr/>
+<a name=19></a><img class="yflip" src="html/1806.00458-19_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-19_17.png"/><br/>
+Lemma&#160;<a href="1806.00458s.html#16">B.2.&#160;</a>Therefore,&#160;we&#160;conclude&#160;that<br/>
+h<br/>
+2<br/>
+E&#160;<br/>
+vs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+&#160;<br/>
+!<br/>
+8L<br/>
+8L<br/>
+8B4gL2<br/>
+8B2<br/>
+8L2<br/>
+h<br/>
+2<br/>
+≤<br/>
+φ&#160;Φ(<br/>
+φ<br/>
+f<br/>
+f&#160;L2<br/>
+g<br/>
+φ<br/>
+xs+1<br/>
+[Φ(˜<br/>
+xs)&#160;−&#160;Φ(x∗)]&#160;+<br/>
++<br/>
++<br/>
+<br/>xs+1<br/>
++&#160;k˜xs&#160;−&#160;x∗k2i&#160;.<br/>
+C<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;C<br/>
+A<br/>
+B<br/>
+C<br/>
+t<br/>
+−&#160;x∗<br/>
+This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+C<br/>
+Proof&#160;of&#160;Main&#160;Theorem<br/>
+Lemma&#160;C.1.&#160;For&#160;any&#160;x&#160;∈&#160;Rd,&#160;we&#160;have<br/>
+ηαL<br/>
+2<br/>
+η<br/>
+h<br/>
+2<br/>
+0&#160;≤&#160;Φ(<br/>
+φ<br/>
+x)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x&#160;−&#160;xs+1<br/>
+E&#160;vs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+2(1&#160;−&#160;ηL<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+φ)<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+E&#160;vs+1<br/>
++<br/>
+x&#160;−&#160;xs+1&#160;−&#160;E&#160;x&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2ηαL<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii&#160;.<br/>
+φ<br/>
+2ηs+1<br/>
+t+1<br/>
+where&#160;α&#160;&gt;&#160;1&#160;is&#160;a&#160;constant.<br/>
+Proof.&#160;We&#160;have<br/>
+1<br/>
+0&#160;≤&#160;r(x)&#160;−&#160;r(xs+1<br/>
+<br/>
+<br/>
+t<br/>
+)&#160;+&#160;
+x<br/>
+,&#160;vs+1&#160;+<br/>
+,&#160;xs+1<br/>
++1<br/>
+−&#160;xs+1<br/>
+t+1<br/>
+t<br/>
+·&#160;
+x&#160;−&#160;xs+1<br/>
+ηs+1<br/>
+t+1<br/>
+t+1&#160;−&#160;xs+1<br/>
+t<br/>
+t+1<br/>
+=&#160;r(x)&#160;−&#160;r(xs+1<br/>
+<br/>
+<br/>
+t<br/>
+)&#160;+&#160;
+x<br/>
++&#160;
+xs+1<br/>
+,&#160;vs+1<br/>
++1<br/>
+−&#160;xs+1<br/>
+t<br/>
+,&#160;vs+1<br/>
+t<br/>
+t<br/>
+−&#160;xs+1<br/>
+t+1<br/>
+t<br/>
+1<br/>
+h<br/>
+2<br/>
+2<br/>
+2i<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+xs+1<br/>
+<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t+1&#160;−&#160;xs+1<br/>
+t<br/>
+t+1<br/>
+=&#160;r(x)&#160;−&#160;r(xs+1<br/>
+<br/>
+t<br/>
+)&#160;+&#160;
+x<br/>
++&#160;
+xs+1<br/>
+,<br/>
+,&#160;vs+1<br/>
++1<br/>
+−&#160;xs+1<br/>
+t<br/>
+,&#160;vs+1<br/>
+t<br/>
+t<br/>
+−&#160;xs+1<br/>
+t+1&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)&#160;+&#160;
+xs+1<br/>
+t<br/>
+−&#160;xs+1<br/>
+t+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+1<br/>
+h<br/>
+2<br/>
+2<br/>
+2i<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+xs+1<br/>
+<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t+1&#160;−&#160;xs+1<br/>
+t<br/>
+t+1<br/>
+L<br/>
+2<br/>
+≤&#160;r(<br/>
+φ<br/>
+x)&#160;−&#160;r(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)&#160;+&#160;
+x<br/>
++&#160;F&#160;(xs+1<br/>
+)&#160;+<br/>
++1<br/>
+−&#160;xs+1<br/>
+t<br/>
+,&#160;vs+1<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;F&#160;(xs+1<br/>
+t+1<br/>
+xs+1<br/>
+<br/>
+2<br/>
+t<br/>
+−&#160;xs+1<br/>
+t+1<br/>
+1<br/>
+h<br/>
+2<br/>
+2<br/>
+2i<br/>
++&#160;
+xs+1<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+−&#160;xs+1<br/>
+t<br/>
+,&#160;vs+1<br/>
++1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)&#160;+<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+xs+1<br/>
+<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t+1&#160;−&#160;xs+1<br/>
+t<br/>
+t+1<br/>
+ηs+1<br/>
+2<br/>
+≤&#160;r(x)&#160;−&#160;r(xs+1<br/>
+<br/>
+t+1<br/>
+<br/>
+t<br/>
+)&#160;+&#160;
+x<br/>
++&#160;F&#160;(xs+1<br/>
+)&#160;+<br/>
++1<br/>
+−&#160;xs+1<br/>
+t<br/>
+,&#160;vs+1<br/>
+t<br/>
+t<br/>
+)&#160;−&#160;F&#160;(xs+1<br/>
+t+1<br/>
+vs+1<br/>
+2(1&#160;−&#160;ηs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+L<br/>
++1<br/>
+φ)<br/>
+1<br/>
+h<br/>
+2<br/>
+2i<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+x&#160;−&#160;xs+1&#160;−&#160;<br/>
+x&#160;−&#160;xs+1<br/>
+,<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t+1<br/>
+where&#160;the&#160;first&#160;inequality&#160;comes&#160;from&#160;the&#160;update&#160;of&#160;xs+1<br/>
+t<br/>
+,&#160;the&#160;first&#160;equality&#160;holds&#160;true&#160;since<br/>
++1<br/>
+hx,&#160;yi&#160;=<br/>
+h<br/>
+1<br/>
+kx&#160;+&#160;yk2&#160;−&#160;kxk2&#160;−&#160;kyk2i,&#160;the&#160;second&#160;inequality&#160;comes&#160;from&#160;Assumption&#160;<a href="1806.00458s.html#14">A.3,&#160;</a>and&#160;the&#160;third&#160;inequality<br/>
+2<br/>
+comes&#160;from&#160;the&#160;Young&#160;inequality.<br/>
+19<br/>
+<hr/>
+<a name=20></a><img class="yflip" src="html/1806.00458-20_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_28.png"/><br/>
+<img class="yflip" src="html/1806.00458-20_29.png"/><br/>
+Taking&#160;the&#160;conditional&#160;expectation&#160;of&#160;both&#160;side&#160;on&#160;xs+1<br/>
+t<br/>
+and&#160;˜<br/>
+xs&#160;yields&#160;that<br/>
+0&#160;≤&#160;r(x)&#160;−&#160;E&#160;r(xs+1<br/>
+t<br/>
+)<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+&#160;
+x&#160;−&#160;xs+1<br/>
+t<br/>
+,&#160;E&#160;vs+1<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
++&#160;
+x&#160;−&#160;xs+1<br/>
+t<br/>
+,&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)&#160;+&#160;F&#160;(xs+1<br/>
+t<br/>
+)&#160;−&#160;E&#160;F&#160;(xs+1<br/>
+t<br/>
+)<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+ηs+1<br/>
+h<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+t+1<br/>
+E&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+vs+1<br/>
+|&#160;xs+1<br/>
+x&#160;−&#160;xs+1&#160;−&#160;E&#160;x&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2(1&#160;−&#160;ηs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+t<br/>
+L<br/>
+2ηs+1<br/>
++1<br/>
+φ)<br/>
+t+1<br/>
+≤&#160;Φ(x)&#160;−&#160;E&#160;Φ(xs+1<br/>
+t<br/>
+)<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+&#160;
+x&#160;−&#160;xs+1<br/>
+t<br/>
+,&#160;E&#160;vs+1<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+ηs+1<br/>
+h<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+t+1<br/>
+E&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+vs+1<br/>
+|&#160;xs+1<br/>
+x&#160;−&#160;xs+1&#160;−&#160;E&#160;x&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2(1&#160;−&#160;ηs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+t<br/>
+L<br/>
+2ηs+1<br/>
++1<br/>
+φ)<br/>
+t+1<br/>
+ηαL<br/>
+2<br/>
+ηs+1<br/>
+h<br/>
+2<br/>
+≤&#160;Φ(<br/>
+φ<br/>
+x)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+t+1<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x&#160;−&#160;xs+1<br/>
+E&#160;vs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+2(1&#160;−&#160;ηs+1<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+t<br/>
+L<br/>
++1<br/>
+φ)<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+E&#160;vs+1<br/>
++<br/>
+x&#160;−&#160;xs+1&#160;−&#160;E&#160;x&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2ηαL<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+φ<br/>
+2ηs+1<br/>
+t+1<br/>
+where&#160;the&#160;first&#160;inequality&#160;holds&#160;true&#160;since&#160;us+1<br/>
+t<br/>
+is&#160;an&#160;unbiased&#160;estimator&#160;of&#160;∇F&#160;(xs+1<br/>
+t<br/>
+),&#160;the&#160;second<br/>
+inequality&#160;comes&#160;from&#160;Assumption&#160;<a href="1806.00458s.html#13">A.1&#160;</a>and&#160;the&#160;third&#160;inequality&#160;comes&#160;from&#160;the&#160;Young&#160;inequality&#160;with<br/>ηαLφ&#160;&gt;&#160;0&#160;and&#160;α&#160;&gt;&#160;1.&#160;Finally,&#160;we&#160;observe&#160;that<br/>
+ηs+1<br/>
+t+1<br/>
+1<br/>
+1<br/>
+η<br/>
+=<br/>
+≤<br/>
+=<br/>
+.<br/>
+2(1&#160;−&#160;ηs+1<br/>
+2(&#160;1<br/>
+2(&#160;1<br/>
+2(1&#160;−&#160;ηL<br/>
+t<br/>
+L<br/>
++1<br/>
+φ)<br/>
+−&#160;L<br/>
+φ)<br/>
+ηs+1<br/>
+φ)<br/>
+η&#160;−&#160;Lφ)<br/>
+t+1<br/>
+h<br/>
+i<br/>
+where&#160;the&#160;inequality&#160;comes&#160;from&#160;the&#160;fact&#160;that&#160;ηs+1<br/>
+η<br/>
+t<br/>
+√&#160;,&#160;η&#160;.&#160;This&#160;implies&#160;that<br/>
++1&#160;∈<br/>
+2<br/>
+ηαL<br/>
+2<br/>
+η<br/>
+h<br/>
+2<br/>
+0&#160;≤&#160;Φ(<br/>
+φ<br/>
+x)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x&#160;−&#160;xs+1<br/>
+E&#160;vs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+2(1&#160;−&#160;ηL<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+φ)<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+E&#160;vs+1<br/>
++<br/>
+x&#160;−&#160;xs+1&#160;−&#160;E&#160;x&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2ηαL<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii&#160;.<br/>
+φ<br/>
+2ηs+1<br/>
+t+1<br/>
+This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+Lemma&#160;C.2.&#160;Assume&#160;that&#160;k0&#160;≥&#160;1&#160;and&#160;the&#160;sample&#160;sizes&#160;A&#160;&gt;&#160;0,&#160;B&#160;&gt;&#160;0&#160;and&#160;C&#160;&gt;&#160;0&#160;satisfy<br/>
+12B4gL2<br/>
+12B2<br/>
+12<br/>
+A&#160;=<br/>
+f&#160;,<br/>
+B&#160;=<br/>
+f&#160;L2<br/>
+g&#160;,<br/>
+C&#160;=<br/>
+,<br/>
+η2αL2<br/>
+η2αL2<br/>
+η2α<br/>
+φ<br/>
+φ<br/>
+for&#160;some&#160;α&#160;&gt;&#160;1&#160;and&#160;η&#160;&gt;&#160;0&#160;satisfies<br/>
+1<br/>
+1<br/>
+η&#160;≤<br/>
+,<br/>
+ηα&#160;≤<br/>
+√<br/>
+,<br/>
+2Lφ<br/>
+20&#160;2ηLφT<br/>
+we&#160;have<br/>
+2<br/>
+2<br/>
+2&#160;Φ(x0)&#160;−&#160;Φ(x∗)<br/>
+3ηαL&#160;<br/>
+<br/>
+φ&#160;x∗&#160;−&#160;x0<br/>
+<br/>
+x∗&#160;−&#160;x0<br/>
+<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;≤<br/>
++<br/>
++<br/>
+.<br/>
+2S<br/>
+2S<br/>
+2Sηk0<br/>
+where&#160;x∗&#160;is&#160;an&#160;optimal&#160;solution,&#160;i.e.,<br/>
+x∗&#160;=&#160;argmin&#160;Φ(x).<br/>
+x∈Rd<br/>
+20<br/>
+<hr/>
+<a name=21></a><img class="yflip" src="html/1806.00458-21_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_28.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_29.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_30.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_31.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_32.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_33.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_34.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_35.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_36.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_37.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_38.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_39.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_40.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_41.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_42.png"/><br/>
+<img class="yflip" src="html/1806.00458-21_43.png"/><br/>
+Proof.&#160;Letting&#160;x&#160;=&#160;x∗&#160;in&#160;Lemma&#160;<a href="1806.00458s.html#19">C.1&#160;</a>and&#160;combining&#160;Lemma&#160;<a href="1806.00458s.html#14">B.1&#160;</a>and&#160;Lemma&#160;<a href="1806.00458s.html#17">B.3&#160;</a>yields&#160;that<br/>
+ηαL<br/>
+2<br/>
+η<br/>
+h<br/>
+2<br/>
+0&#160;≤&#160;Φ(<br/>
+φ<br/>
+x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x∗&#160;−&#160;xs+1<br/>
+E&#160;vs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+2(1&#160;−&#160;ηL<br/>
+t<br/>
+−&#160;∇F&#160;(xs+1<br/>
+t<br/>
+)<br/>
+<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+φ)<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+E&#160;vs+1<br/>
++<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2ηαL<br/>
+t<br/>
+−&#160;us+1<br/>
+t<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs<br/>
+<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+φ<br/>
+2ηs+1<br/>
+t+1<br/>
+ηαL<br/>
+2<br/>
+4ηL<br/>
+≤&#160;Φ(<br/>
+φ<br/>
+φ<br/>
+x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
+Φ(xs+1<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x∗&#160;−&#160;xs+1<br/>
+2<br/>
+t<br/>
+C(1&#160;−&#160;ηL<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]<br/>
+φ)<br/>
+&#34;<br/>
+&#160;<br/>
+!<br/>
+&#160;<br/>
+!#<br/>
+4η<br/>
+B4gL2<br/>
+B2L2g<br/>
+L2<br/>
+2<br/>
+B4gL2<br/>
+B2L2g<br/>
+h<br/>
+2i<br/>
++<br/>
+f&#160;+&#160;f<br/>
++<br/>
+φ<br/>
++<br/>
+f&#160;+&#160;f<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;xs+1<br/>
+1&#160;−&#160;ηL<br/>
+t<br/>
+−&#160;x∗<br/>
+φ<br/>
+A<br/>
+B<br/>
+C<br/>
+ηαLφ<br/>
+A<br/>
+B<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii&#160;.<br/>
+t+1<br/>
+Recall&#160;that&#160;the&#160;sample&#160;size&#160;of&#160;At,&#160;Bt&#160;and&#160;Ct&#160;are&#160;selected&#160;as<br/>
+12B4gL2<br/>
+12B2L2g<br/>
+12<br/>
+A&#160;=<br/>
+f&#160;,<br/>
+B&#160;=<br/>
+f<br/>
+,<br/>
+C&#160;=<br/>
+,<br/>
+(9)<br/>
+η2αL2<br/>
+η2αL2<br/>
+η2α<br/>
+φ<br/>
+φ<br/>
+we&#160;have<br/>
+&#160;<br/>
+!<br/>
+4η<br/>
+B4gL2<br/>
+B2L2<br/>
+L2<br/>
+η2αL2<br/>
+f<br/>
+g<br/>
++<br/>
+f<br/>
++<br/>
+φ<br/>
+=<br/>
+φ&#160;,<br/>
+1&#160;−&#160;ηLφ<br/>
+A<br/>
+B<br/>
+C<br/>
+1&#160;−&#160;ηLφ<br/>
+&#160;<br/>
+!<br/>
+2<br/>
+B4gL2<br/>
+B2L2<br/>
+f<br/>
+g<br/>
+ηαL<br/>
++<br/>
+f<br/>
+≤<br/>
+φ&#160;.<br/>
+ηαLφ<br/>
+A<br/>
+B<br/>
+4<br/>
+Plugging&#160;<a href="1806.00458s.html#21">(9)&#160;</a>into&#160;the&#160;above&#160;inequality&#160;yields&#160;that<br/>
+ηαL<br/>
+2<br/>
+4ηL<br/>
+0&#160;≤&#160;Φ(<br/>
+φ<br/>
+φ<br/>
+x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
+Φ(xs+1<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x∗&#160;−&#160;xs+1<br/>
+2<br/>
+t<br/>
+C(1&#160;−&#160;ηL<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]<br/>
+φ)<br/>
+&#160;<br/>
+η2αL2<br/>
+!<br/>
+ηαL<br/>
+h<br/>
+2i<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+φ<br/>
++<br/>
+φ<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+xs+1<br/>
++<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+1&#160;−&#160;ηL<br/>
+t<br/>
+−&#160;x∗<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii&#160;.<br/>
+φ<br/>
+2<br/>
+2ηs+1<br/>
+t+1<br/>
+Furthermore,&#160;since&#160;α&#160;&gt;&#160;1&#160;and&#160;0&#160;&lt;&#160;η&#160;≤&#160;1&#160;&lt;&#160;1,&#160;we&#160;have<br/>
+2Lφ<br/>
+4ηLφ<br/>
+η1+2αL<br/>
+η3L<br/>
+ηL<br/>
+L<br/>
+1<br/>
+=<br/>
+φ&#160;≤<br/>
+φ<br/>
+≤<br/>
+φ<br/>
+≤<br/>
+φ<br/>
+≤&#160;,<br/>
+(10)<br/>
+C(1&#160;−&#160;ηL<br/>
+3<br/>
+φ)<br/>
+3&#160;−&#160;3ηLφ<br/>
+3&#160;−&#160;3ηLφ<br/>
+3&#160;−&#160;3ηLφ<br/>
+3<br/>
+η&#160;−&#160;3Lφ<br/>
+and<br/>
+η2αL2φ<br/>
+η1+αL2<br/>
+ηαL2<br/>
+≤<br/>
+φ&#160;=<br/>
+φ<br/>
+≤&#160;ηαL<br/>
+1&#160;−&#160;ηL<br/>
+1<br/>
+φ.<br/>
+(11)<br/>
+φ<br/>
+1&#160;−&#160;ηLφ<br/>
+η&#160;−&#160;Lφ<br/>
+21<br/>
+<hr/>
+<a name=22></a><img class="yflip" src="html/1806.00458-22_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-22_28.png"/><br/>
+Plugging&#160;<a href="1806.00458s.html#21">(10)&#160;</a>and&#160;<a href="1806.00458s.html#21">(11)&#160;</a>yields&#160;that<br/>
+ηαL<br/>
+2<br/>
+1<br/>
+0&#160;≤&#160;Φ(<br/>
+φ<br/>
+x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+<br/>
+<br/>
+t<br/>
+)<br/>
++<br/>
+Φ(xs+1<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+<br/>
+x∗&#160;−&#160;xs+1<br/>
+2<br/>
+t<br/>
+3<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]<br/>
+3ηαL&#160;h<br/>
+2i<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+φ<br/>
+k˜xs&#160;−&#160;x∗k2&#160;+&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+xs+1<br/>
++<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+−&#160;x∗<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+t+1<br/>
+1<br/>
+=&#160;Φ(x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+t<br/>
+)<br/>
+Φ(xs+1<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+&#160;3<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]<br/>
+ηαL&#160;h<br/>
+2i<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+φ<br/>
+3&#160;k˜xs&#160;−&#160;x∗k2&#160;+&#160;4&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+xs+1<br/>
++<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+−&#160;x∗<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+t+1<br/>
+1<br/>
+=&#160;Φ(x∗)&#160;−&#160;E&#160;Φ(xs+1<br/>
+<br/>
+t<br/>
+)<br/>
+Φ(xs+1<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;+&#160;3<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]<br/>
+ηαL&#160;h<br/>
+2i<br/>
+1<br/>
+h<br/>
+2<br/>
+h<br/>
+2<br/>
++<br/>
+φ<br/>
+3&#160;k˜xs&#160;−&#160;x∗k2&#160;−&#160;6&#160;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+xs+1<br/>
++<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+2<br/>
+t<br/>
+−&#160;x∗<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii<br/>
+t+1<br/>
+2<br/>
++5ηαL&#160;<br/>
+φ&#160;xs+1<br/>
+t<br/>
+−&#160;x∗&#160;,<br/>
+Furthermore,&#160;we&#160;observe&#160;that<br/>
+1<br/>
+1<br/>
+1<br/>
+1<br/>
+−<br/>
+≥<br/>
+√&#160;√<br/>
+=&#160;√<br/>
+≥&#160;10ηαLφ,<br/>
+ηs+1<br/>
+t<br/>
+ηs+1<br/>
+t<br/>
+2η&#160;T&#160;2T<br/>
+2&#160;2ηT<br/>
++1<br/>
+where&#160;the&#160;last&#160;inequality&#160;comes&#160;from&#160;the&#160;fact&#160;that<br/>
+1<br/>
+0&#160;&lt;&#160;ηα&#160;≤<br/>
+√<br/>
+.<br/>
+20&#160;2ηLφT<br/>
+This&#160;implies&#160;that<br/>
+1<br/>
+h<br/>
+h<br/>
+<br/>
+2<br/>
+<br/>
+2<br/>
+<br/>
+2<br/>
+x∗&#160;−&#160;xs+1&#160;−&#160;E&#160;x∗&#160;−&#160;xs+1<br/>
+|&#160;xs+1<br/>
+x∗&#160;−&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsii&#160;+&#160;5ηαLφ<br/>
+t<br/>
+t+1<br/>
+&#160;<br/>
+!<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+≤<br/>
++&#160;5ηαL<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+φ<br/>
+x∗&#160;−&#160;xs+1&#160;−<br/>
+E&#160;x∗&#160;−&#160;xs+1&#160;|&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi<br/>
+t<br/>
+2ηs+1<br/>
++1<br/>
+t+1<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
+≤<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+x∗&#160;−&#160;xs+1&#160;−<br/>
+E&#160;x∗&#160;−&#160;xs+1&#160;|&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;.<br/>
+t<br/>
+2ηs+1<br/>
+t+1<br/>
+Therefore,&#160;we&#160;conclude&#160;that<br/>
+E&#160;Φ(xs+1<br/>
+t<br/>
+)<br/>
++1<br/>
+|&#160;xs+1<br/>
+t<br/>
+,&#160;˜<br/>
+xs&#160;−&#160;Φ(x∗)<br/>
+1<br/>
+ηαL&#160;h<br/>
+2i<br/>
+≤<br/>
+Φ(<br/>
+φ<br/>
+xs+1<br/>
+3&#160;k˜xs&#160;−&#160;x∗k2&#160;−&#160;6&#160;xs+1<br/>
+3<br/>
+t<br/>
+)&#160;−&#160;Φ(x∗)&#160;+&#160;[Φ(˜xs)&#160;−&#160;Φ(x∗)]&#160;+<br/>
+2<br/>
+t<br/>
+−&#160;x∗<br/>
+1<br/>
+2<br/>
+1<br/>
+h<br/>
+2<br/>
++<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+x∗&#160;−&#160;xs+1&#160;−<br/>
+E&#160;x∗&#160;−&#160;xs+1&#160;|&#160;xs+1<br/>
+2ηs+1<br/>
+t<br/>
+t+1<br/>
+t<br/>
+,&#160;˜<br/>
+xsi&#160;.<br/>
+t<br/>
+2ηs+1<br/>
+t+1<br/>
+We&#160;take&#160;the&#160;expectation&#160;of&#160;both&#160;sides&#160;of&#160;the&#160;above&#160;inequality,&#160;sum&#160;the&#160;resulting&#160;inequality&#160;up&#160;over<br/>
+22<br/>
+<hr/>
+<a name=23></a><img class="yflip" src="html/1806.00458-23_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-23_22.png"/><br/>
+t&#160;=&#160;0,&#160;1,&#160;2,&#160;.&#160;.&#160;.&#160;,&#160;ks+1&#160;−&#160;1,&#160;and&#160;divide&#160;both&#160;sides&#160;of&#160;the&#160;final&#160;inequality&#160;by&#160;ks+1.&#160;Then&#160;we&#160;arrive&#160;at<br/>
+k<br/>
+<br/>
+s+1−1<br/>
+2<br/>
+Φ(xs+1)&#160;+&#160;3ηαL&#160;<br/>
+<br/>
+X<br/>
+φ&#160;x∗&#160;−&#160;xs+1<br/>
+E<br/>
+t+1<br/>
+t<br/>
+<br/>
+−&#160;Φ(x∗)<br/>
+k<br/>
+<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+<br/>
+k<br/>
+<br/>
+1<br/>
+s+1−1<br/>
+X<br/>
+Φ(xs+1<br/>
+3ηαL<br/>
+1<br/>
+2<br/>
+≤<br/>
+φ<br/>
+E<br/>
+t<br/>
+)<br/>
+<br/>
+<br/>
+<br/>
+−&#160;Φ(x∗)&#160;+&#160;Φ(˜xs)&#160;−&#160;Φ(x∗)<br/>
+kx∗&#160;−&#160;˜xsk2&#160;+<br/>
+x∗&#160;−&#160;xs+1<br/>
+3&#160;<br/>
+k<br/>
+&#160;+<br/>
+2<br/>
+2ηs+1k<br/>
+0<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+0<br/>
+s+1<br/>
+#<br/>
+1<br/>
+<br/>
+2<br/>
+−<br/>
+x∗&#160;−&#160;xs+1&#160;<br/>
+.<br/>
+2ηs+1&#160;k<br/>
+<br/>
+ks+1&#160;<br/>
+k<br/>
+s+1<br/>
+s+1<br/>
+Multiplying&#160;both&#160;sides&#160;of&#160;the&#160;above&#160;inequality&#160;by&#160;3&#160;and&#160;rearranging&#160;yields&#160;that<br/>
+k<br/>
+<br/>
+s+1−1<br/>
+9ηαL<br/>
+2<br/>
+φ&#160;<br/>
+<br/>
+X<br/>
+Φ(xs+1<br/>
+x∗&#160;−&#160;xs+1<br/>
+2&#160;·&#160;E<br/>
+t<br/>
+)&#160;+<br/>
+2<br/>
+t<br/>
+<br/>
+−&#160;Φ(x∗)<br/>
+k<br/>
+<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+<br/>
+h<br/>
+i<br/>
+3&#160;Φ(xs+1)<br/>
+Φ(xs+1&#160;)<br/>
+0<br/>
+−&#160;Φ(x∗)&#160;−&#160;3<br/>
+k<br/>
+−&#160;Φ(x∗)<br/>
+s+1<br/>
+9ηαL<br/>
+≤<br/>
+φ<br/>
+E&#160;<br/>
++&#160;Φ(˜<br/>
+xs)&#160;−&#160;Φ(x∗)&#160;+<br/>
+k˜xs&#160;−&#160;x∗k2<br/>
+ks+1<br/>
+2<br/>
+#<br/>
+3<br/>
+2<br/>
+3<br/>
+<br/>
+2<br/>
++<br/>
+·&#160;<br/>
+<br/>
+<br/>
+<br/>
+x∗&#160;−&#160;xs+1&#160;−<br/>
+·&#160;x∗&#160;−&#160;xs+1<br/>
+.<br/>
+2ηs+1<br/>
+0<br/>
+2ηs+1<br/>
+<br/>
+ks+1&#160;<br/>
+0<br/>
+·&#160;ks+1<br/>
+k<br/>
+·&#160;ks+1<br/>
+s+1<br/>
+According&#160;to&#160;Assumption&#160;<a href="1806.00458s.html#13">A.1&#160;</a>and&#160;the&#160;definition&#160;of&#160;˜<br/>
+xs+1,&#160;we&#160;obtain&#160;that<br/>
+ks+1−1<br/>
+X<br/>
+Φ(xs+1<br/>
+Φ(˜<br/>
+xs+1)&#160;≤<br/>
+t<br/>
+)&#160;,<br/>
+k<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+ks+1−1&#160;<br/>
+2<br/>
+<br/>
+2<br/>
+X<br/>
+xs+1<br/>
+t<br/>
+−&#160;x∗<br/>
+&#160;˜<br/>
+xs+1&#160;−&#160;x∗<br/>
+<br/>
+≤<br/>
+,<br/>
+k<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+which&#160;implies&#160;that<br/>
+k<br/>
+<br/>
+9ηαL<br/>
+2<br/>
+<br/>
+9ηαL<br/>
+<br/>
+s+1−1<br/>
+φ&#160;<br/>
+<br/>
+φ<br/>
+2<br/>
+X<br/>
+Φ(xs+1<br/>
+x∗&#160;−&#160;xs+1<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;+<br/>
+<br/>
+t<br/>
+)&#160;+<br/>
+2<br/>
+t<br/>
+&#160;˜<br/>
+xs+1&#160;−&#160;x∗<br/>
+<br/>
+≤&#160;E<br/>
+−&#160;Φ(x∗)<br/>
+2<br/>
+<br/>
+k<br/>
+&#160;.<br/>
+t<br/>
+s+1<br/>
+=0<br/>
+Then&#160;we&#160;arrive&#160;at<br/>
+<br/>
+9ηαL<br/>
+<br/>
+2<br/>
+2&#160;·<br/>
+φ<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;+<br/>
+<br/>&#160;˜<br/>
+xs+1&#160;−&#160;x∗<br/>
+<br/>
+2<br/>
+<br/>
+h<br/>
+i<br/>
+3&#160;Φ(xs+1)<br/>
+Φ(xs+1&#160;)<br/>
+0<br/>
+−&#160;Φ(x∗)&#160;−&#160;3<br/>
+k<br/>
+−&#160;Φ(x∗)<br/>
+s+1<br/>
+9ηαL<br/>
+≤<br/>
+φ<br/>
+E&#160;<br/>
++&#160;Φ(˜<br/>
+xs)&#160;−&#160;Φ(x∗)&#160;+<br/>
+k˜xs&#160;−&#160;x∗k2<br/>
+ks+1<br/>
+2<br/>
+#<br/>
+3<br/>
+2<br/>
+3<br/>
+<br/>
+2<br/>
++<br/>
+·&#160;<br/>
+<br/>
+<br/>
+<br/>
+x∗&#160;−&#160;xs+1&#160;−<br/>
+·&#160;x∗&#160;−&#160;xs+1<br/>
+.<br/>
+2ηs+1<br/>
+0<br/>
+2ηs+1<br/>
+<br/>
+ks+1&#160;<br/>
+0<br/>
+·&#160;ks+1<br/>
+k<br/>
+·&#160;ks+1<br/>
+s+1<br/>
+23<br/>
+<hr/>
+<a name=24></a><img class="yflip" src="html/1806.00458-24_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-24_27.png"/><br/>
+Combining&#160;the&#160;fact&#160;that&#160;xs+1&#160;=&#160;xs+2,&#160;ηs+1&#160;=&#160;ηs+2&#160;and&#160;k<br/>
+k<br/>
+s+2&#160;=&#160;2ks+1,&#160;we&#160;have<br/>
+s+1<br/>
+0<br/>
+ks+1<br/>
+0<br/>
+&#34;<br/>
+2<br/>
+#<br/>
+9ηαL<br/>
+<br/>
+2<br/>
+3&#160;<br/>
+x∗&#160;−&#160;xs+2<br/>
+3&#160;Φ(xs+2)&#160;−&#160;Φ(x∗)<br/>
+2&#160;·<br/>
+φ<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;+<br/>
+<br/>
+0<br/>
+0<br/>
+x∗&#160;−&#160;˜<br/>
+xs+1<br/>
+<br/>
++<br/>
++<br/>
+2<br/>
+4ηs+2<br/>
+2k<br/>
+0<br/>
+·&#160;ks+1<br/>
+s+1<br/>
+&#34;<br/>
+2<br/>
+#<br/>
+9ηαL<br/>
+3&#160;<br/>
+<br/>
+x∗&#160;−&#160;xs+1<br/>
+3&#160;Φ(xs+1)&#160;−&#160;Φ(x∗)<br/>
+≤<br/>
+φ<br/>
+E&#160;Φ(˜<br/>
+xs)&#160;−&#160;Φ(x∗)&#160;+<br/>
+kx∗&#160;−&#160;˜xsk2&#160;+<br/>
+0<br/>
++<br/>
+0<br/>
+.<br/>
+2<br/>
+4ηs+1<br/>
+2k<br/>
+0<br/>
+·&#160;ks<br/>
+s<br/>
+Finally,&#160;we&#160;telescope&#160;the&#160;above&#160;inequality&#160;for&#160;s&#160;=&#160;0,&#160;1,&#160;2,&#160;.&#160;.&#160;.&#160;,&#160;S&#160;and&#160;obtain&#160;that<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)<br/>
+&#34;<br/>
+2<br/>
+#<br/>
+1<br/>
+9ηαL<br/>
+<br/>
+2<br/>
+3&#160;<br/>
+x∗&#160;−&#160;x1<br/>
+3&#160;Φ(x1)&#160;−&#160;Φ(x∗)<br/>
+≤<br/>
+·<br/>
+φ<br/>
+E&#160;Φ(˜<br/>
+x0)&#160;−&#160;Φ(x∗)&#160;+<br/>
+<br/>
+0<br/>
+0<br/>
+x∗&#160;−&#160;˜<br/>
+x0<br/>
+<br/>
++<br/>
++<br/>
+2S+1<br/>
+2<br/>
+4η1<br/>
+2k<br/>
+0&#160;·&#160;k0<br/>
+0<br/>
+2<br/>
+2<br/>
+2&#160;Φ(x0)&#160;−&#160;Φ(x∗)<br/>
+3ηαL&#160;<br/>
+<br/>
+φ&#160;x∗&#160;−&#160;x0<br/>
+<br/>
+x∗&#160;−&#160;x0<br/>
+<br/>
+≤<br/>
++<br/>
++<br/>
+.<br/>
+2S<br/>
+2S<br/>
+2S&#160;η&#160;·&#160;k0<br/>
+This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+Theorem&#160;C.3.&#160;Given&#160;the&#160;initial&#160;vector&#160;x0&#160;∈&#160;Rd&#160;satisfies&#160;that<br/>
+<br/>
+2<br/>
+x0&#160;−&#160;x∗<br/>
+<br/>
+≤&#160;Dx,<br/>
+Φ(x0)&#160;−&#160;Φ(x∗)&#160;≤&#160;Dφ,<br/>
+and&#160;the&#160;first&#160;epoch&#160;length&#160;k0&#160;&gt;&#160;0&#160;and&#160;the&#160;number&#160;of&#160;epochs&#160;S&#160;&gt;&#160;0&#160;satisfy&#160;that<br/>
+<br/>
+D<br/>
+<br/>
+<br/>
+&#160;6D&#160;<br/>
+k<br/>
+x<br/>
+φ<br/>
+0&#160;=<br/>
++&#160;1,<br/>
+S&#160;=&#160;log<br/>
++&#160;1,<br/>
+2ηD<br/>
+2<br/>
+φ<br/>
+ε<br/>
+and&#160;the&#160;sample&#160;sizes&#160;A&#160;&gt;&#160;0,&#160;B&#160;&gt;&#160;0&#160;and&#160;C&#160;&gt;&#160;0&#160;satisfy<br/>
+12B4gL2<br/>
+12B2<br/>
+12<br/>
+A&#160;=<br/>
+f&#160;,<br/>
+B&#160;=<br/>
+f&#160;L2<br/>
+g&#160;,<br/>
+C&#160;=<br/>
+,<br/>
+η2αL2<br/>
+η2αL2<br/>
+η2α<br/>
+φ<br/>
+φ<br/>
+for&#160;some&#160;α&#160;&gt;&#160;1&#160;and&#160;η&#160;&gt;&#160;0&#160;satisfies<br/>
+<br/>
+1&#160;<br/>
+1<br/>
+&#160;<br/>
+!<br/>
+<br/>
+<br/>
+α<br/>
+<br/>
+1<br/>
+2D<br/>
+α<br/>
+ε<br/>
+<br/>
+η&#160;=&#160;min<br/>
+,<br/>
+φ<br/>
+,<br/>
+√<br/>
+,<br/>
+2L<br/>
+3L<br/>
+60&#160;2L<br/>
+<br/>
+φ<br/>
+φDx<br/>
+φ&#160;(Dx&#160;+&#160;2Dφ)<br/>
+<br/>
+and&#160;ε&#160;∈&#160;(0,&#160;1)&#160;is&#160;a&#160;tolerance,&#160;then&#160;the&#160;total&#160;IFO&#160;complexity,&#160;i.e.,&#160;the&#160;number&#160;of&#160;IFO&#160;queries&#160;to&#160;achieve<br/>an&#160;ε-optimal&#160;solution&#160;that&#160;satisfies<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;≤&#160;ε,<br/>
+is<br/>
+<br/>
+&#160;1&#160;<br/>
+1&#160;<br/>
+O&#160;(m&#160;+&#160;n)&#160;log<br/>
++<br/>
+,<br/>
+ε<br/>
+ε3+&#160;1α<br/>
+where&#160;we&#160;omit&#160;the&#160;dependence&#160;of&#160;the&#160;IFO&#160;complexity&#160;on&#160;the&#160;Lipschitz&#160;constant&#160;Lφ,&#160;Lf&#160;,&#160;Lg,&#160;the&#160;upper<br/>bound&#160;of&#160;the&#160;norm&#160;of&#160;gradient&#160;and&#160;Jacobian&#160;Bf&#160;,&#160;Bg,&#160;and&#160;the&#160;distance&#160;between&#160;the&#160;initial&#160;point&#160;and&#160;the<br/>optimal&#160;set,&#160;i.e.,&#160;Dx&#160;(the&#160;iterative&#160;gap)&#160;and&#160;Dφ&#160;(the&#160;objective&#160;gap).<br/>
+24<br/>
+<hr/>
+<a name=25></a><img class="yflip" src="html/1806.00458-25_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_11.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_12.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_13.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_14.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_15.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_16.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_17.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_18.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_19.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_20.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_21.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_22.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_23.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_24.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_25.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_26.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_27.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_28.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_29.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_30.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_31.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_32.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_33.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_34.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_35.png"/><br/>
+<img class="yflip" src="html/1806.00458-25_36.png"/><br/>
+Proof.&#160;Firstly,&#160;we&#160;check&#160;if&#160;the&#160;choices&#160;of&#160;parameter&#160;satisfy&#160;the&#160;requirement&#160;in&#160;Lemma&#160;<a href="1806.00458s.html#20">C.2.&#160;</a>Indeed,&#160;we<br/>observe&#160;that&#160;k0&#160;≥&#160;1&#160;and&#160;the&#160;sample&#160;sizes&#160;A&#160;&gt;&#160;0,&#160;B&#160;&gt;&#160;0&#160;and&#160;C&#160;&gt;&#160;0&#160;satisfy<br/>
+12B4gL2<br/>
+12B2L2g<br/>
+12<br/>
+A&#160;=<br/>
+f&#160;,<br/>
+B&#160;=<br/>
+f<br/>
+,<br/>
+C&#160;=<br/>
+,<br/>
+η2αL2<br/>
+η2αL2<br/>
+η2α<br/>
+φ<br/>
+φ<br/>
+for&#160;some&#160;α&#160;&gt;&#160;1&#160;and&#160;η&#160;&gt;&#160;0&#160;satisfies<br/>
+1<br/>
+η&#160;≤<br/>
+.<br/>
+2Lφ<br/>
+Then&#160;it&#160;suffices&#160;to&#160;check&#160;if&#160;the&#160;following&#160;statement&#160;holds&#160;true,<br/>
+1<br/>
+1<br/>
+η&#160;≤<br/>
+,<br/>
+ηα&#160;≤<br/>
+√<br/>
+.<br/>
+2Lφ<br/>
+20&#160;2ηLφT<br/>
+We&#160;observe&#160;that<br/>
+1<br/>
+1<br/>
+√<br/>
+≥<br/>
+√<br/>
+20&#160;2ηLφT<br/>
+20&#160;2ηLφk02S<br/>
+1<br/>
+ε<br/>
+≥<br/>
+√<br/>
+·<br/>
+20&#160;2ηLφk<br/>
+6D<br/>
+0<br/>
+φ<br/>
+1<br/>
+ε<br/>
+≥<br/>
+√<br/>
+·<br/>
+<br/>
+<br/>
+20&#160;2ηL<br/>
+Dx<br/>
+6D<br/>
+φ<br/>
++&#160;1<br/>
+φ<br/>
+2ηDφ<br/>
+ε<br/>
+=<br/>
+√<br/>
+60&#160;2Lφ&#160;(Dx&#160;+&#160;2ηDφ)<br/>
+ε<br/>
+≥<br/>
+√<br/>
+60&#160;2Lφ&#160;(Dx&#160;+&#160;2Dφ)<br/>
+≥&#160;ηα,<br/>
+where&#160;the&#160;first&#160;inequality&#160;comes&#160;from&#160;the&#160;fact&#160;that&#160;T&#160;=&#160;k0&#160;·&#160;2S&#160;−&#160;k0,&#160;the&#160;first&#160;equality&#160;comes&#160;from<br/>
+j<br/>
+&#160;6<br/>
+k<br/>
+j<br/>
+k<br/>
+S&#160;=&#160;S&#160;=&#160;log<br/>
+Dφ<br/>
+Dx<br/>
+2<br/>
++&#160;1,&#160;the&#160;second&#160;inequality&#160;comes&#160;from&#160;k<br/>
++&#160;1,&#160;the&#160;third&#160;inequality<br/>
+ε<br/>
+0&#160;=<br/>
+2ηDφ<br/>
+comes&#160;from&#160;the&#160;fact&#160;that&#160;0&#160;&lt;&#160;η&#160;&lt;&#160;1&#160;and&#160;the&#160;last&#160;inequality&#160;comes&#160;from&#160;0&#160;&lt;&#160;ηα&#160;&lt;<br/>
+ε<br/>
+√<br/>
+.<br/>
+60<br/>
+2Lφ(Dx+2Dφ)<br/>
+Therefore,&#160;we&#160;arrive&#160;at<br/>
+2<br/>
+2<br/>
+2&#160;Φ(x0)&#160;−&#160;Φ(x∗)<br/>
+3ηαL&#160;<br/>
+<br/>
+φ&#160;x∗&#160;−&#160;x0<br/>
+<br/>
+x∗&#160;−&#160;x0<br/>
+<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;≤<br/>
++<br/>
++<br/>
+.<br/>
+2S<br/>
+2S<br/>
+2Sηk0<br/>
+Furthermore,&#160;we&#160;have<br/>
+2&#160;Φ(x0)&#160;−&#160;Φ(x∗)<br/>
+ε<br/>
+≤<br/>
+,<br/>
+2S<br/>
+3<br/>
+2<br/>
+3ηαL&#160;<br/>
+φ&#160;x0&#160;−&#160;x∗<br/>
+<br/>
+εηαL<br/>
+ε<br/>
+≤<br/>
+φDx&#160;≤&#160;,<br/>
+2S<br/>
+2Dφ<br/>
+3<br/>
+<br/>
+2<br/>
+x0&#160;−&#160;x∗<br/>
+<br/>
+ε<br/>
+≤<br/>
+,<br/>
+2Sηk0<br/>
+3<br/>
+25<br/>
+<hr/>
+<a name=26></a><img class="yflip" src="html/1806.00458-26_1.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_2.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_3.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_4.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_5.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_6.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_7.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_8.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_9.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_10.png"/><br/>
+<img class="yflip" src="html/1806.00458-26_11.png"/><br/>
+2<br/>
+where&#160;the&#160;second&#160;inequality&#160;comes&#160;from&#160;0&#160;&lt;&#160;ηα&#160;≤<br/>
+Dφ<br/>
+and&#160;the&#160;third&#160;inequality&#160;comes&#160;from&#160;k<br/>
+3L<br/>
+0&#160;=<br/>
+φ&#160;Dx<br/>
+j<br/>
+D<br/>
+k<br/>
+x<br/>
++&#160;1.&#160;Therefore,&#160;the&#160;total&#160;IFO&#160;complexity,&#160;i.e.,&#160;the&#160;number&#160;of&#160;IFO&#160;queries&#160;to&#160;achieve&#160;an&#160;ε-optimal<br/>
+2ηDφ<br/>
+solution&#160;that&#160;satisfies<br/>
+E&#160;Φ(˜<br/>
+xs+1)&#160;−&#160;Φ(x∗)&#160;≤&#160;ε,<br/>
+is<br/>
+S&#160;·&#160;(m&#160;+&#160;n)&#160;+&#160;2S&#160;·&#160;k0&#160;·&#160;(A&#160;+&#160;B)<br/>
+&#160;<br/>
+!<br/>
+<br/>
+&#160;6D&#160;<br/>
+<br/>
+&#160;12D&#160;&#160;&#160;D<br/>
+<br/>
+<br/>
+1<br/>
+12B4gL2<br/>
+12B2L2g<br/>
+=&#160;(m&#160;+&#160;n)&#160;·<br/>
+log<br/>
+φ<br/>
+φ<br/>
+x<br/>
+f<br/>
+f<br/>
+2<br/>
++&#160;1&#160;+<br/>
+·<br/>
++&#160;1&#160;·<br/>
+·<br/>
++<br/>
++&#160;12&#160;,<br/>
+ε<br/>
+ε<br/>
+2ηDφ<br/>
+η2α<br/>
+L2<br/>
+L2<br/>
+φ<br/>
+φ<br/>
+<br/>
+&#160;1&#160;<br/>
+1&#160;<br/>
+=&#160;O&#160;(m&#160;+&#160;n)&#160;·&#160;log<br/>
++<br/>
+.<br/>
+ε<br/>
+ε3+&#160;1α<br/>
+This&#160;completes&#160;the&#160;proof.<br/>
+<br/>
+26<br/>
+<hr/>
+<a name="outline"></a><h1>Document Outline</h1>
+<ul>
+<li><a href="1806.00458s.html#1">1 Introduction</a>
+<ul>
+<li><a href="1806.00458s.html#3">1.1 Related Work</a></li>
+<li><a href="1806.00458s.html#4">1.2 Contributions</a></li>
+<li><a href="1806.00458s.html#4">1.3 Notation and Organization</a></li>
+</ul>
+</li>
+<li><a href="1806.00458s.html#5">2 Algorithm</a></li>
+<li><a href="1806.00458s.html#6">3 Main Result</a>
+<ul>
+<li><a href="1806.00458s.html#6">3.1 Assumptions</a></li>
+<li><a href="1806.00458s.html#7">3.2 Improved IFO Complexity</a></li>
+<li><a href="1806.00458s.html#8">3.3 Comparison with Previous Work</a></li>
+</ul>
+</li>
+<li><a href="1806.00458s.html#9">4 Experiments</a></li>
+<li><a href="1806.00458s.html#10">5 Conclusions</a></li>
+<li><a href="1806.00458s.html#13">A Proof Outline</a></li>
+<li><a href="1806.00458s.html#14">B Proof of Technical Lemmas</a></li>
+<li><a href="1806.00458s.html#19">C Proof of Main Theorem</a></li>
+</ul>
+<hr/>
+</body>
+</html>

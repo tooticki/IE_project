@@ -1,0 +1,148 @@
+
+Miller and Solomon~\cite{Miller2004Effectiveness} constructed a computable instance of $\ovw{2}{2}$ with no $\Delta^0_2$ solution. In this section, we strengthen their proof by constructing a computable instance of $\ovw{2}{2}$ such that every solution is of DNC degree relative to $\emptyset'$, using a significantly simpler argument.
+
+The proof makes an essential use of a computable version of Lovasz Local Lemma proven by Rumyantsev and Shen~\cite{Rumyantsev2014Probabilistic}. The idea of using Lovasz Local Lemma to analyse the computability-theoretic strength of problems in reverse mathematics comes from Csima and Dzhafarov, Hirschfeldt, Jockusch, Solomon and Westrick~\cite{Csima2018reverse}, who proved that a version of Hindman's theorem for subtractions is not computably true.
+
+
+\begin{definition}
+	Fix a countable set of variables $x_0, x_1, \dots$
+	A \emph{(disjunctive) clause} $C$ is a tuple of the form $(x_{n_1} = i_1 \vee \dots \vee x_{n_k} = i_k)$, with $i_1, \dots, i_k < 2$. The \emph{length} of $C$ is the integer $k$. An \emph{infinite CNF formula} is an infinite conjunction of disjunctive clauses. An infinite CNF formula $\bigwedge_n C_n$ is \emph{computable} if the function which given $n$ outputs a code for $C_n$ is computable, and the set of $n$ such that $C_n$ contains the variable $x_j$ is uniformly computable in $j$.
+\end{definition}
+
+\begin{theorem}[{Rumyantsev and Shen~\cite{Rumyantsev2014Probabilistic}}]\label{thm:lll-computable}
+For every $\alpha \in (0,1)$, there exists some $N \in \omega$ such that every computable infinite CNF where each variable appears in at most $2^{\alpha n}$  clauses of size $n$ (for every n) and all clauses have size at least $N$, has a computable satisfying assignment.
+\end{theorem}
+
+%\begin{theorem}
+%There is a computable instance $c$ of $\ovw{2}{2}$ such that any solution $W$ to $c$ is complete.
+%\end{theorem}
+%\begin{proof}
+%We shall build a computable instance $c$ of $\ovw{2}{2}$ such that for any solution $W$ to $c$, the $W$-computable function $f$ which to $n$ associates the smallest $t$ such that the first occurrence of the $n$-th variable appear at position $t$, bounds the function $n \mapsto \min t \text{ s.t. }\emptyset'[t] \upharpoonright n = \emptyset' \upharpoonright n$.
+%
+%Fix $\alpha = 0.5$, and let $N$ be the threshold of Theorem~\ref{thm:lll-computable}. For a finite variable word $w$, let $T_w$ be the tree corresponding to every possible instantiation of the variables (in particular every leaf of $T_w$ has length $|w|$). For any $1 \leq n \leq s \in \omega$, let us fix in advance a list $L^n_s$ of the variable words of length smaller $t \leq s$, with exactly $n-1$ distinct variables. Let us define the computable function $g$ which to $s$ associates $\sup_{1 \leq n \leq s} |L^n_s|$.
+%
+%We can suppose without loss of generality that the enumeration of $\emptyset'$ is delayed so that at most one element is enumerated at a given stage, and whenever some element if enumerated in $\emptyset'$ at stage $s$, then no element is enumerated in $\emptyset'$ between stage $s+1$ and stage $g(s)$.
+%
+%Let us define the following computable predicate $P \subseteq \omega \times \omega \times 2^{<\omega}$ : we have $P(n,s,\tau)$ if there exists $t,k \in \omega$ such that $s=t+k$ with:
+%\begin{enumerate}
+%\item $t < t+k \leq g(t)$ 
+%\item $\emptyset'[t-1] \upharpoonright n \neq \emptyset'[t] \upharpoonright n$
+%\item $|\tau|+|w^n_s| = s$, where $w^n_s$ is the $k$-th element of $L^n_t$.\\
+%\end{enumerate}
+%
+%\textit{Claim : For any $1 \leq n \leq s$ and any $\tau$, if $P(n,s,\tau)$ holds, there are unique elements $t,k$ such that (1) and (2) holds above. In particular $w^n_s$ is well-defined in function of $1 \leq n \leq s$.}\\
+%
+%Proof : The claim holds by assumption on the delayed enumeration of elements in $\emptyset'$. Suppose $P(n,s,\tau)$ holds and let $t,k$ such that $s=t+k$ with $t < t+k \leq g(t)$ and $\emptyset'[t-1] \upharpoonright n \neq \emptyset'[t] \upharpoonright n$. Consider $\t{t}$ and $\t{k}$ such that $\t{t} < \t{t}+\t{k} \leq g(\t{t})$ and $\emptyset'[\t{t}-1] \upharpoonright n \neq \emptyset'[\t{t}] \upharpoonright n$. Suppose $\t{t} < t$. By assumption on the delayed enumeration of $\emptyset'$ we must have $\emptyset'[\t{t}] = \emptyset'[g(\t{t})]$. As an element is enumerated in $\emptyset'$ at stage $t$, it follows that $\t{t}+\t{k} < t$ which implies $\t{t}+\t{k} \neq t + k = s$. Similarly if $\t{t} > t$ we must have $\t{t} > g(t)$ and then $\t{t}+\t{k} \neq t + k = s$. Thus if $\t{t}+\t{k} = t + k = s$ we must have $\t{t} = t$ and therefore that $\t{k} = k$. This shows the claim.\\
+%
+%
+%For any $1 \leq n \leq s \in \omega$ and any $\tau$ such that $P(n,s,\tau)$, for any $i \in \{0,1\}$, we define $C_{n,s,\tau,i}$ to be the clause consisting of disjunction of the form ``$x_{\sigma\tau} = i$'' for any leaf $\sigma$ of the tree $T_{w^n_s}$, whose paths are exactly the possible instantiations of the finite word variable $w^n_s$. Formally:
+%$$
+%\bigvee \{x_{\sigma \tau} = i : \sigma \in T_{w^n_s} \}.
+%$$
+%And let $C$ be the conjunction:
+%$$
+%\bigwedge\limits_{N \leq n \leq s \in \omega, \tau \in 2^{<\omega}, i < 2}
+% \{ C_{n,s,\tau, i} : P(n,s,\tau)\}.
+%$$
+%
+%This infinite CNF formula is clearly computable as the predicate $P(n,s,\tau)$ is. Clearly $C_{n,s,\tau, i}$ has length $2^n$, that is, the number of leaves of $T_{w^n_s}$.
+%
+%Let us show that for any $m$, any $\rho \in 2^{<\omega}$, the variable $x_\rho$ appears in at most $2$ clauses of $C$ of length $m$. As $|C_{n,s,\tau, i}| = 2^n$, the only clauses of length $m$ in which $x_\rho$ could appear are of the form $C_{n,s,\tau, i}$  for $2^n = m$. Now for $n$ fixed, suppose $x_\rho$ appears in some clause $C_{n,s_1,\tau_1, i_1}$ and in some clause $C_{n,s_2,\tau_2, i_2}$ for some $s_1,s_2, \tau_1,\tau_2, i_1,i_2$. In particular $P(n,s_1,\tau_1)$ and thus by (3) we have $|\rho| = s_1$. As also $P(n, s_2,\tau_2)$, still by (3) we have $|\rho| = s_2$. This implies $s_1=s_2$. But then $w^{n_1}_{s_1} = w^{n_2}_{s_2}$ and then clearly we must have $\tau_1=\tau_2$. It follows that for any $\rho$, the variable $x_\rho$ appears in at most two clause of length $m$ : $C_{n,s,\tau, 0}$ and $C_{n, s,\tau, 1}$ for $n$ such that $2^n = m$ and for some $s,\tau$.\\
+%
+%Note also that in $C$ we consider only disjunctions $C_{n,s,\tau, i}$ for $n \geq N$. In particular any clause in $C$ has length bigger than $N$. It follows that we are in the condition of Theorem \ref{thm:lll-computable} and then that there exists a computable color $c$ which satisfies every clause of $C$. 
+%
+%Let us show that any solution to $c$ computes the jump. Let $W$ be a solution to $c$. Suppose for contradiction that there exists $n \geq N$ such that the first occurrence of the $n$-th variable appear in $W$ at a position $s$ with $s < \min t\text{ s.t. } \emptyset'[t] \upharpoonright n = \emptyset' \upharpoonright n$. In particular there exists $r \geq s$ such that $\emptyset_{r-1}' \upharpoonright n \neq \emptyset_{r}' \upharpoonright n$. As $|W \upharpoonright s| \leq r$ and as $W \upharpoonright s$ contains $n-1$ distinct variables, there must exists $k$ such that $r \leq r+k < g(r)$ and such that $W \upharpoonright s = w^n_{r+k}$, that is, the $k$-th element of $L^n_r$, the list of variable words of length smaller than $r$, with exactly $n-1$ distinct variables. But by construction $w^n_{r+k}$ cannot be an initial segment of a solution~:~This is because for any string $\tau$ such that $|\tau| + |w^n_{r+k}| = r+k$, there is one leaf $\sigma_1$ of $T_{w^n_{r+k}}$ of such that $c(\sigma_1\tau) = 0$ and one leaf $\sigma_2$ of $T_{w^n_{r+k}}$ such that $c(\sigma_2\tau) = 1$. Therefore no extension of $w^n_{r+k}$ of length $r+k$ can be a solution.
+%
+%It follows that for every $n \geq N$, the $t$ is the smallest position such that the first occurrence of the $n$-th variable occurs in $W$, then we must have $\emptyset'[t] \upharpoonright n = \emptyset' \upharpoonright n$. It follows that $W$ computes the jump.
+%\end{proof}
+
+\begin{theorem}\label{thm:ovw-delta2}
+There is a computable instance $c$ of $\ovw{2}{2}$ and a computable function $h : \omega \to \omega$ such that if $\Phi_e^{\emptyset'}$ outputs a finite variable word in which the first $h(e)$ variable kinds occur, then $\Phi_e^{\emptyset'}$ is not extendible into an infinite solution to $c$.
+\end{theorem}
+\begin{proof}
+Fix $\alpha = 0.5$, and let $N$ be the threshold of Theorem~\ref{thm:lll-computable}. For every index $e$ and stage $s$, we interpret $\Phi^{\emptyset'}_e[s]$ as a finite variable word $W_{e,s}$ with exactly $N+e$ variable kinds, and where a new variable occurs right after $W_{e,s}$. Such a variable word induces a binary tree $T_{e,s}$ with $2^{N+e}$ leaves. Let $L_{e,s}$ be the set of leaves of $T_{e,s}$, that is, the set of all instantiations of the variable word $W_{e,s}$. Moreover, all the leaves of $T_{e,s}$ have the same length $n_{e,s}$.
+
+The idea is the following: since the variable word is ordered and a new variable kind occurs right after $W_{e,s}$, no variable among the first $N+e$ variables can occur after $W_{e,s}$. If $W$ is a solution to $c$ with initial segment $W_e = \lim_s W_{e,s}$ for some color $i$, then $W$ must be homogeneous for $c$ for every instance of the variables, so in particular when setting all the variables after the $N+e$ first ones to 0. Hence, there must be infinitely many strings $\tau$ such that for every $\sigma \in \lim_s L_{e,s}$, $c(\sigma\tau) = i$. By ensuring that for cofinitely many $\tau$, there is some  $\sigma \in L_{e,|\tau|}$ such that $c(\sigma\tau) \neq i$, we force $W_e$ not to be a solution to $c$ for color $i$.
+
+
+Fix a countable collection of variables $(x_\rho : \rho \in 2^{<\omega})$. Each variable $x_\rho$ corresponds to the color of the string $\rho$.
+Given some $s\in\omega,\tau \in 2^{<\omega}$ and some $i < 2$,
+if $n_{e,s}+|\tau| = s $, then
+let $C_{e,s,\tau,i}$ be the disjunctive $2^{N+e}$-clause
+$$
+\bigvee \{x_{\sigma\tau} = i : \sigma \in L_{e,s} \}.
+$$
+And let $C$ be the conjunction
+$$
+\bigwedge\limits_{n_{e,s}+|\tau| = s }
+ \{ C_{e,s,\tau, i} : e \in \omega, \tau \in 2^{<\omega}, i < 2\}.
+$$
+This infinite CNF formula is clearly computable. Clearly $C_{e,s,\tau,i}$ has length $2^{N+e}$. Note that for every $\rho,e$, there exists at most one $\tau$ such that $(\exists \sigma\in L_{e,|\rho|})[\sigma\tau = \rho]$. Therefore, each variable $x_\rho$ appears in at most $2$ clauses of length $2^{N+e}$, namely, $C_{e, |\rho|,\tau, 0}$ and $C_{e, |\rho|, \tau, 1}$, where $\tau$ is such that $(\exists \sigma\in L_{e,|\rho|})[\sigma\tau = \rho]$. Therefore, this formula satisfies the conditions of Theorem~\ref{thm:lll-computable}, and has a computable assignment $c : 2^{<\omega} \to 2$. By construction, letting $h(e) = N+e+1$, the formula ensures that if $\Phi_e^{\emptyset'}$ outputs a finite variable word in which the first $h(e)$ variables kinds occur, then $\Phi_e^{\emptyset'}$ is not extendible into an infinite solution to $c$.
+\end{proof}
+
+\begin{definition}
+	A function $f : \omega \to \omega$ is \emph{diagonally non-computable relative to $X$} (or $X$-dnc) if for every $e$,
+	$f(e) \neq \Phi_e^X(e)$.
+\end{definition}
+
+\begin{corollary}
+	There is a computable instance $c$ of $\ovw{2}{2}$ such that every solution is of $\emptyset'$-dnc degree.
+\end{corollary}
+\begin{proof}
+	Let $c$ and $h$ be as in Theorem~\ref{thm:ovw-delta2}. For every $e$, let $\alpha_e$ be a computable bijection from the finite variable words in which the first $h(e)$ variable kinds occur, to the set of the integers.
+	By Kleene's fixpoint theorem, there is a computable function $g : \omega \to \omega$ such that for every $e$, $\Phi^{\emptyset'}_{g(e)} = \alpha^{-1}_{g(e)}(\Phi^{\emptyset'}_e(e))$.	
+	
+	Let $W$ be a solution to $c$, that is, an infinite variable word. Let $f$ be the $W$-computable function defined by $f(e) = \alpha_{g(e)}(w_e)$, where $w_e$ is the first initial segment of $W$ in which the first $h(g(e))$ variable kinds occur. We claim that $f$ is $\emptyset'$-dnc. Indeed, given $e \in \omega$, $w_e \neq \Phi^{\emptyset'}_{g(e)}$, so
+	$$
+	f(e) = \alpha_{g(e)}(w_e) \neq \alpha_{g(e)}(\Phi^{\emptyset'}_{g(e)})  = \Phi^{\emptyset'}_e(e)
+	$$
+	This completes our proof.
+\end{proof}
+
+We conclude this section with a small computational observation about $\vw{2}{2}$ based on the syntactical form of the statement.
+
+\begin{definition}
+	A function $g : \omega \to \omega$ \emph{dominates}
+	$f : \omega \to \omega$ if $(\forall x)f(x) < g(x)$.
+	A function $f : \omega \to \omega$ is \emph{hyperimmune}
+	if it is not dominated by any computable function.
+	A Turing degree is \emph{hyperimmune-free} if it does not contain any hyperimmune function.
+\end{definition}
+
+\begin{lemma}[Folklore]\label{lem:pi01-hi-pa}
+Let $\Psf$ be a statement of the form $(\forall X)[\Phi(X) \rightarrow (\exists Y)\Psi(X, Y)]$ where $\Phi$ is an arbitrary predicate, and $\Psi$ is a $\Pi^0_2$ predicate. For every computable instance $I$ of $\Psf$, if $I$ has a solution of hyperimmune-free degree, then every PA degree computes a solution to $I$.
+\end{lemma}
+\begin{proof}
+	Say $\Psi(X, Y) \equiv (\forall x)(\exists y)\Theta(X \uh y, Y \uh y, x, y)$, where $\Theta$ is a decidable predicate.
+	Let $I$ be a computable $\Psf$-instance with a solution $S$ of hyperimmune-free degree. 
+	Let $h : \omega \to \omega$ be the $S$-computable function such that for every $x$, $\Theta(I, S, x, h(x))$ holds. In particular, there is a computable function $g : \omega \to \omega$ such that $(\forall x)\max (h(x), S(x)) < g(x)$. Let $T \subseteq \omega^{<\omega}$ be the computably bounded tree defined by
+	$$
+	T = \left\{ \sigma \in \omega^{<\omega} : \begin{array}{l}
+ 		(\forall x < |\sigma|)\sigma(x) < g(x)) \wedge  \\
+ 		(\forall x < |\sigma|)[g(x) < |\sigma| \rightarrow (\exists y < |\sigma|)\Theta(I \uh y, \sigma \uh y, x, y)]
+ \end{array} \right\}
+	$$
+	In particular, $S \in [T]$, so the tree is infinite. Moreover,
+	any $R \in [T]$ is a solution to $I$, and any PA degree computes a member
+	of $[T]$. This completes the proof.
+\end{proof}
+
+\begin{corollary}
+	There is a computable instance of $\vw{2}{2}$ such that
+	every solution is of hyperimmune degree.
+\end{corollary}
+\begin{proof}
+	First, note that the statement $\vw{2}{2}$ is of the form of Lemma~\ref{lem:pi01-hi-pa}.
+	Let $c : 2^{<\omega} \to 2$ be the computable
+	instance of $\vw{2}{2}$ with no low solution constructed by Miller and Solomon~\cite{Miller2004Effectiveness} or by Theorem~\ref{thm:ovw-delta2}. Letting $\dbf$ be a low PA degree, $\dbf$ computes no solution to~$c$, hence by Lemma~\ref{lem:pi01-hi-pa}, every solution to~$c$ is of hyperimmune degree.
+\end{proof}
+
+It is still unknown whether there is a computable instance of $\ovw{2}{2}$ such that every solution is PA over $\emptyset'$, or even just computes $\emptyset'$. In particular the following questions remain open:
+
+\begin{question}
+	Does $\vw{2}{2}$ or $\ovw{2}{2}$ imply $\aca$ over $\rca$?
+\end{question}
+
+\begin{question}
+	Is there a computable instance of $\vw{2}{2}$ or $\ovw{2}{2}$ such that the measure of oracles computing a solution to it is null?
+\end{question} 

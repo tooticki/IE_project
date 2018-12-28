@@ -1,0 +1,1027 @@
+
+% !TEX root = paper.tex
+
+
+
+
+
+The main work of our paper starts here.
+In this section, we establish a number of finite model property results
+for sublanguages of $\c L^{\dit\didt}_{\bo\bod\forall}$, by modifying a filtration approach 
+pioneered in the context of $\c L_\bod$ by Shehtman \cite{Sheh:d90}
+and used later by Lucero-Bryan for $\c L_{\bod\forall}$ \cite{LucBry11}.
+The finite model property for the systems  $\axK\axD4\axG_n$ (and others)
+was proved by Zakharyaschev \cite{Zakh93}, using canonical formulas.
+ The finite model property for an S4-like tangle system
+ was proved by Fern\'andez-Duque in \cite{FD:ijcai11}, by a different method,
+ and the scheme {\bf Fix} and a variant of {\bf Ind} 
+ in section~\ref{ss:tangle logics} below
+appear in \cite[\S3]{FD:ijcai11}.
+
+
+
+
+
+\subsection{Clusters in Transitive Frames}    
+We work within models on \emph{K4 frames} $(W,R)$, i.e.\ $R$ is a  transitive binary relation on $W$. 
+If $xRy$, we may say that $y$ comes \emph{$R$-after} $x$, or is \emph{$R$-later than} $x$, or is an \emph{$R$-successor} of $x$. If $xR^\bullet y$, i.e.\ $xRy$ but not $yRx$, then $y$ is \emph{strictly} after/later, or is a \emph{proper} $R$-successor. A point $x$ is \emph{reflexive} if $xRx$, and \emph{irreflexive} otherwise. $R$ is (ir)reflexive on a set $X\sub W$ if every member of $X$ is (ir)reflexive.
+
+An \emph{$R$-cluster} is a subset $C$ of $W$ that is an equivalence class under the equivalence relation
+$$
+\{(x,y):x=y\text{ or } xRyRx\}.
+$$
+A cluster is \emph{degenerate} if it is a singleton $\{x\}$ with $x$ irreflexive. Note that a cluster $C$ can only contain an irreflexive point if it is a singleton. For,  if $C$ has more than one element, then for each $x\in C$ there is some $y\in C$ with $x\ne y$, so $xRyRx$ and thus $xRx$ by transitivity. On a non-degenerate cluster $R$ is universal. For $C$ to be non-degenerate it suffices that there exist $x,y\in C$ with $xRy$, regardless of whether $x=y$ or not.
+
+Write $C_x$ for the $R$-cluster containing $x$. Thus $C_x=\{x\}\cup\{y:xRyRx\}$. The relation $R$ lifts to a well-defined \emph{partial} ordering of clusters   by putting $C_xRC_y$ iff $xRy$.  A cluster $C$ is \emph{$R$-maximal} when there is no cluster that  comes strictly $R$-after it, i.e.\ when $CRC'$ implies $C=C'$. A point $x\in W$ is \emph{$R$-maximal,}
+or just \emph{maximal} if $R$ is understood, if $C_x$ is a maximal cluster, or equivalently if $xRy$ implies $yRx$.
+
+An \emph{$R$-chain} is a sequence $C_1,C_2,\dots$ of pairwise distinct clusters with $C_1RC_2R\cdots$. In a finite frame, such a chain is of finite length. Hence we can define a notion of \emph{rank} in a finite frame by declaring the rank of a cluster $C$ to be the number of clusters in the longest chain of clusters starting with $C$. So the rank is always $\geq 1$, and a rank-1 cluster is maximal. The rank of a point $x$ is defined to be the rank of $C_x$. The key property of this notion is that if $xR^\bullet y$, equivalently if  $C_y$ comes strictly $R$-after $C_x$, then $y$ has smaller rank than $x$. 
+
+An \emph{endless $R$-path} is a sequence $\{x_n:n<\omega\}$ such that $x_nRx_{n+1}$ for all $n$. Such a path \emph{starts at/from} $x_0$. The terms of the sequence need not be distinct: for instance, any reflexive point $x$ gives rise to the endless $R$-path  $xRxRxR\dots$.  In a finite frame, an endless path must eventually enter some \emph{non-degenerate} cluster $C$ and stay there, i.e.\ there is some $n$ such that $x_m\in C$ for all $m\geq n$.
+
+Recall that $R(x)=\{y\in W:xRy\}$ is the set of $R$-successors of $x$, and that $(W',R')$ is an \emph{inner} subframe of 
+$(W,R)$ if  $(W',R')$  is a subframe of  $(W,R)$ that is \emph{$R$-closed}. This means that $R'$ is the restriction of $R$ to $W'\sub W$, and  $x\in W' $ implies $R(x)\sub W'$. In this situation every $R'$-cluster is an $R$-cluster, and every $R$-cluster that intersects $W'$ is a subset of $W'$ and is an $R'$-cluster.
+  
+  
+  \subsection{Syntax and Semantics}
+  We will work initially in the language $\c L_\bo^\dit$.
+Recall that we assume a set $\Var$ of propositional variables, which may be finite or infinite. Formulas are constructed from these variables by the standard Boolean connectives, the unary modality $\Box$ (with dual $\Dim$)
+and the \emph{tangle} connective $\Di$ which assigns a formula  $\Di\G$ to each finite set $\G$ of formulas.
+  
+  Later we will want to add additional connectives, such as the universal modality $\forall$ and its dual $\exists$.
+  
+  We use the standard notion from section~\ref{ss:Kripke sem} of a Kripke model $\M=(W,R,h)$  on a (transitive) frame as given by a valuation function $h:\Var\to\wp W$, giving rise to a truth/satisfaction relation $\M,x\models\ph$ with $\M,x\models p$ iff $x\in h(p)$ for all $p\in\Var$ and $x\in W$.
+The modality $\Dim$ is modelled by $R$ in the usual Kripkean way:
+\begin{equation}\label{krip}
+ \text{$\M,x\models\Dim\ph$ iff there is a $y$ with $xRy$ and $y\models \ph$.}
+ \end{equation} 
+ The condition for $\M,x\models\Di\G$ is that
+ \begin{quote}
+there exists an endless $R$-path $\{x_n:n<\omega\}$ with $x=x_0$
+along which each member $\g$ of $\G$ is true infinitely often, i.e.\ $\{n<\omega:\M,x_n\models\g\}$ is infinite.
+\end{quote}
+ A set $\G$ of formulas is  \emph{satisfied by the cluster $C$} if  each member of $\G$ is true in $\M$ at some point of $C$.  So $\G$ fails to be satisfied by $C$ if some member of $\G$ is false at every point of $C$.  In a \emph{finite} model,
+ since an endless path must eventually enter some non-degenerate cluster  and stay there,
+  we get that 
+ \begin{equation}\label{semants}
+ \text{$x\models\Di\G$ iff there is a $y$ with $xRy$ \textbf{and} {\boldmath{$yRy$}} and $\G$ is satisfied by $C_y$ }
+ \end{equation}
+To put this another way, $x\models\Di\G$ iff $\G$ is satisfied by some \emph{non-degenerate} cluster following $C_x$.
+ 
+Write $\Di\ph$ for the formula $\Di\{\ph\}$. Then $\Di\ph$ is true at $x$ iff there is an endless path starting at $x$ along which $\ph$ is true infinitely often. For finite models we have
+\begin{equation*}\label{}
+ \text{$x\models\Di\ph$ iff there is a $y$ with $xRy$ and $yRy$ and $y\models \ph$,}
+ \end{equation*}
+ i.e.\ the meaning of $\Di\ph$ is that there is a \emph{reflexive} alternative at which $\ph$ is true.
+Thus for finite \emph{reflexive} models (i.e.\ S4 models) this reduces to the standard Kripkean interpretation  \eqref{krip} of $\Dim$. More strongly, it is evident that $\Di\ph\leftrightarrow\Dim\ph$ is valid in all S4 frames (and $\Di\ph\to\Dim\ph$ is valid in all K4 frames).
+
+Write $\Dim^*\ph$ for the formula $\ph\lor\Dim\ph$, and  $\Box^*\ph$ for $\ph\land\Box\ph$. In any transitive frame, define  $R^*=R\cup\{(x,x):x\in W\}$. Then $R^*$ is the reflexive-transitive closure of $R$, and in any model on the frame we have
+ \begin{equation*}\label{}
+ \text{$\M,x\models\Box^*\ph$ iff for all $y$,  if $xR^*y$ then $\M,y\models \ph$.}
+ \end{equation*} 
+and
+ \begin{equation*}\label{}
+ \text{$\M,x\models\Dim^*\ph$ iff for some $y$,  $xR^*y$ and $\M,y\models \ph$.}
+ \end{equation*} 
+Note that if $C_x=C_y$, then $xR^*y$. For each $x$ let $R^*(x)=\{y\in W:xR^*y\}$. Then $R^*(x)=\{x\}\cup R(x)$.
+
+
+
+
+
+
+
+\subsection{Tangle Systems and Logics}\label{ss:tangle logics}
+
+A \emph{tangle system}  is any Hilbert system whose axioms
+ include all tautologies and all instances of the schemes
+\begin{description}
+\item[K:]
+$\Box(\ph\to\psi)\to(\Box\ph\to\Box\psi)$
+\item[4:]
+ $\Dim\Dim\ph\to\Dim\ph$
+\item[Fix:]
+$\Di\G\to  \Dim(\g\land\Di\G)$, \quad all $\g\in\G$.
+\item[Ind:]
+$\Box^*(\ph\to \bigwedge_{\g\in\G}\Dim(\g\land\ph))\to(\ph\to\Di\G)$.
+\end{description}
+%
+and whose rules include  modus ponens and $\Box$-generalisation. The smallest tangle system will be denoted K4$t$.
+
+A \emph{tangle logic} (or just \emph{logic} in this section) is a set $L$ of formulas 
+that is a K4$t$-logic.
+Any logic includes the following:
+
+\begin{description}
+\item[\ ]
+\quad$\Di\ph\to\Dim\ph$
+\item[4$_*$: ] 
+$\Dim\Dim^*\ph\to\Dim\ph$
+\item[4$_t$: ] 
+$\Dim\Di\G\to\Di\G$
+\end{description}
+$4_t$ will be explicitly needed in our finite model property proof, in relation to a condition  called (r4).
+Here is a derivation of $4_t$, in which the justification ``Bool'' means by principles of Boolean logic, ``Reg'' is the rule \emph{from $\ph\to\psi$ infer $\Dim\ph\to\Dim\psi$}, and ``Nec'' is the rule \emph{from $\ph$ infer $\Box^*\ph$.}
+
+For each $\g\in\G$ we derive
+
+\bigskip
+\begin{tabular}{ll}
+1. $\Di\G\to  \Dim(\g\land\Di\G)$   & Fix
+\\
+2. $ \Dim(\g\land\Di\G)\to \Dim\Di\G$  &K-theorem (Bool + Reg)
+\\
+3. $\Di\G\to \Dim\Di\G$  &1, 2 Bool
+\\
+4. $\g\land\Di\G\to\g\land \Dim\Di\G$  &3, Bool
+\\
+5. $\Dim(\g\land\Di\G)\to\Dim(\g\land \Dim\Di\G)$  &4, Reg
+\\
+6. $\Di\G\to \Dim(\g\land \Dim\Di\G)$  &1, 5 Bool
+\\
+7.  $\Dim\Di\G\to \Dim\Dim(\g\land \Dim\Di\G)$  &6, Reg
+\\
+8. $\Dim\Di\G\to\Dim(\g\land \Dim\Di\G)$ &7, \textbf{Axiom 4}, Bool
+\end{tabular}
+
+\bigskip\noindent
+Since this holds for every $\g\in\G$ we can continue with
+
+\bigskip
+\begin{tabular}{ll}
+\, 9. $\Dim\Di\G\to \bigwedge_{\g\in\G}\Dim(\g\land \Dim\Di\G)$ &8 for all $\g\in\G$, Bool
+\\
+10. $\Box^*(\Dim\Di\G\to\bigwedge_{\g\in\G}\Dim(\g\land \Dim\Di\G))$ &9, Nec
+\\
+11. $\Box^*(\Dim\Di\G\to\bigwedge_{\g\in\G}\Dim(\g\land \Dim\Di\G))\to (\Dim\Di\G\to\Di\G)$ & Ind with $\ph=\Dim\Di\G$
+\\
+12. $\Dim\Di\G\to\Di\G$ &10, 11 Bool
+\end{tabular}
+
+
+
+\subsection{Canonical Frame}\label{ss:can frame}
+For a tangle logic $L$, the canonical frame is 
+ $\F_L=(W_L,R_L)$, with $W_L$ the set of maximally $L$-consistent sets of formulas, and $xR_Ly$ iff $\{\Dim\ph:\ph\in y\}\sub x$ iff $\{\ph:\Box\ph\in x\}\sub y$. $R_L$ is transitive, by the K4 axiom 4.
+
+Suppose $\F=(W,R)$ is an inner subframe of $\F_L$, i.e.\  $W$ is an $R_L$-closed subset of $W_L$,  and $R$ is the restriction of $R_L$ to $W$.
+
+By standard canonical frame theory,  we have that for all formulas $\ph$ and all $x\in W$:
+\begin{eqnarray}
+\Dim\ph\in x &&\text{iff\quad for some } y\in W, \ xRy \text{ and }\ph\in y.  \label{Dican}
+\\
+\Dim^*\ph\in x &&\text{iff\quad for some } y\in W, \ xR^*y \text{ and }\ph\in y.  \label{Distar}
+\\
+\label{Boxcan}
+\Box\ph\in x &&\text{iff\quad  for all } y\in W, \ xRy \text{ implies }\ph\in y.
+\\
+\label{Boxstar}
+\Box^*\ph\in x &&\text{iff\quad for all } y\in W, \ xR^*y \text{ implies }\ph\in y.
+\end{eqnarray}
+
+We will say that a sequence $\{x_n:n<\omega\}$ in $\F$ \emph{fulfils} the formula $\Di\G$ if 
+each member of $\G$ belongs to $x_n$ for infinitely many $n$. The role of the axiom Fix is to provide such sequences:
+
+\begin{lemma}\label{one}
+In $\F$, if $\Di\G\in x$ then there is an endless $R$-path starting from $x$ that fulfils $\Di\G$. Moreover, $\Di\G$ belongs to every member of this path. 
+\end{lemma}
+
+\begin{proof}
+Let $\G=\{\g_1,\dots,\g_k\}$.
+Put $x_0=x$. From $\Di\G\in x_0$ by axiom Fix 
+%\marginpar{\small \em Fix} 
+we get $\Dim(\g_1\land\Di\G)\in x_0$, so by \eqref{Dican} there exists $x_1\in W$ with $x_0Rx_1$ and $\g_1,\Di\G\in x_1$. Since $\Di\G\in x_1$, by Fix again there exists $x_2\in W$ with $x_1Rx_2$ and $\g_2,\Di\G\in x_2$. Continuing in this way ad infinitum cycling through the list $\g_1,\dots,\g_k$ we generate a sequence fulfilling $\Di\G$, with  $\g_i\in x_n$ whenever $n\equiv i\mod k$, and  $\Di\G\in x_n$ for all $n<\omega$.
+\end{proof}
+
+The canonical model $\M_L$ on $\F_L$ has $\M_L,x\models \ph$ iff $\ph\in x$, \emph{provided that $\ph$ is $\Di$-free}.
+But this `Truth Lemma' can fail for formulas containing the tangle connective, even though all instances of the tangle axioms belong to every member of $W_L$. For this reason we will work directly with the structure of $\F_L$ and the relation
+ $\ph\in x$, rather than with truth in $\M_L$.
+ 
+ For an example of failure of the Truth Lemma, consider the set
+ $$
+ \Sigma=\{p_0,q,\Box(p_{2n}\to\Dim(p_{2n+1}\land\neg q)),\Box(p_{2n+1}\to\Dim(p_{2n+2}\land q)):n<\omega\},
+ $$
+ where $q$ and the $p_n$'s are distinct variables.
+Each finite subset of 
+$\Sigma\cup\{\neg\Di\{q,\neg q\}\}$
+is satisfiable in a transitive frame, and so is $L_{\axK4t}$-consistent where $L_{\axK4t}$ is the smallest logic. Explanation:
+if $\G$ is a finite subset,
+$\M$ a model with transitive frame, and $\M,x\models\G$, then
+$\{\ph:\M,y\models\ph$ for all worlds $y$ of $\M\}$ is a logic that excludes $\neg\bigwedge\G$, so $\neg\bigwedge\G\notin L_{\axK4t}$.
+
+Since the proof theory is finitary, it follows that $\Sigma\cup\{\neg\Di\{q,\neg q\}\}$ is $L_{\axK4t}$-consistent, so is included in some member $x$ of  $W_{L_{\axK4t}}$. Using the fact that $\Sigma\sub x$, together with \eqref{Dican} and \eqref{Boxcan}, we can construct an endless $R_{L_{\axK4t}}$-path starting from $x$ that fulfills $\{q,\neg q\}$, hence satisfies each of $q$ and $\neg q$ infinitely often in 
+$\M_{L_{\axK4t}}$. Thus $\M_{L_{\axK4t}},x\models\Di\{q,\neg q\}$. But $\Di\{q,\neg q\}\notin x$, since  $\neg\Di\{q,\neg q\}\in x$ and $x$ is $L_{\axK4t}$-consistent.
+
+
+
+\subsection{Definable Reductions}
+Fix a finite set $\Phi$ of formulas closed under subformulas.
+Let $\Phi^t$ be the set of all formulas in $\Phi$ of the form $\Di\G$, and
+$\Phi^\Dim$ be the set of all formulas in $\Phi$ of the form $\Dim\ph$.
+
+
+Let $\F=(W,R)$ be an inner subframe of $\F_L$. Then by a \emph{definable reduction of $\F$ via $\Phi$} we mean a pair $(\M_\Phi,f)$,  where $\M_\Phi=(W_\Phi,R_\Phi,h_\Phi)$ is a model on a finite transitive frame, and $f:W\to W_\Phi$
+is a surjective function, such that the following hold for all $x,y\in W$:
+
+\begin{enumerate}[(r1):]
+\item 
+$p\in x$ iff $f(x)\in h_\Phi(p)$, for all $p\in\Var\cap\Phi$.
+\item
+$f(x)=f(y)$ implies $x\cap\Phi= y\cap\Phi$.
+\item
+$xRy$ implies $f(x)R_\Phi f(y)$.
+\item
+$f(x)R_\Phi f(y)$ implies  $y\cap \Phi^t\sub x\cap\Phi^t$ and 
+$\{\Dim\ph\in\Phi:\Dim^*\ph\in y\}\sub x$.
+\item 
+For each subset $C$ of $W_\Phi$ there is a formula $\ph$ that defines $f^{-1}(C)$ in $W$, i.e.\ $\ph\in y$ iff $f(y)\in C$.
+\end{enumerate}
+We will make crucial use of the following  consequence of this definition.
+
+\begin{lemma} \label{import}
+If $f(x)$ and $f(y)$ belong to the same $R_\Phi$-cluster, then $x\cap\Phi^t=y\cap\Phi^t$ and $x\cap\Phi^\Dim=y\cap\Phi^\Dim$.
+\end{lemma}
+\begin{proof}
+If $f(x)=f(y)$, then $x\cap\Phi=y\cap\Phi$ by (r2) and so $x\cap\Phi^t=y\cap\Phi^t$ and $x\cap\Phi^\Dim=y\cap\Phi^\Dim$. But if  $f(x)\ne f(y)$, then $ f(x)R_\Phi f(y)R_\Phi f(x)$, and so 
+ $y\cap \Phi^t\sub x\cap\Phi^t\sub y\cap\Phi^t$ by (r4).  Also if
+ $\Dim\ph\in y\cap \Phi$ then $\Dim^*\ph=\ph\lor\Dim\ph\in y$, and so $\Dim\ph\in x$ by (r4), and likewise $\Dim\ph\in x\cap \Phi$ implies
+ $\Dim\ph\in y$.
+\end{proof}
+Note that the second conclusion of (r4) is a concise way of expressing that both 
+$$
+\{\Dim\ph\in\Phi:\ph\in y\}\sub x\quad\text{and}\quad 
+\{\Dim\ph\in\Phi:\Dim\ph\in y\}\sub x.
+$$
+
+Given a definable reduction  $(\M_\Phi,f)$ of $\F$,  we will  replace $R_\Phi$ by a weaker relation $R_t$, producing a new model 
+$\M_t=(W_\Phi,R_t,h_\Phi)$, the \emph{untangling} of $\M_\Phi$, with the property that satisfaction  in  $\M_t$ of any formula $\ph\in\Phi$ corresponds exactly via $f$ to membership of $\ph$ in points of $\F$. In other words, $\ph\in x$ iff $\M_t,f(x)\models\ph$, a result we refer to as the \emph{Reduction Lemma}. The definition of $R_t$ will cause
+each $R_\Phi$-cluster to be decomposed into a partially ordered set of smaller $R_t$-clusters.
+
+In what follows we will write  $\ab{x}$ for $f(x)$. Then as $f$ is surjective, each member of $W_\Phi$ is equal to $\ab{x}$ for some $x\in W$. In later applications  the set $W_\Phi$ will  be a set of equivalence classes $\ab{x}$ of points $x\in W$, under a suitable equivalence relation, and $f$ will be the natural map $x\mapsto\ab{x}$.
+
+Our first step  makes the key use of the axiom Ind:
+
+
+\begin{lemma} \label{useind}
+Let $\Di\G\in\Phi$. Suppose that $\Di\G\notin x$, where $x\in W$, and let $\ab{x}\in C\sub W_\Phi$. Then there is a formula $\g\in\G$ and some $y\in W$ such that $xR^*y$, $\ab{y}\in C$ and
+\begin{equation} \label{final}
+\text{if $yRz$ and $\ab{z}\in C$, then $\g\notin z$.}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By (r5) there is a formula $\ph$ that defines $\{y\in W:\ab{y}\in C\}$, i.e.\ $\ph\in y$ iff $\ab{y}\in C$.
+Then $\ph\in x$ and $\Di\G\notin x$, so by the axiom Ind,  % \marginpar{\small \em Ind} 
+$
+\Box^*(\ph\to \bigwedge_{\g\in\G}\Dim(\g\land\ph))\notin x
+$.
+Hence by \eqref{Boxstar} there is a $y$ with $xR^*y$ and $(\ph\to \bigwedge_{\g\in\G}\Dim(\g\land\ph))\notin y$.
+Then
+$\ph\in y$, so $\ab{y}\in C$, and  for some $\g\in\G$ we have $\Dim(\g\land\ph)\notin y$. Hence by \eqref{Dican}, if $yRz$ and  $\ab{z}\in C$, then $\g\land\ph\notin z$ and $\ph\in z$, so $\g\notin z$, which gives \eqref{final}.
+\end{proof}
+
+\begin{lemma} \label{extend}
+Let formulas $\Di\G_1,\dots,\Di\G_k$ belong to $\Phi$ but not to $x$.  Suppose that  $\ab{x}\in C\sub W_\Phi$. Then there are formulas $\g_1\in\G_1,\dots,\g_k\in\G_k$ and some $y\in W$ such that $xR^*y$, $\ab{y}\in C$ and
+\begin{equation} \label{final2}
+\text{if $yRz$ and $\ab{z}\in C$, then $\{\g_1,\dots,\g_k\}\cap z=\emptyset$.}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+If $k=0$, take $y=x$; we are done.
+Now assume $k>0$.
+By Lemma \ref{useind}, there exists $\g_1\in\G_1$ and $y_1\in W$ such that $xR^*y_1$, $\ab{y_1}\in C$ and
+\begin{equation} \label{finaly1}
+\text{if $y_1Rz$ and $\ab{z}\in C$, then $\g_1\notin z$.}
+\end{equation}
+Now $\Di\G_2\notin x$, so $\Dim\Di\G_2\notin x$ by scheme $4_t$.
+Hence $\Dim^*\Di\G_2=\Di\G_2\lor\Dim\Di\G_2\notin x$. As
+$xR^*y_1$, this implies  $\Di\G_2\notin y_1$ by \eqref{Distar}.
+So by Lemma \ref{useind} again, with $y_1$ in place of $x$, there exists $\g_2\in\G_2$ and $y_2\in W$ such that $y_1R^*y_2$, 
+$\ab{y_2}\in C$ and
+\begin{equation} \label{finaly2}
+\text{if $y_2Rz$ and $\ab{z}\in C$, then $\g_2\notin z$.}
+\end{equation}
+Now by transitivity of $R^*$ we have $xR^*y_2$. Also if $y_2Rz$ and $\ab{z}\in C$, then from  $y_1R^*y_2Rz$ we get $y_1Rz$, and so $\g_1\notin z$ by \eqref{finaly1}. Together with \eqref{finaly2} this shows that  $\{\g_1,\g_2\}\cap z=\emptyset$.
+
+If $k=2$ this proves \eqref{final2} with $y=y_2$. Otherwise we repeat, applying Lemma \ref{useind} again with $y_2$ in place of $x$ and so on, eventually obtaining the desired $y$ as $y_k$.
+\end{proof}
+
+Define a formula $\ph\in\Phi$ to be \emph{realised} at a member $\ab{z}$ of $W_\Phi$ iff $\ph\in z$. 
+Note that this definition does not depend on how the member is  named, for if $\ab{z}=\ab{z'}$, then $z\cap\Phi=z'\cap\Phi$ by (r2), and so $\ph\in z$ iff $\ph\in z'$.
+
+\begin{lemma}\label{notreal}
+Let   $C$ be any $R_\Phi$-cluster. Then there is some $y\in W$ with $\ab{y}\in C$, such that for any formula 
+$\Di\G\in \Phi^t-y$ there is a formula in $\G$ that is not realised at any $\ab{z}\in C$ such that $yRz$.
+\end{lemma}
+\begin{proof}
+Take any $\ab{x}\in C$, and put
+ $\Phi^t-x=\{\Di\G_1,\dots,\Di\G_k\}$. By Lemma \ref{extend} there is some $y$ with $xR^*y$ and $\ab{y}\in C$, and  formulas $\g_i\in\G_i$ for $1\leq i\leq k$ such that if $yRz$ and $\ab{z}\in C$, then $\g_i\notin z$, hence $\g_i$ is not realised at $\ab{z}$.
+ 
+Now $\ab{x}$ and $\ab{y}$ belong to the same $R_\Phi$-cluster $C$, so $y\cap \Phi^t= x\cap\Phi^t$ by Lemma \ref{import}. Hence
+ $\Phi^t-y=\Phi^t-x$.
+ So if $\Di\G\in \Phi^t-y$, then $\G=\G_i$ for some $i$, and then $\g_i$ is a member of $\G$ not realised at any $\ab{z}\in C$ such that $yRz$.
+\end{proof}
+
+
+Now for each $R_\Phi$-cluster $C$, choose and fix a
+ point $y$ as given by Lemma \ref{notreal}. Call $y$  the \emph{critical point for} $C$, and put
+$$
+C^\circ=\{\ab{z}\in C: yRz \}.
+$$ 
+Lemma \ref{notreal} states that if $\Di\G\in \Phi^t-y$, then there is a formula in $\G$ that is not realised at any point of 
+$C^\circ$. 
+
+We call $C^\circ$ the \emph{nucleus} of the cluster $C$. If $yRy$ then $\ab{y}\in C^\circ$, but in general $\ab{y}$ need not belong to $C^\circ$. Indeed the nucleus could be empty. For instance, it must be empty when $C$ is a degenerate cluster. To show this, suppose that $C^\circ\ne\emptyset$. Then there is some $\ab{z}\in C$ with $yRz$, hence $\ab{y}R_\Phi\ab{z}$ by (r3), so as $\ab{y}\in C$ this shows that $C$ is \emph{non}-degenerate. Consequently, if the nucleus is non-empty then the relation $R_\Phi$ is universal on it.
+
+
+  We introduce the subrelation $R_t$ of $R_\Phi$ to refine the structure of $C$ by decomposing it into the nucleus
+  $C^\circ$ as an $R_t$-cluster together with a singleton \emph{degenerate} $R_t$-cluster $\{w\}$ for each $w\in C-C^\circ$. These degenerate clusters all have $C^\circ$ as an $R_t$-successor but are incomparable  with each other. So the structure replacing $C$ looks like
+%\begin{figure} \label{fignuc}
+$$
+\xymatrix{
+*{\bullet} \ar[drr]^<{}  &*{\bullet} \ar[dr]^<{\textstyle\{w\}}  & {\qquad\cdots\cdots\cdots}   &*{\ \bullet^{}} \ar[dl]   \\
+& &*{\xy ;<1pc,0pc>:\POS(0,0) +(0,-1.5)*+{C^\circ}*\cir<20pt>{} \endxy}  &{\hspace{-2.3cm}}
+}
+$$
+%\caption{ 1}
+%\end{figure}
+with the  black dots being the degenerate clusters determined by the  points of $C-C^\circ$. 
+Doing this to each cluster of $(W_\Phi,R_\Phi)$ produces a new transitive frame $\F_t=(W_\Phi,R_t)$ with $R_t\sub R_\Phi$.  
+
+$R_t$ can be more formally defined on $W_\Phi$ simply  by specifying, for each $w,v\in W_\Phi$, that $wR_tv$ iff  $wR_\Phi v$ and either
+\begin{itemize}
+\item 
+$w$ and $v$ belong to different $R_\Phi$-clusters; \enspace or
+\item
+$w$ and $v$ belong to the same $R_\Phi$-cluster $C$, and $v\in C^\circ$.
+\end{itemize}
+This ensures that each member of $C$ is $R_t$-related to every member of the nucleus of $C$. The restriction of $R_t$ to $C$ is equal to $C\times C^\circ$, so we could also define $R_t$ as the union of  the relations $C\times C^\circ$ for all $R_\Phi$-clusters $C$, plus all inter-cluster instances of $R_\Phi$.
+
+If the nucleus is empty, then so is the relation $R_t$ on $C$, and $C$ decomposes into a set of pairwise incomparable degenerate clusters. If $C=C^\circ$, then $R_t$ is universal  on $C$, identical to the restriction of $R_\Phi$ to $C$.
+
+
+
+\begin{lemma}[Reduction lemma]
+Every formula in $\Phi$  is true in $\M_t=(W_\Phi,R_t,h_\Phi)$ precisely at the points at which it is realised, i.e.\ for all $\ph\in\Phi$ and all $x\in W$,
+ \begin{equation}\label{filtlem}
+\text{$\M_t,\ab{x}\models \ph$\enspace iff\enspace $\ph\in x$.}
+ \end{equation}
+\end{lemma}
+
+\begin{proof}
+This is by  induction on the  formation of formulas. For the base case of  a variable $p\in\Phi$, we have
+$\M_t,\ab{x}\models p$ iff $\ab{x}\in h_\Phi(p)$, which holds iff $p\in x$ by (r1). The inductive cases of the Boolean connectives are standard.
+
+ Next, take the case of a formula $\Dim\ph\in\Phi$,  under the induction hypothesis that \eqref{filtlem} holds for all $x\in W$.
+ Suppose first that $\M_t,\ab{x}\models \Dim\ph$. Then there is some $y\in W$ with $\ab{x}R_t\ab{y}$ and $\M_t,\ab{y}\models \ph$, hence $\ph\in y$ by the induction hypothesis on $\ph$. Then $\Dim^*\ph\in y$. But $R_t\sub R_\Phi$, so  $\ab{x}R_\Phi\ab{y}$, implying that $\Dim\ph\in x$, as required, by  (r4).  Conversely, suppose that $\Dim\ph\in x$. Let $C$ be the $R_\Phi$-cluster of $\ab{x}$, and $y$ the critical point for $C$. Then $\Dim\ph\in y$ by Lemma \ref{import}, so there is some $z$ with $yRz$ and $\ph\in z$, hence $\M_t,\ab{z}\models \ph$ by induction hypothesis. Now if $\ab{z}\in C$, then $\ab{z}$ belongs to the nucleus of $C$ and hence $\ab{x}R_t\ab{z}$. But if $\ab{z}\notin C$, then as $\ab{y}R_\Phi\ab{z}$ by (r3), and hence $\ab{x}R_\Phi\ab{z}$, the $R_\Phi$-cluster of $\ab{z}$ is strictly $R_\Phi$-later than $C$, and again $\ab{x}R_t\ab{z}$. So in any case we have 
+ $\ab{x}R_t\ab{z}$ and $\M_t,\ab{z}\models \ph$, giving $\M_t,\ab{x}\models \Dim\ph$. That completes this inductive case of $\Dim\ph$.
+ 
+ Finally we have the most intricate case of a   formula $\Di\G\in\Phi$, under the induction hypothesis that  \eqref{filtlem} holds for every member of $\G$ for all $x\in W$. Then we have to show that for all $z\in W$, 
+\begin{equation}\label{filt}
+\text{
+$\M_t,\ab{z}\models \Di\G$\enspace iff\enspace $\Di\G\in z$.}
+\end{equation}
+The proof  proceeds by strong induction on the \emph{rank} of $\ab{z}$.
+Take $x\in W$ and suppose that \eqref{filt} holds for every $z$ for which the rank of $\ab{z}$ is  \emph{less than} the rank of $\ab{x}$. We show that
+$\M_t,\ab{x}\models \Di\G$ iff $\Di\G\in x$. Let  $C$ be the $R_\Phi$-cluster of $\ab{x}$, and $y$  the critical point for $C$.
+
+Assume first that $\Di\G\in x$. Then $\Di\G\in y$ by Lemma \ref{import}. By Lemma \ref{one}, there is an endless $R$-path $\{y_n:n<\omega\}$ starting from $y=y_0$ that fulfills $\Di\G$ and has $\Di\G$ belonging to each point. Then by (r3) the sequence 
+$\{\ab{y_n}:n<\omega\}$ is an endless $R_\Phi$-path in $W_\Phi$ starting at $\ab{y}\in C$.
+
+Suppose that $\ab{y_n}\in C$ for all $n$. Then for all $n>0$, since $yRy_n$ we get $\ab{y_n}\in C^\circ$. So there is the endless $R_t$-path $\pi=\ab{x}R_t\ab{y_1}R_t\ab{y_2}R_t\cdots$  starting at $\ab{x}$.
+As $\{y_n:n<\omega\}$ fulfills $\Di\G$, for each $\g\in\G$ there are infinitely many $n$ for which $\g\in y_n$  and so $\M_t,\ab{y_n}\models\g$ by the induction hypothesis on members of $\G$. Thus each member of $\G$ is true  infinitely often along $\pi$, implying that $\M_t,\ab{x}\models \Di\G$.
+
+If however there is an $n>0$ with $\ab{y_n}\notin C$, then the $R_\Phi$-cluster of $\ab{y_n}$ is strictly $R_\Phi$-later than $C$, so $\ab{x}R_t\ab{y_n}$ and $\ab{y_n}$ has smaller rank than $\ab{x}$. Since $\Di\G\in y_n$, the induction hypothesis \eqref{filt} on rank then implies that $\M_t,\ab{y_n}\models \Di\G$. So there is an endless $R_t$-path $\pi$ from $\ab{y_n}$ along which each member of $\G$ is true infinitely often. Since $\ab{x}R_t\ab{y_n}$, we can append $\ab{x}$ to the front of $\pi$ to obtain such an $R_t$-path starting from $\ab{x}$, showing that $\M_t,\ab{x}\models \Di\G$ (this last part is an argument for soundness of  $4_t$). So in both cases we get
+$\M_t,\ab{x}\models \Di\G$. That proves the forward implication of \eqref{filtlem} for $\Di\G$.
+
+For the converse implication, suppose $\M_t,\ab{x}\models \Di\G$. Since $W_\Phi$ is finite, it follows by \eqref{semants}  that there exists  a $z\in W$ with $\ab{x}R_t\ab{z}$ and $\ab{z}R_t\ab{z}$ and the $R_t$-cluster of $\ab{z}$ satisfies $\G$.
+By the induction hypothesis \eqref{filtlem} on members of $\G$,
+every formula in $\G$  is  realised at some point of this cluster.
+Suppose first there is such a $z$ for which the rank of $\ab{z}$ is less than that of $\ab{x}$. Then  as the $R_t$-cluster of $\ab{z}$ is non-degenerate and satisfies $\G$, we have $\M_t,\ab{z}\models \Di\G$. Induction hypothesis \eqref{filt} then implies that $\Di\G\in z$. But  $\ab{x}R_\Phi\ab{z}$, as $\ab{x}R_t\ab{z}$, so by (r4) we get the required conclusion that  $\Di\G\in x$.
+
+If however there is no such $z$ with $\ab{z}$ of lower rank  than $\ab{x}$, then the $\ab{z}$ that does exist must have the same rank as $\ab{x}$, so it belongs  to $C$. Hence as  $\ab{x}R_t\ab{z}$, the definition of $R_t$ implies that $\ab{z}\in C^\circ$.      
+Thus  the $R_t$-cluster of $\ab{z}$ is $C^\circ$. Therefore every formula in $\G$  is  realised at some point of $C^\circ$, i.e.\ at some $\ab{z'}\in C$ with $yRz'$. But Lemma \ref{notreal} states that if $\Di\G\notin y$, then some member of $\G$ is not realised in $C^\circ$. Therefore we must have  $\Di\G\in y$. Then  $\Di\G\in x$ as required, by Lemma \ref{import}.
+That finishes the inductive proof that $\M_t$ satisfies the Reduction Lemma. 
+\end{proof}
+
+
+\subsection{Adding Seriality} 
+
+Suppose the logic $L$ contains the D-axiom $\Dim\top$. Then $R_L$  is \emph{serial}: $\forall x\exists y(xR_Ly)$.  Hence the relation $R$ of the inner subframe $\F$ is serial.
+From this we can show that $R_t$ is serial. The key point is that any maximal $R_\Phi$-cluster $C$ must have a \emph{non-empty} nucleus. For, if $y$ is the critical point for $C$, then there is a $z$ with $yRz$, as $R$ is serial. But then $\ab{y}R_\Phi\ab{z}$ by (r3) and so $\ab{z}\in C$ as $C$ is maximal. Hence  $\ab{z}\in C^\circ$, making the nucleus non-empty. Now every member of $C$ is $R_t$-related to any member of $C^\circ$ so altogether this implies that $R_t$ is serial on the rank 1 cluster $C$. But any point of rank $>1$ will be $R_t$-related to points  of lower rank, and indeed to points in the nucleus of some rank 1 cluster. Since $R_t$ is reflexive on a nucleus,  this shows that $R_t$ satisfies the stronger condition that  $\forall w\exists v(wR_t vR_t v)$ --- ``every world sees a reflexive world''.
+
+
+\subsection{Adding Reflexivity} 
+
+Suppose that $L$ contains the scheme
+\begin{description}
+\item[T:]
+$\ph\to\Dim\ph$.
+\end{description}
+Then it  contains
+\begin{description}
+\item[T$_t$: ] 
+$\bigwedge\G\to\Di\G$.
+\end{description}
+To see this, let $\ph=\bigwedge\G$. Then
+$
+\ph\to \bigwedge_{\g\in\G}(\g\land\ph)
+$
+is a tautology, hence derivable. From that we derive
+\begin{equation} \label{antind}
+\Box^*(\ph\to{\textstyle \bigwedge}_{\g\in\G}\Dim(\g\land\ph))
+\end{equation}
+using  the instances $(\g\land\ph)\to\Dim(\g\land\ph)$ of axiom T and K-principles. But \eqref{antind} is an antecedent of axiom Ind, so we apply it  to derive  $\ph\to\Di\G$, which is T$_t$ in this case.
+
+
+Axiom T ensures that the canonical frame relation $R_L$ is reflexive, and hence so is $R_\Phi$ by (r3). Thus no $R_\Phi$-cluster is degenerate.
+We modify the definition of $R_t$ to make it  reflexive as well. The change occurs in the case of an $R_\Phi$-cluster $C$ having $C\ne C^\circ$. Then instead of making the singletons $\{w\}$ for $w\in C-C^\circ$ be degenerate, we make them all into \emph{non}-$R_t$-degenerate clusters by requiring that $wR_tw$. Formally this is done by adding to the definition of $wR_tv$ the third possibility that
+\begin{itemize}
+\item 
+$w$ and $v$ belong to the same $R_\Phi$-cluster $C$, and $w=v\in C-C^\circ$.
+\end{itemize}
+Equivalently, the restriction of $R_t$ to $C$ is equal to $(C\times C^\circ) \cup\{(w,w):w\in C-C^\circ\}$.
+
+
+The proof of the Reduction Lemma  for the resulting reflexive and transitive model $\M_t$ now requires an adjustment in one place, in its last paragraph, where $\ab{x}R_t\ab{z}\in C$. In the original proof above, this implied that the $R_t$-cluster of $\ab{z}$ is $C^\circ$. But now we have the new possibility  that $\ab{x}=\ab{z}\in C-C^\circ$. Then the $R_t$-cluster of $\ab{z}$ is $\{\ab{z}\}$, so every formula of $\F$ is realised at $\ab{z}$, implying $\bigwedge\G\in z$.
+The  scheme T$_t$ now
+ ensures that $\Di\G\in z$, so  by Lemma \ref{import}  we still get the required result that $\Di\G\in x$, and the Reduction Lemma still holds for this modified reflexive version of $\M_t$.
+ 
+ 
+ \subsection{Finite model property over K4, KD4 and S4}\label{sec:fmp S4}
+ 
+ Given a logic $L$ and a finite set $\Phi$ of formulas closed under subformulas, 
+we can construct a definable reduction of any  inner subframe  $\F=(W,R)$ of $\F_L$    by  filtration through 
+$\Phi$. An equivalence relation $\sim$ on $W$ is given by putting $x\sim y$ iff $x\cap\Phi=y\cap\Phi$. 
+Then with $\ab{x}=\{y\in W:x\sim y\}$ we put  $W_\Phi=\{\ab{x}:x\in W\}.$
+ 
+Letting $R_\lambda=\{(\ab{x},\ab{y}):xRy\}$ (the least filtration of $R$  through $\Phi$), we define
+ $R_\Phi\sub W_\Phi\times W_\Phi$ to be the \emph{transitive closure} of $R_\lambda$.
+Thus $wR_\Phi v$ iff there exist $w_1,\dots, w_n\in W_\Phi$, for some $n>1$, such that 
+$w=w_1R_\lambda\cdots R_\lambda w_n=v$. The definition of $\M_\Phi$ is completed by putting
+$h_\Phi(p)=\{\ab{x}: p\in x\}$ for $p\in\Phi$, and $h_\Phi(p)=\emptyset$ (or anything) otherwise. We call $\M_\Phi$ the
+\emph{standard transitive filtration through $\Phi$}.
+
+The surjective function 
+$f:W\to W_\Phi$ is given by $f(x)=\ab{x}$.
+ The conditions (r1) and (r2) for a definable reduction are then immediate, and the definability condition (r5) is standard. For (r3) observe that $xRy$ implies $\ab{x}R_\lambda\ab{y}$ and hence $\ab{x}R_\Phi\ab{y}$.
+ 
+ (r4) takes more work, but is also standard for the case of $\Dim$, and similar for $\Di$. To prove it,
+ let  $\ab{x}R_\Phi\ab{y}$. Then by definition of $R_\Phi$ as the transitive closure of $R_\lambda$, there are finitely many elements $x_1,y_1,\dots,x_n,y_n$ of $W$ (for some $n\geq 1$)
+such that
+$$
+x\sim x_1R y_1\sim x_2R y_2\sim \cdots \sim x_nR y_n\sim y.
+$$
+Then $\Di\G\in y\cap\Phi^t$ implies $\Di\G\in y_n$ as $y_n\sim y$, hence  $\Dim\Di\G\in x_n$ as $x_nR y$, which implies $\Di\G\in x_n$ by the scheme $4_t$. 
+%\marginpar{\small \em  $4_t$ used} 
+If $n=1$ we then get $\Di\G\in x$  because $x\sim x_1$.
+But if $n>1$, we
+ repeat this argument back along the above chain of relations, leading to $\Di\G\in x_{n-1}$, \dots ,$\Di\G\in x_1$, and then $\Di\G\in x$ as required to conclude that $y\cap \Phi^t\sub x\cap\Phi^t$. 
+
+To show that $\{\Dim\ph\in\Phi:\Dim^*\ph\in y\}\sub x$, note that if $\Dim^*\ph\in y$, then either $\ph\in y$ or $\Dim\ph\in y$.
+If $\ph\in y$, then  $\ph\in y_n$ as $y_n\sim y$ and $\ph\in\Phi$, hence $\Dim\ph\in x_n$ as $x_nRy_n$. But if $\Dim\ph\in y$ then $\Dim\ph\in y_n$, hence $\Dim\Dim\ph\in x_n$, and so again $\Dim\ph\in x_n$, this time by scheme 4.
+Repeating this  back along the chain leads to $\Dim\ph\in x$ as required.
+ 
+ Thus $(\M_\Phi,f)$ as defined is a definable reduction of $\F$.
+ 
+ \medskip
+ From this we can obtain a proof that the the smallest tangle system $\axK4t$ has the finite model property  over transitive frames. If
+  $L_{\axK4t}$ is its set of theorems, put $\F=\F_{L_{\axK4t}}$. If $\ph$ is a
+  $\axK4t$-consistent formula then $\ph\in x$ for some point $x$ of $\F$. Let $\Phi$ be the set of  subformulas of $\ph$, and  $\M_t$  the model derived from the model $\M_\Phi$ just defined. Then $\M_t,\ab{x}\models\ph$ by the Reduction Lemma. But the finite frame $\F_t=(W_\Phi,R_t)$ is transitive, so $\axK4t$ has the finite model property over  transitive frames, i.e.\ K4 frames.
+ 
+ If we replace K4$t$ here by the smallest tangle system KD$4t$ containing $\Dim\top$, then the frame $\F_t$ of the last paragraph is serial, so $\{\psi:\F_t\models\psi\}$ is then a logic that contains $\Dim\top$, hence includes $L_{\axK\axD4t}$. Thus KD$4t$ has the finite model property over serial transitive  (i.e.\ KD4) frames.
+ 
+ Similarly, since $\M_t$ is reflexive when $L$ contains the scheme T, we get that the smallest tangle system S4$t$ containing T has the finite model property over reflexive transitive (i.e.\ S4) frames.
+ 
+
+
+ \subsection{Universal Modality}
+ 
+ Extend the syntax to include the universal modality $\forall$ with semantics $\M,x\models\forall\ph$ iff for all $y$, 
+ $\M,y\models\ph$.  Let K4$t$.U be the smallest tangle system that 
+  includes the S5 axioms and rules for $\forall$, and the scheme
+ \begin{description}
+\item[U:]
+ $\forall\ph\to\Box\ph$,
+\end{description}
+equivalently $\Dim\ph\to\exists\ph$, where $\exists=\neg\forall\neg$ is the dual modality to $\forall$.
+ 
+ Let $L$ be any K4$t$.U-logic.
+ Define a relation $S_L$ on $W_L$ by: $xS_Ly$ iff $\{\ph:\forall\ph\in x\}\sub y$ iff
+ $\{\exists\ph:\ph\in y\}\sub x$. Then $S_L$ is an equivalence relation with $R_L\sub S_L$. Also
+ $$
+ \forall\ph\in x \text{ iff\enspace  for all } y\in W_L, \ xS_Ly \text{ implies }\ph\in y.
+ $$
+ For any fixed $x\in W_L$, let $W^x$ be the equivalence class $S_L(x)=\{y\in W_L:xS_Ly\}$. Then for $z\in W^x$,
+ 
+\begin{equation}  \label{allsem}
+ \forall\ph\in z \text{ iff\enspace  for all } y\in W^x, \ \ph\in y.
+\end{equation} 
+Let $R^x$ be the restriction of $R_L$ to $W^x$. Since $R_L\sub S_L$ it follows that $\F^x=(W^x,R^x)$ is an inner subframe of 
+$(W_L,R_L)$.
+If $\M_\Phi$ is a definable reduction of $\F^x$, and $\M_t$ its untangling, then using \eqref{allsem} it can be shown that if 
+a formula $\ph\in\Phi$ satisfies the Reduction Lemma
+ \begin{equation*}
+\text{
+$\M_t,\ab{z}\models \ph$\enspace iff\enspace $\ph\in z$}
+\end{equation*}
+for all $z$ in $\M_t$, then so does $\forall\ph$. So the Reduction Lemma holds for all members of $\Phi$.
+
+Now the standard transitive filtration can be applied to $\F^x$ to produce a definable reduction of it.
+Consequently,  if $\ph$ is an
+  $L$-consistent formula,  $x$ is a point of $W_L$ with  $\ph\in x$, and $\Phi$ is the set of all subformulas of $\ph$, then 
+  $\M_t,\ab{x}\models \ph$ where $\M_t$ is the untangling of the standard transitive filtration of $\F^x$ through $\Phi$.
+That establishes the finite model property for K4$t$.U over transitive frames.
+
+This construction preserves seriality and reflexiveness in passing from $R_L$ to $R^x$ and then $R_t$.
+The outcome  is that the finite model property continues to hold for the tangle systems  
+  KD4$t$.U and S4$t$.U over the KD4 and S4 frames, respectively.
+
+\subsection{Path Connectedness}\label{sec:path conn}
+
+A \emph{connecting path between $w$ and $v$} in a frame $(W,R)$ is a finite sequence $w=w_0,\dots, w_n=v$, for some $n\geq 0$, such that for all $i<n$, either $w_iRw_{i+1}$ or $w_{i+1}Rw_i$. We say that such  a path has \emph{length $n$}. 
+The points $w$ and $v$ of $W$ are \emph{path connected}  if there exists a connecting path between them of some finite length. Note that any point $w$ is  connected to itself by a path of length 0 (put $n=0$ and $w=w_0$). 
+The relation ``$w$ and $v$ are path connected'' is an equivalence relation whose equivalence classes are the \emph{path components} of the frame. The frame is \emph{path connected} if it has a single path component, i.e.\   any two points have a connecting path between them.
+This is iff the frame
+is connected in the sense of section~\ref{ss:kripke frames}.
+
+Later we will make use of the fact that a path component $P$ is $R$-closed. For if $x\in P$  and $xR y$, then $x$ and $y$ are  path connected, so $y\in P$. It follows that any $R$-cluster $C$ that intersects $P$ must be included in $P$, for if $x\in P\cap C$ and $y\in C$, then $xR^*y$ and so $y\in P$, showing that $C\sub P$.
+
+We now wish to show that in passing from  the frame $\F_\Phi=(W_\Phi,R_\Phi)$ to its untangling $\F_t$, there is no loss of path connectivity. The two frames have the same path connectedness relation and so have the same path components.
+The idea is that the relations that
+are broken by the untangling only occur between elements of the same $R_\Phi$-cluster, so it suffices to show that such elements are still path connected in $\F_t$. \emph{For this we need to make the assumption that $\Phi$ contains the formula $\Dim\top$. }This is harmless as we can always add it and its subformula $\top$, preserving finiteness of $\Phi$.
+
+\begin{lemma} \label{repair}
+Let $\Dim\top\in\Phi$. If $w,w'$ are points in $W_\Phi$ with $wR_\Phi w'$ or $w'R_\Phi w$, but neither $wR_tw'$ or $w'R_tw$, then there exist a $v$ with $wR_t v$ and $w'R_t v$.
+\end{lemma}
+\begin{proof}
+If $wR_\Phi w'$, then since not  $wR_tw'$ we must have $w$ and $w'$ in the same cluster. The same follows if $w'R_\Phi w$, since not $w'R_tw$.
+
+Thus there is an $R_\Phi$-cluster $C$ with $w,w'\in C$, so both $wR_\Phi w'$ and $w'R_\Phi w$. If $C$ is not $R_\Phi$-maximal, then there is an  $R_\Phi$-cluster $C'$ with $CR_\Phi C'$ and  $C\ne C'$. Taking any $v\in C'$ we then get $wR_tv$ and $w'R_tv$.
+
+The alternative is that $C$ is  $R_\Phi$-maximal. Then we show that the nucleus $C^\circ$ is non-empty. 
+Let $w=\ab{u}$ and $w'=\ab{t}$.
+Since  $\ab{u}R_\Phi\ab{t}$ and $\top\in t$, and $\Dim\top\in\Phi$, property (r4) implies that 
+$\Dim\top\in u$. Now if $y$ is the critical point for $C$, then $\Dim\top\in y$ by Lemma \ref{import}. Hence there is a $z$ with $yRz$. So $\ab{y}R_\Phi\ab{z}$ by (r3).  Maximality of $C$ then ensures that  $\ab{z}\in C$, so this implies that $\ab{z}\in C^\circ$.  Then by definition of $R_t$, since $w,w'\in C$ we have $wR_t\ab{z}$ and  $w'R_t\ab{z}$. 
+\end{proof}
+
+
+\begin{lemma} \label{pathcon}
+If $\Dim\top\in\Phi$, then two members of $W_\Phi$ are path connected in $\F_\Phi$ if, and only if, they are path connected in $\F_t$. Hence the two frames have the same path components.
+\end{lemma}
+\begin{proof}
+Since $R_t\sub R_\Phi$, a connecting path in $\F_t$ is a connecting path in $\F_\Phi$, so points that are path connected in $\F_t$ are path connected in $\F_\Phi$. 
+
+Conversely, let $\pi=w_0,\dots,w_n$ be a connecting path in $\F_\Phi$. If, for all $i<n$, either $w_iR_tw_{i+1}$ or $w_{i+1}R_tw_{i}$, then $\pi$ is a connecting path in  $\F_t$. If not, then for each $i$ for which this fails, by Lemma \ref{repair} there exists some $v_i$ with $w_iR_t v_i$ and $w_{i+1}R_t v_i$. Insert $v_i$ between $w_i$ and $w_{i+1}$ in the path. Doing this for
+all ``defective'' $i<n$, creates a new sequence that is now a connecting path in $\F_t$ between the same endpoints.
+\end{proof}
+
+Now let K4$t$.UC be the smallest extension of system  K4$t$.U in the language with $\forall$ that includes the scheme
+
+\begin{description}
+\item[C:]
+$\forall(\Box^*\ph\lor\Box^*\neg\ph)\to(\forall\ph\lor\forall\neg\ph)$,
+\end{description}
+or equivalently
+$\exists\ph\land\exists\neg\ph\to\exists(\Dim^*\ph\land\Dim^*\neg\ph)$.
+
+Let $L$ be any K4$t$.UC-logic.
+Let $\F^x$ be a point-generated subframe of $(W_L,R_L)$ as above, and $\M_\Phi$ its standard transitive filtration through 
+$\Phi$. Then the frame $\F_\Phi=(W_\Phi,R_\Phi)$ of $\M_\Phi$ is path connected, as shown by 
+Shehtman \cite{Sheh:everywhere99} as follows. If $P$ is the path component of $\ab{x}$ in $\M_\Phi$, take a formula $\ph$ that defines $f^{-1}(P)$ in $W^x$, i.e.\ $\ph\in y$ iff $\ab{y}\in P$, for all 
+$y\in W^x$. Suppose, for the sake of contradiction, that $P\ne W_\Phi$. Then there is some $z\in W^x$ with $\ab{z}\notin P$, hence $\neg\ph\in z$. Since $\ph\in x$, this gives  $\exists\ph\land\exists\neg\ph\in x$. By the scheme C it follows that for some $y\in W^x$, 
+$\Dim^*\ph\land\Dim^*\neg\ph\in y$. Hence there are $z,w\in W^x$ with $yR^*z$, $\ph\in z$, $yR^* w$ and $\neg\ph\in w$.
+
+From this we get $\ab{y}R_\Phi{}^*\ab{z}$ and $\ab{y}R_\Phi{}^*\ab{w}$ so the sequence $\ab{z},\ab{y},\ab{w}$ is a connecting path between  $\ab{z}$ and  $\ab{w}$ in $\F_\Phi$. But $\ab{z}\in P$ as $\ph\in z$, so this implies $\ab{w}\in P$. Hence $\ph\in w$, contradicting the fact that $\neg\ph\in w$. The contradiction forces us to conclude that $P= W_\Phi$, and hence that $\F_\Phi$ is path connected.
+
+From Lemma \ref{pathcon} it now follows that the untangling $\F_t$ of $\F_\Phi$ is also path connected when $L$  includes scheme C and $\Dim\top\in\Phi$. Hence the finite model property holds for K4$t$.UC over path-connected transitive frames.
+
+The arguments for the preservation of seriality and reflexiveness by $\F_t$ continue to hold here. This gives us proofs of the
+finite model property  for the systems, KD4$t$.UC and S4$t$.UC over path-connected KD4 and S4 frames, respectively.
+
+Note that for the $\c L_{\bo\forall}$-fragments of these logics (i.e.\ their restrictions to the language without $\dit$), our analysis reconstructs the finite model property proof of \cite{Sheh:everywhere99} by using $\M_\Phi$ instead of $\M_t$. For, restricting to this language, if $\M_\Phi$ is a standard transitive filtration of an inner subframe of $\F_L$, then any $\dit$-free formula is true in $\M_\Phi$ precisely at the points at which it is realised (for $\c L_{\bo}$ this is a classical result first formulated and proved in \cite{sege:deci68}). Thus a finite satisfying model for a consistent 
+$\c L_{\bo\forall}$-formula can be obtained as a model of this form $\M_\Phi$. Since seriality and reflexivity are preserved in passing from $R_L$ to $R_\Phi$, and $\F_\Phi$ is path connected in the presence of  axiom C, it follows that the finite model property holds for each of the systems K4.UC, KD4.UC and S4.UC in the language 
+$\c L_{\bo\forall}$.
+
+
+
+\subsection{The Schemes G$_n$}
+
+Fix $n\geq 1$ and take $n+1$ variables $p_0,\dots,p_{n}$. For each $i\leq n$, define the formula
+\begin{equation} \label{Qi}
+Q_i=p_i \land  \bigwedge_{i\ne j\leq n}\neg p_j.
+\end{equation}
+G$_n$ is the scheme consisting of all uniform substitution instances of the formula
+\begin{equation} \label{Gn}
+\bigwedge_{i\leq n}\Dim Q_i\to\Dim(\bigwedge_{i\leq n}\Dim^* \neg Q_i ).
+\end{equation}
+This is equivalent in any  logic to
+\begin{equation*}
+\Box(\bigvee_{i\leq n}\Box^*  Q_i )\to \bigvee_{i\leq n}\Box\neg Q_i,
+\end{equation*}
+the form in which the G$_n$'s were introduced in \cite{Sheh:d90}. When $n=1$, \eqref{Gn} is
+\begin{equation}  \label{G1}
+\Dim(p_0\land\neg p_1)\land \Dim(p_1\land\neg p_0) \to \Dim(\Dim^*\neg(p_0\land\neg p_1)\land \Dim^*\neg(p_1\land\neg p_0)).
+\end{equation}
+As an axiom, \eqref{G1} is equivalent  to
+\begin{equation}  \label{G1B}
+\Dim p\land \Dim\neg p \to \Dim(\Dim^* p\land \Dim^*\neg p),
+\end{equation}
+or in dual form $\Box(\Box^* p\lor \Box^* \neg p)\to \Box p\lor \Box \neg p$, which is the form in which G$_1$ was first defined in \cite{Sheh:d90}. To derive \eqref{G1B} from \eqref{G1}, substitute $p$ for $p_0$ and $\neg p$ for $p_1$ in \eqref{G1}. Conversely, substituting $p_0\land\neg p_1$ for $p$ 
+in  \eqref{G1B} leads to a derivation of  \eqref{G1}.
+
+For the semantics of G$_n$, we use the set $R(x)=\{y\in W:xRy\}$ of $R$-successors of $x$ in a frame $(W,R)$. We can view $R(x)$ as a frame in its own right, under the restriction of $R$ to $R(x)$, and consider whether it is path connected, or how many path components it has etc.  $(W,R)$ is called \emph{locally $n$-connected}  if, for all $x\in W$, the frame 
+$\F(x)=(R(x),R{\restriction} R(x))$ has at most $n$ path components.
+This is equivalent to the definition in section~\ref{ss:kripke frames}.
+Note that path components in $\F(x)$ are defined by connecting paths in $(W,R)$ that lie entirely within $R(x)$. 
+
+\begin{fact}\label{fact:Gn = loc nconn}
+ A K4 frame validates G$_n$ iff it is locally $n$-connected. 
+\end{fact}
+For a proof of this see \cite[Theorem 3.7]{LucBry11}.
+
+
+
+
+
+\subsection{Weak Models}\label{ss:weak models}
+
+We now assume that the set $\Var$ of variables is \emph{finite}. The adjective ``weak'' is sometimes applied to languages with finitely many variables, as well as to models for weak languages and to canonical frames built from them. Weak models may enjoy special properties. For instance,  a proof is given in \cite[Lemma 8]{Sheh:d90} that in a weak
+\emph{distinguished}\footnote{A model is distinguished if for any two of its distinct points there is a formula that is true
+in the model at one of the points and not the other.} model on a transitive frame, there are only finitely many maximal clusters. 
+This was used to show that a weak canonical model for the $\c L_\bo$-system  K4DG$_1$ is locally 1-connected, and from this to obtain the finite model property for that system. The corresponding versions of these results for  K4DG$_n$ with $n\geq 2$ are worked out in \cite{LucBry11}.
+
+
+We wish to lift these results to the language $\c L_\bo^\dit$ with tangle.  One issue is that the property of  a canonical model being distinguished depends on it satisfying the Truth Lemma: $\M_L,x\models\ph$ iff $\ph\in x$. As we have seen, this fails for tangle logics. Therefore we must continue to work directly with the relation of membership of formulas in points of $W_L$, rather than with their truth in $\M_L$. We will see that it is still possible to recover Shehtman's analysis of maximal clusters in $\F_L$, with the aid of both tangle axioms.
+
+Another issue is that we want to work over K4G$_n$ without assuming the seriality axiom. This requires further adjustments, and care with the distinction between $R$ and $R^*$.
+
+
+Let $L$ be any tangle logic in our weak language. Put
+$\At=\Var\cup\{\Dim\top\}$. For each $s\sub\At$ define the formula
+$$
+\chi(s)=\bigwedge_{\ph\in s}\ph\land\bigwedge_{\ph\in \At\setminus s}\neg\ph.
+$$
+For each point $x$ of $W_L$ define $\tau(x)=x\cap\At$. Think of $\At$ as a set of ``atoms'' and $\tau(x)$ as the ``atomic type'' of 
+$x$. It is evident that for any $x\in W_L$ and $s\subseteq\At$
+we have
+\begin{equation} \label{chit}
+\chi(s)\in x \text{ iff } s=\tau(x).
+\end{equation}
+Writing $\chi(x)$ for the formula $\chi(\tau(x))$, we see from \eqref{chit} that $\chi(x)\in x$, and in general $\chi(y)\in x$ iff $\tau(y)=\tau(x)$.
+
+Now fix an inner subframe $\F=(W,R)$ of $\F_L$.  If $C$ is an $R$-cluster in $\F$,
+let 
+$$
+\delta C=\{\tau(x):x\in C\}
+$$
+be the set of atomic types of members of $C$. We are going to show that maximal clusters in $\F$ are determined by their atomic types. They key to this is:  
+
+\begin{lemma} \label{indisting}
+Let $C$ and $C'$ be maximal clusters in $\F$ with $\delta C=\delta C'$. Then for all formulas $\ph$, if $x\in C$ and $x'\in C'$ have $\tau(x)=\tau(x')$, then $\ph\in x$ iff $\ph\in x'$. Thus, $x=x'$.
+\end{lemma}
+\begin{proof}
+Suppose $C$ and $C'$ are maximal with $\delta C=\delta C'$. The key property of maximality that is used is that if $x\in C$ and $xRy$, then $y\in C$, and likewise for $C'$.
+
+The proof  proceeds by induction on the formation of $\ph$. The base case,
+when $\ph\in\Var$, is immediate from the fact that  then $\ph\in x$ iff $\ph\in \tau(x)$. The induction cases for the Boolean connectives are straightforward from properties of maximally consistent sets.
+
+Now take the case of a formula $\Dim\ph$ under the induction hypothesis that the result holds for $\ph$, i.e.\ $\ph\in x$ iff $\ph\in x'$ for any $x\in C$ and $x'\in C'$ such that $\tau(x)=\tau(x')$. Take such $x$ and $x'$, and assume $\Dim\ph\in x$. Then $\ph\in y$ for some $y$ such that $xRy$. Then $y\in C$ as $C$ is maximal. Hence $\tau(y)\in \delta C=\delta C'$, so 
+$\tau(y)=\tau(y')$ for some $y'\in C'$. Therefore $\ph\in y'$ by the induction hypothesis on $\ph$. But $\Dim\top\in x$ (as $xRy$), so $\Dim\top\in \tau(x)=\tau(x')$. This gives $\Dim\top\in x'$ which ensures that $x'Rz$ for some $z$, with $z\in C'$ as $C'$ is maximal, hence $C'$ is a non-degenerate cluster.\footnote{That is the reason for including $\Dim\top$ in $\At$.}  It follows that  $x'Ry'$, so $\Dim\ph\in x'$ as required. Likewise $\Dim\ph\in x'$ implies $\Dim\ph\in x$, and  the Lemma holds for $\Dim\ph$.
+
+Finally we have the case of a formula $\Di\G$ under the induction hypothesis that the result holds for every $\g\in\G$.  
+Suppose  $x\in C$ and $\tau(x)=\tau(x')$ for some $x'\in C'$. Let $\Di\G\in x$. Then by axiom Fix, for each $\g\in\G$ we have 
+$ \Dim(\g\land\Di\G)\in x$, implying that $\Dim\g\in x$. Then applying to $\Dim\g$ the analysis of $\Dim\ph$ in the previous paragraph, we conclude that $C'$ is non-degenerate and there is  some $y_\g\in C'$ with  $\g\in y_\g$. Now if $x'R^*z$, then $z\in C'$ so for each $\g\in\G$ we have $zR y_\g$, implying that $\Dim\g\in z$.
+This proves that 
+$\Box^*(\bigwedge_{\g\in\G}\Dim\g)\in x'$.
+But putting $\ph=\top$ in axiom Ind shows that the formula
+$$
+\Box^*(\top\to \bigwedge_{\g\in\G}\Dim(\g\land\top))\to(\top\to\Di\G)
+$$
+is an $L$-theorem, From this we can derive that  $\Box^*(\bigwedge_{\g\in\G}\Dim\g)\to\Di\G$ is an $L$-theorem, and hence belongs to $x'$. Therefore $\Di\G\in x'$ as required. Likewise $\Di\G\in x'$ implies $\Di\G\in x$, and so the Lemma holds for $\Di\G$.
+\end{proof}
+
+\begin{corollary} \label{equalC}
+If $C$ and $C'$ are maximal clusters in $\F$ with $\delta C=\delta C'$, then $C=C'$.
+\end{corollary}
+\begin{proof}
+If $x\in C$, then $\tau(x)\in\delta C=\delta C'$, so there exists $x'\in C'$ with $\tau(x)=\tau(x')$. Lemma \ref{indisting} then implies that 
+$x=x'\in C'$, showing $C\sub C'$.  Likewise $C'\sub C$.
+\end{proof}
+
+\begin{corollary} \label{finmaxcl}
+The set $M$ of all maximal clusters of $\F$ is finite.
+\end{corollary}
+\begin{proof}
+The map $C\mapsto\delta C$ is an injection of $M$ into the double power set $\wp\wp\At$ of the finite set $\At$. This gives an upper bound of $2^{2^{n+1}}$ on the number of maximal clusters, where $n$ is the size of $\Var$.
+\end{proof}
+
+Given subsets $X,Y$ of $W$ with $X\sub Y$, we say that $X$ is \emph{definable within $Y$ in $\F$} if there is a formula $\ph$ such that for all $y\in Y$, $y\in X$ iff $\ph\in y$.
+We now work towards showing that within each inner subframe $R(x)$ in $\F$, each path component is definable. For each cluster $C$, define the formula
+$$
+\a(C)=  \bigwedge_{s\in \delta C}\Dim^*\chi(s)\land\bigwedge_{s\in \wp\At\setminus \delta C}\neg\Dim^*\chi(s).
+$$
+The next result shows that a maximal cluster is definable within the set of all maximal elements of $\F$.
+
+\begin{lemma} \label{maxdef}
+If  $C$ is a maximal cluster and $x$ is any maximal element of $\F$, then $x\in C$ iff $\a(C)\in x$.
+\end{lemma}
+\begin{proof}
+Let $x\in C$. If $s\in\delta C$, then $s=\tau(y)$ for some $y$ such that $y\in C$, hence $xR^*y$, and $\chi(s)=\chi(y)\in y$, showing that $\Dim^*\chi(s)\in x$. The converse of this also holds: if $\Dim^*\chi(s)\in x$, then for some $y$, $xR^* y$ and $\chi(s)\in y$. Hence $y\in C$ by maximality of $C$, and $s=\tau(y)$ by \eqref{chit}, so $s\in\delta C$.
+Contrapositively then, if $s\notin \delta C$, then $\Dim^*\chi(s)\notin x$, so $\neg\Dim^*\chi(s)\in x$. 
+Altogether this shows that all conjuncts of $\a(C)$ are in $x$, so $\a(C)\in x$.
+
+In the opposite direction, suppose $\a(C)\in x$. Let $C'$ be the cluster of $x$. Then we want $C=C'$ to conclude that $x\in C$. Since $x$ is maximal, i.e.\ $C'$ is maximal, it is enough by Corollary \ref{equalC} to show that $\delta C=\delta C'$.
+
+Now if $s\in\delta C$, then $s=\tau(y)$ for some $y\in C$. But $\Dim^*\chi(s)$ is a conjunct of $\a(C)\in x$, so $\Dim^*\chi(s)\in x$.
+Hence there exists $z$ with $xR^*z$ and $\chi(s)\in z$. Then $z\in C'$ by maximality of $C'$, and  by \eqref{chit} $s=\chi(z)\in \delta C'$.
+
+Conversely, if $s\in\delta C'$, with  $s=\tau(y)$ for some $y\in C'$, then $xR^* y$ as $x\in C'$, and so 
+$\Dim^*\chi(s)\in x$ as $\chi(s)=\chi(y)\in y$. Hence $\neg\Dim^*\chi(s)\notin x$.
+But then we must have $s\in\delta C$, for otherwise $\neg\Dim^*\chi(s)$ would be a conjunction of $\a(C)$ and so would belong to $x$.
+\end{proof}
+
+It is shown in \cite{Sheh:d90} that any transitive canonical frame (weak or not) has the \emph{Zorn property}:
+\begin{center}
+$\forall x\,\exists y (xR^*y$ and  $y$ is $R$-maximal).
+\end{center}
+Note the use of $R^*$: the statement is that either $x$ is $R$-maximal, or it has an $R$-maximal successor. 
+The essence of the proof is that the relation
+$\{(x,y): xR^\bullet y \text{ or }x= y\}$
+is a partial ordering for which every chain has an upper bound, so by Zorn's Lemma $R(x)$ has a maximal element provided that it is non-empty.
+
+The Zorn property is preserved under inner substructures, so it holds for our frame $\F$. One interesting consequence is:
+
+\begin{lemma} \label{finpthcmp}
+For each $x\in W$, the frame $\F(x)=(R(x),R{\restriction} R(x))$ has  finitely many path components,
+as does $\F$ itself.
+\end{lemma}
+\begin{proof}
+ The following argument works for both $\F$ and $\F(x)$, noting that the $R{\restriction} R(x)$-cluster of an element of $\F(x)$ is the same as its $R$-cluster in $\F$, and that all maximal clusters of $\F(x)$ are maximal in $\F$.
+
+Let $P$ be a path component and $y\in P$. By the Zorn property there is an $R$-maximal $z$ with $yR^* z$. Then  $z\in P$ as $P$ is $R^*$-closed. So  the $R$-cluster of $z$ is a subset of $P$. Since this cluster is maximal, that proves that every path component contains a maximal cluster.
+
+Now distinct path components are disjoint and so cannot contain the same maximal cluster. Since there are finitely many maximal clusters (Corollary \ref{finmaxcl}), there can only be finitely many path components.
+\end{proof}
+
+\begin{lemma}  \label{defCRx}
+Let $C$ be a maximal cluster in $\F$. Then for all $x\in W$:
+\begin{enumerate}[\rm(1)]
+\item 
+$C\sub R(x)$ iff\/ $\Dim\Box^*\a(C)\in x$.
+\item
+$C\sub R^*(x)$ iff\/ $\Dim^*\Box^*\a(C)\in x$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For (1), first let $C\sub R(x)$. Take any $y\in C$. Then if $yR^*z$ we have $z\in C$ as $C$ is maximal, therefore $\a(C)\in z$ by Lemma \ref{maxdef}. Thus $\Box^*\a(C)\in y$. But $y\in R(x)$, so then $\Dim\Box^*\a(C)\in x$.
+
+Conversely, if $\Dim\Box^*\a(C)\in x$ then for some $y$, $xRy$ and $\Box^*\a(C)\in y$. By the Zorn property, take a maximal $z$ with $yR^*z$. Then $\a(C)\in z$, so $z\in C$ by Lemma \ref{maxdef}. From $xRyR^*z$ we get $xRz$, so $z\in R(x)\cap C$.
+Since $R(x)$ is $R^*$-closed, this is enough to force $C\sub R(x)$.
+
+The proof of (2) is similar to (1), replacing $R$ by $R^*$ where required.
+\end{proof}
+
+For a given $x\in W$, let $P$ be a path component of the frame $\c F(x)=(R(x),R{\restriction} R(x))$. Let $M(P)$ be the set of all  maximal $R$-clusters $C$ that have  $C\sub P$. Then $M(P)\sub M$, where $M$ is the set of all maximal clusters of $\F$, so $M(P)$ is finite by Corollary \ref{finmaxcl}. Define the formula
+$$
+\a(P)=\bigvee\{\Dim^*\Box^*\a(C):C\in M(P)\}.
+$$
+Then $\a(P)$ defines $P$ within $R(x)$:
+
+\begin{lemma} \label{defP}
+For all $y\in R(x)$,  $y\in P$ iff\/ $\a(P)\in y$.
+\end{lemma}
+\begin{proof}
+Let $y\in R(x)$.  If $y\in P$, take an $R$-maximal $z$ with $yR^*z$, by the Zorn property. Then $z\in R(x)$, and $z$ is path connected to $y\in P$, so $z\in P$. The  cluster $C_z$ of $z$ is then included in $P$ (if $w\in C_z$ then $zR^*w$ so $w\in P$), and $C_z$ is maximal, so $C_z\in M(P)$. The maximality of $C_z$ together with Lemma \ref{maxdef} then ensure that $\Box^*\a(C_z)\in z$. Hence  $\Dim^*\Box^*\a(C_z)\in y$. But $\Dim^*\Box^*\a(C_z)$ is a disjunct of $\a(P)$, so $\a(P)\in y$.
+
+Conversely, if $\a(P)\in y$, then  $\Dim^*\Box^*\a(C)\in y$ for some $C\in M(P)$. By Lemma \ref{defCRx}(2), $C\sub R^*(y)$. Taking any $z\in C$, since also $C\sub P$ we have $yR^*z\in P$, hence $y\in P$.
+\end{proof}
+
+\begin{theorem}\label{canlnc}
+Suppose that $L$ includes the scheme $\axG_n$.
+Then every inner subframe $\F$ of $\F_L$ is locally $n$-connected.
+\end{theorem}
+\begin{proof} 
+Let $x\in W$. We have to show that $R(x)$ has at most $n$ path components. If it has fewer than $n$ there is nothing to do, so suppose  $R(x)$ has at least  $n$ path components $P_0,\dots,P_{n-1}$. Put 
+$P_n=  R(x)\setminus (P_0\cup\cdots\cup P_{n-1})$. We will prove that $P_n=\emptyset$, confirming that there can be no more components.
+
+For each $i< n$, let $\ph_i$ be the formula $\a(P_i)$ that defines $P_i$ within $R(x)$ according to Lemma \ref{defP}.  Let 
+ $\ph_n$ be $\neg\bigvee\{\a(P_i):0\leq i< n\}$, so $\ph_n$ defines $P_n$ within $R(x)$. Now for all $i\leq n$ let $\psi_i$ be the formula obtained by uniform substitution of 
+$\ph_0,\dots,\ph_n$ for $p_0, \dots,p_n$ in the formula $Q_i$ of \eqref{Qi}. Observe that since the $n+1$ sets 
+$P_0,\dots,P_n$ form a partition of $R(x)$, each $y\in R(x)$ contains $\psi_i$ for exactly one $i\leq n$, and indeed $\psi_i$ defines the same subset of $R(x)$ as  $\ph_i$.
+
+Now suppose, for the sake of contradiction, that $P_n\ne\emptyset$.\footnote{In that case $P_n$ is the union of finitely many path components, by Lemma \ref{finpthcmp}, but we do not need that fact.}
+Then for each $i\leq n$ we can choose an element $y_i\in P_i$. Then $xRy_i$ and $\psi_i\in y_i$.
+It follows that
+$\bigwedge_{i\leq n}\Dim \psi_i\in x$. Since all instances of G$_n$ are in $x$, we then get 
+$\Dim(\bigwedge_{i\leq n}\Dim^* \neg \psi_i )\in x$. So there is some $y\in R(x)$ such that for each $i\leq n$ there exists a $z_i\in R^*(y)$ such that   $\neg\psi_i\in z_i$, hence $\psi_i\notin z_i$. Now let $P$ be the path component of $y$. If $P=P_i$ for some    $i<n$, then as $y\in P_i$ and  $yR^*z_i$, we get $z_i\in P_i$,  and so $\psi_i\in z_i$ -- which is false. Hence it must be 
+that $P$ is disjoint from $P_i$ for all $i<n$, and so is a subset of $P_n$.
+But then as $yR^*z_n$ we get $z_n\in P\sub P_n$, and so $\psi_n\in z_n$.
+That is also false, and shows that the assumption that $P_n\ne\emptyset$ is false.
+\end{proof}
+
+\subsection{Completeness and finite model property for K4G$_n$}\label{sec:fmp Gn}
+
+For the language $\c L_\bo$ without $\Di$, Theorem \ref{canlnc} provides a completeness  theorem for any system extending  K4G$_n$ by showing that any consistent formula $\ph$ is satisfiable in a locally $n$-connected weak canonical model (take a finite $\Var$ that includes all variables of $\ph$ and enough variables to have G$_n$ as a formula in the weak language). But  the ``satisfiable'' part of this depends on the Truth Lemma, which is unavailable in the presence of $\Di$. We will need to apply filtration/reduction to establish completeness itself,  as well as  the finite model property.
+
+Let $L$ be a weak tangle logic that includes G$_n$;  $\F=(W,R)$ an inner subframe of $\F_L$; and $\Phi$ a finite set of formulas that is closed under subformulas.
+
+Recall that $M$ is the  set of all maximal clusters of $\F$, shown to be finite in Corollary \ref{finmaxcl}. 
+For each $x\in W$, define  $$M(x)=\{C\in M: C\sub R(x)\}.$$ Then $M(x)$ is finite, being a subset of $M$.
+ 
+Define an equivalence relation $\app$ on $W$ by putting 
+\begin{center}
+$x\app y$ iff $x\cap\Phi=y\cap\Phi$ and $M(x)=M(y)$. 
+\end{center}
+We then repeat the earlier standard transitive filtration construction, but using the finer relation $\app$ in place of $\sim$.
+Thus we put  $\ab{x}=\{y\in W:x\app y\}$ and  $W_\Phi=\{\ab{x}:x\in W\}$.  The set $W_\Phi$ is finite, because the map $\ab{x}\mapsto (x\cap\Phi,M(x))$ is a well-defined injection of $W_\Phi$ into the finite set $\wp\Phi\times\wp M$.
+The surjective function  $f:W\to W_\Phi$ is given by $f(x)=\ab{x}$.
+
+Let $\M_\Phi=(W_\Phi,R_\Phi,h_\Phi)$, where $R_\Phi\sub W_\Phi\times W_\Phi$ is the transitive closure of 
+$R_\lambda=\{(\ab{x},\ab{y}):xRy\}$,  $h_\Phi(p)=\{\ab{x}: p\in x\}$ for $p\in\Phi$, and $h_\Phi(p)=\emptyset$  otherwise. 
+
+
+We now verify that the pair $(\M_\Phi,f)$ as just defined satisfies the axioms (r1)--(r5) of a definable reduction of $\F$ via $\Phi$.
+
+\begin{enumerate}[(r1):]
+\item 
+\emph{$p\in x$ iff $\ab{x}\in h_\Phi(p)$, for all $p\in\Var\cap\Phi$.}
+
+ By definition of $h_\Phi$.
+
+\item
+\emph{$\ab{x}=\ab{y}$ implies $x\cap\Phi= y\cap\Phi$.} 
+
+If $\ab{x}=\ab{y}$ then $x\app y$, so $x\cap\Phi= y\cap\Phi$ by definition of $\app$.
+
+\item
+\emph{$xRy$ implies $\ab{x}R_\Phi \ab{y}$.}
+
+$xRy$ implies $\ab{x}R_\lambda \ab{y}$ and $R_\lambda\sub R_\Phi$.
+\item
+\emph{$\ab{x}R_\Phi \ab{y}$ implies  $y\cap \Phi^t\sub x\cap\Phi^t$ and 
+$\{\Dim\ph\in\Phi:\Dim^*\ph\in y\}\sub x$.}
+
+The proof is the same as the proof given earlier of (r4) for the standard transitive filtration, but using $\app$ in place of $\sim$ and the fact that $x\app y$ implies $x\cap\Phi= y\cap\Phi$.
+
+\item 
+\emph{For each subset $C$ of $W_\Phi$ there is a formula $\ph$ that defines $f^{-1}(C)$ in $W$, i.e.\ $\ph\in y$ iff
+ $\ab{y}\in C$.}
+ 
+ To see this, for each $x\in W$ let $\g_x$ be the conjunction of $(x\cap\Phi)\cup\{\neg\psi:\psi\in\Phi\setminus x\}$. Then for any $y\in W$,
+ $$
+ \g_x\in y \quad\text{iff}\quad x\cap\Phi =  y\cap\Phi.
+ $$
+ Next, let $\mu_x$ be the conjunction of the finite set of formulas
+ $$
+ \{\Dim\Box^*\a(C): C\in M(x)\}\cup \{\neg\Dim\Box^*\a(C): C\in M\setminus M(x)\}.
+ $$
+ Lemma \ref{defCRx} showed that each $C\in M$ has $C\in M(x)$ iff $\Dim\Box^*\a(C)\in x$. From this it follows readily that
+for any $y\in W$,
+ $$
+ \mu_x\in y \quad\text{iff}\quad M(x)=M(y).
+ $$
+ So putting $\ph_x=\g_x\land\mu_x$, we get that in general
+ $$
+ \ph_x\in y \quad\text{iff}\quad x\app y \quad\text{iff}\quad \ab{y}\in\{\ab{x}\}.
+ $$
+ Now if $C=\emptyset$, then $\bot$ defines $f^{-1}(C)$ in $W$. Otherwise if $C=\{\ab{x_1},\dots,\ab{x_n}\}$, then the disjunction
+ $
+ \ph_{x_1}\lor\cdots\lor\ph_{x_n}
+ $
+ defines $f^{-1}(C)$ in $W$.% \proofqed
+ \end{enumerate}
+%
+Consequently, the reduction $\M_t$ of $\M_\Phi$ satisfies the Reduction Lemma. We will show that G$_n$ is valid in the frame of $\M_t$.  But first we show that it is valid in the frame of $\M_\Phi$. Both cases involve some preliminary analysis,  involving linking points of $R_\Phi(\ab{y})$  and $R_t(\ab{y})$ back to points of $R(y)$. This requires further work with maximal elements and clusters.
+
+\begin{lemma} \label{presM}
+For all $x,y\in W$, $\ab{x}R_\Phi^*\ab{y}$ implies $M(y)\sub M(x)$.
+\end{lemma}
+\begin{proof}
+If $\ab{x}R_\Phi^*\ab{y}$ there is a finite sequence $x=z_0,\dots,z_k=y$ for some $k\geq 1$ such that for all $i<k$, either $z_i\app z_{i+1}$ or  $z_iR z_{i+1}$.
+But $z_i\app z_{i+1}$ implies $M(z_i)=M(z_{i+1})$, and  $z_iR z_{i+1}$ implies $M(z_{i+1})\sub M(z_i)$ by transitivity of $R$. This yields $M(z_{k})\sub M(z_0)$ by induction on $k$.
+\end{proof}
+
+
+\begin{lemma} \label{max}
+Suppose $\At\sub\Phi$ and
+$a\in W$ is $R$-maximal. Then for all $x\in W$,  $xRa$  iff\/ $\ab{x}R_\Phi\ab{a}$.
+\end{lemma}
+\begin{proof}
+$xRa$ implies $\ab{x}R_\Phi\ab{a}$ by (r3). For the converse, suppose $\ab{x}R_\Phi\ab{a}$
+and let  $K$ be the maximal $R$-cluster of $a$. 
+
+If $K$ is non-degenerate then $K\sub R(a)$, so $K\in M(a)$. Then from $\ab{x}R_\Phi\ab{a}$ we get $K\in M(x)$ by  Lemma \ref{presM}, implying $xRa$ as required. 
+
+But if $K$ is degenerate, then $K=\{a\}$ and $R(a)=M(a)=\emptyset$. Also $\Dim\top\notin a$. Since $\ab{x}R_\Phi\ab{a}$, by definition of $R_\Phi$ there are $z,w\in W$ with $\ab{x}R_\Phi^*\ab{z}$ and $zRw\app a$. As $\At\sub\Phi$, from $w\app a$ we get $w\cap\At=a\cap\At$, i.e.\ $\tau(w)=\tau(a)$. In particular $\Dim\top\notin w$, hence $w$ is also $R$-maximal. Therefore $a$ and $w$ are maximal elements with the same atomic type, so $w=a$ by Lemma \ref{indisting}. Thus $zRa$ and so $K\in M(z)$.
+Since $\ab{x}R_\Phi^*\ab{z}$ this implies $K\in M(x)$ by Lemma \ref{presM}, giving the required $xRa$ again.
+\end{proof}
+
+\begin{lemma} \label{R*max}
+For any $y\in W$, let $A$ be the set of all $R$-maximal points in $R(y)$.
+Then each  point $v\in R_\Phi(\ab{y})$ has $vR_\Phi^*\ab{a}$ for some $a\in A$. 
+\end{lemma}
+\begin{proof}
+Let $v=\ab{z}\in R_\Phi(\ab{y})$. By the Zorn property there exists an $a$ with $zR^*a$ and $a$ is $R$-maximal.
+If $z=a$, then $z$ is $R$-maximal, so as $\ab{y}R_\Phi\ab{z}$ we have $z\in R(y)$ by Lemma \ref{max}. Hence $z\in A$, so in this case we get $\ab{z}R_\Phi^*\ab{a}$ with $a\in A$ by taking $a=z$.
+
+If however $z\ne a$, then $zRa$, hence $\ab{z}R_\Phi\ab{a}$ by (r3).  Also, if $C$ is the $R$-cluster of $a$, then $C\sub R(z)$ and $C$ is maximal, hence $C\in M(z)$. But $\ab{y}R_\Phi\ab{z}$, so Lemma \ref{presM} then implies $C\in M(y)$, therefore  $a\in R(y)$. So in this case  we have $\ab{z}R_\Phi\ab{a}$ with $a\in A$. 
+\end{proof}
+
+
+\begin{theorem} \label{FPhilnc}
+If\/ $\At\sub\Phi$, the frame $\F_\Phi=(W_\Phi,R_\Phi)$ is locally $n$-connected.
+\end{theorem}
+\begin{proof}
+For any point $\ab{y}\in W_\Phi$, we have to show that $R_\Phi(\ab{y})$ has at most $n$ path components. But if it had more than $n$, then by picking  points from different components we would get a sequence of more than $n$ points no two of which were path connected. We show that this is impossible, by taking an arbitrary sequence $v_0,\dots,v_n$ of $n+1$ points in $R_\Phi(\ab{y})$, and proving that there must exist distinct $i$ and $j$ such that $v_i$ and $v_j$ are path connected  in $R_\Phi(\ab{y})$.
+
+For each $i\leq n$, by Lemma \ref{R*max} there is an $R$-maximal $a_i\in R(y)$ with $v_iR_\Phi^*\ab{a_i}$. This gives us a sequence $a_0,\dots,a_n$   of  members of $R(y)$. But $R(y)$ has at most $n$ path components, by Theorem \ref{canlnc}. Hence there exist $i\ne j\leq n$ such that there is a connecting  $R$-path 
+$a_i=w_0,\dots,w_n=a_{j}$ between $a_i$ and $a_{j}$ that lies in $R(y)$. So for all $i<n$ we have $yRw_i$ and either $w_iRw_{i+1}$ or $w_{i+1}Rw_i$, hence $\ab{y}R_\Phi \ab{w_i}$ and either $\ab{w_i}R_\Phi\ab{w_{i+1}}$ or $\ab{w_{i+1}}R_\Phi\ab{w_i}$.
+
+This shows that $\ab{a_i}$ and $\ab{a_j} $ are path connected in $R_\Phi(\ab{y})$ by the sequence
+$\ab{w_0},\dots,\ab{w_n}$. Since $v_iR_\Phi^*\ab{a_i}$ and $v_jR_\Phi^*\ab{a_j}$, it follows that 
+$v_i$ and $v_j $ are path connected in $R_\Phi(\ab{y})$, as required.
+\end{proof}
+
+
+From this result we can infer that in the language $\c L_\bo$, for all $n\geq 1$ the finite model property holds  for K4G$_n$ and  KD4G$_n$  over locally $n$-connected K4 and KD4  frames, respectively.
+For the proof, 
+we take a consistent $\c L_\bo$-formula $\ph$ and let $\Phi$  be the closure under $\c L_\bo$-subformulas of $\At\cup\{\ph\}$. Then $\Phi$ is finite and $\ph$ is satisfiable in the model $\M_\Phi$  (see the remarks about $\M_\Phi$ at the end of section \ref{sec:path conn}). But the frame $\F_\Phi$ of $\M_\Phi$ is locally $n$-connected by the theorem just proved, so validates G$_n$.
+Together with the preservation of seriality by $\F_\Phi$, this implies the finite model property results for K4G$_n$ and  KD4G$_n$.
+
+
+Extending to the language $\c L_{\bo\forall}$, and using that $\F_\Phi$ is path connected in the presence of  axiom C, these 
+  finite model property results hold  correspondingly for the four systems K4G$_n$.U,  K4G$_n$.UC,  KD4G$_n$.U,  and KD4G$_n$.UC.
+
+
+We turn now to the corresponding results for the versions of these systems that include the tangle connective.
+\begin{lemma}  \label{critpresRy}
+If $y\in W$ is the critical point for some $R_\Phi$-cluster, then  $z\in R(y)$ implies  $\ab{z}\in R_t(\ab{y})$.
+\end{lemma}
+\begin{proof}
+Let $y$ be critical for cluster $C$. If $z\in R(y)$, then $\ab{y}R_\Phi\ab{z}$ (r3), so if $\ab{z}\notin C$ then immediately $\ab{y}R_t\ab{z}$. But if $\ab{z}\in C$, then $\ab{z}\in C^\circ$ and again $\ab{y}R_t\ab{z}$.
+\end{proof}
+
+\begin{lemma} \label{pthconpres}
+Suppose $\Dim\top\in\Phi$.
+Let $y\in W$ be a critical point, and $z,z'\in R(y)$. If $z$ and $z'$ are path connected in $R(y)$, then $\ab{z}$ and $\ab{z'} $ are path connected in $R_t(\ab{y})$.
+\end{lemma}
+\begin{proof}
+Let $z=z_0,\dots, z_n=z'$ be a connecting path between $z$ and $z'$ within $R(y)$.
+The criticality of $y$ ensures, by Lemma \ref{critpresRy}, that  $\ab{z_0},\dots, \ab{z_n}$ are all in $R_t(\ab{y})$.
+We apply Lemma \ref{repair} to convert this sequence into a connecting $R_t$-path within $R_t(\ab{y})$.
+
+For each $i<n$ we have $z_iRz_{i+1}$ or $z_{i+1}Rz_{i}$, hence $\ab{z_i}R_\Phi\ab{z_{i+1}}$ or $\ab{z_{i+1}}R_\Phi\ab{z_{i}}$ by (r3). So if there is such an $i$ that is ``defective'' in the sense that neither $\ab{z_i}R_t\ab{z_{i+1}}$ nor $\ab{z_{i+1}}R_t\ab{z_{i}}$, then by Lemma \ref{repair}, which applies since $\Dim\top\in\Phi$, there exists a $v_i$ with  $\ab{z_i}R_t v_i$ and  $\ab{z_{i+1}}R_t v_i$. Then $v_i\in R_t(\ab{y})$ by transitivity of $R_t$, as $\ab{z_i}\in R_t(\ab{y})$.
+We insert $v_i$ between $\ab{z_i}$ and $\ab{z_{i+1}}$ in the sequence.
+Doing this for all defective $i<n$
+turns the sequence into a connecting $R_t$-path in $R_t(\ab{y})$ with unchanged  endpoints $\ab{z}$ and $\ab{z'} $.
+\end{proof}
+
+
+\begin{lemma} \label{RtPhi}
+Suppose $\Dim\top\in\Phi$ and
+$a\in W$ is $R$-maximal. Then for all $x\in W$, $\ab{x}R_t\ab{a}$ iff\/ $\ab{x}R_\Phi\ab{a}$.
+\end{lemma}
+\begin{proof}
+$\ab{x}R_t\ab{a}$ implies $\ab{x}R_\Phi\ab{a}$ by definition of $R_t$. 
+For the converse, suppose $\ab{x}R_\Phi\ab{a}$, let $C$ be the $R_\Phi$-cluster of $\ab{x}$,
+and let  $K$ be the maximal $R$-cluster of $a$. 
+
+If $\ab{a}\notin C$, then since $\ab{x}R_\Phi\ab{a}$ it is immediate that $\ab{x}R_t\ab{a}$ as required. We are left with the case  $\ab{a}\in C$. Since $\Dim\top\in\Phi$ and $\ab{x}R_\Phi\ab{a}$ we get  $\Dim\top\in x$ by (r4).  As $\ab{x}$ and $\ab{a}$ both belong to $C$, Lemma \ref{import} then gives
+ $\Dim\top\in a$. So $R(a)\ne\emptyset$, implying that $R(a)=K$ and $M(a)=\{K\}$.
+Moreover, since $\ab{x}R_\Phi\ab{a}$ we see that  $C$ is non-degenerate, so if $y$ is the critical point for $C$ then 
+$\ab{y}R_\Phi\ab{a}$, hence $M(a)\sub M(y)$ by Lemma \ref{presM}. Thus $K\in M(y)$, making $yRa$, hence $\ab{a}\in C^\circ$ and so again $\ab{x}R_t\ab{a}$ as required. 
+\end{proof}
+
+
+\begin{theorem}
+If\/ $\At\sub\Phi$, the frame $\F_t=(W_\Phi,R_t)$ is locally $n$-connected.
+\end{theorem}
+\begin{proof}
+This refines the proof of Theorem \ref{FPhilnc}. 
+If $u\in W_\Phi$, we have to show that $R_t(u)$ has at most $n$ path components. 
+Now if $C$ is the $R_\Phi$-cluster  of $u$, then $R_t(u)$ is the union of the nucleus $C^\circ$ and all the $R_\Phi$-clusters coming strictly $R_\Phi$-after $C$. Hence
+$R_t(u)=R_t(w)$ for all $w\in C$. In particular, $R_t(u)=R_t(\ab{y})$ where
+ $y$ is the critical point of $C$. So we show that  $R_t(\ab{y})$ has at most $n$ path components. We take  an arbitrary sequence $v_0,\dots,v_n$ of $n+1$ points in $R_t(\ab{y})$, and prove that there must exist distinct $i$ and $j$ such that $v_i$ and $v_j$ are path connected  in $R_t(\ab{y})$.
+
+Let $A$ be the set of all $R$-maximal points in $R(y)$.
+For each $i\leq n$ we have $v_i\in R_\Phi(\ab{y})$ and so
+by Lemma \ref{R*max} there is an $a_i\in A\subseteq R(y)$ such that $v_iR_\Phi^*\ab{a_i}$. Hence 
+$v_iR_t^*\ab{a_i}$ by Lemma \ref{RtPhi}.
+ This gives us a sequence $a_0,\dots,a_n$   of  members of $R(y)$. But $R(y)$ has at most $n$ path components, by Theorem \ref{canlnc}. Hence there exist $i\ne j\leq n$ such that $a_i$ and $a_j$ are path connected in $R(y)$. Therefore by Lemma \ref{pthconpres},
+$\ab{a_i}$ and $\ab{a_j} $ are path connected in $R_t(\ab{y})$. Since $v_iR_t^*\ab{a_i}$ and $v_jR_t^*\ab{a_j}$,
+and $v_i,v_j\in R_t(|y|)$,
+ it follows that 
+$v_i$ and $v_j $ are path connected in $R_t(\ab{y})$. That shows that $R_t(\ab{y})$ does not have more than $n$ path components.
+\end{proof}
+
+This result combines with the analysis as in other cases to give the  finite model property for the tangle systems K4G$_nt$,    K4G$_nt$.U,  K4G$_nt$.UC, KD4G$_nt$, KD4G$_nt$.U,  and KD4G$_nt$.UC
+for all $n\geq 1$.
+
+
+
+
+
+

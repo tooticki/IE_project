@@ -1,0 +1,1180 @@
+Growth of Robinson tilings
+Daria Pchelina
+August, 2018
+
+1
+
+Introduction
+A Wang tile is a unit square with colored edges, such as:
+
+; a set of Wang tiles is called a tileset.
+
+A tiling of the plane by a tileset A is a covering of the plane with translated copies of tiles from A. A
+tiling of the plane is called valid if for any pair of neighboring tiles, their adjacent edges have the same
+color as, for instance, in:
+
+. Figure 1 shows an example of a tileset and a valid tiling by this tileset.
+
+Figure 1: Example of a tileset and of a valid tiling.
+These tiles were introduced by Hao Wang in 1961 [13] as a simple combinatorial problem: given a
+finite tileset A, decide whether there exists a valid tiling of the plane by A. It is called the Domino
+Problem. Wang conjectured that there exist no aperiodic tilesets (in other words, tilesets generating only
+aperiodic tilings of the plane); assuming this, he could find an algorithm solving the Domino Problem.
+However, 3 years later, Robert Berger [1] proved the Domino Problem to be undecidable and showed a
+counterexample to Wang’s conjecture. Since then, researchers got involved in a kind of a “competition”
+for the smallest aperiodic Wang tileset [2, 8, 11]. This competition was over in 2015 when Jeandel and
+Rao found the smallest aperiodic tileset (11 tiles) and proved by an exhaustive search that there exist no
+smaller aperiodic tilesets [7].
+Now Wang tiles are widely studied in the context of discrete dynamical systems, combinatorics,
+computability theory and geometry. However, in all of these areas, a tiling is considered as an object
+given a priori. There are also applications in chemistry and physics, but they require to study the process
+of creation of a given tiling; we call it growth.
+There exist many processes in nature where tiny particles, forced by local conditions, assemble together
+in a large structure. Crystal growth and self-assembly of DNA molecules are the most common examples
+of this phenomenon. Tilings of the plane are a possible mathematical model for these processes; for
+instance, Wang tilings are used to simulate molecular growth [3]. In general, tiles could have non-square
+shapes with the same color-constraints mentioned above; for instance, Penrose tilings [6, 10] describe the
+behavior of quasicrystals. Socolar, in [12], formalized the notion of growth for Penrose tilings and, among
+other things, showed that starting with a specific configuration, such a tiling can cover the whole plane
+in a process of growth.
+
+1
+
+In 1971, Raphael Robinson introduced an aperiodic set of 32 square tiles; he used this tileset to design
+a simple and elegant proof of the undecidability of the Domino Problem [11]. This tileset is now classical
+and is used in recent constructions from information theory (for instance, to prove the existence of tilesets
+with high Kolmogorov complexity [4]).
+As we have already mentioned, all tilings of the plane by the Robinson tiles are aperiodic. In other
+words, for any valid Robinson tiling τ there exist no vector p ∈ Z2 such that τ (z) = τ (z + p) for any
+z ∈ Z2 . This holds because Robinson tilings have hierarchical (think: fractal) structure. Penrose tilings,
+whose growth has been studied before, also have hierarchical structure (but different from the Robinson’s
+hierarchy). The first question that we could ask is: does hiararchy imply specific growth properties?
+Besides that, there exist many constructions based on the Robinson tileset, so after analysing its growth,
+we could easily expand the results to these constructions.
+Here we study the question of growth for Robinson tilings; we simulate this process with cellular
+automata. It turns out that, by contrast with Penrose tilings [12], Robinson tilings can not grow in our
+model.
+In Section 2, we explain the local rules and hierarchy of Robinson tilings. The formal definition of
+the growth of Robinson tilings is given in Section 3. In Section 4, we state the main result and prove it.
+
+1.1
+
+Preliminaries
+
+Elements of Z2 are called cells. Given a tileset A, a tiling of the plane is a function Z2 → A. A
+tiling of D ⊆ Z2 is a function D → A, it is called a configuration of D. We denote a restriction of a
+configuration S : D → A to a set F ⊆ D by S|F .
+Given a cell z, a square of size (2t + 1) × (2t + 1) centered on z is called a t-neigborhood of z and
+is denoted by Bt (z). Usually it is called the Moore neighborhood. (See Figure 2).
+
+(-2,2) (-1,2) (0,2) (1,2) (2,2)
+(-2,1) (-1,1) (0,1) (1,1) (2,1)
+(-2,0) (-1,0) (0,0) (1,0) (2,0)
+(-2,-1)(-1,-1) (0,-1) (1,-1) (2,-1)
+(-2,-2)(-1,-2) (0,-2) (1,-2) (2,-2)
+
+Figure 2: 2-neighborhood of the cell (0, 0).
+We define a quadrant with origin (x0 , y0 ) ∈ Z2 as a set Qx0 y0 = {(x, y) | x ≥ x0 , y ≥ y0 } 1 .
+
+2
+
+The Robinson tileset
+
+The Robinson tileset is the set of 32 tiles obtained by rotations from the ones displayed on Figure 3.
+A piece of a Robinson tiling is displayed in Figure 4.
+
+Figure 3: The Robinson tiles, up to rotation.
+1 We
+
+consider only north-east quadrants since the internship took place in the north-east
+
+2
+
+Figure 4: A piece of a Robinson tiling.
+
+2.1
+
+Local rules
+
+The local rules for Robinson tiles, as they are displayed in Figure 3, are not quite color constraints.
+Instead, a tiling of the plane by Robinson tiles is valid if it satisfies the rules:
+(→) For any pair of neighbor tiles, arrows meeting at their adjacent edge have the same color, direction
+and position on the edge. (See Figure 5 for an example).
+(::) Among any four tiles sharing a corner, exactly one has yellow dots in its corners. (See Figure 6 for
+an example).
+
+Figure 5: Valid pairs of adjacent tiles.
+
+Figure 6: Four tiles sharing a corner.
+
+It is possible to design a set of 56 Wang tiles equivalent to the Robinson tileset, but we won’t do it
+here.
+Given a configuration of D and a tile in this configuration, this tile is called valid in the configuration
+if each 2 × 2-squares containing this tile satisfies the Robinson rules or can be extended to such square
+(if D doesn’t contain one of these cells). A configuration is called valid if all its tiles are valid in it.
+
+2.2
+
+Hierarchy
+
+We see red squares of different sizes in Figure4, they appear in all Robinson tilings of the plane. We
+define four sequences of macrotiles an , bn , cn and dn as follows. They will help us to analyze the hierarchy
+of Robinson tilings.
+• Four tiles with yellow dots are called macrotiles of rank 0, they are denoted as a0 , b0 , c0 and d0
+as shown in Figure 7.
+
+3
+
+• Each macrotile of rank 1 is a 3 × 3-square, whose corner tiles are filled with a0 , b0 , c0 and d0 as
+shown in Figure 8. For any x ∈ {a, b, c, d}, the central cell of x1 is the same as x0 without dots,
+and the 4 remaining cells are filled with the only tiles valid for these positions.
+• Suppose macrotiles of rank n are defined; they are (2n+1 − 1) × (2n+1 − 1)-squares. Then each
+(n + 1)-macrotile is a (2n+2 − 1) × (2n+2 − 1)-square, whose corners are filled by an , bn , cn and dn
+in the same order as for 1-macrotiles. For any x ∈ {a, b, c, d}, the central cell of xn+1 is the same
+as x0 without dots, and the remaining cells forming a large cross are filled with the only possible
+tiles for these cells.
+The detailed constructions of macrotiles a1 and a2 are shown in Figures 8, 9.
+
+a0 −
+
+− b0
+
+c0 −
+
+− d0
+
+Figure 7: Robinson macrotiles a0 , b0 , c0 and d0 .
+
+Figure 8: Transformation of a macrotile of level 0 (a0 ) in a macrotile of level 1 (a1 ).
+
+Figure 9: Transformation of a1 in a2 .
+Observe that for each n ∈ N, macrotiles bn , dn and cn can be obtained by rotating an clockwise by
+and 3π
+2 radians respectively. Besides that, for each macrotile of rank n, for any m < n, macrotiles
+of rank m appear periodically in the macrotile of rank n with vertical and horizontal periods equal to
+2m+2 . For instance, 0-macrotiles appear in a 2-macrotile with period (4, 4) (see Figure 9).
+π
+2,π
+
+Theorem 1 describes all possible Robinson tilings. You can find the proof in [5, 9].
+Theorem 1. In a valid Robinson tiling of the plane, for each n ∈ N, any occurrence of a n-macrotile
+belongs to an occurrence of some (n + 1)-macrotile.
+4
+
+It turns out that Theorem 1 is still valid in quadrants, instead of full tilings.
+Lemma 1. Given a valid tiling of a quadrant Q for any n ∈ N there exists a subquadrant Qn of Q where,
+for any k < n, each occurrence of a k-macrotile is contained in an occurrence of a (k + 1)-macrotile.
+Proof. As in Theorem 1.
+A macrotile grid of rank n is a periodic set of n-macrotiles separated by empty rows of width 1
+which can be completed to get a valid tiling of the plane. Macrotile grids of ranks 0 and n are shown in
+Figures 10 and 11.
+
+..
+.
+
+..
+.
+2n+1 − 1
+
+2n+2 − 1
+
+...
+
+...
+
+...
+
+...
+
+..
+.
+
+..
+.
+
+Figure 10: A macrotile grid of rank 0
+
+Figure 11: A macrotile grid of rank n
+
+An infinite vertical (respectively, horizontal) line for a tiling τ of a quadrant Q is a column
+(respectively, line) of cells, separating the quadrant in two nonconnected components, all cells of which
+contain vertical (respectively, horizontal) arrows of the same color and position on the side, while the
+direction can change. Here is an example of an infinite horizontal line:
+...
+Lemma 2. For a valid Robinson tiling τ of a quadrant Q0 ⊂ Q1 , if there are no infinite lines in Q0 then
+there exists a macrotile grid of rank 0 which agrees with the restriction of τ to Q0 .
+Proof. Assume towards a contradiction that there is no 0-macrotile grid agreeing with τ |Q0 . Since τ
+is valid, for any 4 tiles sharing a corner, one of them is a 0-macrotile. Moreover, since Q0 ⊂ Q1 , any
+0-macrotile is a part of some 1-macrotile.
+By our assumption, there is no macrotile grid of rank 0, thus there exists a cell (s, t) ∈ Q0 containing a
+0-macrotile such that one of the following cells: (s+2, t+1), (s+1, t+2) contains a 0-macrotile. Indeed, if
+there is no such cell then for any (s, t) ∈ Q0 covered with a 0-macrotile, in cells (s, t+1), (s+1, t+1), (s+1, t)
+there are no 0-macrotile because τ is valid (by rule (::)) and in (s + 2, t + 1), (s + 1, t + 2) there are no
+0-macrotile because of the last assumption. Thus, by local rules, there are 0-macrotiles in cells (s + 2, t)
+and (s, t + 2). Applying this argument for all cells with 0-macrotiles in Q0 , we get a 0-macrotile grid
+which yields a contradiction.
+Without loss of generality suppose cells z1 = (s, t) and z2 = (s + 2, t + 1) contain 0-macrotiles
+(the symmetric case works the same). Both of these tiles are contained in different nonintersecting 1macrotiles, shifted by 1 vertically. This implies the occurence of 0-macrotiles in cells (s, t + 2), (s, t −
+2), (s + 2, t + 3), (s + 2, t − 1), two of which are contained in the same 1-macrotile as the ones from cells
+z1 , z2 . Two remaining tiles are contained in two other 1-macrotiles. Going on with these arguments, we
+get two vertical rows of 1-macrotiles separated by a column of width 1, all tiles of which contain horizontal
+green arrows. That means all tiles of this column contain vertical arrows of the same color and position
+on the side which forms a vertical infinite line. Figure 12 illustrates this reasoning.
+5
+
+t+2
+t+1
+t
+
+s
+
+s+1s+2
+
+Figure 12: The sketch for the proof of Lemma 2: vertical arrows of the infinite line are denoted by dotted
+black lines.
+Lemma 3. Given a valid Robinson tiling τ of a quadrant Q, for any n ∈ N there exists a quadrant
+Q0n ⊆ Q such that there exists a macrotile grid of rank n which agrees with the restriction of τ to Q0n .
+Proof. Let us prove this lemma for n = 0. Consider Q1 from Lemma 1, any 0-macrotile is contained in
+some 1-macrotile in Q1 .
+By Lemma 2, it is enough to show that there is a subquadrant of Q1 that contains no infinite lines.
+We will prove that there is no more than one infinite line in each direction in Q1 . It is enough to prove it
+for vertical lines since the horizontal case is symmetric. Suppose there exist two vertical infinite lines in
+Q1 at distance h from one another. Let n = dlog(h + 1)e, so that the sides of any n-macrotile is longer
+than h. Notice that between these infinite lines, τ is valid and infinite lines can not intersect macrotiles of
+finite rank (by construction of the macrotiles). Since the tiling is valid between the lines, for any k ∈ N,
+each macrotile of rank k is a part of some macrotile of rank k + 1 which is not possible since there are no
+macrotiles of rank n between the lines. Thus, there are no more than 2 infinite lines in Q1 (one vertical
+and one horizontal). All that remains is to consider a quadrant Q0 ⊂ Q1 which doesn’t contain those
+lines.
+We proved Lemma 3 for the case n = 0. Since macrotiles of all ranks have the same properties as
+macrotiles of rank 0, the proof for the general case is the same.
+Notice that for any n in N, a macrotile grid of rank n can be completed to form a macrotile grid of
+rank n + 1 in four different ways. Thus for m > n, a grid of n-macrotiles is a part of 4m−n different grids
+of m-macrotiles.
+
+3
+
+Formalizing the growth of Robinson tilings
+
+In this section, we will give a formal definition of growth for Robinson tilings.
+Let A denote the Robinson tileset. From now on we will consider partial tilings, where some cells
+of the plane are empty. We introduce an additional tile ⊥ denoting an absence of tile (an empty cell).
+Thus, we can define a partial tiling of a set X ⊆ Z2 as a tiling of X by tiles from A⊥ = A ∪ {⊥}. The
+set of nonempty cells is called the domain of the tiling.
+For biological and physical systems, we consider the process of growth as follows: initially, we are
+given a seed; then as time passes, in the neighborhood of the already grown structure, new particles may
+be added depending on local circumstances.
+We will use the following model: initially we are given a seed — a partial tiling with finite domain
+(there are no restrictions: it can possibly contain tiles violating the Robinson local rules). Then at each
+step we apply a growth rule for each empty cell; the growth rule can dictate that the cell should remain
+6
+
+empty, that a given tile should be placed, or that an error occurred. The size of the neighborhood and
+the growth rule are fixed. We will formalize this model with cellular automata.
+2
+Z2
+Recall that a cellular automaton on Z2 with an alphabet A⊥ is a function AZ
+⊥ → A⊥ ; it is
+determined by a neighborhood type and a transition function. A transition function of a cellular
+(2t+1)2
+automaton working with Moore neighborhoods of radius t is given by f : A⊥
+→ A⊥ . At each
+step of the automaton, this function is applied to a neighborhood of each cell of Z2 and put the result in
+this cell. Remark that in each fixed moment of time, a state of such automaton is a partial tiling of the
+plane and all changes occur depending on a local configuration. That is why we use cellular automata to
+formalize the growth of tilings.
+We will consider automata with an additional symbol > denoting an error. If there exists at least
+one cell in this state, the automaton halts: this allows to report an error in computation immediately.
+(2t+1)2
+From now on we consider automata whose transition functions look like f : A⊥
+→ A⊥> where
+A⊥> = A⊥ ∪ {>}. If there is the symbol > in some cell, then the automaton halts.
+(2t+1)2
+Let us define a cellular automaton simulating growth. A transition function f : A⊥
+→ A⊥> of
+(2t+1)2
+
+an automaton working on Z2 is called a growth rule if for any configuration S ∈ A⊥
+conditions hold:
+
+, the following
+
+(-1,1) (0,1) (1,1)
+
+(S) A new added cell matches the Robinson local rules with its 8 neighbors: f (S) is valid in S(
+
+(-1,0) (0,0) (1,0)
+
+(-1,-1) (0,-1) (1,-1)
+
+(b) The transition function returns an error (>) if and only if S does not occur in some Robinson tiling
+of the plane. This means that S appears in some valid Robinson tiling if and only if f (S) 6= >.
+
+A growth cellular automaton is a cellular automaton whose transition function is a growth rule.
+Let us define a partial order on A⊥> : for any a ∈ A⊥ , we have ⊥ ≤ a and a ≤ >. If a, b ∈ A, then a and
+b are incomparable.
+(2t+1)2
+Let us now consider a partial order on partial tilings of t-neighborhoods. Given S, S 0 ∈ A⊥
+, we say
+that S ≤ S 0 if and only if
+∀z ∈ (2t + 1)2 , S(z) ≤ S 0 (z)
+
+In other words, S ≤ S 0 , when the domain of S is a subset of the domain of S 0 and they agree on the
+domain of S.
+(2t+1)2
+(2t+1)2
+A function f : A⊥
+→ A⊥ is a nondecreasing growth rule if for any S, S 0 ∈ A⊥
+such that
+S ≤ S 0 , we have f (S) ≤ f (S 0 ).
+Intuitively, we can consider the information contained in each configuration: if we fill some empty
+cell in a configuration, the amount of information in this configuration increases. Thus, having a
+nondecreasing growth means that if with a given amount of information, we decide to add a particular
+tile, then having strictly more information we should keep our decision (or return an error).
+Suppose we are given two configurations S1 and S2 of a t-neighborhood with domains D1 and D2
+respectively. S1 and S2 are compatible if they agree on the intersection of their domains: S1 |D1 ∩D2 =
+S2 |D1 ∩D2 . Let us define the union operation for two compatible configurations S1 , S2 :
+(
+S1 (z) z ∈ D1
+(S1 ∪ S2 )(z) :=
+S2 (z) z ∈ D2 \ D1
+Lemma 4. Let S1 , S2 be a pair of compatible configurations of t-neighborhood and a nondecreasing
+growth function f . If f (S1 ), f (S2 ) ∈ A and f (S1 ) 6= f (S2 ) then f (S1 ∪ S2 ) = >. That means, if a
+growth rule returns two different tiles from A on two compatible configurations then the union of these
+configurations never occurs in a valid Robinson tiling of the plane.
+Suppose f (S1 ), f (S2 ) ∈ A and f (S1 ) 6= f (S2 ). In this case, since f do not decrease: f (S1 ∪S2 ) ≥ f (S1 ).
+Thus, f (S1 ∪ S2 ) ∈ {f (S1 ), >}. The same holds for the second configuration: f (S1 ∪ S2 ) ∈ {f (S2 ), >}.
+And since f (S1 ) 6= f (S2 ), we get that f (S1 ∪ S2 ) = >.
+7
+
+).
+
+4
+
+Robinson tilings do not grow
+
+We are interested in whether a tiling can grow to cover the whole plane. Given an initial configuration,
+a growth cellular automaton eventually covers the plane if for any cell x ∈ Z2 , there exists a moment
+of time when the automaton put a tile in this cell. Notice that, if during the execution of an automaton
+an error occurs, then it doesn’t cover the plane.
+Theorem 2. There is no cellular automaton with nondecreasing growth rule which, working on some
+initial configuration, eventually covers the plane.
+To prove this theorem, we will reason by contradiction: suppose there exists an automaton with tneighborhood (t > 0) and a seed such that it eventually covers the whole plane. We will show that in this
+case, there exist two compatible configurations of t-neighborhoods on which the growth rule returns two
+different tiles and the union of which occurs in some valid Robinson tiling. This will contradict Lemma 4.
+
+4.1
+
+The base of the proof
+
+Let τ denote the tiling of the plane eventually generated by the growth automaton. Consider a
+quadrant Q not containing the seed. Notice that the tiling is valid on Q: indeed, assume towards a
+contradiction that there is a tile which is not legal in respect to the configuration of its 1-neighborhood
+S. In this case, the last added tile among tiles in S was not valid in its 1-neighborhood which contradicts
+point (S) from the definition of the growth rule.
+Let n = dlog te + 2. A t-neighborhood is not bigger than an (n − 1)-macrotile: 2n − 1 = 2dlog te+2 − 1 ≥
+4t − 1 ≥ 2t + 1, because t ≥ 1. Thus a t-neighborhood can not intersect more than 4 different (n − 1)macrotiles from a macrotile grid. Since τ is valid on Q, there exists a quadrant Qn+3 so that τ |Qn+3 agrees
+with some (n + 3)-macrotile grid. We call Gn the subset of Z2 , where a grid of n-macrotiles compatible
+with τ |Qn+3 is defined (such a grid exists since it is a subset of the (n + 3)-grid defined above).
+Let An+3 denote an occurrence of a macrotile an+3 in Qn+3 . Denote by Y the vertical coordinate of
+it’s central cell; denote by X the horizontal coordinate of the central cell of an occurrence of bn+2 in An+3 .
+From now on we will work with cells of the quadrant QXY . This construction is shown in Figure 13.
+Here and later in figures we denote types of macrotiles as follows: the size of font is proportional to
+the rank of a macrotile. In Figure 13, the n-macrotiles from the grid on Gn are denoted by gray font,
+the (n + 2)-macrotiles an+2 , bn+2 , cn+2 , dn+2 are marked by orange and denoted by black larger font, the
+An+3 macrotile is filled with yellow and is denoted by the largest font.
+
+Y
+
+(0, 0) •
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+a b
+c d
+
+a
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+a
+c
+a
+c
+a
+c
+a
+c
+
+QXY
+
+b
+d
+b
+d
+b
+d
+b
+d
+
+X
+
+Figure 13: The grid of n-macrotiles, An+3 (filled with yellow), and the quarter QXY (filled with blue
+dots).
+Recall that Bt (z) denotes a t-neighborhood of a cell z ∈ Z. For any set X ⊆ Z2 , we write X for
+Z \ X. Let E denote the set of all cells from QXY not contained in Gn : E := QXY ∩ Gn . For any cell
+2
+
+8
+
+z, let BtE (z) := Bt (z) ∩ E, we will call this set a E-neighborhood of z. Sets E and BtE (z) are shown in
+Figure 14.
+In Section 4.2, we will prove the following statement:
+Lemma 5. For any cell z in E, for a configuration S = τ |B E (z) , there exist two cells in QXY containing
+t
+
+different tiles in τ whose E-neighborhoods are compatible with S. We will call these cells twins of z.
+Figure 14 illustrates Lemma 5.
+–E
+– BtE (z)
+
+z
+
+Figure 14: Twins for a cell z.
+Now we show that this fact implies Theorem 2. Let u denote the cell which was added the first
+among cells from E during the growth process. Let U denote the configuration of Bt (u) at the moment
+just before the tile was added. All cells in E are empty in U since u is the first added tile in E. Let
+U 0 := τ |B E (u) . Let v denote a twin of u such that τ (u) 6= τ (v). Let V denote the configuration of Bt (V )
+t
+at the moment just before v was filled with a tile. We get the following:
+f (U ) = τ (u) 6= τ (v) = f (V )
+At the same time, V is compatible with U 0 which is compatible with U since U = U ∩ U 0 ; then V is
+compatible with U . Moreover, V ∪ U is a subconfiguration of τ |Bt (v) and Bt (v) ⊂ Q, thus V ∪ U occurs
+in a valid Robinson tiling which contradicts Lemma 4.
+–E
+– U0
+–U
+–V
+–u
+–v
+
+Figure 15: The first filled cell in E and its twin.
+Thus, proving Lemma 5 is all that rests to prove Theorem 2.
+
+4.2
+
+Looking for twins: proof of Lemma 5
+
+Our aim is to find twins in QXY for each cell of E. We will consider cells separately depending on
+their E-neighborhoods. We distinguish cells z for which BtE (z) ⊂ Gn (for instance, two right-hand cells
+9
+
+in Figure 16) and cells for which this doesn’t hold (two left-hand cells in Figure 16). The cells of the
+first type form a set EGn := {z | BtE (z) ⊂ Gn }; the remaining cells form E \ EGn . These two sets are
+illustrated by Figure 17.
+– EGn
+– E \ EGn
+
+–E
+– BtE (z)
+– (BtE (z)) \ Gn
+
+Figure 16: The E-neighborhoods of two right-hand cells are in Gn ,
+while for two left-hand cells it doesn’t hold.
+
+Figure 17: Sets E \EGn , EGn and
+the grid of n-macrotiles.
+
+We will first show that Lemma 5 holds for cells in EGn .
+4.2.1
+
+When the cell z is in EGn
+
+The partial tiling τ |Gn has vertical and horizontal periods equal to 2n+2 (See Figure 11). Thus, to
+prove Lemma 5 for all cells in EGn , it is enough to prove it for all cells of any (2n+2 × 2n+2 )-square from
+{(x, y) | (x − t, y − t) ∈ QXY }.
+(EGn ,1 )
+
+d
+
+c
+
+b
+
+a
+
+(EGn ,2 )
+
+d
+
+c
+
+b
+
+d
+
+a
+c d
+
+a
+
+b
+
+a
+
+a
+
+a
+
+b
+
+c
+
+– W ∩E
+
+d
+b
+d
+b
+
+c
+a
+c
+a
+
+d
+b
+d
+b
+
+c
+a
+c
+a
+
+a
+
+d
+
+c
+
+d
+
+c
+
+b
+
+a
+
+b
+
+d
+
+c
+
+dd
+
+a
+
+b
+
+a
+
+b
+
+d
+c
+
+a
+
+Figure 18: Twins for cells in W ∩ E in the case EGn . W ∩ E is filled with yellow; the gray dashed line is
+a border of a (n + 2)-macrotile.
+Consider a 2n+2 × 2n+2 -square W , containing four n-macrotiles, so that they can be completed to
+form a (n + 1)-macrotile, one row on the bottom of them and one column to the right of them, as it’s
+shown in Figure 18: cells in E ∩ W are filled with yellow.
+Consider two variants to complete the n-macrotile grid to (n + 3)-macrotile grid. In the first case
+denoted by (EGn ,1 ), four n-macrotiles from W are contained in an+1 which is contained in an+2 (Figure 18,
+the left part). In the second case ((EGn ,2 ) in Figure 18), n-macrotiles from W are contained in dn+1
+which is contained in an+2 which is contained in dn+3 .
+Each cell in W ∩ E contains different tiles in cases(EGn ,1 ) and (EGn ,2 ). Each of these cases is a part
+of some (n + 3)-macrotile, thus, they both occur in QXY infinitely many times. Thence, any cell in W ∩ E
+has twins in QXY , which concludes the proof for the cells in EGn .
+10
+
+4.2.2
+
+When the cell z is in E \ EGn
+
+By definitions of n and EGn , a t-neighborhood of a cell in E \ EGn intersects either two or three
+(n − 1)-macrotiles from QXY . We will classify cells in E \ EGn depending on which (n − 1)-macrotiles
+from QXY are intersected by their neighborhoods. We get three classes which are shown in Figure 19:
+(d b), (d ba) and (ba).
+– QXY
+– EGn
+
+d
+
+(d b)
+c
+
+b
+
+a
+
+– E \ EGn
+– BtE (z)
+
+d
+
+a
+
+(d ba)
+c
+
+c
+
+a
+
+b
+
+d
+
+c
+
+b
+
+a
+
+b
+
+d
+
+b
+
+d
+
+(ba)
+d
+
+c
+
+d
+
+b
+
+a
+
+b
+
+a
+
+b
+
+Figure 19: The grid of (n − 1)-macrotiles (the smallest font) and three classes of EGn cells.
+4.2.3
+
+Case (ba)
+
+Suppose the E-neighborhood of a cell in E \ EGn intersects two (n − 1)-macrotiles from QXY : bn−1
+on the left and an−1 on the right. Then the column between these macrotiles could be filled differently, it
+depends on the macrotiles of higher ranks. All possible fillings of the column are displayed in Figure 20.
+We denote each case by an arrow and one or two letters: the arrow shows the direction of the arrow
+in the column and the letters are types of macrotiles in centers of which this arrow could begin. For
+example, (↓b ) denotes the case where the arrow is directed downwards and could come from the center of
+a b-macrotile (note that between (↓a ) and (↓b ), the horizontal positions of the red arrows are different);
+(↑a,b ) denotes the upwards arrow coming from a macrotile of type a or b (their upwards arrows are the
+same).
+
+(↓a )
+b
+
+(↓b )
+a
+
+b
+
+(↓c,d )
+a
+
+b
+
+(↑c )
+
+a
+
+b
+
+(↑a,b )
+
+(↑d )
+a
+
+b
+
+a
+
+b
+
+a
+
+Figure 20: Variants of columns between bn−1 and an−1 , intersected by BtE (z) in case (ba).
+First we consider the case where the arrow in the column is directed downwards. Figure 21 shows two
+twins in case (↓a ). On the left, bn−1 and an−1 are contained in an+1 ; on the right, they are contained
+in two different (n + 1)-macrotiles cn+1 and dn+1 which are both contained in an+2 . For two these
+configurations, the arrow is the same in the column between bn−1 and an−1 , while all possible central
+cells of neighborhoods contain different tiles in different configurations. The same reasoning applies for
+cases (↓b ) and (↓c,d ): they are shown in Figures 25 and 26 in the Appendix.
+In Figure 21 and later the considered cells z are filled with yellow :
+; the union of sets BtE (z)∩QXY
+for those z is marked with light green:
+.
+The only cases left are those where the arrow in the column is directed upwards. Figure 22 displays
+twins for cases (↑c ) (on the left) and (↑d ) (on the right). In the configuration (↑c1 ), bn−1 intersected
+11
+
+a
+
+a
+
+c
+
+a
+
+b
+
+c
+
+d
+
+d
+
+a
+
+b
+
+c
+
+d
+
+Figure 21: Twins for the case where the arrow between bn−1 and an−1 is (↓a ).
+by BtE (z) is a part of an occurence of bn which is contained in an+1 which is located in cn+2 which is
+eventually a part of dn+3 , while an−1 is a part of an occurence of an which is in bn+1 which is located in
+the considered above occurence of cn+2 . In the configuration (↑c2 ), bn−1 intersected by BtE (z) is a part
+of an occurence of dn which is contained in an+1 from (↑c1 ), while an−1 is a part of an occurence of cn
+which is contained in the occurence of bn+1 considered in (↑c1 ).
+The arrow in the vertical column in both cases is the middle arrow of cn+2 . For each cell z in the
+considered area, the tiles contained in this cell are different in two configurations. Configurations (↑d1 )
+and (↑d2 ) work the same.
+
+d
+
+(↑c1 )
+
+a
+
+b
+
+a
+
+(↑c2 )
+
+a
+
+b
+
+(↑d1 )
+
+b
+
+a
+
+b
+
+c
+
+a
+
+(↑d2 )
+
+b
+
+a
+
+b
+
+d
+
+Figure 22: Twins for cases (↑c ) and (↑d ).
+For the last case, (↑a,b ), the twins are shown in Figure 23.
+4.2.4
+
+Case (d b)
+
+As we already mentioned, for all N , all N -macrotiles are rotations of aN . Thus, configurations with
+twins for the case (d b) can be obtained by rotating the configurations from the case (ba) by 90o .
+4.2.5
+
+Case (d ba)
+
+There is the only case where BtE (z) intersects three (n − 1)-macrotiles from QXY : these macrotiles
+are located around the origin of QXY and the arrows in a line and a column between dn−1 , bn−1 and
+an−1 are as it’s shown in Figure 24. The twins for this case are displayed in the same figure: for any z
+12
+
+d
+
+(↑b1 )
+
+a
+
+b
+(↑b2 )
+
+a
+
+a
+
+b
+
+b
+
+b
+Figure 23: Twins for the case (↑a,b ).
+from the considered area, it contains two different tiles for configurations (d ba1 ) and (d ba2 ). Indeed, each
+cell touching the top side of an−1 , except the one in the corner, contains tiles with arrows of opposite
+directions in these two configurations; the same is true for the cells touching the right side of dn−1 . The
+, while in (d ba2 ) it
+
+remaining cell is the one in the corner; in the configuration (d ba1 ) it contains
+
+contains
+.
+Thence, we covered all the cases which means that twins exist for each cell z in E: Lemma 5 is
+true.
+This proves Theorem 2.
+(d ba1 )
+
+a
+
+(d ba2 )
+
+b
+
+a
+
+d
+b
+
+d
+
+a
+
+d
+
+c
+
+c
+d
+
+a
+
+a
+
+b
+
+b
+
+d
+
+Figure 24: Twins in the case (d ba). Borders of (n + 2)-macrotiles are marked by the gray dashed line.
+
+5
+5.1
+
+Conclusion
+Future work
+
+We modeled the growth of Robinson tilings with cellular automata satisfying conditions (S) and (b)
+with a nondecreasing growth rule. However, we conjecture that all restrictions except (S) are unnecessary
+for this result. Thus, obtaining the same result with weaker conditions (or showing a counterexample)
+would be a good continuation of this work.
+
+13
+
+Besides that, the growth model could be generalized, for instance, in a probabilistic way. For this, it is
+enough to consider probabilistic cellular automata; this approach is more realistic for modeling physical
+and chemical processes.
+Our result shows that there exists a hierarchical tiling of the plane that can not be grown. The
+question is still open for many other tilings and should be investigated in order to find connections
+between growing and other properties of a tileset (for instance, entropy of the dynamical system).
+
+5.2
+
+Other activities
+
+During my internship, besides the research described in this report, I participated in the local scientific
+life. In June, I took part in the on-place organization of the CSR conference (https://logic.pdmi.ras.
+ru/csr2018/welcome). Besides that, I was a coauthor of a course on Tilings and Computations in the
+summer school “Contemporary Mathematics” (https://www.mccme.ru/dubna/eng/). I gave two lectures
+out of four, made exercise sheets, and took part in writing lecture notes (all these materials can be found
+here: https://www.mccme.ru/dubna/2018/courses/gamard-pchelina.html).
+
+References
+[1] Robert Berger. The undecidability of the domino problem. Memoirs of the American Mathematical
+Society, 66, 1966.
+[2] Karel Culik. An aperiodic set of 13 Wang tiles. Discrete Mathematics, 160(1):245–251, 1996.
+[3] David Doty. Theory of Algorithmic Self-assembly. Communications of the ACM, 55(12):78–88, 2012.
+[4] Bruno Durand, Leonid A. Levin, and Alexander Shen. Complex tilings. J. Symbolic Logic, 73(2):593–
+613, 2008.
+[5] Thomas Fernique. Yet Another Proof of the Aperiodicity of Robinson Tiles. http://arxiv.org/
+abs/1506.06492.
+[6] U. Grimm and D. Joseph. Modeling Quasicrystal Growth. Quasicrystals: An Introduction to
+Structure, Physical Properties and Application, page 199, 2002.
+[7] Emmanuel Jeandel and Michaël Rao. An aperiodic tileset of 11 Wang tiles. https://arxiv.org/
+abs/1506.06492, 2015.
+[8] Jarkko Kari. A small aperiodic set of Wang tiles. Discrete Mathematics, 160(1-3):259–264, 1996.
+[9] Daria Pchelina and Guilhem Gamard. Computations: from Turing Machines to Tiling. https:
+//www.mccme.ru/dubna/2018/notes/gamard-pchelina-notes.pdf, 2018.
+[10] Roger Penrose. The role of aesthetics in pure and applied mathematical research. Bulletin of the
+Institute of Mathematics and its Applications, 10:266, 1974.
+[11] Raphael M. Robinson. Undecidability and nonperiodicity for tilings of the plane. Inventiones
+Mathematicae, 12(3):177–209, 1971.
+[12] Joshua E.S. Socolar. Growth Rules For Quasicrystals. Quasicrystals: The State of the Art, pages
+325–359, 1999.
+[13] Hao Wang. Proving theorems by pattern recognition—II. Bell System Technical Journal, 40:1–41,
+1961.
+
+14
+
+Appendix: additional figures
+
+b
+
+b
+
+c
+
+a
+
+b
+
+c
+
+d
+
+b
+
+a
+
+c
+
+d
+
+d
+
+Figure 25: Twins for cells z is in E \ EGn , case (ba), where the arrow between bn−1 and an−1 is (↓b ).
+
+c
+
+c
+b
+
+c
+
+c
+
+a
+
+d
+
+b
+
+d
+
+a
+
+c
+
+d
+
+Figure 26: Twins for cells z is in E \ EGn , case (ba), where the arrow between bn−1 and an−1 is (↓c,d ).
+
+15
+
+

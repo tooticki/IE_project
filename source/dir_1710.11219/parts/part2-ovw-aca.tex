@@ -1,0 +1,654 @@
+
+The proof of the previous section gave a very coarse computability-theoretic upper bound of the Ordered Variable Word theorem in terms of $\omega$-jumps. In this section, we give a direct combinatorial proof of $\ovw{2}{\ell}$ in $\rca + \aca$. Actually, every PA degree relative to $\emptyset'$ is sufficient to compute a solution of a computable instance of $\ovw{2}{\ell}$.
+	We thereby answer a question of Miller and Solomon~\cite{Miller2004Effectiveness}.
+
+\begin{theorem}\label{ovwth2}
+For every $\ell \in\omega$,
+every computable instance $c$ of $\ovw{2}{\ell}$,
+every PA degree over $\emptyset'$ computes a solution to $c$.
+\end{theorem}
+
+A formalization of Theorem~\ref{ovwth2} yields
+a proof of Theorem~\ref{thm:aca-ovw2}.
+
+\begin{proof}[Proof of Theorem~\ref{thm:aca-ovw2}]
+The proof of Theorem~\ref{ovwth2} can be
+formalized within $\rca + \aca$. Indeed, the arguments require only arithmetical induction to be carried out, and
+every model of $\rca + \aca$ is a model of
+the statement ``For every set $X$, there is a set of PA degree over the jump of $X$.''
+\end{proof}
+
+Let us first introduce some notation.
+For a finite set $F$ and a string $\sigma \in 2^{<\omega}$
+let $\sigma_F$ be the binary string of length $|\sigma|$
+defined by $\sigma_F(i) = \sigma(i)$ if $i \not \in F$, and $\sigma_F(i) = 1-\sigma(i)$ otherwise. Let $\leq_{lex}$ denote the shortlex order
+on  $\omega^{<\omega}$, that is, the order with the shortest length first, and with the strings of same length sorted lexicographically.
+
+In what follows, fix a coloring $\t{c}:2^{<\omega}\rightarrow \ell$,
+and a string $\rho\in 2^{<\omega}$.
+
+The main combinatorial lemma we use is
+ Lemma~\ref{ovwprop1}.
+As a warm up, we first prove the following
+lemma \ref{ovwprop0}, which is a consequence of Lemma~\ref{ovwprop1}
+and the proof is somehow similar but
+much simpler. In the following lemma, one may think of $\rho_{P'}$ as a finite variable word, where the positions at $\t{P}$ are replaced by a same variable kind.
+
+
+\begin{lemma}\label{ovwprop0}
+For any
+$P\subseteq \{0,\cdots,|\rho|-1\}$ with
+$(\forall n\in P)[\rho(n) = 0]
+\wedge |P|\geq \ell$,
+there exist two
+subsets $P'<\t{P}$ of $P$
+with $\t{P}\ne\emptyset$
+such that $\t{c}(\alpha) = \t{c}(\alpha_{\t{P}})$ where $\alpha = \rho_{P'}$.
+\end{lemma}
+\begin{proof}
+Suppose $P = \{p_0 < \cdots < p_{m-1}\}$.
+Let $\ell_0, \dots, \ell_m$ be defined by
+$\ell_i = \t{c}(\rho_{\{p_0, \dots, p_{i-1}\}})$. In particular, $\ell_0 = \t{c}(\rho)$.
+Since $|P| = m \geq \ell$,
+so among $\ell_0,\cdots, \ell_m$,
+there must exists $i<j$ such
+that $\ell_i=\ell_j$.
+Let $P' = \{p_0,\cdots,p_{i-1}\}$
+(if $i=0$ then $P' = \emptyset$), and
+$\t{P} = \{p_i,\cdots,p_{j-1}\}$,
+let $\alpha = \rho_{P'}$.
+Clearly $P'<\t{P}$ and $\t{P}\ne\emptyset$.
+It is also easy to see that
+$\t{c}(\alpha) = \ell_i = \ell_j = \t{c}(\alpha_{\t{P}})$.
+\end{proof}
+
+We now prove a technical lemma used in the proof of our main combinatorial
+lemma (Lemma~\ref{ovwprop1}). The sequence in the following lemma is obtained by a simple greedy algorithm, with finitely many resets.
+
+\begin{lemma}\label{ovwclaim1}
+There exists a nonempty set
+of colors $L\subseteq \{0,1,\cdots,\ell-1\}$,
+$|L|+1$ many sets of binary strings
+$\Gamma_0 = \{\tau^{\eta}\}_{\eta\in L},
+\Gamma_1=\{\tau^\eta\}_{\eta\in L^2},
+\cdots,\Gamma_{|L|}=\{\tau^\eta\}_{\eta\in L^{|L|+1}}$,
+such that, letting
+$$
+\t{\eta} =
+ \underbrace{\max L *\max L *\cdots*\max L}_{|L|+1\text{ many }}
+$$
+ and letting $\t{\rho} = \tau^{\t{\eta}}*0$, the following holds:
+\begin{enumerate}
+\item $\rho\prec\Gamma_0$ and $
+\tau^{\eta}\prec\tau^\beta\Leftrightarrow
+\eta<_{lex}\beta$;
+\item $\t{\rho}(|\tau|) = 0$
+for all $\tau\in \Gamma_i,i\leq |L|$;
+
+\item for all $i\leq |L|$, $\eta\in L^{i+1}$,
+let $\eta_0\prec\eta_1\prec\cdots\prec\eta_{i-1}$ denote
+all nonempty predecessors of $\eta$, let
+$Q = \big\{|\tau^{\eta_0}|,|\tau^{\eta_1}|,
+\cdots,|\tau^{\eta_{i-1}}|\big\}$
+(if $i=0$ then $Q=\emptyset$),
+then $\t{c}(\tau^{\eta}_Q) = \eta(i)$;
+
+\item let $P = \{|\tau^\eta|\}_{\eta\in L^{\leq |L|+1}}$,
+for all subset $Q$ of $P$, all $\tau\succeq\t{\rho}$,
+$\t{c}\big(\tau_Q\big)
+\in L$.
+\end{enumerate}
+%\benoit{For (4) it seems that more is nedeed in the proof of the next lemma : not only $\t{c}(\tau)$ needs to an element of $L$ for $\tau \succeq \t{\rho}$, but also $\t{c}(\tau_P)$ for some set of positions $P$ (which is the case of course).}
+Moreover,
+$\Gamma_i,i\leq |L|$ is  computable in the jump of $\t{c}$,
+ uniformly in $\rho$.
+
+
+\end{lemma}
+\begin{proof}
+We firstly show how to find $\Gamma_0$.
+Start with $L = \{0,1,\cdots,\ell-1\}$.
+At step 1, try to find a string $\tau\in 2^{<\omega}$ such that
+$\t{c}(\rho\tau) =  0$ and
+let $\tau^0 = \rho\tau$. Then
+try to find a $\tau$ such that
+$\t{c}(\tau^00\tau) = 1$ and
+let $\tau^1 = \tau^00\tau$. Generally, after $\tau^j$ is found,
+try to find $\tau$ such that
+$\t{c}(\tau^j0\tau)=j+1$
+and let $\tau^{j+1} = \tau^j0\tau$ if
+$\tau$ is found.
+If during the above process, after $\tau^{j-1}$ is
+defined ( $\tau^{-1} = \rho$ ),
+there is no $\tau$ such that
+$\t{c}(\tau^{j-1}0\tau) = j$,
+then we start all over again
+with $\rho$ replaced by $\rho_1 =
+\tau^j0$ and with $L$ replaced by $ L \setminus \{j\}$.
+%, i.e.,
+%we try to find a sequence of string
+%$\tau^i\succ\rho_1,i\in \{0,\cdots,l-1\}-\{j+1\}$
+% with
+%$\t{c}(\tau^i) = i$ and $
+%i<k\Rightarrow\tau^i\prec \tau^k\wedge
+%\tau^k(|\tau^i|) = 0$.
+
+%Let $L_1$ denote the
+%colors remaining after the search of $\Gamma_0$.
+%Without loss of generality, suppose $L_1 = \{0,\cdots,k^*\}$.
+%To find $\Gamma_1$,
+%\begin{itemize}
+%\item Try to find $\tau^{0i},i\in L_1$ such that
+%$\t{c}(\tau^{0i}_{\{|\tau^0|\}}) = i$ and
+%$i<k\Rightarrow \tau^{0i}\prec\tau^{0k}
+%\wedge \tau^{0k}(|\tau^{0i}|) = 0$.
+%
+%\item Generally,
+%at step $i+1\in L_1$, try to find
+%$\tau^{ik},k\in L_1$ with $\tau^{ik}\succ\tau^{(i-1)k^*}0$ such that
+%$\t{c}(\tau^{ik}_{\{|\tau^i|\}}) = k$ and
+%$j<k\Rightarrow \tau^{ij}\prec\tau^{ik}
+%\wedge \tau^{i(k+1)}(|\tau^{ik}|) = 0$.
+%\end{itemize}
+%
+%If during the process, after $\tau^{ik}$ is found,
+%$\tau^{i(k+1)}$ can not be found,
+%i.e., there exists no $\tau$ such that
+%$\t{c}((\tau^{ik}0\tau)_{\{|\tau^i|\}}) = k+1$,
+%then let $\rho_2 = (\tau^{ik}0)_{\{|\tau^i|\}}$
+%and start all over  again with
+%$\rho$ replaced by $\rho_2$ to rebuild $\Gamma_0,\Gamma_1,\cdots$.
+
+Generally, given a set of colors $L$ and after $\tau^{\beta}$ is found,
+let $\eta$
+be the immediate successor (with respect to $\leq_{lex}$ order restricted to $L$-strings)
+ of $\beta$,
+let $\eta_0\prec\eta_1\prec\cdots\prec\eta_{i-1}$ denote
+all nonempty predecessors of $\eta$, let
+$Q = \big\{|\tau^{\eta_0}|,|\tau^{\eta_1}|,
+\cdots,|\tau^{\eta_{i-1}}|\big\}$
+(if $i=0$ then $Q=\emptyset$),
+we try to find $\tau$ such that
+$\t{c}((\tau^{\beta}0\tau)_{Q}) = \eta(|\eta|-1)$.
+If such a string $\tau$ does not exists then we
+start  all over again with $\rho $
+replaced by  $\tau^\beta0_{Q}$ and $L$ replaced by $L \setminus \{\eta(|\eta|-1)\}$.
+If such $\tau$ exists then let $\tau^\eta =
+\tau^\beta0\tau$.
+
+Note that we have to
+start over for at most $\ell-1$ times before we
+ultimately succeed since
+there are $\ell$ colors in total.
+It is plain to check all the four items.
+Also note that the sequence $\Gamma_0,\cdots,\Gamma_{|L|}$ is
+$\t{c}'$-computable since we only need to
+use the jump of $\t{c}$ to know whether the next $\tau^{\eta}$ can
+ be found.
+
+
+
+\end{proof}
+
+\begin{lemma}\label{ovwprop1}
+
+There exists a string $\t{\rho}\succ\rho$
+ and a finite set $P\subseteq
+ \big\{|\rho|,\cdots, |\t{\rho}|-1\big\}$ with
+ $(\forall i\in P)[\t{\rho}(i) = 0]$
+ such that
+ for all $\sigma\succeq \t{\rho}$ there exists
+ two subsets $P'<\t{P}$ of $P$ with $\t{P}\ne\emptyset$
+ such that, letting $\alpha = \sigma_{P'}$,
+$\t{c}(\alpha) = \t{c}(\alpha_{\t{P}}) = \t{c}(\alpha
+ \uhr {\min \t{P} })$.
+ Moreover, $|P|< \ell^{\ell+2}$, and $\t{\rho}, P$,
+are computable in the jump of $\t{c}$, uniformly in $\rho$.
+\end{lemma}
+\begin{proof}
+Let $L$ and $\t{\rho}$ satisfy Lemma~\ref{ovwclaim1}.
+We claim that $\t{\rho}$ and $P = \{|\tau^\eta|\}_{\eta\in L^{\leq |L|+1}}$
+satisfy the current lemma.
+It is clear
+by item 1 of Lemma~\ref{ovwclaim1} that $\t{\rho}\succ\rho$
+and by item 2 of  Lemma~\ref{ovwclaim1} that
+$(\forall i\in P)[\t{\rho}(i) = 0]$.
+
+Fix an arbitrary $\sigma\succeq\t{\rho}$.
+We now describe how to construct $P'$ and $\t{P}$.
+Define $\ell_0, \dots, \ell_{|L|}$
+and $p_0, \dots, p_{|L|}$ inductively by
+$\ell_0 = \t{c}(\sigma)$,
+$\ell_{i+1} = \t{c}(\sigma_{\{p_0,p_1,\cdots,p_i\}})$, and
+$p_{i} =|\tau^{\ell_0\cdots \ell_{i}}|$ (where $\tau^{\ell_0\cdots \ell_{i}} \in \Gamma_i$).
+%To construct $P'$ and $\t{P}$,
+%consider the following  flipping bit process:
+%
+%
+%\begin{itemize}
+%\item Suppose $\t{c}(\sigma) = \ell_0$. By item 4
+%of Lemma~\ref{ovwclaim1}, $\ell_0\in L$. Therefore
+%$\tau^{\ell_0}$ is defined.
+%Then, let
+%$p_0 = |\tau^{\ell_0}|$, at step 1 imagine
+%we flip the
+%bit at position $p_0$ and $\sigma$ becomes
+%$\sigma_{\{p_0\}}$.
+%
+%\item Suppose
+%$\t{c}(\sigma_{\{p_0\}}) = \ell_1$.
+%Then, let $p_1 = |\tau^{\ell_0\ell_1}|$, at step 2
+%imagine we flip the bit  at position $p_1$ and
+%$\sigma_{\{p_0\}}$ becomes $\sigma_{\{p_0,p_1\}}$.
+%
+%\item Suppose $\t{c}(\sigma_{\{p_0,p_1\}}) = \ell_2$.
+%Then, let $p_2=|\tau^{\ell_0\ell_1\ell_2}|$, at  step 3
+%imagine we flip the bit at position $p_2$
+%and $\sigma_{\{p_0,p_1\}}$ becomes
+%$\sigma_{\{p_0,p_1,p_2\}}$.
+%
+%\item In the $(i+1)^{th}$ step where $1\leq i\leq |L|$, suppose
+%$\t{c}(\sigma_{\{p_0,p_1,\cdots,p_{i-1}\}}) = \ell_i$.
+%Then, let $p_{i} =|\tau^{\ell_0\cdots \ell_{i}}|$
+% imagine we flip the bit at position $p_{i}$
+% and $\sigma_{\{p_0,\cdots,p_{i-1}\}}$ becomes
+%$\sigma_{\{p_0,\cdots,p_{i-1},p_{i}\}}$.
+%
+%\end{itemize}
+Since $\ell_0,\cdots,\ell_{|L|}\in L$ (by item 4 of Lemma~\ref{ovwclaim1}), there is some $i<j\leq |L|$
+such that $\ell_i=\ell_j $.
+Let $P' = \{p_0,\cdots,p_{i-1}\}$
+(if $i=0$ then $P' = \emptyset$),
+$\t{P}= \{p_i,\cdots,p_{j-1}\}$,
+and let $\alpha = \sigma_{P'}$. We claim that
+$\t{c}(\alpha) = \t{c}(\alpha_{\t{P}}) = \t{c}(\alpha\uhr \min \t{P})$.
+Note that $\min \t{P}  =p_i= |\tau^{\ell_0\cdots \ell_i}|$.
+Therefore
+$\alpha\uhr \min \t{P} = \tau^{\ell_0\cdots \ell_i}_{P'}$.
+By item 3 of Lemma~\ref{ovwclaim1},
+we have $\t{c}(\tau^{\ell_0\cdots \ell_i}_{P'}) = \ell_i $.
+Meanwhile, by definition of $\ell_i$,
+$\t{c}(\sigma_{P'}) =
+\t{c}(\alpha) = \ell_i$.
+By definition of $\ell_j$,
+$\t{c}(\sigma_{P'\cup \t{P}}) =
+\t{c}(\alpha_{\t{P}}) = \ell_j$.
+Thus, $\t{c}(\alpha) = \t{c}(\alpha_{\t{P}})
+ = \t{c}(\alpha\uhr \min \t{P} )$.
+
+
+\end{proof}
+
+We say that $(\t{\rho}, P)$ is \emph{$\t{c}$-valid}
+if $P$ and $\t{\rho}$ satisfy Lemma~\ref{ovwprop1}.
+We say that $(P',\t{P})$ \emph{witnesses $\t{c}$-validity of $(\t{\rho}, P)$ for $\sigma \succeq \t{\rho}$} if $P' < \t{P}  \subseteq P$, and letting $\alpha = \sigma_{P'}$,
+$\t{c}(\alpha) = \t{c}(\alpha_{\t{P}}) = \t{c}(\alpha
+ \uhr {\min \t{P} })$.
+Before proving Theorem~\ref{ovwth2}, we start with
+the following simpler version.
+
+\begin{theorem}\label{ovwth1}
+For every $\ell\in\omega$, every computable instance  $c:2^{<\omega}\rightarrow
+\ell$ of $\ovw{2}{\ell}$,
+every $PA$ degree over $\emptyset''$ computes
+a solution to $c$.
+\end{theorem}
+\begin{proof}
+It suffices to compute, given a PA degree relative to $\emptyset''$,
+an infinite binary sequence $Y\in 2^\omega$
+together with a sequence of finite
+sets $\t{P}_0<\t{P}_{1}<\cdots$ with
+$(\forall i\in\omega)(\forall n\in \t{P}_i)
+[Y(n) = 0]$ such that the following holds:
+\begin{quote}
+Let $Position = \big\{\min \t{P}_i : i \geq 1 \big\}$.
+There is some $\t{\ell}<\ell$ such that for all subset $J$ of $\omega$, letting
+ $\t{P}_J = \bigcup\limits_{i\in J}\t{P}_i$, then we have,
+ $
+(\forall p\in Position)\big[
+c(Y_{\t{P}_J}\uhr p) = \t{\ell}\ ].
+$ 	
+\end{quote}
+
+
+Using Lemma~\ref{ovwprop1}, we first construct
+a $\emptyset'$-computable sequence of strings
+ $\t{\rho}_0 \prec \t{\rho}_1 \prec\cdots$,
+a sequence of finite sets $P_i\subseteq \big\{
+|\t{\rho}_{i-1}|,\cdots, |\t{\rho}_i|-1
+\big\}$ and a sequence of colorings $c_i:[\t{\rho}_i]^\preceq\rightarrow
+L_i$ inductively as follows.
+$\t{\rho}_0 = \varepsilon$ and $c_0 = c$.
+Given $\t{\rho}_i$ and $c_i:[\t{\rho}_i]^\preceq\rightarrow
+L_i$, let $\t{\rho}_{i+1} \succeq \t{\rho}_i$
+and $P_i\subseteq
+\big\{ |\t{\rho}_i|,\cdots,|\t{\rho}_{i+1}|-1\big\}$ be such that
+$(\t{\rho}_{i+1}, P_i)$- is $c_i$-valid,
+and let $c_{i+1}$ be the coloring of $[\t{\rho}_{i+1}]^{\preceq}$ which on $\sigma \succeq \t{\rho}_{i+1}$
+associates $\langle P', \t{P}, j \rangle$ such that
+$(P',\t{P})$ witnesses $c_i$-validity of $(\t{\rho}_{i+1}, P_i)$
+for $\sigma$, and $c_i(\sigma_{P'}) = j$. If there are multiple such tuples, take the least one, in some arbitrary order. Note that the range of $c_i$ is some finite set $L_i$.
+%
+% as following:
+%\begin{itemize}
+%\item Let $\t{\rho}_1$, $P_0\subseteq
+%\big\{ |\t{\rho}_0|,\cdots,|\t{\rho}_1|-1\big\}$ be such that:
+%$(\forall n\in P_0)[\t{\rho}_1(n) = 0]$,
+%for all $\sigma\succeq \t{\rho}_1$ there exists
+%subsets $P'<\t{P}$ of $P_0$ with $\t{P}\ne\emptyset$ such that
+%let $\alpha = \sigma_{P'}$, $c_0(\alpha) = c_0(\alpha_{\t{P}})$.
+%By Lemma~\ref{ovwprop0} such $\t{\rho}_1, P_0$ exists.
+%
+%\item Now we define $c_1$ according to profile of $c_0$.
+%For $\sigma\succeq\t{\rho}_1$,
+%$c_1(\sigma) = (P',\t{P},j)$ if:
+%$P'<\t{P}$ are subsets of $P_0$, $\t{P}\ne\emptyset$, and
+%let $\alpha = \sigma_{P'}$, $c_0(\alpha) = c_0(\alpha_{\t{P}})=j$.
+%If multiple $(P',\t{P},j)$ satisfy the above condition,
+%then simply let $c_1(\sigma)$ be the "smallest" such $(P',\t{P},j)$.
+%Here "smallest" is an arbitrary order.
+%Clearly the range of $c_1$, namely $L_1$, is finite
+%and by definition of $\t{\rho}_1, P_0$, $c_1$ is well defined
+%on $[\t{\rho}_1]^\preceq$.
+%
+%\item Note that $c_1$ is computable since
+%$c_0$ is computable. Therefore, apply proposition \ref{ovwprop1} on
+%$c_1,\t{\rho}_1$, we can $\mbf{0'}$-compute $\t{\rho}_2\succ\t{\rho}_1$
+%and $P_1\subseteq \big\{|\t{\rho}_1|+1,\cdots, |\t{\rho}_2|-1\big\}$
+% with $(\forall n\in P_1)[\t{\rho}_2(n) = 0]$ such that:
+%for all $\sigma\succeq \t{\rho}_2$ there exists
+%subsets $P'<\t{P}$ of $P_1$ with $\t{P}\ne\emptyset$ such that
+%let $\alpha = \sigma_{P'}$, $c_1(\alpha) = c_1(\alpha_{\t{P}})
+% = c_1(\alpha\uhr_{\min\{\t{P}\}})$.
+%
+% \item Define $c_2$ according to profile
+% of $c_1$. For $\sigma\succeq \t{\rho}_2$,
+% $c_2(\sigma) = (P',\t{P},j)$ if:
+%$P'<\t{P}$ are subsets of $P_1$, $\t{P}\ne\emptyset$, and
+%let $\alpha = \sigma_{P'}$, $c_1(\alpha) = c_1(\alpha_{\t{P}})=
+%c_1(\alpha\uhr_{\min\{\t{P}\}}) = j$.
+%
+%\item In this way, we guarantee that for all $i$:
+%(a) $(\forall n\in P_{i-1})[\t{\rho}_i(n) = 0]$;
+%(b) for any $\sigma\succeq \t{\rho}_i$,
+% $c_i(\sigma) = (P',\t{P},j)$ if
+% $P'<\t{P}$ are subsets of $P_{i-1}$, $\t{P}\ne\emptyset$, and
+%let $\alpha = \sigma_{P'}$, $c_{i-1}(\alpha) = c_{i-1}(\alpha_{\t{P}})=
+%c_{i-1}(\alpha\uhr_{\min\{\t{P}\}}) = j$;
+%and (c) $c_i$ is well defined with finite range $L_i$.
+%
+%\end{itemize}
+
+We now analyze for $\sigma\succeq \t{\rho}_i$
+ what $c_i(\sigma)= \langle P',\t{P},j \rangle$ means.
+Note that elements of $L_i,i\in\omega$
+admit a natural partial order $\lhd$ as follows:
+for
+$\langle P'_{0},\t{P}_0,j_0 \rangle\in L_{i},
+\langle P'_{1},\t{P}_1,j_1\rangle \in L_{i+1}$,
+$\langle P'_{1},\t{P}_1,j_1 \rangle $ is an immediate
+successor of $\langle P'_{0},\t{P}_0,j_0 \rangle$
+if and only if $j_1 = \langle P'_{0},\t{P}_0,j_0\rangle$.
+Clearly every $j\in L_i$ admit a unique
+immediate predecessor.
+
+\begin{claim}\label{ovwclaim2}
+Fix some $n \geq 1$, and let
+$
+\t{\ell} \lhd \langle P'_0,\t{P}_0,j_0\rangle \lhd \dots \lhd \langle P'_{n-1},\t{P}_{n-1},j_{n-1}\rangle = c_n(\sigma)
+$,
+Let $P' = \bigcup_{i\leq n-1}P'_i$ and
+$\alpha = \sigma_{P'}$.
+Then for any subset $J$ of $\{0,\cdots, n-1\}$,
+$$(\forall p\in \big\{ \min \t{P}_j : 1 \leq j \leq n-1\big\}\cup\{|\alpha|\})
+\big[\ c(\alpha_{\t{P}_J}\uhr p)
+ = \t{\ell}\ \big].$$
+\end{claim}
+\begin{proof}
+First we prove the claim for $n=1$.
+By definition of $c_1(\sigma) = \langle P'_0,\t{P}_0,j_0 \rangle$,
+letting $\beta = \sigma_{P'_0}$,
+$c_0(\beta) = c_0(\beta_{\t{P}_0})= j_0=\t{\ell}$.
+In other words,
+ for any subset $J\subseteq \{0\}$,
+$$(\forall p\in \big\{ \min\{\t{P}_j : 1 \leq j \leq 0\}\big\} \cup\{|\beta|\})
+\big[\ c(\beta_{\t{P}_J}\uhr p)
+ = \t{\ell}\ \big].$$
+So the claim holds for $n=1$.
+Suppose now the claim
+ holds for $n-1$.
+
+Suppose $c_n(\sigma) = \langle P'_{n-1},\t{P}_{n-1},j_{n-1} \rangle$. Let $\beta = \sigma_{P'_{n-1}}$. We have $c_{n-1}(\beta) =c_{n-1}(\beta_{\t{P}_{n-1}}) = c_{n-1}(\beta\uhr \min \t{P}_{n-1} ) = j_{n-1} = \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$. As $c_{n-1}(\beta) = \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$ and as $\t{\ell} \lhd \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$, by induction hypothesis, for any subset $J$ of $\{0,\cdots,n-2\}$ we have:
+\begin{align}\label{ovweq1}
+&c(\beta_{(\cup_{i\leq n-2} P_i')\cup \t{P}_J}) = \t{\ell}.
+\end{align}
+
+Let $\beta' = \beta_{\t{P}_{n-1}}$. As $c_{n-1}(\beta') = \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$ and as $\t{\ell} \lhd \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$, by induction hypothesis, for any subset $J$ of $\{0,\cdots,n-2\}$ we have:
+\begin{align}\label{ovweq2}
+&c(\beta'_{(\cup_{i\leq n-2} P_i')\cup \t{P}_J}) = \t{\ell}.
+\end{align}
+
+As $c_{n-1}(\beta\uhr \min \t{P}_{n-1} ) = \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$ and as $\t{\ell} \lhd \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$, by induction hypothesis, for any subset $J$ of $\{0,\cdots,n-2\}$ we have:
+\begin{align}\label{ovweq4}
+&(\forall p \in\big\{ \min \t{P}_j : 1\leq j\leq n-2\big\}\cup \big\{|\beta\uhr \min\t{P}_{n-1}|\big\})
+\big[\ c(\beta_{(\cup_{i\leq n-2} P_i')\cup\t{P}_J}\uhr p) = \t{\ell}\ \big].
+\end{align}
+But $|\beta\uhr \min\t{P}_{n-1}| = \min \t{P}_{n-1}$. So (\ref{ovweq4}) means for any subset $J$ of $\{0,\cdots,n-2\}$ we have:
+\begin{align}\nonumber
+&(\forall p \in\big\{ \min \t{P}_j : 1\leq j\leq n-1\big\})
+\big[\ c(\beta_{(\cup_{i\leq n-2} P_i')\cup\t{P}_J}\uhr p) = \t{\ell}\ \big].
+\end{align}
+Or equivalently, for any subset $J$ of $\{0,\cdots,n-1\}$ we have:
+\begin{align}\label{ovweq3}
+&(\forall p \in\big\{ \min \t{P}_j : 1\leq j\leq n-1\big\})\big[\ c(\beta_{(\cup_{i\leq n-2} P_i')\cup\t{P}_J}\uhr p) = \t{\ell}\ \big].
+\end{align}
+
+Now from \ref{ovweq1}, \ref{ovweq2} and \ref{ovweq3} we deduce that for any subset $J$ of $\{0,\cdots,n-1\}$ we have:
+$$(\forall p\in \big\{ \min \t{P}_j : 1 \leq j \leq n-1\big\}\cup\{|\beta|\})\big[\ c(\beta_{(\cup_{i\leq n-2} P_i')\cup\t{P}_J}\uhr p) = \t{\ell}\ \big]$$
+which completes the proof of the claim since
+$\beta_{\cup_{i\leq n-2} P_i'} = \alpha$.
+
+%Note that if $c_n(\sigma) = \langle P'_{n-1},\t{P}_{n-1},j_{n-1} \rangle$,
+%then, letting $\beta = \sigma_{P'_{n-1}}$, we have
+%$c_{n-1}(\beta) =c_{n-1}(\beta_{\t{P}_{n-1}}) =
+%c_{n-1}(\beta\uhr \min \t{P}_{n-1} ) = j_{n-1}
+% = \langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$.
+%Let
+% $P'' = \bigcup_{i\leq n-2}P'_i$,
+% $\t{\beta} = \beta_{P''}$, $\beta' =
+%  \t{\beta}\uhr \min \t{P}_{n-1}$,
+%since
+% $\t{\ell}\in L_0$ is also predecessor of $\langle P'_{n-2},\t{P}_{n-2},j_{n-2}\rangle$,
+% by induction hypothesis,
+% for any subset
+% $J$ of $\{0,\cdots,n-2\}$,
+%\begin{align}\label{ovweq1}
+%&(\forall p \in\big\{ \min \t{P}_j : 1\leq j\leq n-2\big\}\cup\{|\t{\beta}|\})
+%\big[\ c(\t{\beta}_{\t{P}_J}\uhr p) = \t{\ell}\
+%\big],
+%\\ \nonumber
+%&(\forall p \in\big\{ \min \t{P}_j : 1\leq j\leq n-2\big\}\cup\{|\t{\beta}|\})
+%\big[\
+%c(\t{\beta}_{\t{P}_{n-1}\cup \t{P}_J}\uhr p)
+%=\t{\ell}\ \big],
+%\\ \nonumber
+%&\ c(\beta'_{ \t{P}_J})
+%=\t{\ell}.
+%\end{align}
+%But (\ref{ovweq1}) clearly implies
+%for any subset $J$ of $\{0,\cdots,n-1\}$,
+%$$
+%(\forall p\in \big\{ \min \t{P}_j : 1\leq j\leq n-1\big\}\cup\{|\t{\beta}|\})
+%\big[
+%\ c(\t{\beta}_{\t{P}_J}\uhr p) = \t{\ell}
+%\big].
+%$$
+%Since $\t{\beta} = \alpha$ thus the proof of the claim is completed.
+\end{proof}
+
+Let $\mcal{T}_0$ be the $\emptyset'$-computable set of all $\gamma$ such that
+$(\forall i\leq |\gamma|)[\gamma(i)\in L_i]$,
+$\gamma(i) \lhd \gamma(i+1)$ and $\gamma(|\gamma|-1) = c_{|\gamma|-1}(\t{\rho}_{|\gamma|})$.
+Then, let $\mcal{T}$ be the downward closure of the set $\mcal{T}_0$
+by the prefix relation. The tree $\mcal{T}$ is infinite by construction of the strings $\t{\rho_i}$, the colors $c_i$ and the sets $P_i$ : a witness for the $c_i$-validity of $(\t{\rho}_{i+1}, P_{i+1})$ for $\rho_{i+1}$ yields a node of $\mcal{T}_0$ of length $i+2$. The tree $\mcal{T}$ is also $\emptyset'$-computably bounded, and $\emptyset''$-computable.
+Let $j_0*\langle P'_0,\t{P}_0,j_0\rangle *\langle P'_1,\t{P}_1,j_1\rangle *\cdots$
+be an infinite path through $\mcal{T}$ computed by any PA degree over $\emptyset''$.
+By construction, $\langle P'_i,\t{P}_i,j_i\rangle \lhd \langle P'_{i+1},\t{P}_{i+1},j_{i+1} \rangle$.
+Let $X = \bigcup_{i\in\omega}\t{\rho}_i$,
+$P' = \bigcup_{i\in\omega} P'_i$
+and let $Y = X_{P'}$.
+Clearly  $(\forall i \forall n\in \t{P}_i)[Y(n) = 0]$
+and $Y$ is computable in the given PA degree relative to $\emptyset''$.
+Therefore,
+letting $Position = \big\{\min \t{P}_i : i \geq 1\big\}$, it suffices
+to show that
+for all subsets $J$ of $\omega$,
+$$
+(\forall p\in Position)\big[
+c(Y_{\t{P}_J}\uhr p) = j_0\ ].
+$$
+
+Without loss of generality,
+suppose $p = \min \t{P}_n$
+and $J\subseteq \{0,\cdots,n-1\}$.
+Since $j_0*\langle P'_0,\t{P}_0,j_0\rangle*\langle P'_1,\t{P}_1,j_1\rangle*\cdots
+ \langle P'_n,\t{P}_n,j_n\rangle$ is an initial segment of some element in
+ $\mathcal{T}_0$,
+there must exist some
+$N>n$
+ such that
+ $c_N(\t{\rho}_{N+1}) = \langle P'_{N-1},\t{P}_{N-1},j_{N-1}\rangle$.
+ Let $\sigma = \t{\rho}_{N+1}, \alpha =\sigma_{P'}$. Clearly
+ $\alpha\prec Y\wedge |\alpha|>p$. Moreover,
+ by Claim~\ref{ovwclaim2},
+ $c(\alpha_{\t{P}_J}\uhr p) = j_0$.
+ Thus $c(Y_{\t{P}_J}\uhr p) = j_0$.
+
+\end{proof}
+
+Finally, we slightly modify the proof of Theorem~\ref{ovwth1}
+to derive Theorem~\ref{ovwth2}.
+
+\begin{proof}[Proof of Theorem~\ref{ovwth2}]
+The main point is to make the tree
+$\mcal{T}$ $\emptyset'$-computable.
+To ensure this, after we obtain
+$\t{\rho}_i,c_i$, we do not
+directly go to $\t{\rho}_{i+1}$.
+Instead, we $\emptyset'$-compute
+$\t{\rho}_i^{0}\prec\t{\rho}_i^1\prec\cdots
+\prec\t{\rho}_i^{r_i}$
+such that $\t{\rho}_i^0\succ\t{\rho}_i$ and
+$c_i\big(
+\{\tau:\tau\succeq \t{\rho}_i^{r_i} \}\big)
+ \subseteq c_i\big(\big\{\t{\rho}_i^0,\cdots,\t{\rho}^{r_i}_i \big\}
+ \big)$. Then we $\emptyset'$-compute $\t{\rho}_{i+1}\succ
+ \t{\rho}_i^{r_i}$ as in the proof of Theorem~\ref{ovwth1}.
+ Note that this indeed can be
+ achieved using $\emptyset'$ since
+ $c_i$ is computable.
+ Define $\mcal{T}$ to be
+ the set of all $\gamma$ such that
+ $(\forall i\leq |\gamma|)[\gamma(i)\in L_i]$,
+$\gamma(i) \lhd \gamma(i+1)$,
+ and either $|\gamma| = 1\wedge \gamma\in L_0$ or
+ there exists $\t{\rho}_{|\gamma|-1}^u$
+ with $c_{|\gamma|-1}(\t{\rho}_{|\gamma|-1}^u)
+ =\gamma(|\gamma|-1)$.
+ It is easy to see
+that $\mcal{T}$ is $\emptyset'$-computable
+since $c_i$ is computable for all $i$ and
+the sequences $\langle c_i : i \in \omega \rangle$ and
+$\langle \t{\rho}_i^v : i\in\omega, v\leq r_i \rangle$
+are $\emptyset'$-computable.
+
+Now we show that $\mcal{T}$ is a tree.
+Suppose $\gamma\in \mcal{T}$,
+$|\gamma| = n+1$ with $n \geq 1$, and  $c_n(\t{\rho}_n^u)
+ =\gamma(n) = \langle P',\t{P},j \rangle \in L_n$.
+ We claim that $\gamma \uhr n \in \mcal{T}$.
+ If $n = 1$, then $\gamma \uhr 1 \in L_0 \subseteq \mcal{T}$.
+ Otherwise, let
+$\langle Q',\t{Q},k \rangle \in L_{n-1}$ be the predecessor
+  of $\langle P',\t{P},j \rangle$.
+We need to show that
+there exists $\t{\rho}_{n-1}^v$ such that
+$c_{n-1}(\t{\rho}_{n-1}^v) = \langle Q',\t{Q},k \rangle$.
+$c_n(\sigma) = \langle P',\t{P},j \rangle$ implies
+that, letting $\alpha = \sigma_{P'}$,
+$c_{n-1}(\alpha) = c_{n-1}(\alpha\uhr \min \t{P})
+ = j = \langle Q',\t{Q},k \rangle$.
+Note that $\alpha\succeq \t{\rho}_{n-1}^{r_{n-1}}$
+since $P'> |\t{\rho}_{n-1}^{r_{n-1}}|$.
+But $c_{n-1}\big( \{\tau:\tau\succeq \t{\rho}_{n-1}^{r_{n-1}}\}\big)
+\subseteq c_{n-1}\big(\{\t{\rho}_{n-1}^0,\cdots,\t{\rho}_{n-1}^{r_{n-1}}\} \big)$.
+Therefore there exists $\t{\rho}_{n-1}^u$ such that
+$c_{n-1}(\t{\rho}_{n-1}^u) = \langle Q',\t{Q},k \rangle$.
+It follows that $\gamma \uhr n \in \mcal{T}$ and that $\mcal{T}$ is a tree.
+%Reapply the argument with $\sigma$ replaced
+%by $\t{\rho}^u_{n-1}$, $c_n$ replaced by $c_{n-1}$
+%and $(P',\t{P},j)$ replaced by $(Q'_{n-1},\t{Q}_{n-1},k_{n-1})$,
+%since $\t{\rho}^u_{n-1}\succ \t{\rho}^{r_{n-2}}_{n-2}$,
+%we have that for some $\t{\rho}^r_{n-2}$,
+% $c_{n-2}(\t{\rho}^r_{n-2})
+% = (Q'_{n-2},\t{Q}_{n-2},k_{n-2})$.
+% Reapplying the argument $n-m$ times produces
+% a $\t{\rho}_{m}^v$ with
+% $c_m(\t{\rho}_m^v) = (Q',\t{Q},k)$.
+Any PA degree relative to $\emptyset'$ computes an infinite path through $\mcal{T}$. The rest of the proof goes exactly the same
+ as Theorem~\ref{ovwth1}.
+\end{proof}
+
+We now give an alternative proof of Theorem~\ref{ovwth2} based on the definitional complexity of the solutions of~$c$.
+
+\begin{proof}[Second proof of Theorem~\ref{ovwth2}]
+Let $P_0, P_1, \dots$ be the $\emptyset'$-computable sequence defined in the proof of Theorem~\ref{ovwth1}. We have seen that there exists an infinite ordered variable word such that the $n$th variable kind appears before the position $\max P_n$. Let $\mcal{T}$ be the tree of all finite ordered variable words which are finite solutions to $c$ and such that the $n$th variable appears before the position $\max P_n$. By the previous observation, the tree is infinite, $\emptyset'$-computable, and $\emptyset'$-computably bounded. Any PA degree relative to $\emptyset'$ computes an infinite variable word which, by construction of $\mcal{T}$, is a solution to $c$. This completes the proof of Theorem~\ref{ovwth2}.
+\end{proof}
+
+Note that the above proof can be slightly modified to obtain a proof of a sequential version of the ordered variable word.
+
+\begin{statement}
+$\mathsf{Seq}\ovw{n}{\ell}$ is the statement ``If $c_0, c_1, \dots$ is a sequence of $\ell$-colorings of a fixed alphabet $A$ of cardinality $n$, there exists a variable word $W$ such that for every $i \in \omega$ and every $\bar b \in A^i$, $\{W(\bar b\bar a) : \bar a \in A^{<\infty}\}$ is monochromatic for $c_i$.''
+\end{statement}
+
+\begin{theorem}
+For every computable instance $c_0, c_1, \dots$ of $\mathsf{Seq}\ovw{2}{\ell}$,
+every PA degree relative to $\emptyset'$ computes a solution to $\bar c$.
+\end{theorem}
+\begin{proof}
+	The proof is similar to Theorem~\ref{ovwth2}. Using Lemma~\ref{ovwprop1}, we first construct a $\emptyset'$-computable sequence of strings
+ $\t{\rho}_0 \prec \t{\rho}_1 \prec\cdots$,
+a sequence of finite sets $P_i\subseteq \big\{
+|\t{\rho}_{i-1}|,\cdots, |\t{\rho}_i|-1
+\big\}$ and a sequence of colorings $d_i:[\t{\rho}_i]^\preceq\rightarrow
+L_i$ inductively as follows.
+$\t{\rho}_0 = \varepsilon$ and $d_0 = c_0$.
+Given $\t{\rho}_i$ and $d_i:[\t{\rho}_i]^\preceq\rightarrow
+L_i$, let $\t{\rho}_{i+1} \succeq \t{\rho}_i$
+and $P_i\subseteq
+\big\{ |\t{\rho}_i|,\cdots,|\t{\rho}_{i+1}|-1\big\}$ be such that
+$(\t{\rho}_{i+1}, P_i)$- is $d_i$-valid,
+and let $d_{i+1}$ be the coloring of $[\t{\rho}_{i+1}]^{\preceq}$ which on $\sigma \succeq \t{\rho}_{i+1}$
+associates $\langle P', \t{P}, j, k \rangle$ such that
+$(P',\t{P})$ witnesses $d_i$-validity of $(\t{\rho}_{i+1}, P_i)$
+for $\sigma$, $d_i(\sigma_{P'}) = j$ and $c_{i+1}(\sigma_{P'}) = k$. Note that the main difference with the previous construction is that we handle more and more colorings among $c_0, c_1, \dots$ at each level. The remainder of the proof is the same as in Theorem~\ref{ovwth2}.
+\end{proof}
+
+The theorem above is optimal, in that we can obtain the following reversal.
+
+\begin{theorem}
+There is a computable instance $c_0, c_1, \dots$ of $\mathsf{Seq}\ovw{2}{2}$,
+such that every solution is of PA degree relative to $\emptyset'$.
+\end{theorem}
+\begin{proof}
+Let $R_0, R_1, \dots$ be a uniformly computable sequence of sets
+such that for every $e$,
+if $\Phi^{\emptyset'}_e(e) \downarrow = 0$ then $R_e$ is finite,
+and if $\Phi^{\emptyset'}_e(e) \downarrow = 1$ then $R_e$ is cofinite.
+In particular, any function $f : \omega \to 2$ such that $f(e)$ gives
+a side of $R_e$ which is infinite, is DNC$_2$ relative to $\emptyset'$,
+hence of PA degree relative to $\emptyset'$.
+Let $c_i : 2^{<\infty} \to 2$ be defined by $c_i(\sigma) = 1$ iff $|\sigma| \in R_i$, and let $W$ be a solution to $\bar c$, that is, a variable word $W$ such that for every $i \in \omega$ and every $\bar b \in A^i$, $\{W(\bar b\bar a) : \bar a \in A^{<\infty}\}$ is monochromatic for $c_i$.
+We claim that $W$ computes such a function $f$.
+Given $e$, let $f(e) = c_e(W(\bar b))$, where $\bar b  \in 2^e$ is arbitrary (this is well-defined, since $c_e(\bar b)$ depends only on the length of $\bar b$). By definition of $W$, $\{W(\bar b\bar a) : \bar a \in A^{<\infty}\}$ is monochromatic for $c_e$, the color of $c_e(W(\bar b))$ appears infinitely often in $R_e$. Therefore, $W$ is of PA degree relative to $\emptyset'$. This completes the proof.
+\end{proof}

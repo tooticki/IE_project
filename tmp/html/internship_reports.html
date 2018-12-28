@@ -1,0 +1,798 @@
+<!DOCTYPE html><html>
+<head>
+<title></title>
+<style type="text/css">
+<!--
+.xflip {
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: fliph;
+}
+.yflip {
+    -moz-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: flipv;
+}
+.xyflip {
+    -moz-transform: scaleX(-1) scaleY(-1);
+    -webkit-transform: scaleX(-1) scaleY(-1);
+    -o-transform: scaleX(-1) scaleY(-1);
+    transform: scaleX(-1) scaleY(-1);
+    filter: fliph + flipv;
+}
+-->
+</style>
+</head>
+<body>
+<a name=1></a>Growth&#160;of&#160;Robinson&#160;tilings<br/>
+Daria&#160;Pchelina<br/>
+August,&#160;2018<br/>
+1<br/>
+Introduction<br/>
+A&#160;Wang&#160;tile&#160;is&#160;a&#160;unit&#160;square&#160;with&#160;colored&#160;edges,&#160;such&#160;as:<br/>
+;&#160;a&#160;set&#160;of&#160;Wang&#160;tiles&#160;is&#160;called&#160;a&#160;tileset.<br/>
+A&#160;tiling&#160;of&#160;the&#160;plane&#160;by&#160;a&#160;tileset&#160;A&#160;is&#160;a&#160;covering&#160;of&#160;the&#160;plane&#160;with&#160;translated&#160;copies&#160;of&#160;tiles&#160;from&#160;A.&#160;A<br/>
+tiling&#160;of&#160;the&#160;plane&#160;is&#160;called&#160;valid&#160;if&#160;for&#160;any&#160;pair&#160;of&#160;neighboring&#160;tiles,&#160;their&#160;adjacent&#160;edges&#160;have&#160;the&#160;same<br/>color&#160;as,&#160;for&#160;instance,&#160;in:<br/>
+.&#160;Figure&#160;<a href="internship_reports.html#1">1&#160;</a>shows&#160;an&#160;example&#160;of&#160;a&#160;tileset&#160;and&#160;a&#160;valid&#160;tiling&#160;by&#160;this&#160;tileset.<br/>
+Figure&#160;1:&#160;Example&#160;of&#160;a&#160;tileset&#160;and&#160;of&#160;a&#160;valid&#160;tiling.<br/>
+These&#160;tiles&#160;were&#160;introduced&#160;by&#160;Hao&#160;Wang&#160;in&#160;1961&#160;<a href="internship_reports.html#14">[13]&#160;</a>as&#160;a&#160;simple&#160;combinatorial&#160;problem:&#160;given&#160;a<br/>
+finite&#160;tileset&#160;A,&#160;decide&#160;whether&#160;there&#160;exists&#160;a&#160;valid&#160;tiling&#160;of&#160;the&#160;plane&#160;by&#160;A.&#160;It&#160;is&#160;called&#160;the&#160;Domino<br/>
+Problem.&#160;Wang&#160;conjectured&#160;that&#160;there&#160;exist&#160;no&#160;aperiodic&#160;tilesets&#160;(in&#160;other&#160;words,&#160;tilesets&#160;generating&#160;only<br/>
+aperiodic&#160;tilings&#160;of&#160;the&#160;plane);&#160;assuming&#160;this,&#160;he&#160;could&#160;find&#160;an&#160;algorithm&#160;solving&#160;the&#160;Domino&#160;Problem.<br/>
+However,&#160;3&#160;years&#160;later,&#160;Robert&#160;Berger&#160;<a href="internship_reports.html#14">[1]&#160;</a>proved&#160;the&#160;Domino&#160;Problem&#160;to&#160;be&#160;undecidable&#160;and&#160;showed&#160;a<br/>
+counterexample&#160;to&#160;Wang’s&#160;conjecture.&#160;Since&#160;then,&#160;researchers&#160;got&#160;involved&#160;in&#160;a&#160;kind&#160;of&#160;a&#160;“competition”<br/>
+for&#160;the&#160;smallest&#160;aperiodic&#160;Wang&#160;tileset&#160;<a href="internship_reports.html#14">[2,&#160;8,&#160;11].&#160;</a>This&#160;competition&#160;was&#160;over&#160;in&#160;2015&#160;when&#160;Jeandel&#160;and<br/>
+Rao&#160;found&#160;the&#160;smallest&#160;aperiodic&#160;tileset&#160;(11&#160;tiles)&#160;and&#160;proved&#160;by&#160;an&#160;exhaustive&#160;search&#160;that&#160;there&#160;exist&#160;no<br/>
+smaller&#160;aperiodic&#160;tilesets&#160;<a href="internship_reports.html#14">[7].</a><br/>
+Now&#160;Wang&#160;tiles&#160;are&#160;widely&#160;studied&#160;in&#160;the&#160;context&#160;of&#160;discrete&#160;dynamical&#160;systems,&#160;combinatorics,<br/>
+computability&#160;theory&#160;and&#160;geometry.&#160;However,&#160;in&#160;all&#160;of&#160;these&#160;areas,&#160;a&#160;tiling&#160;is&#160;considered&#160;as&#160;an&#160;object<br/>
+given&#160;a&#160;priori.&#160;There&#160;are&#160;also&#160;applications&#160;in&#160;chemistry&#160;and&#160;physics,&#160;but&#160;they&#160;require&#160;to&#160;study&#160;the&#160;process<br/>
+of&#160;creation&#160;of&#160;a&#160;given&#160;tiling;&#160;we&#160;call&#160;it&#160;growth.<br/>
+There&#160;exist&#160;many&#160;processes&#160;in&#160;nature&#160;where&#160;tiny&#160;particles,&#160;forced&#160;by&#160;local&#160;conditions,&#160;assemble&#160;together<br/>
+in&#160;a&#160;large&#160;structure.&#160;Crystal&#160;growth&#160;and&#160;self-assembly&#160;of&#160;DNA&#160;molecules&#160;are&#160;the&#160;most&#160;common&#160;examples<br/>
+of&#160;this&#160;phenomenon.&#160;Tilings&#160;of&#160;the&#160;plane&#160;are&#160;a&#160;possible&#160;mathematical&#160;model&#160;for&#160;these&#160;processes;&#160;for<br/>
+instance,&#160;Wang&#160;tilings&#160;are&#160;used&#160;to&#160;simulate&#160;molecular&#160;growth&#160;<a href="internship_reports.html#14">[3].&#160;</a>In&#160;general,&#160;tiles&#160;could&#160;have&#160;non-square<br/>
+shapes&#160;with&#160;the&#160;same&#160;color-constraints&#160;mentioned&#160;above;&#160;for&#160;instance,&#160;Penrose&#160;tilings&#160;<a href="internship_reports.html#14">[6,10]&#160;</a>describe&#160;the<br/>
+behavior&#160;of&#160;quasicrystals.&#160;Socolar,&#160;in&#160;<a href="internship_reports.html#14">[12],&#160;</a>formalized&#160;the&#160;notion&#160;of&#160;growth&#160;for&#160;Penrose&#160;tilings&#160;and,&#160;among<br/>
+other&#160;things,&#160;showed&#160;that&#160;starting&#160;with&#160;a&#160;specific&#160;configuration,&#160;such&#160;a&#160;tiling&#160;can&#160;cover&#160;the&#160;whole&#160;plane<br/>
+in&#160;a&#160;process&#160;of&#160;growth.<br/>
+1<br/>
+<hr/>
+<a name=2></a>In&#160;1971,&#160;Raphael&#160;Robinson&#160;introduced&#160;an&#160;aperiodic&#160;set&#160;of&#160;32&#160;square&#160;tiles;&#160;he&#160;used&#160;this&#160;tileset&#160;to&#160;design<br/>
+a&#160;simple&#160;and&#160;elegant&#160;proof&#160;of&#160;the&#160;undecidability&#160;of&#160;the&#160;Domino&#160;Problem&#160;<a href="internship_reports.html#14">[11].&#160;</a>This&#160;tileset&#160;is&#160;now&#160;classical<br/>
+and&#160;is&#160;used&#160;in&#160;recent&#160;constructions&#160;from&#160;information&#160;theory&#160;(for&#160;instance,&#160;to&#160;prove&#160;the&#160;existence&#160;of&#160;tilesets<br/>
+with&#160;high&#160;Kolmogorov&#160;complexity&#160;<a href="internship_reports.html#14">[4]).</a><br/>
+As&#160;we&#160;have&#160;already&#160;mentioned,&#160;all&#160;tilings&#160;of&#160;the&#160;plane&#160;by&#160;the&#160;Robinson&#160;tiles&#160;are&#160;aperiodic.&#160;In&#160;other<br/>
+words,&#160;for&#160;any&#160;valid&#160;Robinson&#160;tiling&#160;τ&#160;there&#160;exist&#160;no&#160;vector&#160;p&#160;∈&#160;Z2&#160;such&#160;that&#160;τ(z)&#160;=&#160;τ(z&#160;+&#160;p)&#160;for&#160;any<br/>z&#160;∈&#160;Z2.&#160;This&#160;holds&#160;because&#160;Robinson&#160;tilings&#160;have&#160;hierarchical&#160;(think:&#160;fractal)&#160;structure.&#160;Penrose&#160;tilings,<br/>
+whose&#160;growth&#160;has&#160;been&#160;studied&#160;before,&#160;also&#160;have&#160;hierarchical&#160;structure&#160;(but&#160;different&#160;from&#160;the&#160;Robinson’s<br/>
+hierarchy).&#160;The&#160;first&#160;question&#160;that&#160;we&#160;could&#160;ask&#160;is:&#160;does&#160;hiararchy&#160;imply&#160;specific&#160;growth&#160;properties?<br/>
+Besides&#160;that,&#160;there&#160;exist&#160;many&#160;constructions&#160;based&#160;on&#160;the&#160;Robinson&#160;tileset,&#160;so&#160;after&#160;analysing&#160;its&#160;growth,<br/>
+we&#160;could&#160;easily&#160;expand&#160;the&#160;results&#160;to&#160;these&#160;constructions.<br/>
+Here&#160;we&#160;study&#160;the&#160;question&#160;of&#160;growth&#160;for&#160;Robinson&#160;tilings;&#160;we&#160;simulate&#160;this&#160;process&#160;with&#160;cellular<br/>
+automata.&#160;It&#160;turns&#160;out&#160;that,&#160;by&#160;contrast&#160;with&#160;Penrose&#160;tilings&#160;<a href="internship_reports.html#14">[12],&#160;</a>Robinson&#160;tilings&#160;can&#160;not&#160;grow&#160;in&#160;our<br/>
+model.<br/>
+In&#160;Section&#160;<a href="internship_reports.html#2">2,&#160;</a>we&#160;explain&#160;the&#160;local&#160;rules&#160;and&#160;hierarchy&#160;of&#160;Robinson&#160;tilings.&#160;The&#160;formal&#160;definition&#160;of<br/>
+the&#160;growth&#160;of&#160;Robinson&#160;tilings&#160;is&#160;given&#160;in&#160;Section&#160;<a href="internship_reports.html#6">3.&#160;</a>In&#160;Section&#160;<a href="internship_reports.html#8">4,&#160;</a>we&#160;state&#160;the&#160;main&#160;result&#160;and&#160;prove&#160;it.<br/>
+1.1<br/>
+Preliminaries<br/>
+Elements&#160;of&#160;Z2&#160;are&#160;called&#160;cells.&#160;Given&#160;a&#160;tileset&#160;A,&#160;a&#160;tiling&#160;of&#160;the&#160;plane&#160;is&#160;a&#160;function&#160;Z2&#160;→&#160;A.&#160;A<br/>
+tiling&#160;of&#160;D&#160;⊆&#160;Z2&#160;is&#160;a&#160;function&#160;D&#160;→&#160;A,&#160;it&#160;is&#160;called&#160;a&#160;configuration&#160;of&#160;D.&#160;We&#160;denote&#160;a&#160;restriction&#160;of&#160;a<br/>
+configuration&#160;S&#160;:&#160;D&#160;→&#160;A&#160;to&#160;a&#160;set&#160;F&#160;⊆&#160;D&#160;by&#160;S|F&#160;.<br/>
+Given&#160;a&#160;cell&#160;z,&#160;a&#160;square&#160;of&#160;size&#160;(2t&#160;+&#160;1)&#160;×&#160;(2t&#160;+&#160;1)&#160;centered&#160;on&#160;z&#160;is&#160;called&#160;a&#160;t-neigborhood&#160;of&#160;z&#160;and<br/>
+is&#160;denoted&#160;by&#160;Bt(z).&#160;Usually&#160;it&#160;is&#160;called&#160;the&#160;Moore&#160;neighborhood.&#160;(See&#160;Figure&#160;<a href="internship_reports.html#2">2).</a><br/>
+(-2,2)&#160;(-1,2)&#160;(0,2)&#160;(1,2)&#160;(2,2)<br/>
+(-2,1)&#160;(-1,1)&#160;(0,1)&#160;(1,1)&#160;(2,1)<br/>
+(-2,0)&#160;(-1,0)&#160;(0,0)&#160;(1,0)&#160;(2,0)<br/>
+(-2,-1)(-1,-1)(0,-1)&#160;(1,-1)&#160;(2,-1)<br/>
+(-2,-2)(-1,-2)(0,-2)&#160;(1,-2)&#160;(2,-2)<br/>
+Figure&#160;2:&#160;2-neighborhood&#160;of&#160;the&#160;cell&#160;(0,&#160;0).<br/>
+We&#160;define&#160;a&#160;quadrant&#160;with&#160;origin&#160;(x0,&#160;y0)&#160;∈&#160;Z2&#160;as&#160;a&#160;set&#160;Qx<br/>
+=&#160;{(x,&#160;y)&#160;|&#160;x&#160;≥&#160;x<br/>
+0&#160;y0<br/>
+0,&#160;y&#160;≥&#160;y0}&#160;<a href="internship_reports.html#2">1.</a><br/>
+2<br/>
+The&#160;Robinson&#160;tileset<br/>
+The&#160;Robinson&#160;tileset&#160;is&#160;the&#160;set&#160;of&#160;32&#160;tiles&#160;obtained&#160;by&#160;rotations&#160;from&#160;the&#160;ones&#160;displayed&#160;on&#160;Figure&#160;<a href="internship_reports.html#2">3.</a><br/>
+A&#160;piece&#160;of&#160;a&#160;Robinson&#160;tiling&#160;is&#160;displayed&#160;in&#160;Figure&#160;<a href="internship_reports.html#3">4.</a><br/>
+Figure&#160;3:&#160;The&#160;Robinson&#160;tiles,&#160;up&#160;to&#160;rotation.<br/>
+1We&#160;consider&#160;only&#160;north-east&#160;quadrants&#160;since&#160;the&#160;internship&#160;took&#160;place&#160;in&#160;the&#160;north-east<br/>
+2<br/>
+<hr/>
+<a name=3></a>Figure&#160;4:&#160;A&#160;piece&#160;of&#160;a&#160;Robinson&#160;tiling.<br/>
+2.1<br/>
+Local&#160;rules<br/>
+The&#160;local&#160;rules&#160;for&#160;Robinson&#160;tiles,&#160;as&#160;they&#160;are&#160;displayed&#160;in&#160;Figure&#160;<a href="internship_reports.html#2">3,&#160;</a>are&#160;not&#160;quite&#160;color&#160;constraints.<br/>
+Instead,&#160;a&#160;tiling&#160;of&#160;the&#160;plane&#160;by&#160;Robinson&#160;tiles&#160;is&#160;valid&#160;if&#160;it&#160;satisfies&#160;the&#160;rules:<br/>
+(→)&#160;For&#160;any&#160;pair&#160;of&#160;neighbor&#160;tiles,&#160;arrows&#160;meeting&#160;at&#160;their&#160;adjacent&#160;edge&#160;have&#160;the&#160;same&#160;color,&#160;direction<br/>
+and&#160;position&#160;on&#160;the&#160;edge.&#160;(See&#160;Figure&#160;<a href="internship_reports.html#3">5&#160;</a>for&#160;an&#160;example).<br/>
+(::)&#160;Among&#160;any&#160;four&#160;tiles&#160;sharing&#160;a&#160;corner,&#160;exactly&#160;one&#160;has&#160;yellow&#160;dots&#160;in&#160;its&#160;corners.&#160;(See&#160;Figure&#160;<a href="internship_reports.html#3">6&#160;</a>for<br/>
+an&#160;example).<br/>
+Figure&#160;5:&#160;Valid&#160;pairs&#160;of&#160;adjacent&#160;tiles.<br/>
+Figure&#160;6:&#160;Four&#160;tiles&#160;sharing&#160;a&#160;corner.<br/>
+It&#160;is&#160;possible&#160;to&#160;design&#160;a&#160;set&#160;of&#160;56&#160;Wang&#160;tiles&#160;equivalent&#160;to&#160;the&#160;Robinson&#160;tileset,&#160;but&#160;we&#160;won’t&#160;do&#160;it<br/>
+here.Given&#160;a&#160;configuration&#160;of&#160;D&#160;and&#160;a&#160;tile&#160;in&#160;this&#160;configuration,&#160;this&#160;tile&#160;is&#160;called&#160;valid&#160;in&#160;the&#160;configuration<br/>
+if&#160;each&#160;2&#160;×&#160;2-squares&#160;containing&#160;this&#160;tile&#160;satisfies&#160;the&#160;Robinson&#160;rules&#160;or&#160;can&#160;be&#160;extended&#160;to&#160;such&#160;square<br/>
+(if&#160;D&#160;doesn’t&#160;contain&#160;one&#160;of&#160;these&#160;cells).&#160;A&#160;configuration&#160;is&#160;called&#160;valid&#160;if&#160;all&#160;its&#160;tiles&#160;are&#160;valid&#160;in&#160;it.<br/>
+2.2<br/>
+Hierarchy<br/>
+We&#160;see&#160;red&#160;squares&#160;of&#160;different&#160;sizes&#160;in&#160;<a href="internship_reports.html#3">Figure4,&#160;</a>they&#160;appear&#160;in&#160;all&#160;Robinson&#160;tilings&#160;of&#160;the&#160;plane.&#160;We<br/>
+define&#160;four&#160;sequences&#160;of&#160;macrotiles&#160;an,&#160;bn,&#160;cn&#160;and&#160;dn&#160;as&#160;follows.&#160;They&#160;will&#160;help&#160;us&#160;to&#160;analyze&#160;the&#160;hierarchy<br/>
+of&#160;Robinson&#160;tilings.<br/>
+•&#160;Four&#160;tiles&#160;with&#160;yellow&#160;dots&#160;are&#160;called&#160;macrotiles&#160;of&#160;rank&#160;0,&#160;they&#160;are&#160;denoted&#160;as&#160;a0,&#160;b0,&#160;c0&#160;and&#160;d0<br/>
+as&#160;shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#4">7.</a><br/>
+3<br/>
+<hr/>
+<a name=4></a>•&#160;Each&#160;macrotile&#160;of&#160;rank&#160;1&#160;is&#160;a&#160;3&#160;×&#160;3-square,&#160;whose&#160;corner&#160;tiles&#160;are&#160;filled&#160;with&#160;a0,&#160;b0,&#160;c0&#160;and&#160;d0&#160;as<br/>
+shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#4">8.&#160;</a>For&#160;any&#160;x&#160;∈&#160;{a,&#160;b,&#160;c,&#160;d},&#160;the&#160;central&#160;cell&#160;of&#160;x1&#160;is&#160;the&#160;same&#160;as&#160;x0&#160;without&#160;dots,<br/>
+and&#160;the&#160;4&#160;remaining&#160;cells&#160;are&#160;filled&#160;with&#160;the&#160;only&#160;tiles&#160;valid&#160;for&#160;these&#160;positions.<br/>
+•&#160;Suppose&#160;macrotiles&#160;of&#160;rank&#160;n&#160;are&#160;defined;&#160;they&#160;are&#160;(2n+1&#160;−&#160;1)&#160;×&#160;(2n+1&#160;−&#160;1)-squares.&#160;Then&#160;each<br/>
+(n&#160;+&#160;1)-macrotile&#160;is&#160;a&#160;(2n+2&#160;−&#160;1)&#160;×&#160;(2n+2&#160;−&#160;1)-square,&#160;whose&#160;corners&#160;are&#160;filled&#160;by&#160;an,&#160;bn,&#160;cn&#160;and&#160;dn<br/>
+in&#160;the&#160;same&#160;order&#160;as&#160;for&#160;1-macrotiles.&#160;For&#160;any&#160;x&#160;∈&#160;{a,&#160;b,&#160;c,&#160;d},&#160;the&#160;central&#160;cell&#160;of&#160;xn+1&#160;is&#160;the&#160;same<br/>
+as&#160;x0&#160;without&#160;dots,&#160;and&#160;the&#160;remaining&#160;cells&#160;forming&#160;a&#160;large&#160;cross&#160;are&#160;filled&#160;with&#160;the&#160;only&#160;possible<br/>
+tiles&#160;for&#160;these&#160;cells.<br/>
+The&#160;detailed&#160;constructions&#160;of&#160;macrotiles&#160;a1&#160;and&#160;a2&#160;are&#160;shown&#160;in&#160;Figures&#160;<a href="internship_reports.html#4">8,&#160;9.</a><br/>
+a0&#160;−<br/>
+−&#160;b0<br/>
+c0&#160;−<br/>
+−&#160;d0<br/>
+Figure&#160;7:&#160;Robinson&#160;macrotiles&#160;a0,&#160;b0,&#160;c0&#160;and&#160;d0.<br/>
+Figure&#160;8:&#160;Transformation&#160;of&#160;a&#160;macrotile&#160;of&#160;level&#160;0&#160;(a0)&#160;in&#160;a&#160;macrotile&#160;of&#160;level&#160;1&#160;(a1).<br/>
+Figure&#160;9:&#160;Transformation&#160;of&#160;a1&#160;in&#160;a2.<br/>
+Observe&#160;that&#160;for&#160;each&#160;n&#160;∈&#160;N,&#160;macrotiles&#160;bn,&#160;dn&#160;and&#160;cn&#160;can&#160;be&#160;obtained&#160;by&#160;rotating&#160;an&#160;clockwise&#160;by<br/>
+π&#160;,&#160;π&#160;and&#160;3π&#160;radians&#160;respectively.&#160;Besides&#160;that,&#160;for&#160;each&#160;macrotile&#160;of&#160;rank&#160;n,&#160;for&#160;any&#160;m&#160;&lt;&#160;n,&#160;macrotiles<br/>
+2<br/>
+2<br/>
+of&#160;rank&#160;m&#160;appear&#160;periodically&#160;in&#160;the&#160;macrotile&#160;of&#160;rank&#160;n&#160;with&#160;vertical&#160;and&#160;horizontal&#160;periods&#160;equal&#160;to<br/>2m+2.&#160;For&#160;instance,&#160;0-macrotiles&#160;appear&#160;in&#160;a&#160;2-macrotile&#160;with&#160;period&#160;(4,&#160;4)&#160;(see&#160;Figure&#160;<a href="internship_reports.html#4">9).</a><br/>
+Theorem&#160;<a href="internship_reports.html#4">1&#160;</a>describes&#160;all&#160;possible&#160;Robinson&#160;tilings.&#160;You&#160;can&#160;find&#160;the&#160;proof&#160;in&#160;<a href="internship_reports.html#14">[5,&#160;9].</a><br/>
+Theorem&#160;1.&#160;In&#160;a&#160;valid&#160;Robinson&#160;tiling&#160;of&#160;the&#160;plane,&#160;for&#160;each&#160;n&#160;∈&#160;N,&#160;any&#160;occurrence&#160;of&#160;a&#160;n-macrotile<br/>
+belongs&#160;to&#160;an&#160;occurrence&#160;of&#160;some&#160;(n&#160;+&#160;1)-macrotile.<br/>
+4<br/>
+<hr/>
+<a name=5></a>It&#160;turns&#160;out&#160;that&#160;Theorem&#160;<a href="internship_reports.html#4">1&#160;</a>is&#160;still&#160;valid&#160;in&#160;quadrants,&#160;instead&#160;of&#160;full&#160;tilings.<br/>
+Lemma&#160;1.&#160;Given&#160;a&#160;valid&#160;tiling&#160;of&#160;a&#160;quadrant&#160;Q&#160;for&#160;any&#160;n&#160;∈&#160;N&#160;there&#160;exists&#160;a&#160;subquadrant&#160;Qn&#160;of&#160;Q&#160;where,<br/>
+for&#160;any&#160;k&#160;&lt;&#160;n,&#160;each&#160;occurrence&#160;of&#160;a&#160;k-macrotile&#160;is&#160;contained&#160;in&#160;an&#160;occurrence&#160;of&#160;a&#160;(k&#160;+&#160;1)-macrotile.<br/>
+Proof.&#160;As&#160;in&#160;Theorem&#160;<a href="internship_reports.html#4">1.</a><br/>
+A&#160;macrotile&#160;grid&#160;of&#160;rank&#160;n&#160;is&#160;a&#160;periodic&#160;set&#160;of&#160;n-macrotiles&#160;separated&#160;by&#160;empty&#160;rows&#160;of&#160;width&#160;1<br/>
+which&#160;can&#160;be&#160;completed&#160;to&#160;get&#160;a&#160;valid&#160;tiling&#160;of&#160;the&#160;plane.&#160;Macrotile&#160;grids&#160;of&#160;ranks&#160;0&#160;and&#160;n&#160;are&#160;shown&#160;in<br/>
+Figures&#160;<a href="internship_reports.html#5">10&#160;</a>and&#160;<a href="internship_reports.html#5">11.</a><br/>
+..<br/>
+.<br/>
+.<br/>
+..<br/>
+2n+1&#160;−&#160;1<br/>
+2n+2&#160;−&#160;1<br/>
+.&#160;.&#160;.<br/>
+.&#160;.&#160;.<br/>
+.&#160;.&#160;.<br/>
+.&#160;.&#160;.<br/>
+..<br/>
+..<br/>
+.<br/>
+.<br/>
+Figure&#160;10:&#160;A&#160;macrotile&#160;grid&#160;of&#160;rank&#160;0<br/>
+Figure&#160;11:&#160;A&#160;macrotile&#160;grid&#160;of&#160;rank&#160;n<br/>
+An&#160;infinite&#160;vertical&#160;(respectively,&#160;horizontal)&#160;line&#160;for&#160;a&#160;tiling&#160;τ&#160;of&#160;a&#160;quadrant&#160;Q&#160;is&#160;a&#160;column<br/>
+(respectively,&#160;line)&#160;of&#160;cells,&#160;separating&#160;the&#160;quadrant&#160;in&#160;two&#160;nonconnected&#160;components,&#160;all&#160;cells&#160;of&#160;which<br/>
+contain&#160;vertical&#160;(respectively,&#160;horizontal)&#160;arrows&#160;of&#160;the&#160;same&#160;color&#160;and&#160;position&#160;on&#160;the&#160;side,&#160;while&#160;the<br/>
+direction&#160;can&#160;change.&#160;Here&#160;is&#160;an&#160;example&#160;of&#160;an&#160;infinite&#160;horizontal&#160;line:<br/>
+.&#160;.&#160;.<br/>
+Lemma&#160;2.&#160;For&#160;a&#160;valid&#160;Robinson&#160;tiling&#160;τ&#160;of&#160;a&#160;quadrant&#160;Q0&#160;⊂&#160;Q1,&#160;if&#160;there&#160;are&#160;no&#160;infinite&#160;lines&#160;in&#160;Q0&#160;then<br/>
+there&#160;exists&#160;a&#160;macrotile&#160;grid&#160;of&#160;rank&#160;0&#160;which&#160;agrees&#160;with&#160;the&#160;restriction&#160;of&#160;τ&#160;to&#160;Q0.<br/>
+Proof.&#160;Assume&#160;towards&#160;a&#160;contradiction&#160;that&#160;there&#160;is&#160;no&#160;0-macrotile&#160;grid&#160;agreeing&#160;with&#160;τ&#160;|Q0.&#160;Since&#160;τ<br/>
+is&#160;valid,&#160;for&#160;any&#160;4&#160;tiles&#160;sharing&#160;a&#160;corner,&#160;one&#160;of&#160;them&#160;is&#160;a&#160;0-macrotile.&#160;Moreover,&#160;since&#160;Q0&#160;⊂&#160;Q1,&#160;any<br/>0-macrotile&#160;is&#160;a&#160;part&#160;of&#160;some&#160;1-macrotile.<br/>
+By&#160;our&#160;assumption,&#160;there&#160;is&#160;no&#160;macrotile&#160;grid&#160;of&#160;rank&#160;0,&#160;thus&#160;there&#160;exists&#160;a&#160;cell&#160;(s,&#160;t)&#160;∈&#160;Q0&#160;containing&#160;a<br/>
+0-macrotile&#160;such&#160;that&#160;one&#160;of&#160;the&#160;following&#160;cells:&#160;(s+2,&#160;t+1),&#160;(s+1,&#160;t+2)&#160;contains&#160;a&#160;0-macrotile.&#160;Indeed,&#160;if<br/>
+there&#160;is&#160;no&#160;such&#160;cell&#160;then&#160;for&#160;any&#160;(s,&#160;t)&#160;∈&#160;Q0&#160;covered&#160;with&#160;a&#160;0-macrotile,&#160;in&#160;cells&#160;(s,&#160;t+1),&#160;(s+1,&#160;t+1),&#160;(s+1,&#160;t)<br/>
+there&#160;are&#160;no&#160;0-macrotile&#160;because&#160;τ&#160;is&#160;valid&#160;(by&#160;rule&#160;(::))&#160;and&#160;in&#160;(s&#160;+&#160;2,&#160;t&#160;+&#160;1),&#160;(s&#160;+&#160;1,&#160;t&#160;+&#160;2)&#160;there&#160;are&#160;no<br/>0-macrotile&#160;because&#160;of&#160;the&#160;last&#160;assumption.&#160;Thus,&#160;by&#160;local&#160;rules,&#160;there&#160;are&#160;0-macrotiles&#160;in&#160;cells&#160;(s&#160;+&#160;2,&#160;t)<br/>
+and&#160;(s,&#160;t&#160;+&#160;2).&#160;Applying&#160;this&#160;argument&#160;for&#160;all&#160;cells&#160;with&#160;0-macrotiles&#160;in&#160;Q0,&#160;we&#160;get&#160;a&#160;0-macrotile&#160;grid<br/>
+which&#160;yields&#160;a&#160;contradiction.<br/>
+Without&#160;loss&#160;of&#160;generality&#160;suppose&#160;cells&#160;z1&#160;=&#160;(s,&#160;t)&#160;and&#160;z2&#160;=&#160;(s&#160;+&#160;2,&#160;t&#160;+&#160;1)&#160;contain&#160;0-macrotiles<br/>
+(the&#160;symmetric&#160;case&#160;works&#160;the&#160;same).&#160;Both&#160;of&#160;these&#160;tiles&#160;are&#160;contained&#160;in&#160;different&#160;nonintersecting&#160;1-<br/>
+macrotiles,&#160;shifted&#160;by&#160;1&#160;vertically.&#160;This&#160;implies&#160;the&#160;occurence&#160;of&#160;0-macrotiles&#160;in&#160;cells&#160;(s,&#160;t&#160;+&#160;2),&#160;(s,&#160;t&#160;−<br/>2),&#160;(s&#160;+&#160;2,&#160;t&#160;+&#160;3),&#160;(s&#160;+&#160;2,&#160;t&#160;−&#160;1),&#160;two&#160;of&#160;which&#160;are&#160;contained&#160;in&#160;the&#160;same&#160;1-macrotile&#160;as&#160;the&#160;ones&#160;from&#160;cells<br/>z1,&#160;z2.&#160;Two&#160;remaining&#160;tiles&#160;are&#160;contained&#160;in&#160;two&#160;other&#160;1-macrotiles.&#160;Going&#160;on&#160;with&#160;these&#160;arguments,&#160;we<br/>
+get&#160;two&#160;vertical&#160;rows&#160;of&#160;1-macrotiles&#160;separated&#160;by&#160;a&#160;column&#160;of&#160;width&#160;1,&#160;all&#160;tiles&#160;of&#160;which&#160;contain&#160;horizontal<br/>
+green&#160;arrows.&#160;That&#160;means&#160;all&#160;tiles&#160;of&#160;this&#160;column&#160;contain&#160;vertical&#160;arrows&#160;of&#160;the&#160;same&#160;color&#160;and&#160;position<br/>
+on&#160;the&#160;side&#160;which&#160;forms&#160;a&#160;vertical&#160;infinite&#160;line.&#160;Figure&#160;<a href="internship_reports.html#6">12&#160;</a>illustrates&#160;this&#160;reasoning.<br/>
+5<br/>
+<hr/>
+<a name=6></a>t&#160;+&#160;2<br/>
+t&#160;+&#160;1<br/>
+t<br/>
+s<br/>
+s&#160;+&#160;1&#160;s&#160;+&#160;2<br/>
+Figure&#160;12:&#160;The&#160;sketch&#160;for&#160;the&#160;proof&#160;of&#160;Lemma&#160;<a href="internship_reports.html#5">2:&#160;</a>vertical&#160;arrows&#160;of&#160;the&#160;infinite&#160;line&#160;are&#160;denoted&#160;by&#160;dotted<br/>
+black&#160;lines.<br/>
+Lemma&#160;3.&#160;Given&#160;a&#160;valid&#160;Robinson&#160;tiling&#160;τ&#160;of&#160;a&#160;quadrant&#160;Q,&#160;for&#160;any&#160;n&#160;∈&#160;N&#160;there&#160;exists&#160;a&#160;quadrant<br/>Q0<br/>
+.<br/>
+n&#160;⊆&#160;Q&#160;such&#160;that&#160;there&#160;exists&#160;a&#160;macrotile&#160;grid&#160;of&#160;rank&#160;n&#160;which&#160;agrees&#160;with&#160;the&#160;restriction&#160;of&#160;τ&#160;to&#160;Q0n<br/>
+Proof.&#160;Let&#160;us&#160;prove&#160;this&#160;lemma&#160;for&#160;n&#160;=&#160;0.&#160;Consider&#160;Q1&#160;from&#160;Lemma&#160;<a href="internship_reports.html#5">1,&#160;</a>any&#160;0-macrotile&#160;is&#160;contained&#160;in<br/>
+some&#160;1-macrotile&#160;in&#160;Q1.<br/>
+By&#160;Lemma&#160;<a href="internship_reports.html#5">2,&#160;</a>it&#160;is&#160;enough&#160;to&#160;show&#160;that&#160;there&#160;is&#160;a&#160;subquadrant&#160;of&#160;Q1&#160;that&#160;contains&#160;no&#160;infinite&#160;lines.<br/>
+We&#160;will&#160;prove&#160;that&#160;there&#160;is&#160;no&#160;more&#160;than&#160;one&#160;infinite&#160;line&#160;in&#160;each&#160;direction&#160;in&#160;Q1.&#160;It&#160;is&#160;enough&#160;to&#160;prove&#160;it<br/>
+for&#160;vertical&#160;lines&#160;since&#160;the&#160;horizontal&#160;case&#160;is&#160;symmetric.&#160;Suppose&#160;there&#160;exist&#160;two&#160;vertical&#160;infinite&#160;lines&#160;in<br/>Q1&#160;at&#160;distance&#160;h&#160;from&#160;one&#160;another.&#160;Let&#160;n&#160;=&#160;dlog(h&#160;+&#160;1)e,&#160;so&#160;that&#160;the&#160;sides&#160;of&#160;any&#160;n-macrotile&#160;is&#160;longer<br/>
+than&#160;h.&#160;Notice&#160;that&#160;between&#160;these&#160;infinite&#160;lines,&#160;τ&#160;is&#160;valid&#160;and&#160;infinite&#160;lines&#160;can&#160;not&#160;intersect&#160;macrotiles&#160;of<br/>
+finite&#160;rank&#160;(by&#160;construction&#160;of&#160;the&#160;macrotiles).&#160;Since&#160;the&#160;tiling&#160;is&#160;valid&#160;between&#160;the&#160;lines,&#160;for&#160;any&#160;k&#160;∈&#160;N,<br/>
+each&#160;macrotile&#160;of&#160;rank&#160;k&#160;is&#160;a&#160;part&#160;of&#160;some&#160;macrotile&#160;of&#160;rank&#160;k&#160;+&#160;1&#160;which&#160;is&#160;not&#160;possible&#160;since&#160;there&#160;are&#160;no<br/>
+macrotiles&#160;of&#160;rank&#160;n&#160;between&#160;the&#160;lines.&#160;Thus,&#160;there&#160;are&#160;no&#160;more&#160;than&#160;2&#160;infinite&#160;lines&#160;in&#160;Q1&#160;(one&#160;vertical<br/>
+and&#160;one&#160;horizontal).&#160;All&#160;that&#160;remains&#160;is&#160;to&#160;consider&#160;a&#160;quadrant&#160;Q0&#160;⊂&#160;Q1&#160;which&#160;doesn’t&#160;contain&#160;those<br/>
+lines.<br/>
+We&#160;proved&#160;Lemma&#160;<a href="internship_reports.html#6">3&#160;</a>for&#160;the&#160;case&#160;n&#160;=&#160;0.&#160;Since&#160;macrotiles&#160;of&#160;all&#160;ranks&#160;have&#160;the&#160;same&#160;properties&#160;as<br/>
+macrotiles&#160;of&#160;rank&#160;0,&#160;the&#160;proof&#160;for&#160;the&#160;general&#160;case&#160;is&#160;the&#160;same.<br/>
+Notice&#160;that&#160;for&#160;any&#160;n&#160;in&#160;N,&#160;a&#160;macrotile&#160;grid&#160;of&#160;rank&#160;n&#160;can&#160;be&#160;completed&#160;to&#160;form&#160;a&#160;macrotile&#160;grid&#160;of<br/>
+rank&#160;n&#160;+&#160;1&#160;in&#160;four&#160;different&#160;ways.&#160;Thus&#160;for&#160;m&#160;&gt;&#160;n,&#160;a&#160;grid&#160;of&#160;n-macrotiles&#160;is&#160;a&#160;part&#160;of&#160;4m−n&#160;different&#160;grids<br/>
+of&#160;m-macrotiles.<br/>
+3<br/>
+Formalizing&#160;the&#160;growth&#160;of&#160;Robinson&#160;tilings<br/>
+In&#160;this&#160;section,&#160;we&#160;will&#160;give&#160;a&#160;formal&#160;definition&#160;of&#160;growth&#160;for&#160;Robinson&#160;tilings.<br/>
+Let&#160;A&#160;denote&#160;the&#160;Robinson&#160;tileset.&#160;From&#160;now&#160;on&#160;we&#160;will&#160;consider&#160;partial&#160;tilings,&#160;where&#160;some&#160;cells<br/>
+of&#160;the&#160;plane&#160;are&#160;empty.&#160;We&#160;introduce&#160;an&#160;additional&#160;tile&#160;⊥&#160;denoting&#160;an&#160;absence&#160;of&#160;tile&#160;(an&#160;empty&#160;cell).<br/>
+Thus,&#160;we&#160;can&#160;define&#160;a&#160;partial&#160;tiling&#160;of&#160;a&#160;set&#160;X&#160;⊆&#160;Z2&#160;as&#160;a&#160;tiling&#160;of&#160;X&#160;by&#160;tiles&#160;from&#160;A⊥&#160;=&#160;A&#160;∪&#160;{⊥}.&#160;The<br/>
+set&#160;of&#160;nonempty&#160;cells&#160;is&#160;called&#160;the&#160;domain&#160;of&#160;the&#160;tiling.<br/>
+For&#160;biological&#160;and&#160;physical&#160;systems,&#160;we&#160;consider&#160;the&#160;process&#160;of&#160;growth&#160;as&#160;follows:&#160;initially,&#160;we&#160;are<br/>
+given&#160;a&#160;seed;&#160;then&#160;as&#160;time&#160;passes,&#160;in&#160;the&#160;neighborhood&#160;of&#160;the&#160;already&#160;grown&#160;structure,&#160;new&#160;particles&#160;may<br/>
+be&#160;added&#160;depending&#160;on&#160;local&#160;circumstances.<br/>
+We&#160;will&#160;use&#160;the&#160;following&#160;model:&#160;initially&#160;we&#160;are&#160;given&#160;a&#160;seed&#160;—&#160;a&#160;partial&#160;tiling&#160;with&#160;finite&#160;domain<br/>
+(there&#160;are&#160;no&#160;restrictions:&#160;it&#160;can&#160;possibly&#160;contain&#160;tiles&#160;violating&#160;the&#160;Robinson&#160;local&#160;rules).&#160;Then&#160;at&#160;each<br/>
+step&#160;we&#160;apply&#160;a&#160;growth&#160;rule&#160;for&#160;each&#160;empty&#160;cell;&#160;the&#160;growth&#160;rule&#160;can&#160;dictate&#160;that&#160;the&#160;cell&#160;should&#160;remain<br/>
+6<br/>
+<hr/>
+<a name=7></a>empty,&#160;that&#160;a&#160;given&#160;tile&#160;should&#160;be&#160;placed,&#160;or&#160;that&#160;an&#160;error&#160;occurred.&#160;The&#160;size&#160;of&#160;the&#160;neighborhood&#160;and<br/>
+the&#160;growth&#160;rule&#160;are&#160;fixed.&#160;We&#160;will&#160;formalize&#160;this&#160;model&#160;with&#160;cellular&#160;automata.<br/>
+Recall&#160;that&#160;a&#160;cellular&#160;automaton&#160;on&#160;Z2&#160;with&#160;an&#160;alphabet&#160;A⊥&#160;is&#160;a&#160;function&#160;AZ2<br/>
+;&#160;it&#160;is<br/>
+⊥<br/>
+→&#160;AZ2<br/>
+⊥<br/>
+determined&#160;by&#160;a&#160;neighborhood&#160;type&#160;and&#160;a&#160;transition&#160;function.&#160;A&#160;transition&#160;function&#160;of&#160;a&#160;cellular<br/>automaton&#160;working&#160;with&#160;Moore&#160;neighborhoods&#160;of&#160;radius&#160;t&#160;is&#160;given&#160;by&#160;f&#160;:&#160;A(2t+1)2<br/>
+⊥<br/>
+→&#160;A⊥.&#160;At&#160;each<br/>
+step&#160;of&#160;the&#160;automaton,&#160;this&#160;function&#160;is&#160;applied&#160;to&#160;a&#160;neighborhood&#160;of&#160;each&#160;cell&#160;of&#160;Z2&#160;and&#160;put&#160;the&#160;result&#160;in<br/>
+this&#160;cell.&#160;Remark&#160;that&#160;in&#160;each&#160;fixed&#160;moment&#160;of&#160;time,&#160;a&#160;state&#160;of&#160;such&#160;automaton&#160;is&#160;a&#160;partial&#160;tiling&#160;of&#160;the<br/>
+plane&#160;and&#160;all&#160;changes&#160;occur&#160;depending&#160;on&#160;a&#160;local&#160;configuration.&#160;That&#160;is&#160;why&#160;we&#160;use&#160;cellular&#160;automata&#160;to<br/>
+formalize&#160;the&#160;growth&#160;of&#160;tilings.<br/>
+We&#160;will&#160;consider&#160;automata&#160;with&#160;an&#160;additional&#160;symbol&#160;&gt;&#160;denoting&#160;an&#160;error.&#160;If&#160;there&#160;exists&#160;at&#160;least<br/>
+one&#160;cell&#160;in&#160;this&#160;state,&#160;the&#160;automaton&#160;halts:&#160;this&#160;allows&#160;to&#160;report&#160;an&#160;error&#160;in&#160;computation&#160;immediately.<br/>From&#160;now&#160;on&#160;we&#160;consider&#160;automata&#160;whose&#160;transition&#160;functions&#160;look&#160;like&#160;f&#160;:&#160;A(2t+1)2<br/>
+⊥<br/>
+→&#160;A⊥&gt;&#160;where<br/>
+A⊥&gt;&#160;=&#160;A⊥&#160;∪&#160;{&gt;}.&#160;If&#160;there&#160;is&#160;the&#160;symbol&#160;&gt;&#160;in&#160;some&#160;cell,&#160;then&#160;the&#160;automaton&#160;halts.<br/>
+Let&#160;us&#160;define&#160;a&#160;cellular&#160;automaton&#160;simulating&#160;growth.&#160;A&#160;transition&#160;function&#160;f&#160;:&#160;A(2t+1)2<br/>
+⊥<br/>
+→&#160;A⊥&gt;&#160;of<br/>
+an&#160;automaton&#160;working&#160;on&#160;Z2&#160;is&#160;called&#160;a&#160;growth&#160;rule&#160;if&#160;for&#160;any&#160;configuration&#160;S&#160;∈&#160;A(2t+1)2,&#160;the&#160;following<br/>
+⊥<br/>
+conditions&#160;hold:<br/>
+(-1,1)&#160;(0,1)&#160;(1,1)<br/>
+(S)&#160;A&#160;new&#160;added&#160;cell&#160;matches&#160;the&#160;Robinson&#160;local&#160;rules&#160;with&#160;its&#160;8&#160;neighbors:&#160;f(S)&#160;is&#160;valid&#160;in&#160;S(&#160;(-1,0)&#160;(0,0)&#160;(1,0)&#160;).<br/>
+(-1,-1)(0,-1)&#160;(1,-1)<br/>
+(b)&#160;The&#160;transition&#160;function&#160;returns&#160;an&#160;error&#160;(&gt;)&#160;if&#160;and&#160;only&#160;if&#160;S&#160;does&#160;not&#160;occur&#160;in&#160;some&#160;Robinson&#160;tiling<br/>
+of&#160;the&#160;plane.&#160;This&#160;means&#160;that&#160;S&#160;appears&#160;in&#160;some&#160;valid&#160;Robinson&#160;tiling&#160;if&#160;and&#160;only&#160;if&#160;f(S)&#160;6=&#160;&gt;.<br/>
+A&#160;growth&#160;cellular&#160;automaton&#160;is&#160;a&#160;cellular&#160;automaton&#160;whose&#160;transition&#160;function&#160;is&#160;a&#160;growth&#160;rule.<br/>
+Let&#160;us&#160;define&#160;a&#160;partial&#160;order&#160;on&#160;A⊥&gt;:&#160;for&#160;any&#160;a&#160;∈&#160;A⊥,&#160;we&#160;have&#160;⊥&#160;≤&#160;a&#160;and&#160;a&#160;≤&#160;&gt;.&#160;If&#160;a,&#160;b&#160;∈&#160;A,&#160;then&#160;a&#160;and<br/>b&#160;are&#160;incomparable.<br/>Let&#160;us&#160;now&#160;consider&#160;a&#160;partial&#160;order&#160;on&#160;partial&#160;tilings&#160;of&#160;t-neighborhoods.&#160;Given&#160;S,&#160;S0&#160;∈&#160;A(2t+1)2,&#160;we&#160;say<br/>
+⊥<br/>
+that&#160;S&#160;≤&#160;S0&#160;if&#160;and&#160;only&#160;if<br/>
+∀z&#160;∈&#160;(2t&#160;+&#160;1)2,&#160;S(z)&#160;≤&#160;S0(z)<br/>
+In&#160;other&#160;words,&#160;S&#160;≤&#160;S0,&#160;when&#160;the&#160;domain&#160;of&#160;S&#160;is&#160;a&#160;subset&#160;of&#160;the&#160;domain&#160;of&#160;S0&#160;and&#160;they&#160;agree&#160;on&#160;the<br/>
+domain&#160;of&#160;S.<br/>
+A&#160;function&#160;f&#160;:&#160;A(2t+1)2<br/>
+such&#160;that<br/>
+⊥<br/>
+→&#160;A⊥&#160;is&#160;a&#160;nondecreasing&#160;growth&#160;rule&#160;if&#160;for&#160;any&#160;S,&#160;S0&#160;∈&#160;A(2t+1)2<br/>
+⊥<br/>
+S&#160;≤&#160;S0,&#160;we&#160;have&#160;f(S)&#160;≤&#160;f(S0).<br/>
+Intuitively,&#160;we&#160;can&#160;consider&#160;the&#160;information&#160;contained&#160;in&#160;each&#160;configuration:&#160;if&#160;we&#160;fill&#160;some&#160;empty<br/>
+cell&#160;in&#160;a&#160;configuration,&#160;the&#160;amount&#160;of&#160;information&#160;in&#160;this&#160;configuration&#160;increases.&#160;Thus,&#160;having&#160;a<br/>
+nondecreasing&#160;growth&#160;means&#160;that&#160;if&#160;with&#160;a&#160;given&#160;amount&#160;of&#160;information,&#160;we&#160;decide&#160;to&#160;add&#160;a&#160;particular<br/>
+tile,&#160;then&#160;having&#160;strictly&#160;more&#160;information&#160;we&#160;should&#160;keep&#160;our&#160;decision&#160;(or&#160;return&#160;an&#160;error).<br/>
+Suppose&#160;we&#160;are&#160;given&#160;two&#160;configurations&#160;S1&#160;and&#160;S2&#160;of&#160;a&#160;t-neighborhood&#160;with&#160;domains&#160;D1&#160;and&#160;D2<br/>
+respectively.&#160;S1&#160;and&#160;S2&#160;are&#160;compatible&#160;if&#160;they&#160;agree&#160;on&#160;the&#160;intersection&#160;of&#160;their&#160;domains:&#160;S1|D<br/>
+=<br/>
+1&#160;∩D2<br/>
+S2|D<br/>
+.&#160;Let&#160;us&#160;define&#160;the&#160;union&#160;operation&#160;for&#160;two&#160;compatible&#160;configurations&#160;S<br/>
+1&#160;∩D2<br/>
+1,&#160;S2:<br/>
+(S<br/>
+(S<br/>
+1(z)<br/>
+z&#160;∈&#160;D1<br/>
+1&#160;∪&#160;S2)(z)&#160;:=<br/>
+S2(z)&#160;z&#160;∈&#160;D2&#160;\&#160;D1<br/>
+Lemma&#160;4.&#160;Let&#160;S1,&#160;S2&#160;be&#160;a&#160;pair&#160;of&#160;compatible&#160;configurations&#160;of&#160;t-neighborhood&#160;and&#160;a&#160;nondecreasing<br/>
+growth&#160;function&#160;f.&#160;If&#160;f(S1),&#160;f(S2)&#160;∈&#160;A&#160;and&#160;f(S1)&#160;6=&#160;f(S2)&#160;then&#160;f(S1&#160;∪&#160;S2)&#160;=&#160;&gt;.&#160;That&#160;means,&#160;if&#160;a<br/>
+growth&#160;rule&#160;returns&#160;two&#160;different&#160;tiles&#160;from&#160;A&#160;on&#160;two&#160;compatible&#160;configurations&#160;then&#160;the&#160;union&#160;of&#160;these<br/>
+configurations&#160;never&#160;occurs&#160;in&#160;a&#160;valid&#160;Robinson&#160;tiling&#160;of&#160;the&#160;plane.<br/>
+Suppose&#160;f(S1),&#160;f(S2)&#160;∈&#160;A&#160;and&#160;f(S1)&#160;6=&#160;f(S2).&#160;In&#160;this&#160;case,&#160;since&#160;f&#160;do&#160;not&#160;decrease:&#160;f(S1∪S2)&#160;≥&#160;f(S1).<br/>
+Thus,&#160;f(S1&#160;∪&#160;S2)&#160;∈&#160;{f(S1),&#160;&gt;}.&#160;The&#160;same&#160;holds&#160;for&#160;the&#160;second&#160;configuration:&#160;f(S1&#160;∪&#160;S2)&#160;∈&#160;{f(S2),&#160;&gt;}.<br/>
+And&#160;since&#160;f(S1)&#160;6=&#160;f(S2),&#160;we&#160;get&#160;that&#160;f(S1&#160;∪&#160;S2)&#160;=&#160;&gt;.<br/>
+7<br/>
+<hr/>
+<a name=8></a>4<br/>
+Robinson&#160;tilings&#160;do&#160;not&#160;grow<br/>
+We&#160;are&#160;interested&#160;in&#160;whether&#160;a&#160;tiling&#160;can&#160;grow&#160;to&#160;cover&#160;the&#160;whole&#160;plane.&#160;Given&#160;an&#160;initial&#160;configuration,<br/>
+a&#160;growth&#160;cellular&#160;automaton&#160;eventually&#160;covers&#160;the&#160;plane&#160;if&#160;for&#160;any&#160;cell&#160;x&#160;∈&#160;Z2,&#160;there&#160;exists&#160;a&#160;moment<br/>
+of&#160;time&#160;when&#160;the&#160;automaton&#160;put&#160;a&#160;tile&#160;in&#160;this&#160;cell.&#160;Notice&#160;that,&#160;if&#160;during&#160;the&#160;execution&#160;of&#160;an&#160;automaton<br/>
+an&#160;error&#160;occurs,&#160;then&#160;it&#160;doesn’t&#160;cover&#160;the&#160;plane.<br/>
+Theorem&#160;2.&#160;There&#160;is&#160;no&#160;cellular&#160;automaton&#160;with&#160;nondecreasing&#160;growth&#160;rule&#160;which,&#160;working&#160;on&#160;some<br/>
+initial&#160;configuration,&#160;eventually&#160;covers&#160;the&#160;plane.<br/>
+To&#160;prove&#160;this&#160;theorem,&#160;we&#160;will&#160;reason&#160;by&#160;contradiction:&#160;suppose&#160;there&#160;exists&#160;an&#160;automaton&#160;with&#160;t-<br/>
+neighborhood&#160;(t&#160;&gt;&#160;0)&#160;and&#160;a&#160;seed&#160;such&#160;that&#160;it&#160;eventually&#160;covers&#160;the&#160;whole&#160;plane.&#160;We&#160;will&#160;show&#160;that&#160;in&#160;this<br/>
+case,&#160;there&#160;exist&#160;two&#160;compatible&#160;configurations&#160;of&#160;t-neighborhoods&#160;on&#160;which&#160;the&#160;growth&#160;rule&#160;returns&#160;two<br/>
+different&#160;tiles&#160;and&#160;the&#160;union&#160;of&#160;which&#160;occurs&#160;in&#160;some&#160;valid&#160;Robinson&#160;tiling.&#160;This&#160;will&#160;contradict&#160;Lemma&#160;<a href="internship_reports.html#7">4.</a><br/>
+4.1<br/>
+The&#160;base&#160;of&#160;the&#160;proof<br/>
+Let&#160;τ&#160;denote&#160;the&#160;tiling&#160;of&#160;the&#160;plane&#160;eventually&#160;generated&#160;by&#160;the&#160;growth&#160;automaton.&#160;Consider&#160;a<br/>
+quadrant&#160;Q&#160;not&#160;containing&#160;the&#160;seed.&#160;Notice&#160;that&#160;the&#160;tiling&#160;is&#160;valid&#160;on&#160;Q:&#160;indeed,&#160;assume&#160;towards&#160;a<br/>
+contradiction&#160;that&#160;there&#160;is&#160;a&#160;tile&#160;which&#160;is&#160;not&#160;legal&#160;in&#160;respect&#160;to&#160;the&#160;configuration&#160;of&#160;its&#160;1-neighborhood<br/>S.&#160;In&#160;this&#160;case,&#160;the&#160;last&#160;added&#160;tile&#160;among&#160;tiles&#160;in&#160;S&#160;was&#160;not&#160;valid&#160;in&#160;its&#160;1-neighborhood&#160;which&#160;contradicts<br/>
+point&#160;(S)&#160;from&#160;the&#160;definition&#160;of&#160;the&#160;growth&#160;rule.<br/>
+Let&#160;n&#160;=&#160;dlog&#160;te+2.&#160;A&#160;t-neighborhood&#160;is&#160;not&#160;bigger&#160;than&#160;an&#160;(n−1)-macrotile:&#160;2n&#160;−1&#160;=&#160;2dlog&#160;te+2&#160;−1&#160;≥<br/>
+4t&#160;−&#160;1&#160;≥&#160;2t&#160;+&#160;1,&#160;because&#160;t&#160;≥&#160;1.&#160;Thus&#160;a&#160;t-neighborhood&#160;can&#160;not&#160;intersect&#160;more&#160;than&#160;4&#160;different&#160;(n&#160;−&#160;1)-<br/>
+macrotiles&#160;from&#160;a&#160;macrotile&#160;grid.&#160;Since&#160;τ&#160;is&#160;valid&#160;on&#160;Q,&#160;there&#160;exists&#160;a&#160;quadrant&#160;Qn+3&#160;so&#160;that&#160;τ|Q<br/>
+agrees<br/>
+n+3<br/>
+with&#160;some&#160;(n&#160;+&#160;3)-macrotile&#160;grid.&#160;We&#160;call&#160;Gn&#160;the&#160;subset&#160;of&#160;Z2,&#160;where&#160;a&#160;grid&#160;of&#160;n-macrotiles&#160;compatible<br/>
+with&#160;τ|Q<br/>
+is&#160;defined&#160;(such&#160;a&#160;grid&#160;exists&#160;since&#160;it&#160;is&#160;a&#160;subset&#160;of&#160;the&#160;(n&#160;+&#160;3)-grid&#160;defined&#160;above).<br/>
+n+3<br/>
+Let&#160;An+3&#160;denote&#160;an&#160;occurrence&#160;of&#160;a&#160;macrotile&#160;an+3&#160;in&#160;Qn+3.&#160;Denote&#160;by&#160;Y&#160;the&#160;vertical&#160;coordinate&#160;of<br/>
+it’s&#160;central&#160;cell;&#160;denote&#160;by&#160;X&#160;the&#160;horizontal&#160;coordinate&#160;of&#160;the&#160;central&#160;cell&#160;of&#160;an&#160;occurrence&#160;of&#160;bn+2&#160;in&#160;An+3.<br/>
+From&#160;now&#160;on&#160;we&#160;will&#160;work&#160;with&#160;cells&#160;of&#160;the&#160;quadrant&#160;QXY&#160;.&#160;This&#160;construction&#160;is&#160;shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#8">13.</a><br/>
+Here&#160;and&#160;later&#160;in&#160;figures&#160;we&#160;denote&#160;types&#160;of&#160;macrotiles&#160;as&#160;follows:&#160;the&#160;size&#160;of&#160;font&#160;is&#160;proportional&#160;to<br/>
+the&#160;rank&#160;of&#160;a&#160;macrotile.&#160;In&#160;Figure&#160;<a href="internship_reports.html#8">13,&#160;</a>the&#160;n-macrotiles&#160;from&#160;the&#160;grid&#160;on&#160;Gn&#160;are&#160;denoted&#160;by&#160;gray&#160;font,<br/>
+the&#160;(n&#160;+&#160;2)-macrotiles&#160;an+2,&#160;bn+2,&#160;cn+2,&#160;dn+2&#160;are&#160;marked&#160;by&#160;orange&#160;and&#160;denoted&#160;by&#160;black&#160;larger&#160;font,&#160;the<br/>An+3&#160;macrotile&#160;is&#160;filled&#160;with&#160;yellow&#160;and&#160;is&#160;denoted&#160;by&#160;the&#160;largest&#160;font.<br/>
+a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b<br/>
+c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d<br/>
+a<br/>
+a<br/>
+b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b<br/>
+b<br/>
+c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d<br/>
+a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b<br/>
+Y<br/>
+a<br/>
+QXY<br/>
+c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d<br/>
+a<br/>
+c<br/>
+b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b&#160;a&#160;b<br/>
+d<br/>
+c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d<br/>
+(0,&#160;0)&#160;•<br/>
+X<br/>
+Figure&#160;13:&#160;The&#160;grid&#160;of&#160;n-macrotiles,&#160;An+3&#160;(filled&#160;with&#160;yellow),&#160;and&#160;the&#160;quarter&#160;QXY&#160;(filled&#160;with&#160;blue<br/>
+dots).<br/>
+Recall&#160;that&#160;Bt(z)&#160;denotes&#160;a&#160;t-neighborhood&#160;of&#160;a&#160;cell&#160;z&#160;∈&#160;Z.&#160;For&#160;any&#160;set&#160;X&#160;⊆&#160;Z2,&#160;we&#160;write&#160;X&#160;for<br/>
+Z2&#160;\&#160;X.&#160;Let&#160;E&#160;denote&#160;the&#160;set&#160;of&#160;all&#160;cells&#160;from&#160;QXY&#160;not&#160;contained&#160;in&#160;Gn:&#160;E&#160;:=&#160;QXY&#160;∩&#160;Gn.&#160;For&#160;any&#160;cell<br/>
+8<br/>
+<hr/>
+<a name=9></a>z,&#160;let&#160;BE<br/>
+t&#160;(z)&#160;:=&#160;Bt(z)&#160;∩&#160;E,&#160;we&#160;will&#160;call&#160;this&#160;set&#160;a&#160;E-neighborhood&#160;of&#160;z.&#160;Sets&#160;E&#160;and&#160;BE<br/>
+t&#160;(z)&#160;are&#160;shown&#160;in<br/>
+Figure&#160;<a href="internship_reports.html#9">14.</a><br/>
+In&#160;Section&#160;<a href="internship_reports.html#9">4.2,&#160;</a>we&#160;will&#160;prove&#160;the&#160;following&#160;statement:<br/>
+Lemma&#160;5.&#160;For&#160;any&#160;cell&#160;z&#160;in&#160;E,&#160;for&#160;a&#160;configuration&#160;S&#160;=&#160;τ&#160;|<br/>
+,&#160;there&#160;exist&#160;two&#160;cells&#160;in&#160;Q<br/>
+BE&#160;(z)<br/>
+XY&#160;containing<br/>
+t<br/>
+different&#160;tiles&#160;in&#160;τ&#160;whose&#160;E-neighborhoods&#160;are&#160;compatible&#160;with&#160;S.&#160;We&#160;will&#160;call&#160;these&#160;cells&#160;twins&#160;of&#160;z.<br/>
+Figure&#160;<a href="internship_reports.html#9">14&#160;</a>illustrates&#160;Lemma&#160;<a href="internship_reports.html#9">5.</a><br/>
+–&#160;E<br/>
+–&#160;BE<br/>
+t&#160;(z)<br/>
+z<br/>
+Figure&#160;14:&#160;Twins&#160;for&#160;a&#160;cell&#160;z.<br/>
+Now&#160;we&#160;show&#160;that&#160;this&#160;fact&#160;implies&#160;Theorem&#160;<a href="internship_reports.html#8">2.&#160;</a>Let&#160;u&#160;denote&#160;the&#160;cell&#160;which&#160;was&#160;added&#160;the&#160;first<br/>
+among&#160;cells&#160;from&#160;E&#160;during&#160;the&#160;growth&#160;process.&#160;Let&#160;U&#160;denote&#160;the&#160;configuration&#160;of&#160;Bt(u)&#160;at&#160;the&#160;moment<br/>
+just&#160;before&#160;the&#160;tile&#160;was&#160;added.&#160;All&#160;cells&#160;in&#160;E&#160;are&#160;empty&#160;in&#160;U&#160;since&#160;u&#160;is&#160;the&#160;first&#160;added&#160;tile&#160;in&#160;E.&#160;Let<br/>U&#160;0&#160;:=&#160;τ&#160;|<br/>
+.&#160;Let&#160;v&#160;denote&#160;a&#160;twin&#160;of&#160;u&#160;such&#160;that&#160;τ(u)&#160;6=&#160;τ(v).&#160;Let&#160;V&#160;denote&#160;the&#160;configuration&#160;of&#160;B<br/>
+BE&#160;(u)<br/>
+t(V&#160;)<br/>
+t<br/>
+at&#160;the&#160;moment&#160;just&#160;before&#160;v&#160;was&#160;filled&#160;with&#160;a&#160;tile.&#160;We&#160;get&#160;the&#160;following:<br/>
+f&#160;(U&#160;)&#160;=&#160;τ&#160;(u)&#160;6=&#160;τ(v)&#160;=&#160;f(V&#160;)<br/>
+At&#160;the&#160;same&#160;time,&#160;V&#160;is&#160;compatible&#160;with&#160;U0&#160;which&#160;is&#160;compatible&#160;with&#160;U&#160;since&#160;U&#160;=&#160;U&#160;∩&#160;U0;&#160;then&#160;V&#160;is<br/>
+compatible&#160;with&#160;U.&#160;Moreover,&#160;V&#160;∪&#160;U&#160;is&#160;a&#160;subconfiguration&#160;of&#160;τ|Bt(v)&#160;and&#160;Bt(v)&#160;⊂&#160;Q,&#160;thus&#160;V&#160;∪&#160;U&#160;occurs<br/>
+in&#160;a&#160;valid&#160;Robinson&#160;tiling&#160;which&#160;contradicts&#160;Lemma&#160;<a href="internship_reports.html#7">4.</a><br/>
+–&#160;E<br/>
+–&#160;U&#160;0<br/>
+–&#160;U<br/>
+–&#160;V<br/>
+–&#160;u<br/>
+–&#160;v<br/>
+Figure&#160;15:&#160;The&#160;first&#160;filled&#160;cell&#160;in&#160;E&#160;and&#160;its&#160;twin.<br/>
+Thus,&#160;proving&#160;Lemma&#160;<a href="internship_reports.html#9">5&#160;</a>is&#160;all&#160;that&#160;rests&#160;to&#160;prove&#160;Theorem&#160;<a href="internship_reports.html#8">2.</a><br/>
+4.2<br/>
+Looking&#160;for&#160;twins:&#160;proof&#160;of&#160;Lemma&#160;<a href="internship_reports.html#9">5</a><br/>
+Our&#160;aim&#160;is&#160;to&#160;find&#160;twins&#160;in&#160;QXY&#160;for&#160;each&#160;cell&#160;of&#160;E.&#160;We&#160;will&#160;consider&#160;cells&#160;separately&#160;depending&#160;on<br/>
+their&#160;E-neighborhoods.&#160;We&#160;distinguish&#160;cells&#160;z&#160;for&#160;which&#160;BEt(z)&#160;⊂&#160;Gn&#160;(for&#160;instance,&#160;two&#160;right-hand&#160;cells<br/>
+9<br/>
+<hr/>
+<a name=10></a>in&#160;Figure&#160;<a href="internship_reports.html#10">16)&#160;</a>and&#160;cells&#160;for&#160;which&#160;this&#160;doesn’t&#160;hold&#160;(two&#160;left-hand&#160;cells&#160;in&#160;Figure&#160;<a href="internship_reports.html#10">16).&#160;</a>The&#160;cells&#160;of&#160;the<br/>first&#160;type&#160;form&#160;a&#160;set&#160;EG&#160;:=&#160;{z&#160;|&#160;BE<br/>
+.&#160;These&#160;two&#160;sets&#160;are<br/>
+n<br/>
+t&#160;(z)&#160;⊂&#160;Gn};&#160;the&#160;remaining&#160;cells&#160;form&#160;E&#160;\&#160;EGn<br/>
+illustrated&#160;by&#160;Figure&#160;<a href="internship_reports.html#10">17.</a><br/>
+–&#160;EGn<br/>
+–&#160;E<br/>
+–&#160;E&#160;\&#160;EGn<br/>
+–&#160;BE<br/>
+t&#160;(z)<br/>
+–&#160;(BE<br/>
+t&#160;(z))&#160;\&#160;Gn<br/>
+Figure&#160;16:&#160;The&#160;E-neighborhoods&#160;of&#160;two&#160;right-hand&#160;cells&#160;are&#160;in&#160;Gn,<br/>
+while&#160;for&#160;two&#160;left-hand&#160;cells&#160;it&#160;doesn’t&#160;hold.<br/>
+Figure&#160;17:&#160;Sets&#160;E&#160;\EG&#160;,&#160;E<br/>
+and<br/>
+n<br/>
+Gn<br/>
+the&#160;grid&#160;of&#160;n-macrotiles.<br/>
+We&#160;will&#160;first&#160;show&#160;that&#160;Lemma&#160;<a href="internship_reports.html#9">5&#160;</a>holds&#160;for&#160;cells&#160;in&#160;EG&#160;.<br/>
+n<br/>
+4.2.1<br/>
+When&#160;the&#160;cell&#160;z&#160;is&#160;in&#160;EGn<br/>
+The&#160;partial&#160;tiling&#160;τ|G&#160;has&#160;vertical&#160;and&#160;horizontal&#160;periods&#160;equal&#160;to&#160;2n+2&#160;(See&#160;Figure&#160;<a href="internship_reports.html#5">11).&#160;</a>Thus,&#160;to<br/>
+n<br/>
+prove&#160;Lemma&#160;<a href="internship_reports.html#9">5&#160;</a>for&#160;all&#160;cells&#160;in&#160;EG&#160;,&#160;it&#160;is&#160;enough&#160;to&#160;prove&#160;it&#160;for&#160;all&#160;cells&#160;of&#160;any&#160;(2n+2&#160;×&#160;2n+2)-square&#160;from<br/>
+n<br/>
+{(x,&#160;y)&#160;|&#160;(x&#160;−&#160;t,&#160;y&#160;−&#160;t)&#160;∈&#160;QXY&#160;}.<br/>
+(EG<br/>
+(E<br/>
+n&#160;,1)<br/>
+Gn,2)<br/>
+d<br/>
+c<br/>
+d<br/>
+c<br/>
+–&#160;W&#160;∩&#160;E<br/>
+d<br/>
+c<br/>
+d<br/>
+c<br/>
+d&#160;c&#160;d&#160;c<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+a<br/>
+a<br/>
+a<br/>
+b&#160;a&#160;b&#160;a<br/>
+b<br/>
+b<br/>
+d<br/>
+d<br/>
+c<br/>
+d<br/>
+c<br/>
+a&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c&#160;d&#160;c<br/>
+b&#160;a&#160;b&#160;a<br/>
+d<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+Figure&#160;18:&#160;Twins&#160;for&#160;cells&#160;in&#160;W&#160;∩&#160;E&#160;in&#160;the&#160;case&#160;EG&#160;.&#160;W&#160;∩&#160;E&#160;is&#160;filled&#160;with&#160;yellow;&#160;the&#160;gray&#160;dashed&#160;line&#160;is<br/>
+n<br/>
+a&#160;border&#160;of&#160;a&#160;(n&#160;+&#160;2)-macrotile.<br/>
+Consider&#160;a&#160;2n+2&#160;×&#160;2n+2-square&#160;W&#160;,&#160;containing&#160;four&#160;n-macrotiles,&#160;so&#160;that&#160;they&#160;can&#160;be&#160;completed&#160;to<br/>
+form&#160;a&#160;(n&#160;+&#160;1)-macrotile,&#160;one&#160;row&#160;on&#160;the&#160;bottom&#160;of&#160;them&#160;and&#160;one&#160;column&#160;to&#160;the&#160;right&#160;of&#160;them,&#160;as&#160;it’s<br/>
+shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#10">18:&#160;</a>cells&#160;in&#160;E&#160;∩&#160;W&#160;are&#160;filled&#160;with&#160;yellow.<br/>
+Consider&#160;two&#160;variants&#160;to&#160;complete&#160;the&#160;n-macrotile&#160;grid&#160;to&#160;(n&#160;+&#160;3)-macrotile&#160;grid.&#160;In&#160;the&#160;first&#160;case<br/>
+denoted&#160;by&#160;(EGn,1),&#160;four&#160;n-macrotiles&#160;from&#160;W&#160;are&#160;contained&#160;in&#160;an+1&#160;which&#160;is&#160;contained&#160;in&#160;an+2&#160;(Figure&#160;<a href="internship_reports.html#10">18,</a><br/>
+the&#160;left&#160;part).&#160;In&#160;the&#160;second&#160;case&#160;((EGn,2)&#160;in&#160;Figure&#160;<a href="internship_reports.html#10">18),&#160;</a>n-macrotiles&#160;from&#160;W&#160;are&#160;contained&#160;in&#160;dn+1<br/>
+which&#160;is&#160;contained&#160;in&#160;an+2&#160;which&#160;is&#160;contained&#160;in&#160;dn+3.<br/>
+Each&#160;cell&#160;in&#160;W&#160;∩&#160;E&#160;contains&#160;different&#160;tiles&#160;in&#160;cases(EGn,1)&#160;and&#160;(EGn,2).&#160;Each&#160;of&#160;these&#160;cases&#160;is&#160;a&#160;part<br/>
+of&#160;some&#160;(n+3)-macrotile,&#160;thus,&#160;they&#160;both&#160;occur&#160;in&#160;QXY&#160;infinitely&#160;many&#160;times.&#160;Thence,&#160;any&#160;cell&#160;in&#160;W&#160;∩E<br/>
+has&#160;twins&#160;in&#160;QXY&#160;,&#160;which&#160;concludes&#160;the&#160;proof&#160;for&#160;the&#160;cells&#160;in&#160;EG&#160;.<br/>
+n<br/>
+10<br/>
+<hr/>
+<a name=11></a>4.2.2<br/>
+When&#160;the&#160;cell&#160;z&#160;is&#160;in&#160;E&#160;\&#160;EGn<br/>
+By&#160;definitions&#160;of&#160;n&#160;and&#160;EG&#160;,&#160;a&#160;t-neighborhood&#160;of&#160;a&#160;cell&#160;in&#160;E&#160;\&#160;E<br/>
+intersects&#160;either&#160;two&#160;or&#160;three<br/>
+n<br/>
+Gn<br/>
+(n&#160;−&#160;1)-macrotiles&#160;from&#160;QXY&#160;.&#160;We&#160;will&#160;classify&#160;cells&#160;in&#160;E&#160;\&#160;EG&#160;depending&#160;on&#160;which&#160;(n&#160;−&#160;1)-macrotiles<br/>
+n<br/>
+from&#160;QXY&#160;are&#160;intersected&#160;by&#160;their&#160;neighborhoods.&#160;We&#160;get&#160;three&#160;classes&#160;which&#160;are&#160;shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#11">19:<br/></a>(db),&#160;(dba)&#160;and&#160;(ba).<br/>
+a<br/>
+–&#160;QXY<br/>
+(db)<br/>
+b<br/>
+–&#160;E<br/>
+d<br/>
+c<br/>
+d<br/>
+c<br/>
+d<br/>
+Gn<br/>
+–&#160;E&#160;\&#160;EGn<br/>
+–&#160;BE<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+t&#160;(z)<br/>
+c<br/>
+d<br/>
+(dba)<br/>
+(ba)<br/>
+d<br/>
+c<br/>
+d<br/>
+c<br/>
+d<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+Figure&#160;19:&#160;The&#160;grid&#160;of&#160;(n&#160;−&#160;1)-macrotiles&#160;(the&#160;smallest&#160;font)&#160;and&#160;three&#160;classes&#160;of&#160;EG&#160;cells.<br/>
+n<br/>
+4.2.3<br/>
+Case&#160;(ba)<br/>
+Suppose&#160;the&#160;E-neighborhood&#160;of&#160;a&#160;cell&#160;in&#160;E&#160;\&#160;EG&#160;intersects&#160;two&#160;(n&#160;−&#160;1)-macrotiles&#160;from&#160;Q<br/>
+n<br/>
+XY&#160;:&#160;bn−1<br/>
+on&#160;the&#160;left&#160;and&#160;an−1&#160;on&#160;the&#160;right.&#160;Then&#160;the&#160;column&#160;between&#160;these&#160;macrotiles&#160;could&#160;be&#160;filled&#160;differently,&#160;it<br/>
+depends&#160;on&#160;the&#160;macrotiles&#160;of&#160;higher&#160;ranks.&#160;All&#160;possible&#160;fillings&#160;of&#160;the&#160;column&#160;are&#160;displayed&#160;in&#160;Figure&#160;<a href="internship_reports.html#11">20.</a><br/>
+We&#160;denote&#160;each&#160;case&#160;by&#160;an&#160;arrow&#160;and&#160;one&#160;or&#160;two&#160;letters:&#160;the&#160;arrow&#160;shows&#160;the&#160;direction&#160;of&#160;the&#160;arrow<br/>
+in&#160;the&#160;column&#160;and&#160;the&#160;letters&#160;are&#160;types&#160;of&#160;macrotiles&#160;in&#160;centers&#160;of&#160;which&#160;this&#160;arrow&#160;could&#160;begin.&#160;For<br/>
+example,&#160;(↓b)&#160;denotes&#160;the&#160;case&#160;where&#160;the&#160;arrow&#160;is&#160;directed&#160;downwards&#160;and&#160;could&#160;come&#160;from&#160;the&#160;center&#160;of<br/>
+a&#160;b-macrotile&#160;(note&#160;that&#160;between&#160;(↓a)&#160;and&#160;(↓b),&#160;the&#160;horizontal&#160;positions&#160;of&#160;the&#160;red&#160;arrows&#160;are&#160;different);<br/>(↑a,b)&#160;denotes&#160;the&#160;upwards&#160;arrow&#160;coming&#160;from&#160;a&#160;macrotile&#160;of&#160;type&#160;a&#160;or&#160;b&#160;(their&#160;upwards&#160;arrows&#160;are&#160;the<br/>
+same).<br/>
+(↓a)<br/>
+(↓b)<br/>
+(↓c,d)<br/>
+(↑c)<br/>
+(↑d)<br/>
+(↑a,b)<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+Figure&#160;20:&#160;Variants&#160;of&#160;columns&#160;between&#160;bn−1&#160;and&#160;an−1,&#160;intersected&#160;by&#160;BEt(z)&#160;in&#160;case&#160;(ba).<br/>
+First&#160;we&#160;consider&#160;the&#160;case&#160;where&#160;the&#160;arrow&#160;in&#160;the&#160;column&#160;is&#160;directed&#160;downwards.&#160;Figure&#160;<a href="internship_reports.html#12">21&#160;</a>shows&#160;two<br/>
+twins&#160;in&#160;case&#160;(↓a).&#160;On&#160;the&#160;left,&#160;bn−1&#160;and&#160;an−1&#160;are&#160;contained&#160;in&#160;an+1;&#160;on&#160;the&#160;right,&#160;they&#160;are&#160;contained<br/>
+in&#160;two&#160;different&#160;(n&#160;+&#160;1)-macrotiles&#160;cn+1&#160;and&#160;dn+1&#160;which&#160;are&#160;both&#160;contained&#160;in&#160;an+2.&#160;For&#160;two&#160;these<br/>
+configurations,&#160;the&#160;arrow&#160;is&#160;the&#160;same&#160;in&#160;the&#160;column&#160;between&#160;bn−1&#160;and&#160;an−1,&#160;while&#160;all&#160;possible&#160;central<br/>
+cells&#160;of&#160;neighborhoods&#160;contain&#160;different&#160;tiles&#160;in&#160;different&#160;configurations.&#160;The&#160;same&#160;reasoning&#160;applies&#160;for<br/>
+cases&#160;(↓b)&#160;and&#160;(↓c,d):&#160;they&#160;are&#160;shown&#160;in&#160;Figures&#160;<a href="internship_reports.html#15">25&#160;</a>and&#160;<a href="internship_reports.html#15">26&#160;</a>in&#160;the&#160;Appendix.<br/>
+In&#160;Figure&#160;<a href="internship_reports.html#12">21&#160;</a>and&#160;later&#160;the&#160;considered&#160;cells&#160;z&#160;are&#160;filled&#160;with&#160;yellow&#160;:<br/>
+;&#160;the&#160;union&#160;of&#160;sets&#160;BEt(z)∩QXY<br/>
+for&#160;those&#160;z&#160;is&#160;marked&#160;with&#160;light&#160;green:<br/>
+.<br/>
+The&#160;only&#160;cases&#160;left&#160;are&#160;those&#160;where&#160;the&#160;arrow&#160;in&#160;the&#160;column&#160;is&#160;directed&#160;upwards.&#160;Figure&#160;<a href="internship_reports.html#12">22&#160;</a>displays<br/>
+twins&#160;for&#160;cases&#160;(↑c)&#160;(on&#160;the&#160;left)&#160;and&#160;(↑d)&#160;(on&#160;the&#160;right).&#160;In&#160;the&#160;configuration&#160;(↑c1),&#160;bn−1&#160;intersected<br/>
+11<br/>
+<hr/>
+<a name=12></a>a<br/>
+a<br/>
+b<br/>
+a<br/>
+c<br/>
+d<br/>
+c<br/>
+d<br/>
+b<br/>
+a<br/>
+d<br/>
+c<br/>
+Figure&#160;21:&#160;Twins&#160;for&#160;the&#160;case&#160;where&#160;the&#160;arrow&#160;between&#160;bn−1&#160;and&#160;an−1&#160;is&#160;(↓a).<br/>
+by&#160;BEt(z)&#160;is&#160;a&#160;part&#160;of&#160;an&#160;occurence&#160;of&#160;bn&#160;which&#160;is&#160;contained&#160;in&#160;an+1&#160;which&#160;is&#160;located&#160;in&#160;cn+2&#160;which&#160;is<br/>
+eventually&#160;a&#160;part&#160;of&#160;dn+3,&#160;while&#160;an−1&#160;is&#160;a&#160;part&#160;of&#160;an&#160;occurence&#160;of&#160;an&#160;which&#160;is&#160;in&#160;bn+1&#160;which&#160;is&#160;located&#160;in<br/>
+the&#160;considered&#160;above&#160;occurence&#160;of&#160;cn+2.&#160;In&#160;the&#160;configuration&#160;(↑c2),&#160;bn−1&#160;intersected&#160;by&#160;BEt(z)&#160;is&#160;a&#160;part<br/>
+of&#160;an&#160;occurence&#160;of&#160;dn&#160;which&#160;is&#160;contained&#160;in&#160;an+1&#160;from&#160;(↑c1),&#160;while&#160;an−1&#160;is&#160;a&#160;part&#160;of&#160;an&#160;occurence&#160;of&#160;cn<br/>
+which&#160;is&#160;contained&#160;in&#160;the&#160;occurence&#160;of&#160;bn+1&#160;considered&#160;in&#160;(↑c1).<br/>
+The&#160;arrow&#160;in&#160;the&#160;vertical&#160;column&#160;in&#160;both&#160;cases&#160;is&#160;the&#160;middle&#160;arrow&#160;of&#160;cn+2.&#160;For&#160;each&#160;cell&#160;z&#160;in&#160;the<br/>
+considered&#160;area,&#160;the&#160;tiles&#160;contained&#160;in&#160;this&#160;cell&#160;are&#160;different&#160;in&#160;two&#160;configurations.&#160;Configurations&#160;(↑d1)<br/>
+and&#160;(↑d2)&#160;work&#160;the&#160;same.<br/>
+(↑c1)<br/>
+d<br/>
+(↑d1)<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+(↑c2)<br/>
+(↑d2)<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+c<br/>
+d<br/>
+Figure&#160;22:&#160;Twins&#160;for&#160;cases&#160;(↑c)&#160;and&#160;(↑d).<br/>
+For&#160;the&#160;last&#160;case,&#160;(↑a,b),&#160;the&#160;twins&#160;are&#160;shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#13">23.</a><br/>
+4.2.4<br/>
+Case&#160;(db)<br/>
+As&#160;we&#160;already&#160;mentioned,&#160;for&#160;all&#160;N,&#160;all&#160;N-macrotiles&#160;are&#160;rotations&#160;of&#160;aN.&#160;Thus,&#160;configurations&#160;with<br/>
+twins&#160;for&#160;the&#160;case&#160;(db)&#160;can&#160;be&#160;obtained&#160;by&#160;rotating&#160;the&#160;configurations&#160;from&#160;the&#160;case&#160;(ba)&#160;by&#160;90o.<br/>
+4.2.5<br/>
+Case&#160;(dba)<br/>
+There&#160;is&#160;the&#160;only&#160;case&#160;where&#160;BEt(z)&#160;intersects&#160;three&#160;(n&#160;−&#160;1)-macrotiles&#160;from&#160;QXY&#160;:&#160;these&#160;macrotiles<br/>
+are&#160;located&#160;around&#160;the&#160;origin&#160;of&#160;QXY&#160;and&#160;the&#160;arrows&#160;in&#160;a&#160;line&#160;and&#160;a&#160;column&#160;between&#160;dn−1,&#160;bn−1&#160;and<br/>an−1&#160;are&#160;as&#160;it’s&#160;shown&#160;in&#160;Figure&#160;<a href="internship_reports.html#13">24.&#160;</a>The&#160;twins&#160;for&#160;this&#160;case&#160;are&#160;displayed&#160;in&#160;the&#160;same&#160;figure:&#160;for&#160;any&#160;z<br/>
+12<br/>
+<hr/>
+<a name=13></a>(↑b1)<br/>
+d<br/>
+b<br/>
+a<br/>
+(↑b2)<br/>
+a<br/>
+b<br/>
+b<br/>
+a<br/>
+b<br/>
+Figure&#160;23:&#160;Twins&#160;for&#160;the&#160;case&#160;(↑a,b).<br/>
+from&#160;the&#160;considered&#160;area,&#160;it&#160;contains&#160;two&#160;different&#160;tiles&#160;for&#160;configurations&#160;(dba1)&#160;and&#160;(dba2).&#160;Indeed,&#160;each<br/>
+cell&#160;touching&#160;the&#160;top&#160;side&#160;of&#160;an−1,&#160;except&#160;the&#160;one&#160;in&#160;the&#160;corner,&#160;contains&#160;tiles&#160;with&#160;arrows&#160;of&#160;opposite<br/>
+directions&#160;in&#160;these&#160;two&#160;configurations;&#160;the&#160;same&#160;is&#160;true&#160;for&#160;the&#160;cells&#160;touching&#160;the&#160;right&#160;side&#160;of&#160;dn−1.&#160;The<br/>remaining&#160;cell&#160;is&#160;the&#160;one&#160;in&#160;the&#160;corner;&#160;in&#160;the&#160;configuration&#160;(dba1)&#160;it&#160;contains<br/>
+,&#160;while&#160;in&#160;(dba2)&#160;it<br/>
+contains<br/>
+.<br/>
+Thence,&#160;we&#160;covered&#160;all&#160;the&#160;cases&#160;which&#160;means&#160;that&#160;twins&#160;exist&#160;for&#160;each&#160;cell&#160;z&#160;in&#160;E:&#160;Lemma&#160;<a href="internship_reports.html#9">5&#160;</a>is<br/>
+true.This&#160;proves&#160;Theorem&#160;<a href="internship_reports.html#8">2.</a><br/>
+(dba1)<br/>
+(dba2)<br/>
+b<br/>
+c<br/>
+d<br/>
+a<br/>
+d<br/>
+a<br/>
+b<br/>
+a<br/>
+b<br/>
+a<br/>
+d<br/>
+c<br/>
+d<br/>
+a<br/>
+b<br/>
+d<br/>
+Figure&#160;24:&#160;Twins&#160;in&#160;the&#160;case&#160;(dba).&#160;Borders&#160;of&#160;(n&#160;+&#160;2)-macrotiles&#160;are&#160;marked&#160;by&#160;the&#160;gray&#160;dashed&#160;line.<br/>
+5<br/>
+Conclusion<br/>
+5.1<br/>
+Future&#160;work<br/>
+We&#160;modeled&#160;the&#160;growth&#160;of&#160;Robinson&#160;tilings&#160;with&#160;cellular&#160;automata&#160;satisfying&#160;conditions&#160;(S)&#160;and&#160;(b)<br/>
+with&#160;a&#160;nondecreasing&#160;growth&#160;rule.&#160;However,&#160;we&#160;conjecture&#160;that&#160;all&#160;restrictions&#160;except&#160;(S)&#160;are&#160;unnecessary<br/>
+for&#160;this&#160;result.&#160;Thus,&#160;obtaining&#160;the&#160;same&#160;result&#160;with&#160;weaker&#160;conditions&#160;(or&#160;showing&#160;a&#160;counterexample)<br/>
+would&#160;be&#160;a&#160;good&#160;continuation&#160;of&#160;this&#160;work.<br/>
+13<br/>
+<hr/>
+<a name=14></a>Besides&#160;that,&#160;the&#160;growth&#160;model&#160;could&#160;be&#160;generalized,&#160;for&#160;instance,&#160;in&#160;a&#160;probabilistic&#160;way.&#160;For&#160;this,&#160;it&#160;is<br/>
+enough&#160;to&#160;consider&#160;probabilistic&#160;cellular&#160;automata;&#160;this&#160;approach&#160;is&#160;more&#160;realistic&#160;for&#160;modeling&#160;physical<br/>
+and&#160;chemical&#160;processes.<br/>
+Our&#160;result&#160;shows&#160;that&#160;there&#160;exists&#160;a&#160;hierarchical&#160;tiling&#160;of&#160;the&#160;plane&#160;that&#160;can&#160;not&#160;be&#160;grown.&#160;The<br/>
+question&#160;is&#160;still&#160;open&#160;for&#160;many&#160;other&#160;tilings&#160;and&#160;should&#160;be&#160;investigated&#160;in&#160;order&#160;to&#160;find&#160;connections<br/>
+between&#160;growing&#160;and&#160;other&#160;properties&#160;of&#160;a&#160;tileset&#160;(for&#160;instance,&#160;entropy&#160;of&#160;the&#160;dynamical&#160;system).<br/>
+5.2<br/>
+Other&#160;activities<br/>
+During&#160;my&#160;internship,&#160;besides&#160;the&#160;research&#160;described&#160;in&#160;this&#160;report,&#160;I&#160;participated&#160;in&#160;the&#160;local&#160;scientific<br/>
+life.&#160;In&#160;June,&#160;I&#160;took&#160;part&#160;in&#160;the&#160;on-place&#160;organization&#160;of&#160;the&#160;CSR&#160;conference&#160;<a href="https://logic.pdmi.ras.ru/csr2018/welcome">(https://logic.pdmi.ras.<br/>ru/csr2018/welcome).&#160;</a>Besides&#160;that,&#160;I&#160;was&#160;a&#160;coauthor&#160;of&#160;a&#160;course&#160;on&#160;Tilings&#160;and&#160;Computations&#160;in&#160;the<br/>
+summer&#160;school&#160;“Contemporary&#160;Mathematics”&#160;<a href="https://www.mccme.ru/dubna/eng/">(https://www.mccme.ru/dubna/eng/).&#160;</a>I&#160;gave&#160;two&#160;lectures<br/>
+out&#160;of&#160;four,&#160;made&#160;exercise&#160;sheets,&#160;and&#160;took&#160;part&#160;in&#160;writing&#160;lecture&#160;notes&#160;(all&#160;these&#160;materials&#160;can&#160;be&#160;found<br/>
+here:&#160;<a href="https://www.mccme.ru/dubna/2018/courses/gamard-pchelina.html">https://www.mccme.ru/dubna/2018/courses/gamard-pchelina.html).</a><br/>
+References<br/>
+[1]&#160;Robert&#160;Berger.&#160;The&#160;undecidability&#160;of&#160;the&#160;domino&#160;problem.&#160;Memoirs&#160;of&#160;the&#160;American&#160;Mathematical<br/>
+Society,&#160;66,&#160;1966.<br/>
+[2]&#160;Karel&#160;Culik.&#160;An&#160;aperiodic&#160;set&#160;of&#160;13&#160;Wang&#160;tiles.&#160;Discrete&#160;Mathematics,&#160;160(1):245–251,&#160;1996.<br/>
+[3]&#160;David&#160;Doty.&#160;Theory&#160;of&#160;Algorithmic&#160;Self-assembly.&#160;Communications&#160;of&#160;the&#160;ACM,&#160;55(12):78–88,&#160;2012.<br/>
+[4]&#160;Bruno&#160;Durand,&#160;Leonid&#160;A.&#160;Levin,&#160;and&#160;Alexander&#160;Shen.&#160;Complex&#160;tilings.&#160;J.&#160;Symbolic&#160;Logic,&#160;73(2):593–<br/>
+613,&#160;2008.<br/>
+[5]&#160;Thomas&#160;Fernique.&#160;Yet&#160;Another&#160;Proof&#160;of&#160;the&#160;Aperiodicity&#160;of&#160;Robinson&#160;Tiles.&#160;<a href="http://arxiv.org/abs/1506.06492">http://arxiv.org/</a><br/>
+<a href="http://arxiv.org/abs/1506.06492">abs/1506.06492.</a><br/>
+[6]&#160;U.&#160;Grimm&#160;and&#160;D.&#160;Joseph.&#160;Modeling&#160;Quasicrystal&#160;Growth.&#160;Quasicrystals:&#160;An&#160;Introduction&#160;to<br/>
+Structure,&#160;Physical&#160;Properties&#160;and&#160;Application,&#160;page&#160;199,&#160;2002.<br/>
+[7]&#160;Emmanuel&#160;Jeandel&#160;and&#160;Micha¨el&#160;Rao.&#160;An&#160;aperiodic&#160;tileset&#160;of&#160;11&#160;Wang&#160;tiles.&#160;<a href="https://arxiv.org/abs/1506.06492">https://arxiv.org/</a><br/>
+<a href="https://arxiv.org/abs/1506.06492">abs/1506.06492,&#160;</a>2015.<br/>
+[8]&#160;Jarkko&#160;Kari.&#160;A&#160;small&#160;aperiodic&#160;set&#160;of&#160;Wang&#160;tiles.&#160;Discrete&#160;Mathematics,&#160;160(1-3):259–264,&#160;1996.<br/>
+[9]&#160;Daria&#160;Pchelina&#160;and&#160;Guilhem&#160;Gamard.&#160;Computations:&#160;from&#160;Turing&#160;Machines&#160;to&#160;Tiling.&#160;<a href="https://www.mccme.ru/dubna/2018/notes/gamard-pchelina-notes.pdf">https:</a><br/>
+<a href="https://www.mccme.ru/dubna/2018/notes/gamard-pchelina-notes.pdf">//www.mccme.ru/dubna/2018/notes/gamard-pchelina-notes.pdf,&#160;</a>2018.<br/>
+[10]&#160;Roger&#160;Penrose.&#160;The&#160;role&#160;of&#160;aesthetics&#160;in&#160;pure&#160;and&#160;applied&#160;mathematical&#160;research.&#160;Bulletin&#160;of&#160;the<br/>
+Institute&#160;of&#160;Mathematics&#160;and&#160;its&#160;Applications,&#160;10:266,&#160;1974.<br/>
+[11]&#160;Raphael&#160;M.&#160;Robinson.&#160;Undecidability&#160;and&#160;nonperiodicity&#160;for&#160;tilings&#160;of&#160;the&#160;plane.&#160;Inventiones<br/>
+Mathematicae,&#160;12(3):177–209,&#160;1971.<br/>
+[12]&#160;Joshua&#160;E.S.&#160;Socolar.&#160;Growth&#160;Rules&#160;For&#160;Quasicrystals.&#160;Quasicrystals:&#160;The&#160;State&#160;of&#160;the&#160;Art,&#160;pages<br/>
+325–359,&#160;1999.<br/>
+[13]&#160;Hao&#160;Wang.&#160;Proving&#160;theorems&#160;by&#160;pattern&#160;recognition—II.&#160;Bell&#160;System&#160;Technical&#160;Journal,&#160;40:1–41,<br/>
+1961.<br/>
+14<br/>
+<hr/>
+<a name=15></a>Appendix:&#160;additional&#160;figures<br/>
+b<br/>
+b<br/>
+b<br/>
+a<br/>
+c<br/>
+d<br/>
+c<br/>
+d<br/>
+b<br/>
+a<br/>
+d<br/>
+c<br/>
+Figure&#160;25:&#160;Twins&#160;for&#160;cells&#160;z&#160;is&#160;in&#160;E&#160;\&#160;EG&#160;,&#160;case&#160;(ba),&#160;where&#160;the&#160;arrow&#160;between&#160;b<br/>
+n<br/>
+n−1&#160;and&#160;an−1&#160;is&#160;(↓b).<br/>
+c<br/>
+c<br/>
+b<br/>
+a<br/>
+c<br/>
+d<br/>
+c<br/>
+d<br/>
+b<br/>
+a<br/>
+d<br/>
+c<br/>
+Figure&#160;26:&#160;Twins&#160;for&#160;cells&#160;z&#160;is&#160;in&#160;E&#160;\&#160;EG&#160;,&#160;case&#160;(ba),&#160;where&#160;the&#160;arrow&#160;between&#160;b<br/>
+n<br/>
+n−1&#160;and&#160;an−1&#160;is&#160;(↓c,d).<br/>
+15<br/>
+<hr/>
+<a name="outline"></a><h1>Document Outline</h1>
+<ul>
+<li><a href="internship_reports.html#1">Introduction</a>
+<ul>
+<li><a href="internship_reports.html#2">Preliminaries</a></li>
+</ul>
+</li>
+<li><a href="internship_reports.html#2">The Robinson tileset</a>
+<ul>
+<li><a href="internship_reports.html#3">Local rules</a></li>
+<li><a href="internship_reports.html#3">Hierarchy</a></li>
+</ul>
+</li>
+<li><a href="internship_reports.html#6">Formalizing the growth of Robinson tilings</a></li>
+<li><a href="internship_reports.html#8">Robinson tilings do not grow</a>
+<ul>
+<li><a href="internship_reports.html#8">The base of the proof</a></li>
+<li><a href="internship_reports.html#9">Looking for twins: proof of Lemma 5</a>
+<ul>
+<li><a href="internship_reports.html#10">When the cell z is in EGn</a></li>
+<li><a href="internship_reports.html#11">When the cell z is in EEGn</a></li>
+<li><a href="internship_reports.html#11">Case (ba)</a></li>
+<li><a href="internship_reports.html#12">Case (db)</a></li>
+<li><a href="internship_reports.html#12">Case (dba)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="internship_reports.html#13">Conclusion</a>
+<ul>
+<li><a href="internship_reports.html#13">Future work</a></li>
+<li><a href="internship_reports.html#14">Other activities</a></li>
+</ul>
+</li>
+</ul>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,367 @@
+\documentclass[12pt]{amsart}
+\title{Computing the Minimal Model for the Quantum Symmetric Algebra}
+\author{Daniel Barter}
+\date{\today}
+
+\makeatletter
+% \def\@endtheorem{\endtrivlist\@endpefalse }% OLD
+\def\@endtheorem{\endtrivlist}% NEW
+\makeatother % gets rid of line breaks after theorems
+
+\usepackage{easyfig} %nice package which builds on graphicx
+\usepackage{float}
+\usepackage{booktabs} %fancy tables
+\usepackage{amsmath,amssymb}
+\usepackage{tikz-cd}
+\usepackage{mathrsfs} % Sheafy Fonts
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+
+\usepackage[boxsize = 0.5em]{ytableau} %% \ydiagram{2,2}
+\usepackage{enumerate} %allows the enumeration symbols to be changed
+\usepackage[margin=2.5cm]{geometry} % set margins
+
+
+
+
+\theoremstyle{plain}
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Corollary}[Theorem]{Corollary}
+\newtheorem{Proposition}[Theorem]{Proposition}
+
+
+\theoremstyle{definition}
+\newtheorem{Definition}[Theorem]{Definition}
+\newtheorem{Lemma}[Theorem]{Lemma}
+\newtheorem{Example}[Theorem]{Example}
+\newtheorem{Problem}[Theorem]{Problem}
+
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Rep}{Rep}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\QSym}{QSym}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\ST}{ST}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Spec}{Spec}
+\newcommand{\Vect}{{\bf Vec}}
+\newcommand{\XX}{{\bf X}}
+\renewcommand{\AA}{{\mathcal{A}}}
+\newcommand{\DD}{{\bf D}}
+\newcommand{\PP}{{\bf P}}
+\newcommand{\UU}{\mathcal{U}}
+
+\begin{document}
+
+
+
+\begin{abstract}
+In this note, we use some of the tensor categorial machinery developed by the quantum algebra community to study algebraic objects which appear in representation stability. In \cite{MR3430359}, Sam and Snowden prove that the twisted commutative algebra $\Sym$ is Morita equivalent to the horizontal strip category. Their proof relies on a lemma proved by Olver in \cite{MR924166}. We give a self contained proof that replaces Olver's lemma with information about the associator in the underlying category of polynomial $\GL(\infty)$-representations. In fact, we prove a quantum analogue of the theorem. The classical version follows by letting the parameter converge to $1$. 
+\end{abstract}
+
+\maketitle
+
+\section{Introduction} \label{sec:introduction}
+
+Let $\mathcal{S}$ be the category of polynomial $\GL(\infty)$-representations studied by Sam and Snowden in \cite{MR3430359}. This category contains the algebra $\Sym = \mathbb{C}[x_1,x_2,\dots]$ which is Morita equivalent to ${\bf FI}$, the category of finite sets with injections. A proof can be found in \cite{MR3556290}. In Section 3 of \cite{MR3430359}, Sam and Snowden prove that $\Sym$ is Morita equivalent to ${\bf HS}$, the category whose objects are partitions and whose morphisms are defined by
+\[
+{\bf HS}(\lambda,\mu) = \begin{cases}
+\mathbb{C} \{ \mu \backslash \lambda \} & \lambda \subseteq \mu \; , \; \mu \backslash \lambda \in {\rm
+HS}
+\\
+0 & \text{otherwise}
+\end{cases}
+\]
+Composition is defined as follows: Assume that \( \mu \backslash \lambda \) and \( \nu \backslash \mu \) are horizontal strips. If \( \nu
+\backslash \lambda \) is a horizontal strip, then
+\[
+(\nu \backslash \mu)(\mu \backslash \lambda) =  \nu \backslash \lambda.
+\]
+If \( \nu \backslash \lambda \) is not a horizontal strip, then the composition is zero. Now let $\mathcal{H}$ be the category of polynomial type 1 representations of $U_a(\mathfrak{gl}_{\infty})$ defined in Definition \ref{ex:main_example}. Inside $\mathcal{H}$, we have the quantum symmetric algebra $\QSym$. In this chapter, we prove the following:
+\begin{Theorem} \label{thm:minimal_model}
+The quantum symmetric algebra $\QSym$ is Morita equivalent to ${\bf HS}$ for generic $a$.
+\end{Theorem}
+\noindent Theorem \ref{thm:minimal_model} implies that many of the results in \cite{MR3430359} which hold for $\Sym$ are also true for $\QSym$. 
+
+The author would like to thank Corey Jones, Scott Morrison, Andrew Snowden and Phil Tosteson for many useful conversations and their support.
+
+
+
+\section{Preliminaries} \label{sec:Preliminaries}
+
+\begin{Definition} \label{def:tree_string_diagrams}
+ Let $\XX$ be a semi-simple tensor category. Index the simple objects with a set $\Lambda$. Choose a basis for each $\XX(\mu,\lambda \otimes \nu)$ denoted by
+\[
+\input{tikz_pictures/tree_basis_11.tex} \; , \;
+\input{tikz_pictures/tree_basis_12.tex} \; , \dots
+\]
+\noindent and let
+\[
+\input{tikz_pictures/tree_basis_21.tex} \; , \;
+\input{tikz_pictures/tree_basis_22.tex} \; , \dots
+\]
+\noindent be the dual basis of $\XX(\lambda \otimes \nu,\mu)$. We call these diagrams {\bf trivalent vertices}. It is important to notice that trivalent vertices are not canonically defined.
+\end{Definition}
+
+\begin{Definition} \label{def:fusion_graph}
+Pick a distinguished simple object $X \in \XX$. The {\bf fusion graph} of $X$ has vertices $\Lambda$ and the edges from $\lambda$ to $\mu$ are the distinguished basis vectors in $\XX(\mu,\lambda \otimes X)$.
+\end{Definition}
+
+\begin{Proposition} \label{prop:hom_space_tree_basis}
+Fix $\lambda \in \Lambda$. Then $\XX(\lambda,X^{\otimes n})$ has dimension the number of paths from the tensor unit to $\lambda$ in the fusion graph for $X$ of length $n$. Moreover, an explicit basis is given by string diagrams of the form
+\[
+\input{tikz_pictures/tree_basis_vector.tex}
+\]
+\noindent In this diagram, each $f_i$ is a trivalent vertex of the form
+\[
+\input{tikz_pictures/tree_basis_13.tex}
+\]
+\noindent we call such string diagrams {\bf trivalent basis vectors}
+\end{Proposition}
+\begin{proof}
+Decompose $X^{\otimes n}$ using the fusion graph for $X$.
+\end{proof}
+\begin{Definition} \label{def:matrix_units}
+If $\XX$ is a semi-simple tensor category over $\mathbb{C}$ with finite dimensional morphism spaces, the Artin-Wedderburn Theorem implies that $\End(X^{\otimes n})$ is a product of matrix algebras. Proposition \ref{prop:hom_space_tree_basis} implies that in the trivalent basis, the matrix units in  $\End(X^{\otimes n})$ look like
+\[
+\input{tikz_pictures/matrix_unit.tex}
+\]
+\noindent Equivalently, the irreducible representations of $\End(X^{\otimes n})$ are parameterized by the simple objects in $\XX$ which have a length $n$ path from the tensor unit in the fusion graph for $X$. The string diagrams defined in Proposition \ref{prop:hom_space_tree_basis} form a basis for the corresponding representation.
+\end{Definition}
+
+\begin{Definition} \label{ex:main_example}
+
+The {\bf Iwahori-Hecke algebra}, denoted by $H_m$, is the algebra generated over $\mathbb{C}(a)$ by $1,g_1,\dots,g_{m-1}$ subject to the relations
+\begin{align*}
+g_i g_{i+1} g_i &= g_{i+1} g_i g_{i+1} \\
+g_i g_j &= g_j g_i \qquad \text{if \quad  $\lvert i - j \lvert \geq 2$} \\
+g_i^2 &= (a - a^{-1})g_i + 1.
+\end{align*}
+We define the category $H$ which has objects the natural numbers and morphisms
+\[
+H(m,n) =
+\begin{cases}
+H_m & m = n \\
+0 & {\rm otherwise}.
+\end{cases}
+\]
+The inclusion $H_m \otimes H_n \to H_{m+n}$ defined by $g_i \otimes g_j \mapsto g_i g_{m+j}$ equips $H$ with a tensor structure. We define $\mathcal{H} \subseteq [H^{\rm op},\Vect]$ to be the idempotent completion of $H$. The monoidal structure on $H$ extends to $\mathcal{H}$ via Day convolution. Morally, the category $\mathcal{H}$ can be described as finite dimensional type $1$ representations of the quantum group $U_a(\mathfrak{gl}_{\infty})$. The Grothendieck ring for $\mathcal{H}$ has basis given by partitions and multiplication given by the Littlewood-Richardson rule. A special case of the Littlewood-Richardson rule is the Pieri rule:
+\[
+\lambda \otimes \ydiagram{1} = \sum_{\lambda \subset \mu \vdash n+1} \mu
+\]
+This implies that the fusion graph for $\ydiagram{1}$ is Young's graph:
+\[
+\input{tikz_pictures/youngs_graph.tex}
+\]
+Paths in the Young graph are in bijection with standard partition fillings. It follows that the trivalent basis vectors
+\[
+\input{tikz_pictures/standard_tableaux_basis_vector.tex}
+\]
+are in bijection (up to scaling) with standard skew tableaux of shape $\mu \backslash \lambda$. We abuse notation and identify these tree basis vectors with the corresponding standard skew tableaux. In \cite{MR1427801}, Ram and Leduc computed semi-normal forms for the Iwahori-Hecke algebras. More precisely, suppose that $\lambda \subseteq \mu \vdash n+2$ are partitions such that $\mu \backslash \lambda$ is not contained in a single row or column. Then there are exactly two partitions which satisfy $\lambda \subseteq \nu \subseteq \mu$. Call them $\nu$ and $\nu'$. The multiplicity space $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1} \otimes \ydiagram{1})$ is 2-dimensional with basis
+\[
+\input{tikz_pictures/2_step_tree_basis_iwahori_hecke_1.tex} \; , \;
+\input{tikz_pictures/2_step_tree_basis_iwahori_hecke_2.tex}
+\]
+and $g_1$ acts via the matrix
+\[
+m(g_1) =
+\begin{pmatrix}
+a^{d}/[d] & [d-1][d+1]/[d]^2 \\
+1 & a^{-d} / [-d]
+\end{pmatrix}
+\]
+where
+\[
+[n] = \frac{a^n - a^{-n}}{a-a^{-1}}
+\]
+and $d = d_1 + d_2$ is the axial distance in $\mu \backslash \lambda$:
+\[
+\input{tikz_pictures/axial_distance.tex}
+\]
+More formally, if $\mu \backslash \lambda$ contains the boxes $(a_1,b_1),(a_2,b_2)$, then the axial distance is defined by $d = \lvert a_1 - a_2 \lvert + \lvert b_1 - b_2 \lvert$. These formulas are quantum analogues of the well known Young semi-normal form for the representation theory of the symmetric group \cite{MR644144}. Indeed, when $a \to 1$, they recover they classical Young semi-normal formulas.
+
+\end{Definition}
+
+
+\section{Morita Theory} \label{sec:morita_theory}
+
+In this section, we prove a very mild generalization of classical Morita theory. In classical Morita theory, we replace an object with its presentation with respect to a single projective. We are going to replace an object with its presentation with respect to a family of projectives. For the remainder of this section, $\XX$ is an abelian category enriched over $\Vect_k$, closed under colimits, $\DD$ is a category enriched over $\Vect_k$ and $D : \DD^{\rm op} \to \XX$ is a functor.
+
+\begin{Theorem} \label{thm:morita_theory_main_thm}
+If $\XX$ has enough projectives, then $\XX$ is equivalent to the category of representations of $\DD$ where $\DD^{\rm op}$ is a full subcategory of $\XX$ whose objects are compact, projective and generate $\XX$.
+\end{Theorem}
+
+We can prove this in a very clean way using coends. They can be motivated as follows: Suppose that $A$ is a $k$-algebra, $M$ is a left $A$-module and $N$ is a right $A$-module. Then we can form the tensor product $M \otimes_A N$ which is a vector space. It is built by taking the tensor product $M \otimes_k N$ and quotienting by the relations
+$$ a m \otimes n = m \otimes n a. $$
+We can generalize the second step in the following way. Suppose that $ F : \DD \otimes_k \DD^{\rm op} \to \Vect_k $ is a bifunctor. Then we can form the vector space
+\[\int^{d \in \DD} F = \bigoplus_{d \in \DD} F(d,d) \; / \; fv = vf \qquad v \in F(d,d'), f : d' \to d.\] This vector space is called the {\bf coend} of $F$. We can use coends to generalize tensor products from modules to functors. Suppose that $F : \DD \to \Vect$ and $G : \DD^{\rm op} \to \Vect$ are functors. Then we define
+\[
+F \otimes_{\DD} G = \int^{d \in D} F(d) \otimes G(d).
+\]
+A clear exposition of the theory of coends can be found in \cite{MR3221774}. Let $\DD$ a category enriched over $\Vect$. Suppose that we have a functor $D : \DD^{\rm op} \to \XX$. Then we get a functor
+\begin{align*}
+&\XX \to [\DD,\Vect] \\
+& X \mapsto \XX(D(-),X)
+\end{align*}
+This functor has a left adjoint given by
+\begin{align*}
+&[\DD,\Vect] \to \XX \\
+&V \mapsto V \otimes_{\DD} D = \int^d V_d \otimes D^d
+\end{align*}
+The following computation demonstrates why these functors are adjoint:
+\begin{align*}
+\XX(V \otimes_{\DD} D,X) &= \XX \left( \int^d V_d \otimes D^d,X \right) \\
+&= \int_d \XX(V_d \otimes D^d,X) \\
+&= \int_d \hom(V_d,\XX(D^d,X)) \\
+&= [\DD,\Vect](V,\XX(D(-),X))
+\end{align*}
+\begin{Definition}
+  We call $X \in \XX$ a {\bf compact} object if $\XX(X,-)$ commutes with filtered colimits.
+  \end{Definition}
+\begin{Proposition} \label{prop:fully_faithful}
+Assume that $D$ is fully faithful and each $D(d)$ is projective and compact. Then $[\DD,\Vect] \to \XX$ is fully faithful.
+\end{Proposition}
+\begin{proof}
+We need to prove that the unit
+$$V \to \XX(D(-),V \otimes_{\DD} D)$$
+is an isomorphism. It suffices to prove this pointwise, so we need to prove that the linear map
+$$ V(d) \to \XX(D(d),V \otimes_{\DD} D)$$
+is an isomorphism. Since $D(d)$ is projective and compact, it follows that $\XX(D(d),-)$ commutes with all colimits. Therefore
+\begin{align*}
+\XX \left( D(d),\int^x V(x) \otimes D(x) \right) &= \int^x V(x) \otimes \XX(D(d),D(x)) \\
+&= \int^x V(x) \otimes \DD(x,d) \\
+&= V(d)
+\end{align*}
+The second equality is true because $\DD$ is fully faithful.
+\end{proof}
+\begin{Proposition} \label{prop:essentially_surjective}
+In addition to the hypotheses of proposition \ref{prop:fully_faithful}, assume that every $X \in \XX$ admits an epimorphism $\bigoplus_i D(d_i) \to X$ for some family $\{ d_i\}$. Then $[\DD,\Vect] \to \XX$ is essentially surjective.
+\end{Proposition}
+\begin{proof}
+By assumption, it follows that for every $X \in \XX$, the counit
+$$ \XX(D(-),X) \otimes_{\DD} D \to X$$
+is an epimorphism. Then we have an exact sequence
+$$ 0 \to K \to \XX(D(-),X) \otimes_{\DD} D \to X \to 0$$
+This gives us an exact sequence
+$$ \XX(D(-),K) \otimes_{\DD} D \to \XX(D(-),X) \otimes_{\DD} D \to X \to 0$$
+Since $-\otimes_{\DD} D$ is fully faithful, we can write the first map as $f \otimes_{\DD} D$ for some map $f : \XX(D(-),K) \to \XX(D(-),X)$. Since $- \otimes_{\DD} D$ is right exact, it follows that $X = \coker f \otimes_{\DD} D$. This proves essential surjectivity.
+\end{proof}
+
+\noindent {\em Proof of theorem \ref{thm:morita_theory_main_thm}.} Let $\DD^{\rm op}$ be a full subcategory of $\XX$ whose objects are compact, projective and generate $\XX$. Let $D : \DD^{\rm op} \to \XX$ be the embedding. By proposition, \ref{prop:fully_faithful}, the functor $ - \otimes_{\DD} D : [\DD,\Vect] \to \XX$ if fully faithful. By Proposition \ref{prop:essentially_surjective}, the functor is essentially surjective. \qed
+
+\begin{Definition} \label{def:minimal_model}
+  If $\XX$ is an abelian category with enough compact projectives, define $M(\XX)$ to be the opposite of the full subcategory with objects the indecomposable compact projectives. We call $M(\XX)$ the {\bf minimal model} for $\XX$. By theorem \ref{thm:morita_theory_main_thm}, the functor category $[M(\XX),\Vect]$ is equivalent to $\XX$.
+\end{Definition}
+
+
+\section{Modules over Tensor Algebras} \label{sec:modules_over_tensor_algebras}
+
+In this section, we work inside a fixed semi-simple tensor category $\mathcal{C}$. We use Morita theory to study the category of modules over an algebra internal to $\mathcal{C}$. Choose a distinguished simple object $X \in \mathcal{C}$. Define
+\[
+T = \bigoplus_{n \geq 0} X^{\otimes n}
+\]
+This is the tensor algebra generated by $X$. Define $\Rep(T)$ to be the category of right modules over $T$ internal to $\mathcal{C}$. The forgetful functor $F : \Rep(T) \to \mathcal{C}$ has left adjoint $L : \mathcal{C} \to \Rep(T)$ defined by $V \mapsto V \otimes T$. Since the right adjoint $F$ is exact, it follows that $L$ preserves projectives. Define
+\[
+T^{+} = \bigoplus_{n \geq 1} X^{\otimes n}
+\]
+
+\begin{Lemma} \label{lem:indecomposable_projectives}
+  If $V \in \mathcal{C}$ is irreducible, then $V \otimes T$ is an indecomposable projective in $\Rep(T)$.
+\end{Lemma}
+\begin{proof}
+  Since $V \otimes T = L(V)$, the module is projective. Suppose that $V \otimes T = A \oplus B$ as $T$-modules. When we tensor with $T / T^+$, we get
+  \[
+  V = A / A T^+ \oplus B / B T^+
+  \]
+  in $\mathcal{C}$. Since $V$ is irreducible in $\mathcal{C}$, we can assume without loss of generality that $A / AT^{+} = 0$. Suppose that $A \not= 0$. Choose $0 \not= Y \subseteq A \subseteq V \otimes T$ irreducible in $\mathcal{C}$. This implies that
+  \[
+  Y \subseteq \bigoplus_{n=0}^N V \otimes X^{\otimes n}
+  \]
+  for some large $N$. Since $A = A \left( T^+ \right)^{N+1}$, it follows that
+  \[ Y \subseteq A \left( T^+ \right)^{N+1} \subseteq \bigoplus_{n \geq N+1} V \otimes X^{\otimes n}. \]
+  This implies that $Y = 0$, which is a contradiction. Therefore we must have $A = 0$.
+\end{proof}
+\begin{Proposition} Let $G$ be the fusion graph for $X$ considered as a category where the objects are vertices and the morphisms are paths. Then $\Rep(T)$ is Morita equivalent to $[G,\Vect]$.
+\end{Proposition}
+
+\begin{proof}
+  The indecomposable compact projectives $\lambda \otimes T$, where $\lambda$ is an irreducible in $\mathcal{C}$, generate $\Rep(T)$. Using the adjunction $(L,F) : \Rep(T) \to \mathcal{C}$, we have
+\[
+\hom_T(\mu \otimes T,\lambda \otimes T) = \mathcal{C}(\mu,\lambda \otimes T).
+\]
+The right hand side has a basis consisting of vectors of the form
+\[
+\input{tikz_pictures/fusion_graph_edge.tex}
+\]
+which is exactly a path in the fusion graph for $X$ from $\lambda$ to $\mu$. Post composing with the corresponding morphism in $\hom_T(\mu \otimes T,\lambda \otimes T)$ is the map
+\[
+\input{tikz_pictures/fusion_graph_map_LHS.tex}
+\quad \mapsto
+\input{tikz_pictures/fusion_graph_map_RHS.tex}
+\]
+This implies that composition of basis vectors is exactly concatenation of paths in the fusion graph for $X$. This completes the proof.
+\end{proof}
+
+\begin{Example} \label{ex:minimal_model_tensor_algebra_first_fundamental}
+Let $\mathcal{C} = \mathcal{H}$, which was defined in Example \ref{ex:main_example}, and let $X = \ydiagram{1}$. The fusion graph for $X$ has objects partitions and the edges $G(\lambda,\mu)$ are the standard skew tableaux of shape $\mu \backslash \lambda$.
+\end{Example}
+
+\section{Modules over the quantum symmetric algebra} \label{sec:modules_over_the_quantum_symmetric_algebra}
+
+In this section, we work inside the category $\mathcal{H}$ defined in Example \ref{ex:main_example}. Define $T = \bigoplus_{n \geq 0} \ydiagram{1}^{\otimes n}$. Consider the submodule $I$ of $T$ spanned by all maps
+\[
+\input{tikz_pictures/sym_ideal_basis_vector.tex}
+\]
+where $\lambda$ is a partition with two or more rows. The grading on the Grothendieck ring implies that $I$ is a 2-sided ideal in $T$, so we can form the quotient algebra $S = T/I$. We have
+\[
+S = \emptyset \oplus \ydiagram{1} \oplus \ydiagram{2} \oplus \ydiagram{3} \oplus \cdots
+\]
+Define $\Rep(S)$ to be category of right modules over $S$ internal to the category $\mathcal{H}$. Just like the tensor algebra, every projective $S$-module is free and the indecomposable projectives are of the form $\lambda \otimes S$ where $\lambda$ is a partition. Define $F$ to be the fusion graph for $\ydiagram{1}$ inside $\mathcal{H}$ interpreted as a category. Define $M$ to be the category whose objects are partitions and whose morphisms are defined by
+\[
+M(\lambda,\mu) = \hom_S(\mu \otimes S, \lambda \otimes S).
+\]
+Then we have the functor $Q = - \otimes_T S : F \to M$. By definition, this functor is the identity on objects. Since all the projectives involved are free, it follows that $Q$ is full. We can describe $Q$ more concretely as follows. Each hom space in $F$ is a skew representation of some Iwahori-Hecke algebra. We have:
+\begin{Lemma} \label{lem:Q_is_projection_onto_invariants}
+On morphisms, $Q$ projects onto the Hecke algebra invariants.
+\end{Lemma}
+ \begin{proof}Recall that given a vector $f \in F(\lambda,\mu)$, post composition by the induced map $\hom_T(\mu \otimes T, \lambda \otimes T)$ is given by
+\[
+\input{tikz_pictures/invariant_projection_proof_1.tex} \quad \mapsto
+\input{tikz_pictures/invariant_projection_proof_2.tex}
+\]
+More precisely, the map $f : \mu \to \lambda \otimes X^{\otimes n}$ induces a map $\mu \otimes T \to \lambda \otimes T$ defined by
+\[
+g : \mu \otimes T \xrightarrow{f \otimes 1} \lambda \otimes X^{\otimes n} \otimes T \xrightarrow{1 \otimes m} \lambda \otimes T
+\]
+where $m$ is the multiplication map. The diagram depicts post composing a map $\nu \to \mu \otimes T$ with $g$. By Yoneda's lemma, this determines $g$.  If we tensor along the projection $p : T \to S$ we have
+\[
+\input{tikz_pictures/invariant_projection_proof_4.tex} \quad \mapsto
+\input{tikz_pictures/invariant_projection_proof_3.tex} =
+\input{tikz_pictures/invariant_projection_proof_5.tex}
+\]
+The second equality is true because $p$ is an algebra homomorphism, so it commutes with multiplication.
+\end{proof}
+
+
+\begin{Proposition} \label{prop:skew_rep_invariants}
+Suppose that $\lambda \subseteq \mu$ are partitions. Then  $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1}^{\otimes n})$ has Hecke algebra invariants if and only if $\mu \backslash \lambda$ is a horizontal strip. In this case, the invariants are 1-dimensional and any skew tableaux projects onto a nonzero invariant.
+\end{Proposition}
+\begin{proof}
+The invariants in $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1}^{\otimes n})$ are the same as maps
+\[
+\mu \to \lambda \otimes \underbrace{\ydiagram{5}}_{n}
+\]
+By Pieri's rule, $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1}^{\otimes n})$ has invariants if and only if $\mu \backslash \lambda$ is a horizontal strip. Suppose that $\mu \backslash \lambda$ is a horizontal strip and $P$ is a skew tableaux of shape $\mu \backslash \lambda$. Then from the semi-normal form, we know that $P$ generates $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1}^{\otimes n})$. This implies that $\mathcal{H}(\mu,\lambda \otimes \ydiagram{1}^{\otimes n})$ has a $1$-dimensional space of invariants and $P$ projects onto a nonzero invariant.
+\end{proof}
+
+\noindent {\em Proof of Theorem \ref{thm:minimal_model}.} The minimal model for $S$ is $M$. From Lemma \ref{lem:Q_is_projection_onto_invariants}, $Q : F \to M$ is a full functor  which is projection onto the Hecke algebra invariants. From Proposition \ref{prop:skew_rep_invariants}, we have
+$$M(\mu,\lambda) = F(\mu,\lambda)^{H_n} = \mathcal{H}(\mu,\lambda \otimes \ydiagram{1})^{H_n} = {\bf HS}(\mu,\lambda).$$
+\qed
+
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+
+\end{document}

@@ -1,0 +1,83 @@
+
+Simpson first noted a relation between Hindman's theorem and the Carlson-Simpson lemma~\cite{Carlson1984dual}. In this section, we give a formal counterpart to his observation by giving a simple proof of $\ovw{2}{\ell}$ using the Finite Union Theorem, a statement known to be equivalent to Hindman's theorem. A variation of the proof below was used by Dzhafarov et al.~\cite{Dzhafarov2017Effectiveness} to give an upper bound to the Open Dual Ramsey's theorem. A direct combinatorial proof of $\ovw{2}{\ell}$ in $\rca + \aca$ will be given in the next section. 
+
+\begin{definition}
+An \emph{IP collection} is an infinite collection of finite sets $\Ical \subseteq \Pcal_{fin}(\Nb)$
+which is closed under \emph{non-empty} finite unions and contains an infinite subcollection
+of pairwise disjoint sets.
+\end{definition}
+
+Note that any IP collection $\Ical$ necessarily contains an infinite $\Ical$-computable sequence $S_0 < S_1 < \dots$.
+
+\begin{statement}[Finite union theorem]
+For every $\ell \in \Nb$, $\fut_\ell$ is the statement ``For every coloring $c : \Pcal_{fin}(\Nb) \to \ell$,
+there is a monochromatic IP collection''. $\wfut^2_\ell$ is the statement ``For every coloring $c : \Pcal_{fin}(\Nb) \times \Nb \to \ell$,
+there is an IP collection $\Ical$ and a color $i < \ell$ such that $c(S, \min T) = i$ for every $S < T \in \Ical$.''
+\end{statement}
+
+\begin{theorem}
+$\rca \vdash \forall \ell(\fut_\ell \to \wfut^2_\ell)$.
+\end{theorem}
+\begin{proof}
+Assume $\ell \geq 2$, the other cases being trivial.
+Let $f : \Pcal_{fin}(\Nb) \times \Nb \to \ell$ be an instance of $\wfut^2_\ell$.
+Note that over $\rca$, $\fut_\ell \imp \aca$ and $\aca \imp \coh$.
+Let $\vec{R}$ be a sequence of set defined for every $S \in \Pcal_{fin}(\Nb)$ and $i < \ell$
+by $R_{S,i} = \{ n \in \Nb : f(S, n) = i \}$.
+Apply $\coh$ to $\vec{R}$ to obtain an infinite $\vec{R}$-cohesive set $C$.
+In particular, for every $S \in \Pcal_{fin}(\Nb)$, $\lim_{n \in C} f(S, n)$ exists.
+
+Let $h : \omega \to C$ be a computable bijection.
+Let $\tilde{f} : \Pcal_{fin}(\Nb) \to \ell$ be defined by $\tilde{f}(S) = \lim_{n \in C} f(h[S], n)$.
+$\tilde{f}$ is a $\Delta^{0,f \oplus C}_2$ instance of $\fut_\ell$, so by the finite union theorem, there is an IP collection $\Ical \subseteq \Pcal_{fin}(\Nb)$.
+and a color $i < \ell$ such that 
+for every $S \in \Ical$, $\tilde{f}(S) = \lim_{n \in C} f(h[S], n) = i$. Note that for every $S \in \Ical$, $\min h[S] \in C$.
+Therefore, by $f$-computably 
+%\benoit{$f$-computably should be $f$-$\Delta^0_2$ ?} 
+thinning-out the set $\Ical$, we obtain an IP collection $\Jcal \subseteq \Ical$
+such that for every $S < T \in \Jcal$, $f(h[S], \min h[T]) = i$.
+The set $\{h[S] : S \in \Jcal\}$ is a solution to $f$.
+%
+%Let $\Ical = \{ S \in \Pcal_{fin}(\Nb) : \min S \in C \}$. Note that $\Ical$ is an IP collection.
+%Let $\tilde{f} : \Ical \to \ell$ be defined by $\tilde{f}(S) = \lim_{n \in C} f(S, n)$.
+%$\tilde{f}$ is a $\Delta^{0,f \oplus C}_2$ instance of $\fut_\ell$, so by the finite union theorem, there is
+%an IP collection $\Jcal \subseteq \Ical$ 
+%%\benoit{Why do we have $\Jcal \subseteq \Ical$ ?} 
+%and a color $i < \ell$ such that 
+%for every $S \in \Jcal$, $\tilde{f}(S) = \lim_{n \in C} f(S, n) = i$. Note that for every $S \in \Jcal$, $\min S \in C$.
+%Therefore, by $f$-computably 
+%%\benoit{$f$-computably should be $f$-$\Delta^0_2$ ?} 
+%thinning-out the set $\Jcal$, we obtain an IP collection $\Kcal \subseteq \Jcal$
+%such that for every $S < T \in \Kcal$, $f(S, \min T) = i$.
+\end{proof}
+
+\begin{theorem}
+$\rca \vdash \forall \ell(\wfut^2_\ell \to \ovw{2}{\ell})$.
+\end{theorem}
+\begin{proof}
+Let $f : 2^{<\omega} \to \ell$ be an instance of $\ovw{2}{\ell}$.
+Define an instance $g : \Pcal_{fin}(\Nb) \times \Nb \to \ell$ of $\wfut^2_\ell$ as follows:
+Given some $S \in \Pcal_{fin}(\Nb)$ and $n \in \Nb$, if $\max S < n$, then set $g(S, n) = f(\sigma)$,
+where $\sigma$ is the binary string of length $n$ defined by $\sigma(i) = 1$ iff $i \in S$.
+If $n \leq \max S$, set $g(S, n) = 0$. By $\wfut^2_\ell$, there is an IP collection $\Ical$
+and a color $i < \ell$ such that $g(S, \min T) = i$ for every $S < T \in \Ical$.
+Compute from $\Ical$ an infinite increasing sequence of pairwise disjoint finite sets
+$F_0 < F_1 < \dots$ Let $W$ be the infinite variable word defined by 
+$$
+W(n) = \left\{\begin{array}{ll}
+	1 & \mbox{ if } n \in F_0\\
+	x_i & \mbox{ if } n \in F_i \mbox{ for some } i \geq 1\\
+	0 & \mbox{ otherwise}	
+\end{array}\right.
+$$
+The variable word $W$ and the sequence of the $F$'s is a solution to the instance $f$ of $\ovw{2}{\ell}$.
+\end{proof}
+
+%Note that if we impose infinite variable words to contains only the bit $0$ or variables that take values in $\{0,1\}$, as it is the case for the instance constructed in the previous theorem, then $\ovw{2}{\ell}$ is equivalent to Hindman's theorem over~$\rca$.
+
+\begin{corollary}
+$\rca \vdash \aca^{+} \to \forall \ell \ovw{2}{\ell}$.
+\end{corollary}
+\begin{proof}
+Immediate since $\aca^{+} \imp \forall \ell \fut_\ell \imp \forall \ell \wfut^2_\ell \imp \forall \ell \ovw{2}{\ell}$ over~$\rca$.
+\end{proof}

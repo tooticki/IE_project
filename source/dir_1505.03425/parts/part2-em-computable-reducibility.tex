@@ -1,0 +1,656 @@
+
+We now strengthen the analysis of the previous section by
+proving that the atomic model theorem is not computably reducible to the Erd\H{o}s-Moser theorem.
+Theorem~\ref{thm:amt-comp-reduc-coh} is an immediate consequence of this result since
+$[\amt \vee \coh] \leq_c \emo$ (see~\cite{Patey2015Somewhere}).
+After this section, we will be ready to iterate the construction
+in order to build an $\omega$-model of~$\emo \wedge \coh$ which is not a model of~$\amt$.
+
+\begin{theorem}\label{thm:amt-comp-reduc-em-coh}
+$\amt \not \leq_c \emo$
+\end{theorem}
+
+Before proving Theorem~\ref{thm:amt-comp-reduc-em-coh},
+we start with an analysis of the combinatorics of the Erd\H{o}s-Moser theorem.
+Just as we did for cohesiveness, we will show how to build solutions to $\emo$ through $\Delta^0_2$ constructions, 
+postponing the $\Pi^0_2$ choices to the end.
+
+\subsection{The combinatorics of the Erd\H{o}s-Moser theorem}\label{subsect:combi-em}
+
+The standard way of building an infinite object by forcing consists of defining an increasing
+sequence of finite approximations, and taking the union of them. Unlike
+$\coh$ where every finite set can be extended to an infinite cohesive set,
+some finite transitive subtournaments may not be extensible to an infinite one.
+We therefore need to maintain some extra properties which will guarantee that
+the finite approximations are extendible.
+The nature of these properties constitue the core of the combinatorics of $\emo$.
+
+Lerman, Solomon and Towsner~\cite{Lerman2013Separating} proceeded to an analysis
+of the Erd\H{o}s-Moser theorem.
+They showed in particular that it suffices to ensure that the finite transitive subtournament~$F$
+has infinitely many \emph{one-point extensions}, that is, infinitely many elements~$x$ such that
+$F \cup \{x\}$ is transitive, to extend~$F$ to an infinite transitive subtournament (see~\cite[Lemma 3.4]{Lerman2013Separating}).
+This property is sufficient to add elements one by one to the finite approximation.
+However, when adding elements by block, we shall maintain a stronger invariant. We will require that
+the reservoir is included in a minimal interval of the finite approximation~$F$.
+In this section, we reintroduce the terminology of Lerman, Solomon and Towsner~\cite{Lerman2013Separating}
+and give a presentation of the combinatorics of the Erd\H{o}s-Moser theorem
+motivated by its computational analysis.
+
+\begin{definition}[Minimal interval]
+Let $R$ be an infinite tournament and $a, b \in R$
+be such that $R(a,b)$ holds. The \emph{interval} $(a,b)$ is the
+set of all $x \in R$ such that $R(a,x)$ and $R(x,b)$ hold.
+Let $F \subseteq R$ be a finite transitive subtournament of $R$.
+For $a, b \in F$ such that $R(a,b)$ holds, we say that $(a,b)$
+is a \emph{minimal interval of $F$} if there is no $c \in F \cap (a,b)$,
+i.e., no $c \in F$ such that $R(a,c)$ and $R(c,b)$ both hold.
+\end{definition}
+
+Fix a computable tournament~$R$, and consider a pair $(F, X)$ where
+\begin{itemize}
+	\item[(i)] $F$ is a finite $R$-transitive set representing the \emph{finite approximation}
+	of the infinite $R$-transitive subtournament we want to construct
+	\item[(ii)] $X$ is an infinite set disjoint from $F$, included in a minimal interval of~$F$
+	and such that $F \cup \{x\}$ is $R$-transitive for every $x \in X$. In other words,
+	$X$ is an infinite set of one-point extensions.
+	Such a set $X$ represents the \emph{reservoir}, that is, a set of candidate
+	elements we may add to~$F$ later on.
+\end{itemize}
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{tikzpicture}[x=1.5cm, y=1.2cm, 
+		node/.style={circle, draw, fill=lightblue, inner sep=0pt, minimum size=1.5em}, 
+		arrow/.style={black,thick,->,-triangle 45},
+		good/.style={fill=white},
+		hiddenarrow/.style={black,thick,->, opacity=0.2},
+		hidden/.style={opacity=0.2}
+]
+
+  \node[node] (a) at (1, 2) {$a$};
+	\node[node] (b) at (1, 1) {$b$};
+	\node[node] (c) at (1, 0) {$c$};
+	\node[node,good,hidden] (d) at (3, -0.5) {$d$};
+	\node[node,good] (e) at (4, 0.5) {$e$};
+	\node[node,good,hidden] (f) at (5, 2.5) {$f$};
+
+	\node at (7, 2.5) {$(-\infty, a)$};
+	\node at (7, 1.5) {$(a, b)$};
+	\node at (7, 0.5) {$(b, c)$};
+	\node at (7, -0.5) {$(c, +\infty)$};
+
+	% Finite transitive set F
+	\draw[arrow] (a) -- (b);
+	\draw[arrow] (b) -- (c);
+	\draw[arrow] (a)  .. controls (0.4,1) .. (c);
+
+	% D
+	\draw[hiddenarrow] (a) -- (d);
+	\draw[hiddenarrow] (c) -- (d);
+	\draw[hiddenarrow] (b) -- (d);
+
+	% E
+	\draw[arrow] (a) -- (e);
+	\draw[arrow] (e) -- (c);
+	\draw[arrow] (b) -- (e);
+
+	% F
+	\draw[hiddenarrow] (f) -- (a);
+	\draw[hiddenarrow] (f) -- (c);
+	\draw[hiddenarrow] (f) -- (b);
+
+	\draw[very thick, loosely dotted] (4.5,0.5) -- (5.5,0.5);
+
+	\draw[loosely dashed] (2, 2) -- (6, 2);
+	\draw[loosely dashed] (2, 1) -- (6, 1);
+	\draw[loosely dashed] (2, 0) -- (6, 0);
+\end{tikzpicture}
+\end{center}
+\caption{In this figure, $F = \{a, b, c\}$ is a transitive set,
+$X = \{d, e, f, \dots \}$ a set of one-point extensions, $(b, c) = \{e, \dots \}$ a minimal interval of~$F$ 
+and $(F, X \cap (b, c))$ an EM condition. The elements~$d$ and~$f$ are not part of the minimal interval~$(b, c)$.} 
+\end{figure}
+
+
+The infinite set~$X$ ensures extensibility of the finite set~$F$ into an infinite $R$-transitive
+subtournament. Indeed, by applying the Erd\H{o}s-Moser theorem to $R$ over the domain $X$, there exists an infinite $R$-transitive
+subtournament $H \subseteq X$. One easily checks that $F \cup H$ is $R$-transitive.
+The pair $(F, X)$ is called an Erd\H{o}s-Moser condition in~\cite{Patey2015Degrees}.
+A set~$G$ \emph{satisfies} an EM condition~$(F, X)$ if it is $R$-transitive and satisfies the Mathias condition~$(F, X)$.
+In order to simplify notation, given a tournament $R$ and two sets~$E$ and~$F$,
+we denote by $E \to_R F$ the formula $(\forall x \in E)(\forall y \in F) R(x,y)$.
+
+Suppose now that we want to add a finite number of elements of~$X$ into $F$ to obtain
+a finite $T$-transitive set $\tilde{F} \supseteq F$,
+and find an infinite subset $\tilde{X} \subseteq X$ such that $(\tilde{F}, \tilde{X})$
+has the above mentioned properties. We can do this in a few steps:
+
+\begin{itemize}
+	\item[1.] Choose a finite (not necessarily $R$-transitive) set $E \subset X$.
+	\item[2.] Any element $x \in X \setminus E$ induces a 2-partition $\tuple{E_0, E_1}$ of $E$
+	by setting $E_0 = \{y \in E : R(y, x) \}$ and $E_1 = \{y \in E : R(x, y)\}$.
+	Consider the coloring $f$ which associates to any element of $X \setminus E$ the corresponding 2-partition $\tuple{E_0, E_1}$ of $E$.
+	\item[3.]
+	As~$E$ is finite, there exists finitely many 2-partitions of~$E$, so $f$ colors each element of $X \setminus E$ into
+	finitely many colors. By Ramsey's theorem for singletons applied to~$f$, there exists a 2-partition $\tuple{E_0, E_1}$ of $E$
+	together with an infinite subset $\tilde{X} \subseteq X \setminus E$ such that for every $x \in \tilde{X}$, $f(x) = \tuple{E_0, E_1}$.
+	By definition of~$f$ and~$E_i$, $E_0 \to_R \tilde{X} \to_R E_1$.
+	
+	\item[4.] Take any $R$-transitive subset $F_1 \subseteq E_i$ for some~$i < 2$ and set $\tilde{F} = F \cup F_1$.
+	The pair $(\tilde{F}, \tilde{Y})$ satisfies the required properties (see~\cite[Lemma 5.9]{Patey2015Degrees} for a proof).
+\end{itemize}
+
+From a computational point of view, if we start with a computable condition~$(F, X)$, that is, where~$X$ is a computable set,
+we end up with a computable extension~$(\tilde{F}, \tilde{Y})$.
+Remember that our goal is to define a $\Delta^0_2$ function~$f$ which will dominate every $G$-computable function
+for some solution~$G$ to~$R$. For this, we need to be able to~$\emptyset'$-decide
+whether~$\Phi^G_e(n) \downarrow$ or $\Phi^G_e(n) \uparrow$ for every solution~$G$ to~$R$ satisfying 
+some condition~$(F, X)$. 
+More generally, given some~$\Sigma^0_1$ formula $\varphi$, we focus on the computational power required to decide a question of the form
+
+\smallskip
+{\itshape
+Q1: Is there an $R$-transitive extension $\tilde{F}$ of $F$ in $X$ such that $\varphi(\tilde{F})$ holds?
+}
+\smallskip
+
+Trying to apply naively the algorithm above requires a lot of computational power.
+In particular, step 3 requires to choose a true formula among finitely many $\Pi^{0, X}_2$ formulas.
+Such a step needs the power of PA degree relative to the jump of~$X$.
+We shall apply the same trick as for cohesiveness, consisting in not trying to choose a true $\Pi^{0,X}_2$ formula,
+but instead parallelizing the construction. Given a finite set $E \subset X$, 
+instead of finding an infinite subset $\tilde{Y} \subset X \setminus E$
+whose members induce a 2-partition of $E$, we will construct
+as many extensions of $(F, X)$ as there are 2-partitions of~$E$. The question now becomes
+
+\smallskip
+{\itshape
+Q2: Is there a finite set $E \subseteq X$ such that for every 2-partition $\tuple{E_0, E_1}$ of~$E$,
+there exists an $R$-transitive subset $F_1 \subseteq E_i$ for some $i < 2$ such that $\varphi(F \cup F_1)$ holds?
+}
+\smallskip
+
+This question is $\Sigma^{0,X}_1$, which is good enough for our purposes.
+If the answer is positive, we will try the witness $F_1$ associated to each 2-partition of $E$ in parallel.
+Note that there may be some 2-partition $\tuple{E_0, E_1}$ of~$E$
+such that the set $Y = \{ x \in X \setminus E : E_0 \to_R \{x\} \to_R E_1 \}$ is finite,
+but this is not a problem since there is \emph{at least}
+one good 2-partition such that the corresponding set is infinite. 
+The whole construction yields again a tree of pairs~$(F, X)$.
+
+If the answer is negative, we want to ensure that
+$\varphi(\tilde{F})$ will not hold at any further stage of the construction.
+For each~$n \in \omega$, let $H_n$ be the set of the $n$ first elements of~$X$.
+Because the answer is negative, for each~$n \in \omega$, there exists a 2-partition $\tuple{E_0, E_1}$
+of~$H_n$ such that for every $R$-transitive subset $F_1 \subseteq E_i$ for any $i < 2$, $\varphi(F \cup F_1)$ does not hold.
+Call such a 2-partition an \emph{avoiding} partition of $H_n$. 
+Note that if $\tuple{E_0, E_1}$ is an avoiding partition of $H_{n+1}$, then $\tuple{E_0 \uh n, E_1 \uh n}$
+is an avoiding partition of $H_n$. So the set of avoiding 2-partitions of some $H_n$
+forms an infinite tree~$T$. Moreover, the predicate ``$\tuple{E_0, E_1}$ is an avoiding partition of $H_n$''
+is $\Delta^{0, H_n}_1$ so the tree $T$ is $\Delta^{0,X}_1$. The collection of the infinite paths through $T$
+forms a non-empty $\Pi^{0,X}_1$ class $\Ccal$ defined as the collection of 2-partitions $Z_0 \cup Z_1 = X$
+such that for every $i < 2$ and every $R$-transitive subset $F_1 \subseteq Z_i$, $\varphi(F \cup F_1)$
+does not hold.
+
+The natural next step would be to apply weak K\"onig's lemma to obtain a 2-partition of~$X$
+such that for every finite $R$-transitive subset $F_1$ of any of its parts, $\varphi(F \cup F_1)$ does not hold.
+By the low basis theorem, we could take the 2-partition to be low over~$X$ and the whole construction would remain~$\Delta^0_2$.
+However, when iterating the construction, we will be given only finite pieces of tournaments
+since the tournament may depend on an oracle being constructed at a previous iteration. In this setting,
+it will be impossible to compute a member of the $\Pi^{0,X}_1$ class $\Ccal$ of 2-partitions, since 
+we will have access to only a finite piece of the corresponding tree~$T$.
+In order to get progressively prepared to the iterated forcing, we will not apply $\wkl$
+and will work with $\Pi^0_1$ classes of 2-partitions.
+Therefore, if the answer is negative, we duplicate the finite $R$-transitive $F$ into two sets $F_0 = F_1 = F$,
+and commit~$F_i$ to take from now on its next elements from~$X_i$ for some 2-partition
+$X_0 \cup X_1 = X$ belonging to the $\Pi^0_1$ class~$\Ccal$ of 2-partitions witnessing the negative answer.
+Iterating the process by asking several questions leads to tuples $(F_0, \dots, F_{k-1}, \Ccal)$
+where $F_i$ is a finite $R$-transitive set taking its elements from the $i$th part of the class~$\Ccal$ of $k$-partitions.
+This notion of forcing will be defined formally in a later section.
+
+\subsection{Enumerating the computable infinite tournaments}
+
+Proving that some principle~$\Psf$ does not computably reduce to~$\Qsf$
+requires to create a $\Psf$-instance~$X$ such that \emph{every} $X$-computable $\Qsf$-instance
+has a solution~$Y$ such that~ $Y \oplus X$ does not compute a solution to~$X$.
+In the case of $\amt \not \leq_c \coh$, we have been able to restrict ourselves to only one instance of $\coh$,
+since Jockusch and Stephan~\cite{Jockusch1993cohesive} showed it admits a universal instance.
+It is currently unknown whether the Erd\H{o}s-Moser theorem admits a universal instance, that is, a computable infinite tournament
+such that for every infinite transitive subtournament $H$ and for every computable infinite tournament $T$,
+$H$ computes an infinite transitive $T$-subtournament. See~\cite{Patey2015Degrees} for an extensive study of the existence
+of universal instances for principles in reverse mathematics.
+
+Since we do not know whether $\emo$ admits a universal instance, we will need to diagonalize against
+the solutions to every computable $\emo$-instance. In fact, we will prove a stronger result. We will construct
+a $\Delta^0_2$ function~$f$ and an infinite set~$G$ which is eventually transitive simultaneously for every computable infinite tournament,
+and such that $f$ dominates every $G$-computable function. There exists no computable sequence of sets
+containing all computable sets. Therefore it is not possible to computably enumerate every infinite computable tournament.
+However, one can define an infinite, computable, binary tree such that every infinite path
+computes such a sequence. 
+See the notion of sub-uniformity defined by Mileti in~\cite{Mileti2004Partition} for details.
+By the low basis theorem, there exists a low set bounding a sequence containing, 
+among others, every infinite computable tournament.
+As we shall prove below,  for every set~$C$ and every uniformly $C$-computable sequence of infinite tournaments~$\vec{R}$,
+there exists a set~$G$ together with a $\Delta^{0, C}_2$ function $f$ such that
+\begin{itemize}
+	\item[(i)] $G$ is eventually $R$-transitive for every $R \in \vec{R}$
+	\item[(ii)] If $\Phi^{G \oplus C}_e$ is total, then it is dominated by $f$ for every $e \in \omega$.
+\end{itemize}
+Thus it suffices to choose~$C$ to be our low set and $\vec{R}$ to be a uniformly $C$-computable sequence
+of infinite tournaments containing every computable tournament to deduce the existence of a set~$G$ together
+with a $\Delta^0_2$ function $f$ such that 
+\begin{itemize}
+	\item[(i)] $G$ is eventually $R$-transitive for every infinite, computable tournament $R$
+	\item[(ii)] If $\Phi^{G \oplus C}_e$ is total, then it is dominated by $f$ for every $e \in \omega$
+\end{itemize}
+
+By the computable equivalence between $\amt$ and the escape property,
+there exists a computable atomic theory $T$ such that every atomic model computes
+a function~$g$ not dominated by~$f$. If $\amt \leq_c \emo$, then there exists
+an infinite, computable tournament~$R$ such that every infinite $R$-transitive subtournament 
+computes a model of~$T$, hence computes a function~$g$ not dominated by~$f$.
+As the set~$G$ is, up to finite changes, an infinite $R$-transitive subtournament,
+$G$ computes such a function~$g$, contradicting our hypothesis. Therefore $\amt \not \leq_c \emo$.
+
+\subsection{Cover classes}
+
+In this part, we introduce some terminology about classes of $k$-covers.
+Recall that a $k$-cover of some set $X$ is a $k$-uple $A_0, \dots, A_{k-1}$ such that~$A_0 \cup \dots \cup A_{k-1} = X$.
+In particular, the sets are not required to be pairwise disjoint.
+
+\smallskip
+\emph{Cover class}.
+We identify a $k$-cover $Z_0 \cup \dots \cup Z_{k-1}$ of some set $X$ with the $k$-fold join of its parts
+$Z = \bigoplus_{i < k} Z_i$, and refer this as a \emph{code} for the cover.
+A \emph{$k$-cover class} of some set~$X$ is a tuple $\tuple{k, X, \Ccal}$
+where $\Ccal$ is a collection of codes of $k$-covers of~$X$. 
+We will be interested in $\Pi^0_1$ $k$-cover classes.
+A \emph{part} of a $k$-cover class $\tuple{k, X, \Ccal}$ is a number $\nu < k$. Informally, a part $\nu$
+represents the collection of all $Z_\nu$, where $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$.
+For the simplicity of notation, we may use the same letter~$\Ccal$ to denote both a $k$-cover class~$(k, X, \Ccal)$
+and the actual collection of $k$-covers~$\Ccal$. We then write $dom(\Ccal)$ for $X$
+and $parts(\Ccal)$ for~$k$.
+
+\smallskip
+\emph{Restriction of a cover}. Given some $k$-cover $Z = Z_0 \oplus \dots \oplus Z_{k-1}$ of some set~$X$ and given some set~$Y \subseteq X$, we write $Z \restr Y$ for the $k$-cover $(Z_0 \cap Y) \oplus \dots \oplus (Z_{k-1} \cap Y)$ of~$Y$.
+Similarly, given some cover class~$(k, X, \Ccal)$ and some set~$Y \subseteq X$, we denote by $\Ccal \restr Y$
+the cover class~$(k, Y, \Dcal)$ where $\Dcal = \{ Z \restr Y : Z \in \Ccal \}$.
+Given some part~$\nu$ of $\Ccal$ and some set~$E$, we write~$\Ccal^{[\nu, E]}$
+for the cover class~$(k, X, \Dcal)$ where 
+$\Dcal = \{ Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal : E \subseteq Z_\nu \}$.
+
+\smallskip
+\emph{Refinement}. The collection of cover classes can be given a natural partial order as follows.
+Let~$m \geq k$ and $f : m \to k$. An $m$-cover $V_0 \oplus \dots \oplus V_{m-1}$ of $Y$ \emph{$f$-refines}
+a $k$-cover $Z_0 \oplus \dots \oplus Z_{k-1}$ of $X$ if $Y \subseteq X$ and $V_\nu \subseteq Z_{f(\nu)}$ for each~$\nu < m$.
+Given two cover classes $(k, X, \Ccal)$ and~$(m, Y, \Dcal)$
+and some function $f : m \to k$, we say that $\Dcal$ \emph{$f$-refines} $\Ccal$
+if for every $V \in \Dcal$, there is some~$Z \in \Ccal$ such that $V$ $f$-refines $Z$.
+In this case, we say that \emph{part $\nu$ of $\Dcal$ refines part~$f(\nu)$ of~$\Ccal$}.
+
+\smallskip
+\emph{Acceptable part}. 
+We say that part $\nu$ of $\Ccal$ is \emph{acceptable} if there exists some $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$
+such that $Z_\nu$ is infinite. Part $\nu$ of $\Ccal$ is \emph{empty} if 
+for every $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$, $Z_\nu = \emptyset$.
+Note that if $\Ccal$ is non-empty and $dom(\Ccal)$ is infinite, then $\Ccal$ has at least one acceptable part.
+Moreover, if~$\Dcal \leq_f \Ccal$ and part~$\nu$ of~$\Dcal$ is acceptable, then so is part~$f(\nu)$ of $\Ccal$.
+The converse does not hold in general.
+
+\subsection{The forcing notion}
+
+We now get into the core of our forcing argument by defining
+the forcing notion which will be used to build an infinite set eventually
+transitive for every infinite computable tournament.
+Fix a set $C$ and a uniformly $C$-computable sequence of infinite tournaments $R_0, R_1, \dots$
+We construct our set~$G$ by a forcing whose conditions are tuples $(\alpha, \vec{F}, \Ccal)$ where
+\begin{itemize}
+	\item[(a)] $\Ccal$ is a non-empty $\Pi^{0,C}_1$ $k$-cover class of $[t, +\infty)$ 
+	for some $k, t \in \omega$ ; $\alpha \in t^{<\omega}$
+	\item[(b)] $(F_\nu \setminus [0, \alpha(i))) \cup \{x\}$ is $R_i$-transitive for every $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$,
+	every $x \in Z_\nu$, every $i < |\alpha|$ and each $\nu < k$
+	\item[(c)] $Z_\nu$ is included in a minimal $R_i$-interval of $F_\nu \setminus [0, \alpha(i))$
+	for every $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$, every $i < |\alpha|$ and each $\nu < k$.
+\end{itemize}
+A condition $(\beta, \vec{E}, \Dcal)$ \emph{extends} 
+$(\alpha, \vec{F}, \Ccal)$
+(written $(\beta, \vec{E}, \Dcal) \leq (\alpha, \vec{F}, \Ccal)$) if $\beta \succeq \alpha$
+and there exists a function $f : parts(\Dcal) \to parts(\Ccal)$ such that the following holds:
+\begin{itemize}
+	\item[(i)] $(E_\nu, dom(\Dcal))$ Mathias extends $(F_{f(\nu)}, dom(\Ccal))$ for each $\nu < parts(\Dcal)$ 
+	\item[(ii)] $\Dcal$ $f$-refines $\Ccal^{[f(\nu), E_\nu \setminus F_{f(\nu)}]}$ for each $\nu < parts(\Dcal)$
+\end{itemize}
+
+One may think of a condition $(\alpha, \vec{F}, \Ccal)$ with, say, $parts(\Ccal) = k$,
+as $k$ parallel Mathias conditions which are,
+up to finite changes, Erd\H{o}s-Moser conditions simultaneously for the tournaments $R_0, \dots, R_{|\alpha|-1}$.
+Given some $i < |\alpha|$, the value $\alpha(i)$ indicates at which point the sets $\vec{F}$
+start being $R_i$-transitive.
+More precisely, for every part $\nu < k$ and every $k$-cover $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$,
+$(F_\nu \setminus [0, \alpha(i)), Z_\nu)$ is an Erd\H{o}s-Moser condition for $R_i$ for each $i < |\alpha|$.
+Indeed, because of clause~(i), the elements $E_\nu \setminus F_{f(\nu)}$ added to $E_\nu$ come from $dom(\Ccal)$
+and because of clause~(ii), these elements must come from the part $f(\nu)$ of the class~$\Ccal$,
+otherwise $\Ccal^{[f(\nu), E_\nu \setminus F_{f(\nu)}]}$ would be empty and so would be $\Dcal$.
+
+Of course, there may be some parts~$\nu$ of $\Ccal$ which are non-acceptable, that is, such that $Z_\nu$ is finite
+for every $k$-cover $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$. However, by the infinite pigeonhole principle, 
+$Z_\nu$ must be infinite for at least one $\nu < k$.
+Choosing $\alpha$ to be in $t^{<\omega}$ instead of $\omega^{<\omega}$
+ensures that all elements added to~$\vec{F}$ will have to be $R_i$-transitive
+simultaneously for each~$i < |\alpha|$, as the elements are taken from $dom(\Ccal)$
+and therefore are greater than the threshold $\alpha(i)$ for each $i < |\alpha|$.
+A \emph{part} of a condition $c = (\alpha, \vec{F}, \Ccal)$ is a pair $\tuple{c, \nu}$,
+where $\nu < parts(\Ccal)$. For the simplicity of notation, we may identify a part $\tuple{c, \nu}$
+of a condition with the part $\nu$ of the corresponding cover class $\Ccal$. It must however be clear
+that a part depends on the condition~$c$.
+
+We start with a few basic lemmas reflecting the combinatorics described in 
+the subsection~\ref{subsect:combi-em}.
+They are directly adapted from the basic properties of an Erd\H{o}s-Moser condition
+proven in~\cite{Patey2015Degrees}.
+The first lemma states that each element of the finite transitive tournaments $\vec{F}$ behaves
+uniformly with respect to the elements of the reservoir, that is, is beaten by every element
+of the reservoir or beats all of them.
+
+\begin{lemma}\label{lem:em-comp-reduc-uniform-behaviour}
+For every condition~$c = (\alpha, \vec{F}, \Ccal)$,
+every $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$, 
+every part $\nu$ of $\Ccal$, every $i < |\alpha|$ and every $x \in F_\nu \setminus [0, \alpha(i))$, 
+either $\{x\} \to_{R_i} Z_\nu$ or $Z_\nu \to_{R_i} \{x\}$.
+\end{lemma}
+\begin{proof}
+By property (c) of the condition~$c$, there exists a minimal $R_i$-interval
+$(u, v)$ of $F_\nu \setminus [0, \alpha(i))$ containing $Z_\nu$.
+Here, $u$ and $v$ may be respectively $-\infty$ and $+\infty$.
+By definition of an interval, $\{u\} \to_{R_i} Z_\nu \to_{R_i} \{v\}$.
+By definition of a minimal interval, $R_i(x, u)$ or $R_i(v, x)$ holds.
+Suppose the former holds. By transitivity of $F_\nu \setminus [0, \alpha(i))$,
+for every $y \in Z_\nu$, $R_i(x, y)$ holds, since both $R_i(x, u)$ and~$R_i(u, y)$ hold. 
+Therefore $\{x\} \to_{R_i} Z_\nu$. In the latter case, by symmetry, $Z_\nu \to_{R_i} \{x\}$.
+\end{proof}
+
+The second lemma is the core of the combinatorics of the Erd\H{o}s-Moser theorem. It provides
+sufficient properties to obtain a valid extension of a condition. Properties (i) and (ii)
+are simply the definition of an extension. Properties (iii) and (iv) help to propagate
+properties (b) and (c) from a condition to its extension. We shall see empirically that 
+properties (iii) and (iv) are simpler to check than (b) and (c), 
+as the former properties match exactly the way we add elements to our finite tournaments $\vec{F}$. 
+Therefore, ensuring that these properties
+are satisfied usually consists of checking that we followed the standard process of adding elements
+to~$\vec{F}$. 
+
+\begin{lemma}\label{lem:em-comp-reduc-sufficient-cond-ext}
+Fix a condition~$c = (\alpha, \vec{F}, \Ccal)$ where $\Ccal$ is a $k$-cover class of~$[t, +\infty)$. 
+Let $E_0, \dots, E_{m-1}$ be finite sets, $\Dcal$ be a non-empty $\Pi^{0,C}_1$ $m$-cover class of $[t', +\infty)$
+for some~$t' \geq t$ and $f : m \to k$ be a function such that for each~$i < |\alpha|$ and $\nu < m$,
+\begin{itemize}
+	\item[(iii)] $E_\nu$ is $R_i$-transitive
+	\item[(iv)] $V_\nu \to_{R_i} E_\nu$ or $E_\nu \to_{R_i} V_\nu$ for each $V_0 \oplus \dots \oplus V_{m-1} \in \Dcal$
+\end{itemize}
+Set $H_\nu = F_{f(\nu)} \cup E_\nu$ for each $\nu < m$.
+If properties (i) and (ii) of an extension are satisfied for~$d = (\alpha, \vec{H}, \Dcal)$ with witness $f$,
+then~$d$ is a valid condition extending~$c$.
+\end{lemma}
+\begin{proof}
+All we need is to check properties (b) and (c) for~$d$ in the definition of a condition.
+We prove property (b). Fix an $i < |\alpha|$, some part $\nu$ of $\Dcal$, and an $x \in V_\nu$
+for some $V_0 \oplus \dots \oplus V_{m-1} \in \Dcal$. In order to prove that 
+$(F_{f(\nu)} \cup E_\nu) \setminus [0, \alpha(i)) \cup \{x\}$
+is $R_i$-transitive, it is sufficient to check that the set contains no 3-cycle.
+Fix three elements $u < v < w \in (F_{f(\nu)} \cup E_\nu) \setminus [0, \alpha(i)) \cup \{x\}$.
+\begin{itemize}
+	\item Case 1: $\{u, v, w\} \cap F_{f(\nu)} \setminus [0, \alpha(i)) \neq \emptyset$. 
+	Then $u \in F_{f(\nu)} \setminus [0, \alpha(i))$ as $F_{f(\nu)} < E_\nu < \{x\}$ and $u < v < w$.
+	By property (ii), there is some $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$ such that $E_\nu \cup \{x\} \subseteq Z_{f(\nu)}$.
+	If $v \in F_{f(\nu)}$, then by property (b) of the condition~$c$ on~$Z_{f(\nu)}$, $\{u, v, w\}$ is $R_i$-transitive.
+	If $v \not \in F$, then by Lemma~\ref{lem:em-comp-reduc-uniform-behaviour}, $\{u\} \to_{R_i} Z_{f(\nu)}$
+	or $Z_{f(\nu)} \to_{R_i} \{u\}$, so $\{u, v, w\}$ is $R_i$-transitive since~$v, w \in Z_{f(\nu)}$.
+
+	\item Case 2: $\{u, v, w\} \cap  F_{f(\nu)} \setminus [0, \alpha(i)) = \emptyset$. 
+	Then at least $u, v \in E_\nu$ because $E_\nu < \{x\}$.
+	If $w \in E_\nu$ then $\{u, v, w\}$ is $R_i$-transitive by $R_i$-transitivity of $E_\nu$.
+	In the other case, $w = x \in V_\nu$. As $E_\nu \to_{R_i} V_\nu$ or $V_\nu \to_{R_i} E_\nu$,
+	$\{u, v\} \to_{R_i} \{w\}$ or $\{w\} \to_{R_i} \{u, v\}$ and $\{u, v, w\}$ is $R_i$-transitive.
+\end{itemize}
+
+We now prove property (c) for $d$. Fix some $V_0 \oplus \dots \oplus V_{m-1} \in \Dcal$, 
+some part $\nu$ of~$\Dcal$ and some $i < |\alpha|$.
+By property (ii), there is some~$Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$ such that $E_\nu \cup V_\nu \subseteq Z_{f(\nu)}$.
+By property (c) of the condition~$c$, $Z_{f(\nu)}$ (and so $V_\nu$) is included in a minimal $R_i$-interval $(u, v)$ of 
+$F_{f(\nu)} \setminus [0, \alpha(i))$.
+Here again, $u$ and $v$ may be respectively $-\infty$ and $+\infty$. 
+By assumption, either $E_\nu \to_{R_i} V_\nu$ or $V_\nu \to_{R_i} E_\nu$. As $E_\nu$ is a finite $R_i$-transitive set,
+it has a minimal and a maximal element, say~$x$ and~$y$. If $E_\nu \to_{R_i} V_\nu$
+then $V_\nu$ is included in the $R_i$-interval $(y, v)$.
+Symmetrically, if $V_\nu \to_{R_i} E_\nu$ then 
+$V_\nu$ is included in the $R_i$-interval $(u, x)$.
+To prove minimality for the first case, assume that some $w$ is in the interval $(y, v)$.
+Then $w \not \in F_{f(\nu)} \setminus [0, \alpha(i))$ by minimality of the interval $(u, v)$ with respect to 
+$F_{f(\nu)} \setminus [0, \alpha(i))$, and $w \not \in E_\nu$ by maximality of~$y$.
+Minimality for the second case holds by symmetry.
+\end{proof}
+
+Now we have settled the necessary technical lemmas, we start proving
+lemmas which will be directly involved in the construction of the transitive subtournament.
+The following simple progress lemma states that we can always find an extension of a condition
+in which we increase both the finite approximations corresponding to the acceptable parts 
+and the number of tournaments for which we are transitive simultaneously.
+Moreover, this extension can be found uniformly.
+
+\begin{lemma}[Progress]\label{lem:em-comp-reduc-ext}
+For every condition~$c = (\alpha, \vec{F}, \Ccal)$ and every $s \in \omega$,
+there exists an extension $d = (\beta, \vec{E}, \Dcal)$ such that $|\beta| \geq s$ and
+$|E_\nu| \geq s$ for every acceptable part $\nu$ of~$\Dcal$.
+Furthermore, such an extension can be found $C'$-effectively, uniformly in~$c$ and~$s$.
+\end{lemma}
+\begin{proof}
+Fix a condition $c = (\alpha, \vec{F}, \Ccal)$.
+First note that for every $\beta \succeq \alpha$ such that $\beta(i) > max(F_\nu : \nu < parts(\Ccal))$
+whenever $|\alpha| \leq i < |\beta|$, $(\beta, \vec{F}, \Ccal)$ is a condition extending~$c$.
+Therefore it suffices to prove that for every such condition~$c$ and every part $\nu$ of $\Ccal$,
+we can $C'$-effectively find a condition~$d = (\alpha, \vec{H}, \Dcal)$ refining~$c$
+with witness~$f : parts(\Dcal) \to parts(\Ccal)$ such that $f$ forks only parts refining part $\nu$ of $\Ccal$,
+and either every such part $\mu$ of $\Dcal$ is empty or $|H_\mu| > |F_\nu|$.
+Iterating the process finitely many times enables us to conclude.
+
+Fix some part $\nu$ of $\Ccal$ and let~$\Dcal$ be the collection of $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$
+such that $Z_\nu = \emptyset$. We can $C'$-decide whether or not $\Dcal$ is empty.
+If $\Dcal$ is non-empty, then $(\alpha, \vec{F}, \Dcal)$ is a valid extension of~$c$
+with the identity function as witness and such that part $\nu$ of $\Dcal$ is empty.
+If $\Dcal$ is empty, we can $C'$-computably find some $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$
+and pick some~$x \in Z_\nu$.
+Consider the $C$-computable $2^{|\alpha|}$-partition $(X_\rho : \rho \in 2^{|\alpha|})$ of $\omega$ defined by
+$$
+X_\rho = \{ y \in \omega : (\forall i < |\alpha|)[R_i(y, x) \leftrightarrow \rho(i) = 1] \} 
+$$
+Let $\tilde{\Dcal}$ be the cover class refining $\Ccal^{[\nu, x]}$ such that
+part $\nu$ of $\tilde{\Dcal}$ has $2^{|\alpha|}$ forks induced by the
+$2^{|\alpha|}$-partition~$\vec{X}$. Define $\vec{H}$ by
+$H_\mu = F_\mu$ if $\mu$ refines a part different from $\nu$,
+and $H_\mu = F_\nu \cup \{x\}$ if $\mu$ refines part $\nu$ of~$\Ccal$.
+The forking according to~$\vec{X}$ ensures that property (iv) of Lemma~\ref{lem:em-comp-reduc-sufficient-cond-ext} holds.
+By Lemma~\ref{lem:em-comp-reduc-sufficient-cond-ext}, $d = (\alpha, \vec{H}, \tilde{\Dcal})$ is a valid extension of~$c$.
+\end{proof}
+
+\subsection{The strategy}
+
+Thanks to Lemma~\ref{lem:em-comp-reduc-ext}, we can define an infinite, $C'$-computable
+decreasing sequence of conditions $(\varepsilon, \emptyset, \{\omega\}) \geq c_0 \geq c_1 \geq \dots$
+such that for each~$s \in \omega$, 
+\begin{itemize}
+	\item[1.] $|\alpha_s| \geq s$.
+	\item[2.] $|F_{s, \nu}| \geq s$ for each acceptable part~$\nu$ of~$\Ccal_s$
+\end{itemize}
+where $c_s = (\alpha_s, \vec{F}_s, \Ccal_s)$.
+As already noticed, if some acceptable part $\mu$ of $\Ccal_{s+1}$ refines some part $\nu$ of~$\Ccal_s$,
+part $\nu$ of~$\Ccal_s$ is also acceptable.
+Therefore, the set of acceptable parts forms an infinite, finitely branching $C'$-computable tree~$\Tcal$.
+Let $P$ be any infinite path through~$\Tcal$. 
+The set $H(P) = (\bigcup_s F_{s, P(s)})$ is infinite,
+and $H(P) \setminus [0, \alpha_{i+1}(i))$ is $R_i$-transitive for each $i \in \omega$.
+
+Our goal is to build a $C'$-computable function dominating every function computed
+by $H(P)$ for at least one path $P$ trough~$\Tcal$. However, it requires too much
+computational power to distinguish acceptable parts from non-acceptable ones,
+and even some acceptable part may have only finitely many extensions. Therefore,
+we will dominate the functions computed by~$H(P)$ for \emph{every} path $P$ trough~$\Tcal$.
+ 
+At a finite stage, a condition contains finitely many parts, each one representing
+the construction of a transitive subtournament.
+As in the construction of a cohesive set, it suffices to check one by one whether 
+there exists an extension of our subtournaments which will
+make terminate a given functional at a given input.
+In the next subsection, we develop the framework necessary to decide such a termination
+at a finite stage.
+
+\subsection{Forcing relation}
+
+As a condition $c = (\alpha, \vec{F}, \Ccal)$ corresponds to the construction of multiple
+subtournaments $F_0, F_1, \dots$ at the same time, the forcing relation will depend on which
+subtournament we are considering. In other words, the forcing relation depends on the part $\nu$ of~$\Ccal$
+we focus on.
+
+\begin{definition}\label{def:em-comp-reduc-forcing-relation}
+Fix a condition $c = (\alpha, \vec{F}, \Ccal)$, a part~$\nu$ of~$\Ccal$ and two integers~$e$, $x$.
+\begin{itemize}
+	\item[1.] $c \Vdash_\nu \Phi_e^{G \oplus C}(x) \uparrow$ if $\Phi_e^{(F_\nu \cup F_1) \oplus C}(x) \uparrow$
+	for all $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$ and all subsets $F_1 \subseteq Z_\nu$
+	such that $F_1$ is $R_i$-transitive simultaneously for each $i < |\alpha|$.
+	\item[2.] $c \Vdash_\nu \Phi_e^{G \oplus C}(x) \downarrow$ if $\Phi_e^{F_\nu \oplus C}(x) \downarrow$.
+\end{itemize}
+\end{definition}
+
+The forcing relations defined above satisfy the usual forcing properties.
+In particular, let $c_0 \geq c_1 \geq \dots$ be an infinite decreasing
+sequence of conditions. This sequence induces an infinite, finitely branching tree of acceptable parts~$\Tcal$.
+Let~$P$ be an infinite path trough~$\Tcal$. If 
+$c_s \Vdash_{P(s)} \Phi_e^{G \oplus C}(x) \uparrow$ (respectively $c_s \Vdash_{P(s)} \Phi_e^{G \oplus C}(x) \downarrow$)
+at some stage~$s$, then $\Phi_e^{H(P) \oplus C}(x) \uparrow$ (respectively $\Phi_e^{H(P) \oplus C}(x) \downarrow$).
+
+Another important feature of this forcing relation is that we can decide $C'$-uniformly in its parameters
+whether there is an extension forcing~$\Phi^{G \oplus C}_e(x)$ to halt or to diverge. 
+Deciding this relation with little computational power is useful because our $C'$-computable dominating function will
+need to decide termination $\Gamma^{G \oplus C}(x)$ to check whether it has to dominate the value 
+outputted by $\Gamma^{G \oplus C}(x)$.
+
+\begin{lemma}\label{lem:em-comp-reduc-force-dense}
+For every condition~$c = (\alpha, \vec{F}, \Ccal)$ and every pair of integers $e, x \in \omega$,
+there exists an extension~$d = (\alpha, \vec{H}, \Dcal)$ such that for each part~$\nu$ of~$\Dcal$
+$$
+d \Vdash_\nu \Phi_e^{G \oplus C}(x) \uparrow \hspace{10pt} \vee \hspace{10pt} d \Vdash_\nu \Phi_e^{G \oplus C}(x) \downarrow
+$$
+Furthermore, such an extension can be found $C'$-effectively, uniformly in~$c$, $e$ and~$x$.
+\end{lemma}
+\begin{proof}
+Given a condition~$c$ and two integers $e, x \in \omega$,
+let $I_{e,x}(c)$ be the set of parts $\nu$ of~$c$
+such that $c \not \Vdash_\nu \Phi_e^{G \oplus C}(x) \downarrow$ and $c \not \Vdash_\nu \Phi_e^{G \oplus C}(x) \uparrow$.
+Note that $I_{e,x}(c)$ is $C'$-computable uniformly in~$c$, $e$ and~$x$.
+It suffices to prove that given such a condition~$c$ and a part~$\nu \in I_{e,x}(c)$, one can $C'$-effectively
+find an extension~$d$ with witness $f$ such that $f(I_{e,x}(d)) \subseteq I_{e,x}(c) \setminus \{\nu\}$.
+Applying iteratively the operation enables us to conclude.
+
+Fix a condition~$c = (\alpha, \vec{F}, \Ccal)$ where $\Ccal$ is a $k$-cover class, and fix some part~$\nu \in I_{e,x}(c)$.
+The strategy is the following: either we can fork part~$\nu$ of $\Ccal$ into enough parts so that we 
+force~$\Phi_e^{G \oplus C}(x)$ to diverge
+on each forked part, or we can find an extension forcing $\Phi_e^{G \oplus C}(x)$ to converge on part~$\nu$ without forking.
+Hence, we ask the following question.
+
+\smallskip
+{\itshape
+Q2: Is it true that for every $k$-cover~$Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$,
+for every~$2^{|\alpha|}$-partition $\bigcup_{\rho \in 2^\alpha} X_\rho = Z_\nu$,
+there is some~$\rho \in 2^{|\alpha|}$ and some finite set~$F_1$ which is $R_i$-transitive
+for each~$i < |\alpha|$ simultaneously, and such that~$\Phi_e^{(F_\nu \cup F_1) \oplus C}(x) \downarrow$?
+}
+\smallskip
+
+If the answer is no, then by forking the part~$\nu$ of~$\Ccal$ into $2^{|\alpha|}$ parts,
+we will be able to force~$\Phi_e^{G \oplus C}(x)$ to diverge.
+Let~$m = k+2^{|\alpha|}-1$ and define the function~$f : m \to k$ by $f(\mu) = \mu$ 
+if $\mu < k$ and $f(\mu) = \nu$ otherwise.
+Let~$\Dcal$ be the collection of all~$m$-covers $V_0 \oplus \dots \oplus V_{m-1}$ which $f$-refine
+some $Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$ and such that for every part $\mu$ of $\Dcal$ 
+$f$-refining part~$\nu$ of $\Ccal$ and every subset $F_1 \subseteq V_\mu$
+which is $R_i$-transitive simultaneously for each~$i < |\alpha|$, $\Phi_e^{F_\nu \cup F_1}(x) \uparrow$.
+Note that~$\Dcal$ is a $\Pi^{0,C}_1$ $m$-cover class $f$-refining $\Ccal$. Moreover~$\Dcal$
+is non-empty since the answer to~{\itshape Q2} is no.
+Let~$\vec{E}$ be defined by $E_\mu = F_\mu$ if $\mu < k$
+and $E_\mu = F_\nu$ otherwise. The condition~$d = (\alpha, \vec{E}, \Dcal)$ extends~$c$
+with witness~$f$. For every part~$\mu$ of $\Dcal$ $f$-refining part $\nu$ of $\Ccal$, $d \Vdash_\mu \Phi_e^{G \oplus C}(x) \uparrow$,
+therefore $f(I_{e,x}(d)) \subseteq I_{e,x}(c) \setminus \{\nu\}$.
+
+Suppose now that the answer is yes. By compactness, we can $C'$-effectively find a finite set~$E \subseteq Z_\nu$
+for some~$Z_0 \oplus \dots \oplus Z_{k-1} \in \Ccal$ such that for every $2^{|\alpha|}$-partition $(E_\rho : \rho \in 2^{|\alpha|})$
+of $E$, there is some $\rho \in 2^{|\alpha|}$ and some set $F_1 \subseteq E_\rho$ which is $R_i$-transitive
+simultaneously for each $i < |\alpha|$ and such that $\Phi_e^{(F_\nu \cup F_1) \oplus C}(x) \downarrow$.
+There are finitely many $2^{|\alpha|}$-partitions of $E$. Let~$n$ be the number of such partitions. 
+These partitions induce a finite $C$-computable $n$-partition of~$dom(\Ccal)$
+defined for each $(E_\rho : \rho \in 2^{|\alpha|})$ by
+$$
+X_{\tuple{E_\rho : \rho \in 2^{|\alpha|}}} = \left\{ y \in dom(\Ccal) : (\forall i < |\alpha|) 
+	\cond{
+	\mbox{ if } \rho(i) = 0 \mbox{ then } E_\rho \to_{R_i} \{y\} \\ 
+	\mbox{ if } \rho(i) = 1 \mbox{ then } \{y\} \to_{R_i} E_\rho} \right\}
+$$
+
+Let~$\tilde{\Dcal}$ be the $\Pi^{0,C}_1$ $(k+n-1)$-cover class refining $\Ccal^{[\nu, E]}$
+and such that part~$\nu$ of~$\Ccal^{[\nu, E]}$ is refined accordingly to the above partition of~$dom(\Ccal)$.
+Let~$f : k+n-1 \to k$ be the refining function witnessing it. 
+Define~$\vec{H}$ as follows. For every part~$\mu$ of $\Dcal$, refining part~$\nu$ of $\Ccal^{[\nu, E]}$,
+by definition of~$\tilde{\Dcal}$, there is some~$2^{|\alpha|}$-partition $\tuple{E_\rho : \rho \in 2^{|\alpha|}}$ of~$E$
+such that for every $V_0 \oplus \dots V_{k+n-2} \in \tilde{\Dcal}$, $V_\mu \subseteq X_{\tuple{E_\rho : \rho \in 2^{|\alpha|}}}$.
+By choice of~$E$, there exists some set $F_1 \subseteq E_\rho$ for some~$\rho \in 2^{|\alpha|}$
+which is $R_i$-transitive simultaneously for each $i < |\alpha|$ and such that
+$\Phi_e^{(F_\nu \cup F_1) \oplus C}(x) \downarrow$.
+This set $F_1$ can be found $C'$-effectively. Set $H_\mu = F_\nu \cup F_1$.
+For every part~$\mu$ of $\tilde{\Dcal}$ which refines some part~$\xi$ of $\Ccal^{[\nu, E]}$ different from~$\nu$,
+set~$H_\mu = F_\xi$.
+By Lemma~\ref{lem:em-comp-reduc-sufficient-cond-ext}, $d = (\alpha, \vec{H}, \tilde{\Dcal})$ is a valid condition
+extending~$c$. Moreover, for every part $\mu$ of~$\tilde{\Dcal}$ refining part~$\nu$ of $\Ccal$,
+$d \Vdash_\mu \Phi_e^{G \oplus C}(x) \downarrow$. Therefore $f(I_{e,x}(d)) \subseteq I_{e,x}(c) \setminus \{\nu\}$.
+\end{proof}
+
+
+\subsection{Construction}
+
+We are now ready to construct our infinite transitive subtournament~$H(P)$ together
+with a $C'$-computable function~$f$ dominating every~$H(P) \oplus C$-computable function.
+Thanks to Lemma~\ref{lem:em-comp-reduc-ext} and Lemma~\ref{lem:em-comp-reduc-force-dense}, we can $C'$-compute an infinite
+descending sequence of conditions $(\epsilon, \emptyset, 1^{<\omega}) \geq c_0 \geq c_1 \geq \dots$
+such that at each stage $s \in \omega$,
+\begin{itemize}
+	\item[1.] $|\alpha_s| \geq s$
+	\item[2.] $|F_{s, \nu}| \geq s$ for each acceptable part~$\nu$ of~$\Ccal_s$
+	\item[3.] $c_s \Vdash_\nu \Phi_e^{G \oplus C}(x) \downarrow$ or $c_s \Vdash_\nu \Phi_e^{G \oplus C}(x) \uparrow$
+	for each part~$\nu$ of~$\Ccal_s$ if $\tuple{e, x} = s$
+\end{itemize}
+where $c_s = (\alpha_s, \vec{F}_s, \Ccal_s)$.
+Property 1 ensures that the resulting set with be eventually transitive
+for every tournament in~$\vec{R}$. Property~2 makes the subtournaments infinite.
+Last, property 3 enables us to $C'$-decide at a finite stage whether a functional terminates on a given
+input, with the transitive subtournament as an oracle.
+
+Define the $C'$-computable function $f : \omega \to \omega$ as follows:
+On input~$x$, the function~$f$ looks at all stages~$s$ such that $s = \tuple{e,x}$ for
+some $e \leq x$. For each such stage~$s$, and each part~$\nu$ in~$\Ccal_s$,
+the function $C'$-decides whether $c_s \Vdash_\nu \Phi^{G \oplus C}_e(x) \downarrow$
+or $c_s \Vdash_\nu \Phi^{G \oplus C}_e(x) \uparrow$. 
+In the first case, $f$ computes the value $\Phi^{F_{s, \nu} \oplus C}_e(x)$.
+Having done all that, $f$ returns a value greater than the maximum of the computed values.
+
+Fix any infinite path~$P$ trough the infinite tree $\Tcal$ of the acceptable parts induced
+by the infinite descending sequence of conditions. 
+We claim that $f$ dominates every function computed by~$H(P) \oplus C$.
+Fix any Turing index $e \in \omega$ such that $\Phi_e^{H(P) \oplus C}$ is total.
+Consider any input~$x \geq e$ and the corresponding stage $s = \tuple{e,x}$. 
+As $\Phi_e^{H(P) \oplus C}$ is total, $c_s \not \Vdash_{P(s)} \Phi_e^{G \oplus C}(x) \uparrow$,
+hence by property 3, $c_s \Vdash_{P(s)} \Phi_e^{G \oplus C}(x) \downarrow$.
+By construction, $f(x)$ computes the value of $\Phi_e^{F_{s,P(s)} \oplus C}(x)$ and returns
+a greater value. As $F_{s,P(s)}$ is an initial segment of $H(P)$, 
+$\Phi_e^{F_{s,P(s)} \oplus C}(x) = \Phi_e^{H(P) \oplus C}(x)$
+and therefore $f(x) > \Phi_e^{H(P) \oplus C}(x)$.
+This completes the proof of~$\amt \not \leq_c \emo$.
+
+We identify a $k$-cover $Z_0 \cup \dots \cup Z_{k-1}$ of some set $X$ with the $k$-fold join of its parts 

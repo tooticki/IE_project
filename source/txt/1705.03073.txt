@@ -1,0 +1,1284 @@
+Finite difference method for a Volterra equation with a
+power-type nonlinearity
+Hanna Okrasińska-Płociniczak∗, Łukasz Płociniczak†,‡
+
+arXiv:1705.03073v1 [math.NA] 8 May 2017
+
+Abstract
+In this work we prove that a family of explicit numerical finite-difference methods is convergent when applied to a nonlinear Volterra equation with a power-type nonlinearity. In that
+case the kernel is not of Lipschitz type, therefore the classical analysis cannot be applied. We
+indicate several difficulties that arise in the proofs and show how they can be remedied. The
+tools that we use consist of variations on discreet Gronwall’s lemmas and comparison theorems.
+Additionally, we give an upper bound on the convergence order. We conclude the paper with a
+construction of a convergent method and apply it for solving some examples.
+Keywords: Volterra equation, nonlinearity, power-type, finite difference method
+
+1
+
+Introduction
+
+Integral equations are one of most useful tools used in mathematical analysis and modelling. Many
+essential problems formulated as differential equations can be transformed into the equivalent integral equations which, many times, are more useful for showing existence, uniqueness and deriving
+estimates. This field has reached its maturity and there is a wealth of literature reviewing many
+subjects such as the theory for Volterra [5, 18, 13] and Fredholm equations [40, 37, 21], numerical
+methods [2, 22, 5, 19, 4, 3] and topics in integro-differential equations [12, 31] and fractional calculus
+[26, 16, 23, 36].
+In this work we consider a family of numerical finite-difference methods for solving a certain class
+of nonlinear Volterra equations. These, in particular, arise as models of dynamics in porous media
+[41, 29, 30], heat transfer [24], propagation of shock-waves in gas filled tubes [20] and anomalous
+diffusion [32, 34]. The latter application is the main motivation behind our investigations (more
+details can be found in [33]). The general form of the family of equations that we consider can be
+written as follows
+Z x
+1
+(1)
+u(x) =
+K(x, t)u(t) m+1 dt, m > 0, x ∈ [0, X].
+0
+
+Notice that the nonlinearity is not Lipschitz so that we cannot use the most of the classical theory.
+However, there are many results concerning existence and uniqueness. In the seminal papers [9, 17]
+the problem was stated and several conditions for existence and uniqueness were given. Later, in
+a number of work those results were strengthened and generalized (see [29, 10, 11, 27, 28]). Abel
+integral equations with power-type nonlinearities have also been recently investigated [8, 42]. For
+further details see other works of cited authors.
+∗
+
+Department of Mathematics, Wroclaw University of Environmental and Life Sciences, ul. C.K. Norwida 25, 50-275
+Wroclaw, Poland
+†
+Faculty of Pure and Applied Mathematics, Wrocław University of Science and Technology, Wyb. Wyspiańskiego
+27, 50-370 Wrocław, Poland
+‡
+Email: lukasz.plociniczak@pwr.edu.pl, Corresponding Author
+
+1
+
+According to the best of authors’ knowledge, the literature consists of only very few papers
+concerning numerical methods for this kind of equations. In [6] a iterative fixed-point way of solving
+(1) was proposed. Also, in [7] a short review article concerning theoretical and numerical concepts
+of nonlinear Volterra equation has been published.
+In what follows we consider a family of explicit methods for solving (1) and prove that under
+certain boundedness assumptions on the kernel they are convergent. Moreover, we find a bound on
+the convergence rate and illustrate the theory with the numerical simulations.
+
+2
+
+Finite difference method
+
+Consider the following nonlinear Volterra equation which arises from (1) via the transformation
+y(x)m+1 = u(x)
+Z x
+m+1
+y(x)
+=
+K(x, t)y(t)dt, m > 0, x ∈ [0, X].
+(2)
+0
+
+We will need the boundedness assumption on the kernel K ∈ C([0, X]2 )
+0 < C ≤ K(x, t) ≤ D,
+
+(3)
+
+from which only the lower one is a nontrivial requirement. It can be shown that the positive solution
+of (2) with (3) exists and is unique (see [9] and other papers mentioned in the Introduction).
+In order to construct the numerical method fix a natural number N and introduce the grid
+xn = nh,
+
+h=
+
+X
+,
+N
+
+n = 0, 1, 2, ..., N.
+
+(4)
+
+The next step is to discretize the integral in (2), say
+Z
+
+xn
+
+K(xn , t)y(t)dt = h
+0
+
+n−1
+X
+
+wn,i K(xn , xi )y(xi ) + δn (h),
+
+(5)
+
+i=1
+
+where δn (h) is the local consistency error. Next, we define
+δ(h) := max |δn (h)|,
+1≤n≤N
+
+(6)
+
+and further assume that
+0 < wn,i ≤ W,
+
+n, i = 0, 1, 2, ..., N,
+
+(7)
+
+for some W > 0. Denoting yn as a numerical approximation to y(nh) we may then propose the
+following explicit finite difference scheme for solving (2)
+ynm+1 = h
+
+n−1
+X
+
+wn,i Kn,i yi ,
+
+n = 2, 3, ..., N,
+
+(8)
+
+i=1
+
+where Kn,i := K(xn , xi ). Since the equation (2) has a trivial solution, it is necessary to start the
+above iteration with a value which will force the convergence to the nontrivial one. In the next
+section we will show one way of making that choice.
+Below we will prove that (8) is convergent to the unique positive solution of (2). Before that,
+however, we need some auxiliary results. The first is a simple observation concerning the iteration
+scheme (8).
+Proposition 1. Let y be a solution of (2) and construct yn via the iteration (8). If δn (h) in (5)
+is positive (negative) for n = 1, 2, ..., N , then y(nh) ≥ yn (y(nh) ≤ yn ) provided that y(h) ≥ y1
+(y(h) ≤ y1 ).
+2
+
+Proof. It suffices to consider only the case δn ≥ 0 for all n = 1, 2, ..., N . Since by assumption we
+have y(h) ≥ y1 then, by induction, we can assume that the assertion holds for the n first terms. The
+inductive step can be conducted as follows
+Z (n+1)h
+n
+X
+m+1
+K((n + 1)h, t)y(t)dt = h
+wn+1,i Kn+1,i y(ih) + δn+1 (h)
+y((n + 1)h)
+=
+0
+
+≥h
+
+i=1
+
+n
+X
+
+wn+1,i Kn+1,i yi + δn+1 (h) ≥
+
+(9)
+
+m+1
+yn+1
+.
+
+i=1
+
+The first inequality is a consequence of the inductive assumption, while in the second we use the fact
+that δn+1 ≥ 0 and (8). It follows that y((n + 1)h) ≥ yn+1 what ends the proof.
+Next, we prove a comparison theorem that can be thought as a generalization of the GronwallBellman’s Lemma.
+Lemma 1. Let y ∈ C[0, 1] be a positive function satisfying
+Z x
+m+1
+µ
+y(x)
+≶ Cx
+tν y(t)dt,
+
+(10)
+
+0
+
+with ν, µ, m > 0. Then
+y(x) ≶
+
+m
+1
+C
+m+11+ν +
+
+! m1
+x
+
+µ
+m+1
+
+1+ν+µ
+m
+
+,
+
+(11)
+
+where the sign ≶ denotes either less or greater than.
+Proof. The proof will proceed for the ≥-case. The reasoning for the other follows exactly the same
+route. Let y be as in the assumption, and denote
+Z x
+tν y(t)dt,
+(12)
+z(x) :=
+0
+
+with z(0) = 0. We have then
+µ
+
+1
+
+1
+
+y(x) ≥ C m+1 x m+1 z(x) m+1 ,
+and therefore
+
+(13)
+
+µ
+
+1
+
+1
+
+z 0 (x) = xν y(x) ≥ C m+1 xν+ m+1 z(x) m+1 .
+After division by z
+
+1
+m+1
+
+we can integrate to obtain
+Z x
+Z
+1
+1
+− m+1
+0
+m+1
+z (t)dt ≥ C
+z(t)
+
+µ
+
+tν+ m+1 dt,
+
+(15)
+
+0
+
+0
+
+whence
+
+x
+
+(14)
+
+m
+1
+m+1
+1
+z(x) m+1 ≥ C m+1
+m
+1+ν+
+
+µ x
+m+1
+
+µ
+1+ν+ m+1
+
+.
+
+(16)
+
+Using the above estimate in (13) implies
+y(x) ≥
+
+m
+1
+C
+m+11+ν +
+
+! m1
+µ
+m+1
+
+x
+
+1+ν+µ
+m
+
+This ends the proof.
+In a similar vein we can prove the following asymptotic result.
+3
+
+.
+
+(17)
+
+Lemma 2. Let y ∈ C[0, 1] be a positive solution of (2) with
+K(x, t) ∼ Cxµ
+
+as x → 0+ and t ≤ x.
+
+Then
+y(x) ∼
+
+m
+1
+C
+µ
+m + 1 1 + m+1
+
+(18)
+
+! m1
+x
+
+1+µ
+m
+
+,
+
+x → 0+ .
+
+(19)
+
+Proof. We start by deriving an representation of the solution to (2). By the Mean Value Theorem
+we have
+Z x
+m+1
+y(x)
+= K(x, τ (x))
+y(t)dt,
+(20)
+0
+
+because y is positive while 0 ≤ τ (x) ≤ x. Similarly as before we substitute
+Z x
+y(t)dt,
+z(x) :=
+
+(21)
+
+0
+
+and therefore
+
+1
+
+z 0 (x) = y(x) = (K(x, τ (x))z(x)) m+1 .
+
+(22)
+
+Solving this differential equation yields
+
+z(x) =
+
+x
+
+Z
+
+m
+m+1
+
+K(t, τ (t))
+
+1
+m+1
+
+ m+1
+m
+dt
+.
+
+(23)
+
+0
+
+Finally,
+y(x) = K(x, τ (x))
+
+1
+m+1
+
+
+
+m
+m+1
+
+Z
+
+x
+
+K(t, τ (t))
+
+1
+m+1
+
+ m1
+dt
+.
+
+(24)
+
+0
+
+If now K(x, t) ∼ Cxµ as x → 0+ with t ≤ x we have
+y(x) ∼ (Cxµ )
+
+1
+m+1
+
+C
+
+1
+m+1
+
+µ
+m
+1
+1+ m+1
+µ x
+m + 1 1 + m+1
+
+! m1
+.
+
+(25)
+
+The proof is complete.
+The second lemma is a discrete analogue of the above.
+Lemma 3. Let {yn }, n = 1, 2, ..., N be a sequence of positive numbers satisfying the recurrence (8)
+with (3) and (5). Assume that the initial value is chosen to satisfy
+
+
+ m1
+m + 1 (h)
+m
+y1 ≥ 1 −
+C
+h
+,
+m h1+ m1
+m+1
+then we have
+
+yn ≥
+
+m + 1 (h)
+1−
+m h1+ m1
+
+
+C
+
+m
+nh
+m+1
+
+(26)
+
+ m1
+,
+
+n ≥ 2,
+
+(27)
+
+where (h) is the maximal local consistency error (6) of the quadrature (5) applied to the function
+1
+tm .
+
+4
+
+Proof. Due to the assumption we can proceed to the inductive step. To this end, let yi satisfy (27)
+for every i = 1, 2, ...n. Observe that from (8) with (3) we have
+m+1
+yn+1
+
+
+
+m + 1 (h)
+≥C 1−
+m h1+ m1
+
+
+C
+
+m
+m+1
+
+ m1
+h
+
+n
+X
+
+1
+
+wn,i (ih) m .
+
+(28)
+
+i=1
+
+Because the sum above is a discretization of the integral (5) we can further write
+!
+
+
+ m1 Z (n+1)h
+1
+m
++
+1
+(h)
+m
+m+1
+≥C 1−
+yn+1
+C
+t m dt − n+1 (h)
+m h1+ m1
+m+1
+0
+!
+
+
+ m+1
+m
+m
+m
+m + 1 (h)
+n+1 (h)
+C
+1−
+= 1−
+(n + 1)h
+,
+1
+1+
+m h m
+m+1
+m + 1 ((n + 1)h) m+1
+m
+
+(29)
+
+where n+1 is the n + 1th local consistency error for the quadrature. Now, in order to complete the
+induction we have to show that
+
+m
+m + 1 (h)
+m
+n+1 (h)
+≥ 1−
+1−
+.
+(30)
+m + 1 ((n + 1)h) m+1
+m h1+ m1
+m
+Since by definition, n+1 ≤  and obviously (n + 1)h ≥ h we further have
+
+m
+m + 1 (h)
+m (h)
+≥ 1−
+.
+1−
+m + 1 h m+1
+m h1+ m1
+m
+
+(31)
+
+Now, due to convexity we have the inequality (1 − x)m ≤ 1 − x for m ≥ 1 which grants the validity
+of the above estimate. This ends the proof.
+Finally, we prove a variant of the discreet generalization of the Gronwall-Bellman’s lemma.
+Lemma 4. Let {en }, n = 1, 2, ... be a sequence of positive numbers satisfying
+!
+n−1
+X
+1
+en ≤
+A
+ei + B , n ≥ 2,
+n
+i=1
+
+(32)
+
+for A > 0. If we define
+
+
+
+1
+, 0<A<1
+M := max{e1 , B} ×
+−Aζ(1 − A)
+ 1,
+A ≥ 1,
+then
+en ≤
+
+M
+.
+n1−A
+
+(33)
+
+(34)
+
+Proof. First, notice that −1 < Aζ(1 − A) < 0 for 0 < A < 1 [39]. Therefore, the above bounds are
+well-defined. To prove them we proceed by induction. Assume (33) and notice that obviously we
+have e1 ≤ M .
+Next, we make the inductive step and assume that (34) holds for all terms up to a fixed n. We
+will show that this assertion is also true for the (n + 1)th term. First, assume that A ≥ 1 and use
+the inductive assumption
+!
+n
+X
+M
+B
+en+1 ≤
+A
+iA−1 +
+.
+(35)
+n+1
+M
+i=1
+5
+
+Now, we need an estimate for the above sum. Since the function xA−1 is increasing, we can bound
+the series by an integral
+Z n+1
+n
+X
+
+1
+A−1
+xA−1 dx =
+(n + 1)A − 1 ,
+(36)
+i
+≤
+A
+1
+i=1
+therefore
+en+1
+
+M
+≤
+n+1
+
+
+
+B
+M
+A
+(n + 1) − 1 +
+≤
+,
+M
+(n + 1)1−A
+
+since B ≤ M . On the other hand, for the case 0 < A < 1 we have
+!
+n
+X
+1
+M
+B
+A
+.
+en+1 ≤
++
+1−A
+n+1
+i
+M
+i=1
+
+(37)
+
+(38)
+
+The appropriate bound for the sum comes from the Riemann-Siegel formula [39], which gives
+n
+X
+1
+nA
++ ζ(1 − A),
+≤
+i1−A
+A
+i=1
+
+whence
+en+1
+
+M
+≤
+n+1
+
+
+
+B
+n + Aζ(1 − A) +
+M
+A
+
+
+≤
+
+(39)
+
+M
+M
+(n + 1)A =
+,
+n+1
+(n + 1)1−A
+
+(40)
+
+where the last inequality follows from the fact that B ≤ −M Aζ(1−A). This concludes the reasoning.
+As we noted, the above two lemmas are generalizations of the Gronwall-Bellman’s results. Similar
+theorems arise in many situations when considering integral equations and numerical methods used in
+solving them. There is a large collection of papers about various generalizations of the aforementioned
+inequalities from which the monograph [1] gives a thorough exposition of the continuous case. Many
+other results concerning the discreet version can be found for instance in [43, 38, 15, 25].
+We can now proceed to the main theorem. We claim that the numerical method (8) is locally
+convergent to the unique positive solution of (2). We difficulty of the proof lies in the non-Lipschitz
+behaviour of the nonlinearity in (2). The usual method do not work since we cannot make estimate
+which will invoke the standard Gronwall-Bellman’s lemma. To overcome this difficulty we use a
+comparison result which helps us to bound the solution from below with a known function for which
+the numerical method is convergent.
+Theorem 1. Let y = y(x) be the nontrivial solution of (2) with (3). Moreover, by en := y(nh) − yn
+m+1
+denote the error of the numerical scheme (5)-(8) and assume that (h)h− m < 1 as h → 0+ , where
+(h) is defined in Lemma 3. Then, if y1 satisfies (26) with |e1 | = O(hp ) for some p > 0, we have
+1
+
+WD
+
+|en | ≤ const. × h1− m CE(h) max{hp , δ(h)h−1 } as h → 0+
+where E(h) := 1 −
+
+m+1
+m+1
+(h)h− m
+m
+
+with nh → xn ,
+
+(41)
+
+= O(1) as h → 0+ .
+
+Proof. First, we can use the Langrange’s mean-value theorem
+
+
+y(nh)m+1 − ynm+1  = (m + 1)ξ m |y(nh) − yn | ,
+
+m > 0,
+
+(42)
+
+where ξ is between y(nh) and yn . Now, we use the above estimate with (2) and (5) to obtain
+n−1
+X
+
+
+m+1
+m+1 
+
+(m + 1)ξ |en | ≤ y(nh)
+− yn
+≤ hW D
+|ei | + δ.
+m
+
+i=1
+
+6
+
+(43)
+
+Now, we have to consider two cases depending on the relative size of y(nh) and yn . If yn ≤ y(nh),
+then ξ ≥ yn and from Lemma 3 it follows that
+
+
+n−1
+X
+m + 1 (h)
+|en | ≤ (m + 1)|en | ≤ hW D
+mC nh 1 −
+|ei | + δ.
+m h m+1
+m
+i=1
+
+(44)
+
+Eventually, defining
+E(h) := 1 −
+we can write
+1
+|en | ≤
+n
+
+m + 1 (h)
+m h m+1
+m
+
+(45)
+
+n−1
+
+1 WD X
+δ
+1
+|ei | +
+m CE(h) i=1
+mC hE(h)
+
+!
+.
+
+(46)
+
+On the other hand, if y(nh) ≤ yn , then ξ ≥ y(nh) and
+mC nh ≤ (m + 1)|en | ≤ hW D
+
+n−1
+X
+
+|ei | + δ.
+
+(47)
+
+i=1
+
+where in the first inequality we have used Lemma 1. Hence
+!
+!
+n−1
+n−1
+1 1 WD X
+1 1 WD X
+δ
+1 δ
+1
+|en | ≤
+≤
+.
+|ei | +
+|ei | +
+n m C i=1
+mC h
+n m CE(h) i=1
+mC hE(h)
+
+(48)
+
+since E(h) < 1 due to the assumption. It follows that regardless of the relative size of y(nh) and
+yn , the error term satisfies the above recurrence inequality. Now, we can invoke the Lemma 4 to
+conclude that since E(h) = O(1) as h → 0+ we have
+|en | ≤ const. ×
+where A :=
+complete.
+
+1 WD
+.
+m CE(h)
+
+max{e1 , δh−1 }
+max{hp , δh−1 }
+1
+=
+const.
+×
+,
+1−A
+A−1
+n
+h
+(nh)1−A
+
+(49)
+
+Now, when h → 0+ with nh → const. we obtain the assertion. The proof is
+
+The analysis of the above proof can lead to a stronger convergence result for a specific family of
+quadratures.
+Corollary 1. Let y = y(x) be a solution of (2) with (3). Moreover, choose a quadrature with δn ≤ 0
+for each n = 1, 2, ..., N . If the starting value y1 has |e1 | = O(hp ) for some p > 0, then
+1 WD
+C
+
+|en | ≤ const. × h1− m
+
+max{hp , δ(h)h−1 } as h → 0+
+
+with nh → xn .
+
+(50)
+
+Proof. If δn ≤ 0, then by Proposition 1 we have y(nh) ≤ yn . The proof follows the same steps as in
+Theorem 1 with the difference that we always have ξ ≥ y(nh) in (42). Hence the conclusion can be
+drawn from (47) without any subsequent estimates.
+
+7
+
+3
+
+Construction of a quadrature and numerical examples
+
+In this section we will construct a convergent numerical method for solving (8). By Lemma 2, we can
+identify several problems in numerically solving this integral equation. For example, when m > 1
+the non-smooth behaviour of the solution at x = 0 can severely slow down the convergence. Recall
+that for a smooth function, its Newton-Cotes quadrature has an error bounded by the value of a
+sufficiently high derivative. If the considered function is not smooth enough, the order of the method
+can be reduced [35, 14]. On the other hand, when 0 < m < 1 the Corollary 1 can give very weak
+estimates on the convergence rate. Having these remarks in mind, in what follows, we will illustrate
+the above results by constructing a numerical method for the case m ≥ 1 leaving the other case for
+the future work.
+To maximize the theoretical convergence rate we will use a quadrature with δn (h) ≤ 0 and use
+1
+Corollary 1. Notice that y(x) ∝ x m so that for m ≥ 1 the solution is locally concave. As a quadrature
+we choose the midpoint method which is of second order for sufficiently smooth functions. However,
+1
+near x = 0 the method will be only O(h1+ m ). In order to see this fact we use the result from [14]
+stating that for any function with bounded variation the local consistency error is the following
+Z h
+ 
+
+h  h h
+
+f
+(t)dt
+−
+hf
+= V (f ).
+(51)
+
+2  2 0
+0
+1
+
+1
+
+Now, due to the monotonicity we have V0h (t m ) = h m , which states that the quadrature has order
+1 + m1 . Note that this is in contrast with usual estimate for smooth functions.
+Moreover, we can restrict ourselves only to an arbitrary and fixed interval [0, ξ], so that the
+derivative singularity at the origin would be integrated. For the rest of the interval any other
+quadrature can be used since the nonlinearity of the equation (2) is of the Lipschitz class.
+In order to convince oneself that the midpoint quadrature will yield a greater area under a curve
+than the exact integral consider an arbitrary interval [xi , xi+1 ]. Construct a line tangent to xi+ 1 and
+2
+notice that due to concavity, the area of a trapezium generated by it is greater than the are area
+under y. On the other hand, the trapezium theorem states that its area is equal to the area of a
+rectangle spanned by its height and the midline. This precisely is the midpoint quadrature. These
+considerations can be confirmed by the standard error analysis but this reasoning requires existence
+of a second derivative.
+Before we construct the quadrature we have to choose the starting value for the iteration (8). We
+have several ways of doing this. Keeping in mind that we have to choose y1 ≥ y(h), we can try to
+bound the defining integral equation by some simple, not necessarily open, quadrature. The simplest
+choice is to use the rectangle rule
+Z h
+Z h
+m+1
+y(h)
+=
+K(h, t)y(t)dt ≤ y(h)
+K(h, t)dt,
+(52)
+0
+
+0
+
+because y is increasing and K positive. We can thus define the initial step for the iteration as
+Z
+y1 :=
+
+h
+
+ m1
+.
+K(h, t)dt
+
+(53)
+
+0
+1
+
+This choice has a disadvantage of producing a large starting error O(h m ), since by Lemma 2 we have
+
+ m1 !
+1
+m
+|y(h) − y1 | ∼ 1 −
+(Ch) m as h → 0+ .
+(54)
+m+1
+Therefore we can put p = m1 in the Corollary 1. In order to increase the accuracy we can always use
+Richardson’s extrapolation and we implicitly assume that it is utilized in our quadrature.
+8
+
+m
+
+1
+
+Order
+Est. order
+
+∞
+0
+
+1.5
+
+2
+
+1.000 0.999
+0.333 0.500
+
+102
+
+10
+0.98
+0.900
+
+103
+
+0.927 0.918
+0.990 0.999
+
+Table 1: Simulated order of convergence of the midpoint rule (55) applied to (56). Calculation has
+been done at x = 0.001.
+Having made all the preparations we can propose the following iteration scheme to solve (2)
+n
+
+m+1
+y2n+k
+
+X
+1
+K2n+k,2i+k−1 y2i+k−1 ,
+= hK2n+k,k yk + 2h
+2
+i=1
+
+k ∈ {0, 1} ,
+
+n > 1.
+
+(55)
+
+The first term y1 is calculated by the formula (53) and y0 = 0. This quadrature uses intervals of
+length 2h and approximates the integral by the midpoint rule. Therefore, we have to distinguish
+between the even and odd steps (k = 0, 1 respectively) with regard to whether or not the terminal
+point is a midpoint of the interval. The first term on the right-hand side of the above formula is
+nonzero only in the odd term and is a result of a trapezoid rule applied to the interval [0, h]. We will
+illustrate the above results with some numerical examples.
+Example 1. As a first example we consider the following equation
+Z x
+m+1
+y(x)
+=
+y(t)dt, x ∈ [0, 1],
+
+(56)
+
+0
+
+which can be readily solved with
+
+y(x) =
+
+m
+x
+m+1
+
+ m1
+.
+
+(57)
+
+Here, K(x, t) ≡ C = D = 1 and hence, thanks to (55) we have W = 2. From (41) we immediately
+deduce that the scheme is convergent with order at least equal to 1 + m1 − m2 = 1 = m1 . Recall, that
+1
+since the solution is proportional to x m , the midpoint method will converge with an order of 1 + m1 .
+The results for numerical simulations are given in Tab. 3. We can see that the real order of
+convergence depends very weakly on m and is close to 1. Note that we are comparing the exact with
+numerical solution at a fixed point x = 0.001. In order to compute the order we use the standard
+technique of linear regression on a log-log plot of the error versus the iteration step which, in our
+simulation, changes from 10−1 to 10−5 . Notice that the integration is exact for m = 1 which is not
+surprising since midpoint rule is exact for the linear functions.
+Example 2. The next equation we consider is the following equation with a convolution kernel
+Z x
+m+1
+y
+(x) =
+ex−t y(t)dt, x ∈ [0, X],
+(58)
+0
+
+which is solved by
+
+ m1
+m
+x
+y(x) = e m+1 1 − e− m+1 x
+.
+
+(59)
+
+Here, C = 1, D = eX and W = 2, hence the order of convergence can be estimated as equal to at
+least 1 + m1 − m2 eX > 1 − m1 . Choosing a sufficiently small X assures that the method is convergent
+(specifically X < ln m+1
+). Results of the simulations are given in Tab. 3. Once again, the order of
+2
+convergence is very close to 1.
+
+9
+
+m
+Order
+Est. order
+
+1
+
+1.5
+
+2
+
+10
+
+102
+
+103
+
+0.999 1.000 1.000 0.980 0.927 0.918
+−− 0.332 0.499 0.899 0.990 0.999
+
+Table 2: Simulated order of convergence of the Midpoint rule (55) applied to (58). Calculation has
+been done at x = 0.001.
+
+4
+
+Conclusion
+
+We have shown that an explicit method for solving the Volterra integral equation with a power-type
+nonlinearity is convergent. The subjects of the future work consist of generalizing our results to
+the implicit schemes for integral equations with kernels bounded from below by an arbitrary power
+functions.
+
+Acknowledgements
+This research was supported by the National Science Centre, Poland under the project with a signature NCN 2015/17/D/ST 1/00625.
+Ł. P. would like to thank Prof. W. Okrasiński for a lot of fruitful talks that shaped the final form
+and quality of the paper.
+
+References
+[1] William F Ames and BG Pachpatte. Inequalities for differential and integral equations, volume
+197. Academic press, 1997.
+[2] Kendall Atkinson. A survey of numerical methods for the solution of fredholm integral equations
+of the second kind. 1976.
+[3] Hermann Brunner. Iterated collocation methods and their discretizations for volterra integral
+equations. SIAM journal on numerical analysis, 21(6):1132–1145, 1984.
+[4] Hermann Brunner. Collocation methods for Volterra integral and related functional differential
+equations, volume 15. Cambridge University Press, 2004.
+[5] Hermann Brunner. Volterra Integral Equations: An Introduction to Theory and Applications,
+volume 30. Cambridge University Press, 2017.
+[6] Evelyn Buckwar. Iterative Approximation of the Positive Solutions of a Class of Nonlinear
+Volterra-type Integral Equations. Logos Verlag, 1997.
+[7] Evelyn Buckwar. On a nonlinear volterra integral equation. In Volterra equations and applications, pages 157–162. CRC Press, 2000.
+[8] Evelyn Buckwar. Existence and uniqueness of solutions of abel integral equations with power-law
+non-linearities. Nonlinear Analysis: Theory, Methods & Applications, 63(1):88–96, 2005.
+[9] PJ Bushell. On a class of volterra and fredholm non-linear integral equations. In Mathematical
+Proceedings of the Cambridge Philosophical Society, volume 79, pages 329–335. Cambridge Univ
+Press, 1976.
+10
+
+[10] PJ Bushell. The cayley-hilbert metric and positive operators. Linear Algebra and its Applications, 84:271–280, 1986.
+[11] PJ Bushell and W Okrasinski. Uniqueness of solutions for a class of non-linea volterra integral
+equations with convolution kernel. In Mathematical Proceedings of the Cambridge Philosophical
+Society, volume 106, pages 547–552. Cambridge University Press, 1989.
+[12] Luis Caffarelli and Luis Silvestre. Regularity theory for fully nonlinear integro-differential equations. Communications on Pure and Applied Mathematics, 62(5):597–638, 2009.
+[13] Constantin Corduneanu. Integral equations and applications, volume 148. Cambridge University
+Press Cambridge, 1991.
+[14] Lj Dedić, M Matić, and J Pečarić. On euler midpoint formulae. The ANZIAM Journal,
+46(03):417–438, 2005.
+[15] J Dixon and S McKee. Weakly singular discrete gronwall inequalities. ZAMM-Journal of Applied
+Mathematics and Mechanics/Zeitschrift für Angewandte Mathematik und Mechanik, 66(11):535–
+544, 1986.
+[16] Rudolf Gorenflo and Francesco Mainardi. Fractional calculus. Springer, 1997.
+[17] Gustaf Gripenberg. Unique solutions of some volterra integral equations. Mathematica Scandinavica, 48(1):59–67, 1981.
+[18] Gustaf Gripenberg, Stig-Olof Londen, and Olof Staffans. Volterra integral and functional equations, volume 34. Cambridge University Press, 1990.
+[19] Wolfgang Hackbusch.
+Birkhäuser, 2012.
+
+Integral equations:
+
+theory and numerical treatment, volume 120.
+
+[20] Jakob J Keller. Propagation of simple non-linear waves in gas filled tubes with friction. Zeitschrift
+für Angewandte Mathematik und Physik (ZAMP), 32(2):170–181, 1981.
+[21] Rainer Kress, V Maz’ya, and V Kozlov. Linear integral equations, volume 17. Springer, 1989.
+[22] Peter Linz. Analytical and numerical methods for Volterra equations. SIAM, 1985.
+[23] Francesco Mainardi. Fractional calculus and waves in linear viscoelasticity: an introduction to
+mathematical models. World Scientific, 2010.
+[24] W Robert Mann and František Wolf. Heat transfer between solids and gases under nonlinear
+boundary conditions. Quarterly of Applied Mathematics, 9(2):163–184, 1951.
+[25] S McKee. Generalised discrete gronwall lemmas. ZAMM-Journal of Applied Mathematics and
+Mechanics/Zeitschrift für Angewandte Mathematik und Mechanik, 62(9):429–434, 1982.
+[26] Kenneth S Miller and Bertram Ross. An introduction to the fractional calculus and fractional
+differential equations. 1993.
+[27] W Mydlarczyk. The existence of nontrivial solutions of volterra equations. Mathematica Scandinavica, pages 83–88, 1991.
+[28] Juan J Nieto and W Okrasinski. Existence, uniqueness, and approximation of solutions to some
+nonlinear diffusion problems. Journal of Mathematical Analysis and Applications, 210(1):231–
+240, 1997.
+11
+
+[29] W Okrasinski. Nonlinear volterra equations and physical applications appendix: on a extension
+of gripenberg’s condition. Extracta mathematicae, 4(2):51–80, 1989.
+[30] W Okrasinski. On nontrivial solutions to some nonlinear ordinary differential equations. Journal
+of mathematical analysis and applications, 190(2):578–583, 1995.
+[31] Donal O’Regan and Maria Meehan. Existence theory for nonlinear integral and integrodifferential
+equations, volume 445. Springer Science & Business Media, 2012.
+[32] Łukasz Płociniczak. Approximation of the erde?lyi–kober operator with application to the timefractional porous medium equation. SIAM Journal on Applied Mathematics, 74(4):1219–1237,
+2014.
+[33] Łukasz Płociniczak. Analytical studies of a time-fractional porous medium equation. derivation, approximation and applications. Communications in Nonlinear Science and Numerical
+Simulation, 24(1):169–183, 2015.
+[34] Łukasz Płociniczak and Hanna Okrasińska. Approximate self-similar solutions to a nonlinear
+diffusion equation with time-fractional derivative. Physica D: Nonlinear Phenomena, 261:85–91,
+2013.
+[35] Łukasz Płociniczak and Szymon Sobieszek. Numerical schemes for integro-differential equations
+with erdélyi-kober fractional operator. Numerical Algorithms, pages 1–26.
+[36] Stefan G Samko, Anatoly A Kilbas, Oleg I Marichev, et al. Fractional integrals and derivatives.
+Theory and Applications, Gordon and Breach, Yverdon, 1993, 1993.
+[37] Ivar Stakgold. Boundary Value Problems of Mathematical Physics: Volume 1. SIAM, 2000.
+[38] Lü Tao and Huang Yong. A generalization of discrete gronwall inequality and its application to
+weakly singular volterra integral equation of the second kind. Journal of Mathematical Analysis
+and Applications, 282(1):56–62, 2003.
+[39] Edward Charles Titchmarsh and David Rodney Heath-Brown. The theory of the Riemann
+zeta-function. Oxford University Press, 1986.
+[40] Francesco Giacomo Tricomi. Integral equations, volume 5. Courier Corporation, 1957.
+[41] Juan Luis Vázquez. The porous medium equation: mathematical theory. Oxford University
+Press, 2007.
+[42] JinRong Wang, Chun Zhu, and Michal Fečkan. Analysis of abel-type nonlinear integral equations
+with weakly singular kernels. Boundary Value Problems, 2014(1):20, 2014.
+[43] Haiping Ye, Jianming Gao, and Yongsheng Ding. A generalized gronwall inequality and its application to a fractional differential equation. Journal of Mathematical Analysis and Applications,
+328(2):1075–1081, 2007.
+
+12
+
+

@@ -1,0 +1,1171 @@
+arXiv:1511.08245v2 [math.CO] 7 Dec 2016
+
+Shattered Sets and the Hilbert Function
+Shay Moran
+
+Cyrus Rashtchian
+
+Dept. of Computer Science, Technion, Israel,
+Microsoft Research, Hertzelia,
+Max Planck Institute for Informatics, Saarbrücken
+shaymoran1@gmail.com
+
+Dept. of Computer Science & Engineering
+University of Washington, Seattle
+cyrash@cs.washington.edu
+
+September 21, 2018
+
+Abstract
+We study complexity measures on subsets of the boolean hypercube and exhibit connections
+between algebra (the Hilbert function) and combinatorics (VC theory). These connections
+yield results in both directions. Our main complexity-theoretic result demonstrates that
+a large and natural family of linear program feasibility problems cannot be computed by
+polynomial-sized constant-depth circuits. Moreover, our result applies to a stronger regime
+in which the hyperplanes are fixed and only the directions of the inequalities are given as input
+to the circuit. We derive this result by proving that a rich class of extremal functions in VC
+theory cannot be approximated by low-degree polynomials. We also present applications of
+algebra to combinatorics. We provide a new algebraic proof of the Sandwich Theorem, which is
+a generalization of the well-known Sauer-Perles-Shelah Lemma. Finally, we prove a structural
+result about downward-closed sets, related to the Chvátal conjecture in extremal combinatorics.
+
+1
+
+Introduction
+
+Understanding the properties and structure of subsets of the boolean hypercube is a central theme in
+theoretical computer science and combinatorics. When studying a family of mathematical objects,
+endowing the objects with algebraic structure often sheds new light on interesting properties. This
+phenomena appears classically in areas such as algebraic topology and algebraic geometry. It
+also provides much utility when studying the boolean hypercube. Let C ⊆ {0, 1}n be a subset
+of the boolean hypercube, and let F be a field. Consider the linear space of functions from
+C to F, that is, FC . This is clearly a |C|-dimensional vector space over F. Every function in
+this space can be represented as a multilinear polynomial with degree at most n. Interestingly,
+for certain sets C, smaller degree actually suffices. For example, when C is the standard basis,
+denoted C = {~e1 , . . . , ~em }, then any function f : C → F can be expressed as the linear function
+f (~e1 )x1 + . . . + f (~em )xm .
+The Hilbert function, denoted hd (C, F), is the dimension of the space of functions {f : C → F}
+that have representations as polynomials with degree at most d. This classical algebraic object will
+be useful in our study of how the structure of C affects the function space. In complexity theory,
+Smolensky [Smo93] has used the Hilbert function to unify polynomial approximation lower bounds
+relating to bounded-depth circuits.
+We establish new connections between the Hilbert function and VC theory. Our main technical
+contributions are bounds hd (C, F) in terms of basic concepts in VC theory, such as shattering,
+strong shattering, and down-shifts. Previous results on bounding the Hilbert function utilize a more
+1
+
+intricate analysis and focus on symmetric sets, that is, unions of slices of the hypercube [Smo93,
+BE99]. In addition to giving new bounds on the Hilbert function, our connection between Algebra
+and Combinatorics allows us to derive results in both directions.
+Our main complexity theoretical application is that determining feasibility of a large family of
+linear programs is hard for the class of bounded-depth circuits. More specifically, let h1 , . . . , hm be
+affine functions. Each sign vector s in {±}m defines the following feasibility problem: does there
+exist x ∈ Rd such that hi (x) > 0 when si = +, and hi (x) < 0 when si = −, for all i ∈ [m]? This
+defines a boolean function that takes an input s and outputs one if and only if the problem is feasible.
+We prove that if m = 2d + 1, and the affine functions hi are in general position, then this function
+cannot be approximated by low-degree polynomials, over any field. This implies a lower bound on
+the computability of this function by constant-depth circuits, due to the polynomial approximation
+technique introduced by Razborov [Raz87] and Smolensky [Smo87]. The above linear programming
+problem relates to the study of hyperplane arrangements (see the books of Matoušek [Mat02] and
+Stanley [Sta04] for more details and applications). Our results implicitly provide algebraic proofs
+of some known facts regarding the combinatorics of hyperplane arrangements.
+As a combinatorial application of our bounds on the Hilbert function, we provide a short
+algebraic proof of the Sandwich Theorem. This theorem comes from VC theory and is a well-studied
+generalization of the Sauer-Shelah-Perles Lemma [Law83, Paj85, BRI89, BR95, Dre97, ARS02,
+BCDK06, Mor12, KM13, MR14, MW15]. Similar proofs of related upper bounds have appeared
+previously, due to Frankl and Pach [BF92], Gurvits [Gur97], and Smolensky [Smo97]. We contribute
+new lower bounds and applications.
+Facts we prove about the function space FC also lead to a new result about downward-closed
+sets. A family D of subsets is downward-closed if b ⊆ a and a ∈ D implies b ∈ D. A theorem of
+Berge [Ber76] implies that for any downward-closed set D there exists a bijection π : D → D such
+that a ∩ π(a) = ∅ for all a ∈ D. We generalize his result to arbitrary, prescribed intersections. Let
+φ : D → D have the property φ(a) ⊆ a for all a ∈ D. We show that there always exists a bijection
+π : D → D such that a ∩ π(a) = φ(a). Note that choosing φ(a) = ∅ for all a implies Berge’s result.
+Our algebra-combinatorics connection fits within the framework of the polynomial method. This
+method has been successful in providing elegant proofs of fundamental results in many areas, such
+as circuit complexity [Smo87, ABFR94, Raz87, Bei93], discrete geometry [GK15, Dvi09, SSZ15,
+Tao14], extremal combinatorics [Alo99, Juk11, BF92], and more.
+The paper is organized as follows. We state our main theorems in Section 2. In Section 3, we
+prove our bounds on the Hilbert function. In Section 4, we use our Hilbert function bounds to
+prove that linear program feasibility is hard for bounded-depth circuits. Finally, in Section 5, we
+prove results about downward-closed sets. We now review preliminaries.
+
+1.1
+
+Preliminaries
+
+We begin with algebraic preliminaries. Let C ⊆ {0, 1}n and F be a field. Every f : C → F can be
+expressed as a multilinear polynomial over variables x1 , . . . , xn with coefficients in F.
+Definition 1.1. For d ∈ [n] the Hilbert function hd (C, F) is the dimension of the space of functions
+f : C → F that can be represented as polynomials with degree at most d.
+
+P
+Notice that hd (C, F) 6 min{ dj=0 nj , |C|}. A basic fact about the Hilbert function is that
+1 = h0 (C, F) 6 h1 (C, F) 6 . . . 6 hn (C, F) = |C|.
+The final equality holds because all f : C → F have representations with degree at most n.
+2
+
+It is natural to wonder when the Hilbert function attains its maximum and how the structure
+of C influences the Hilbert function. We introduce the following measure.
+Definition 1.2. The interpolation degree of C denoted intdeg(C, F) is the minimum d such
+that any f : C → F can be expressed as a multilinear polynomial with degree at most d. In other
+words,
+intdeg(C, F) = min{d ∈ [n] : hd (C, F) = |C|}.
+Intuitively, a smaller interpolation degree implies a less complex set.
+We move on to combinatorial preliminaries. Our bounds on the Hilbert function use basic
+concepts in VC theory. We define these concepts now.
+Definition 1.3. A subset I ⊆ [n] is shattered by C ⊆ {0, 1}n if for every pattern s : I → {0, 1}
+there is c ∈ C that realizes s. In other words, the restriction of c to I equals s. A subset I ⊆ [n] is
+strongly shattered by C if C contains all elements of some subcube on I. In other words, there
+exists a pattern s̄ : ([n] \ I) → {0, 1} such that all extensions of s̄ to a vector in {0, 1}n are in C.
+These definitions lead to natural families of sets, which will be important to our work.
+Definition 1.4. The shattered sets with respect to C are
+str(C) = {I ⊆ [n] : I is shattered by C}.
+The strongly shattered sets with respect to C are
+sstr(C) = {I ⊆ [n] : I is strongly shattered by C}.
+Definition 1.5. The VC dimension of C is defined as VC(C) = max{|I| : I ∈ str(C)}.
+Note that sstr(C) ⊆ str(C) and that both of these families are downward-closed.
+We also lower bound the Hilbert function using down-shifts, a standard tool in extremal
+combinatorics. Let C ⊆ {0, 1}n and let i ∈ [n]. We denote as Si the down-shift operator on
+the ith coordinate. Obtain the set Si (C) ⊆ {0, 1}n from C as follows. Replace every c ∈ C such
+that both (i) ci = 1, and (ii) the ith neighbor1 of c is not in C with the ith neighbor of c. Authors
+have referred to this operation as “compression”, “switching”, and “polarization”. Previous works
+that use down-shifts include [Kle66, Enf70, BL96, GGL+ 00, GT09, Mor12].
+An important property of down-shifts is that they transform an arbitrary subset of {0, 1}n into
+a downward-closed set, without changing cardinality. Specifically, if
+D = Sn (Sn−1 (· · · S1 (C)))
+is the result of sequentially applying Si on C for each i, then D is downward-closed. It is also
+convenient in this context to think of D as a family of subsets of [n] rather than a set of boolean
+vectors via the natural correspondence between boolean vectors and sets.
+
+2
+
+Our Results
+
+We start with the result about linear program feasibility. We then state the bounds on the Hilbert
+function in terms of shattered sets and down-shifts. We show this leads to bounded-depth circuit
+lower bounds. Finally, we state two combinatorial applications.
+1
+
+Vectors u, v ∈ {0, 1}n are ith-neighbors if they differ in coordinate i and are the same elsewhere.
+
+3
+
+2.1
+
+Linear Program Feasibility
+
+We formalize and prove a strong version of the statement “linear programming feasibility can
+not be decided by polynomial-sized, constant-depth circuits.” Clearly, linear programming being
+P-complete [DR80] implies a version of this statement for specific linear programs representing
+functions previously known not to have efficient bounded-depth circuits. We prove a stronger
+version stating that any linear feasibility problem, in which the number of constraints is roughly
+twice the number of variables and the constraints are non-degenerate, cannot be decided by an
+efficient bounded-depth circuit. For a set of hyperplanes H in Rk we will define a boolean function
+fH . It takes orientations as inputs and outputs one if and only if a certain polytope is nonempty.
+In particular, we establish hardness of this problem even when the hyperplanes are fixed in advance
+and only the orientations are given as input.
+We express linear program feasibility as a boolean function as follows. Specify an arrangement
+of m hyperplanes H = {h1 , . . . , hm } with normal vectors ~ni and translation scalars bi as
+hi = {~x : hn~i , ~xi = bi }.
+A sign pattern s ∈ {−1, 1}m encodes the following linear programming feasibility problem:
+Does there exist ~x ∈ Rk satisfying sign(hx, ~ni i − bi ) = si for all i ∈ [m]?
+This corresponds to checking the feasibility of a linear program with m constraints and k
+variables. Define fH : {−1, 1}m → {0, 1} as the boolean function such that fH (s) = 1 if and only
+if the linear program encoded by s is feasible.
+As an example, consider the following arrangement in R2 . The three hyperplanes
+h1 = {(x1 , x2 ) : 5x1 + 3x2 = 3}, h2 = {(x1 , x2 ) : 8x1 − x2 = 8}, h3 = {(x1 , x2 ) : 4x1 − 5x2 = 0}
+form an arrangement of three lines in the plane. The vector s = (+1, −1, +1) encodes the system
+5x1 + 3x2 > 3
+
+(s(1) = +1)
+
+8x1 − x2 < 8
+
+(s(2) = −1)
+
+4x1 + 5x2 > 0
+
+(s(3) = +1)
+
+In the example, the system encoded by (+1, −1, +1) is not satisfiable (see Figure 1). For more
+background material on hyperplane arrangements and related results, see the books by Stanley [Sta04]
+and Matoušek [Mat02].
+We prove the following theorem.
+Theorem 2.1. Let H be an arrangement of 2k + 1 hyperplanes in Rk that are in general position.
+Any AC 0 [p] circuit, for a prime p, with depth d computing fH requires exp(Ω(k 1/2d )) gates.
+We prove Theorem 2.1 in Section 4, using the framework of Razborov [Raz87], Smolensky [Smo87].
+Explicit Arrangements. The space of oriented hyperplanes is a rich and well-studied object.
+The books [Mat02, Sta04] provide many facts and examples. The paper [AFR85] and references
+therein give bounds on how many different boolean functions can be represented as fH for some
+hyperplane arrangement H.
+General position hyperplane arrangements come from any 2k + 1 vectors in Rk+1 such that
+every k + 1 of them are linearly independent. For a vector v ∈ Rk+1 the hyperplane has normal
+(v1 , . . . , vk ) and translation vk+1 . Explicit families of m vectors in Rd such that every d of them
+are independent are known for any m, d. For example, take the rows of an m × d Cauchy or
+Vandermonde matrix.
+4
+
+h2 : 8x1 − x2 = 8
+h1 : 3x1 + 5x2 = 3
+
++−−
+
+++−
+
+h3 : 4x1 − 5x2 = 0
+
++++
+−−−
+
+−+−
+
+−++
+−−+
+
+Figure 1: Three lines divide R2 into seven regions, each labeled by a feasible sign pattern.
+
+2.2
+
+Hilbert Function Bounds
+
+Our results are based on the following theorem.
+Theorem 2.2. Any C ⊆ {0, 1}n and any d ∈ [n] satisfy the relationships
+|{I ∈ sstr(C) : |I| 6 d}| 6 hd (C, F) 6 |{I ∈ str(C) : |I| 6 d}|
+and
+max{|I| : I ∈ sstr(C)} 6 intdeg(C, F) 6 max{|I| : I ∈ str(C)}.
+The upper bounds on interpolation degree are not new. Smolensky [Smo97] derives the Sauer-Perles-Shelah
+Lemma using very similar polynomial-based arguments. The upper bounds on interpolation degree
+in terms of VC dimension also appear implicitly in the work of Frankl and Pach [BF92] and
+explicitly in Gurvits [Gur97]. Our technical contributions center around the lower bounds and the
+applications. We prove Theorem 2.2 in Section 3.1.
+We strengthen the lower bound on the Hilbert function in Theorem 2.2 using down-shifts.
+Theorem 2.3. Let C ⊆ {0, 1}n and let D = Sn (Sn−1 (. . . S1 (C))). Then
+|{I ∈ D : |I| 6 d}| 6 hd (C, F)
+
+and max{|I| : I ∈ D} 6 intdeg(C, F).
+
+In Section 3.2 we prove this theorem and show that the parity function provides a tight example
+over GF (2). We also discuss how Theorem 2.3 implies the lower bound in Theorem 2.2.
+
+2.3
+
+Low-Degree Polynomial Approximations
+
+Classic results in bounded-depth circuit complexity reduce the task of proving circuit lower bounds
+to showing that a boolean function has no low-degree approximation [Raz87, Smo87, ABFR94].
+Smolensky shows in [Smo93] how to express all known degree lower bounds in terms of the Hilbert
+function. For a boolean function f consider the set S = f −1 (1) as a subset of the boolean cube.
+Smolensky shows that if hd (S, F) is large, then f is hard to approximate.
+
+5
+
+Theorem 2.4 ([Smo93]). Consider f : {0, 1}n → {0, 1} and p : {0, 1}n → F. Define S = f −1 (1)
+and fix d = b(n − degF (p) − 1)/2c. Then,
+Pr[p(x) 6= f (x)] >
+x
+
+2 · hd (S, F) − |S|
+,
+2n
+
+where x is uniform over {0, 1}n .
+We provide a proof of Smolensky’s result in Appendix A for completeness. Theorem 2.2 implies
+the following corollary in terms of strongly shattered sets.
+Corollary 2.5. Assume n is odd. Consider f : {0, 1}n → {0, 1}. If |f −1 (1)| = 2n−1 and
+sstr(f −1 (1)) = {I ⊆ [n] : |I| 6 n−1
+2 }, then for any polynomial p ∈ F[x1 , . . . , xn ] we have
+Pr[p(x) 6= f (x)] >
+x
+
+1 10 degF (p)
+√
+,
+−
+2
+n
+
+where x is uniform over {0, 1}n .
+Proof. Since sstr(f −1 (1)) = {I ⊆ [n] : |I| 6
+
+n−1
+2 },
+
+we have that
+
+|{I ∈ sstr(C) : |I| 6 d}| =
+
+d  
+X
+n
+j=0
+
+j
+
+P
+for all d = 0, 1, . . . , (n − 1)/2. Theorem 2.2 implies that hd (f −1 (1), F) = dj=0
+these into Theorem 2.4, along with |f −1 (1)| = 2n−1 , gives the corollary.
+
+n
+j
+
+
+
+as well. Plugging
+
+Bernasconi and Egidi [BE99] thoroughly characterize the Hilbert function for symmetric sets and
+prove that any nearly-balanced, symmetric boolean function is hard to approximate. They leave as
+an open question deriving bounds for non-symmetric sets. Our connection to VC theory leads to new
+families of functions satisfying the conditions of Corollary 2.5. Many of these functions, such as the
+linear programming feasibility functions from Section 2.1, are non-monotone and non-symmetric.
+As a final remark, recent work shows that Smolensky’s lower bound (and thus our result) extends
+to nonclassical polynomials [BL15].
+
+2.4
+
+The Sandwich Theorem
+
+The following relationship which is a generalization of the Sauer-Perles-Shelah Lemma was discovered
+several times and independently [BR95, Paj85, Dre97, ARS02].
+Theorem 2.6 (Sandwich Theorem). For any C ⊆ {0, 1}n we have |sstr(C)| 6 |C| 6 |str(C)|.
+PVC(C) n
+Since |str(C)| 6 i=0
+i , this implies the Sauer-Perles-Shelah Lemma.
+Theorem 2.2 yields a new algebraic proof of the Sandwich Theorem. Indeed, this follows from
+examining the case of d = n and observing that hn (C, F) = |C|.
+The Sandwich Theorem is tight in the sense that there are sets that achieve equality in both of
+its inequalities2 . These sets are calles shattering extremal sets. For example, downward-closed sets
+are shattering extremal. Shattering extremal sets have been rediscovered and studied in different
+contexts [Law83, BRI89, BR95, Dre97, BCDK06, Mor12, KM13, MR14, MW15]. In our context,
+Corollary 2.5 says that shattering extremal sets S of size |S| = 2n−1 and VC dimension n−1
+2
+correspond to boolean functions that cannot be approximated by low-degree polynomials.
+2
+
+In fact, it is well known (see for example [Mor12]) that any set achieving equality in one of the inequalities, also
+achieves equality in the other.
+
+6
+
+2.5
+
+Downward-closed Sets and Chvátal’s Conjecture
+
+Downward-closed sets have a well-studied, rich combinatorial structure. A theorem of Berge [Ber76]
+implies the following fact. For any downward-closed set D, there is a bijection π : D → D such
+that a ∩ π(a) = ∅, for all a ∈ D. We refer to such a bijection as a pseudo-complement. We prove
+the following generalization of the existence of a pseudo-complement.
+Theorem 2.7. Let D be any downward-closed set. Fix any mapping φ : D → D with the property
+that φ(a) ⊆ a for all a ∈ D. Then there exists a bijection π : D → D satisfying the condition that
+a ∩ π(a) = φ(a) for all a ∈ D.
+Note that choosing φ(a) = ∅ for all a implies the existence of a pseudo-complement.
+In topology, downward-closed sets correspond to simplicial complexes. We think of the φ as
+prescribing intersections. For simplicial complexes, this corresponds to prescribing that complexes
+intersect in certain faces. We prove Theorem 2.7 in Section 5. Our proof proceeds by proving
+that a certain matrix is invertible. A non-zero determinant implies that the matrix contains a
+permutation matrix that yields the desired bijection.
+We next discuss the result by Berge for the existence of pseudo-complements and its connections
+with Chvátal’s conjecture in extremal combinatorics [CK72]. Berge’s result about pseudo-complements
+follows from the following stronger theorem that he proved.
+Theorem 2.8 ([Ber76]). If D is a downward-closed set, then either D or D \ ∅ can be partitioned
+into pairs of disjoint sets.
+We need two definitions to explain Berge’s motivation. A family B of subsets of [n] is called a star
+if there is an element x ∈ [n] such that x ∈ b for all b ∈ B. It is called an intersecting family if
+every pair of sets in B intersects. Chvátal’s conjecture is the following.
+Conjecture 2.9 (Chvátal’s conjecture). If D is a downward closed set, then the cardinality of the
+largest star in D is equal to the cardinality of the largest intersecting family in D.
+This conjecture remains open, aside from partial results, such as the following corollary of Berge’s
+theorem.
+Corollary 2.10. In a downward-closed set D, any intersecting family has cardinality at most |D|/2.
+We contrast Berge’s theorem and our Theorem 2.7. Berge’s pair decomposition induces a
+permutation π such that π(π(a)) = a, whereas a permutation decomposes D into disjoint cycles
+with unspecified lengths. Many people have observed that the above corollary only needs the
+pseudo-complement result, instead of the stronger statement in Berge’s theorem [And88]. Indeed,
+consider each disjoint cycle in the guaranteed permutation, and note that at most half of the sets
+in the cycle may mutually intersect. Therefore, our Theorem 2.7 implies the above corollary.
+
+3
+
+The Hilbert Function for Subsets of the Boolean Cube
+
+We prove upper and lower bounds on the Hilbert function. First, we prove the bounds in Theorem 2.2
+involving the shattered and the strongly shattered sets. Then, we prove the bounds in Theorem 2.3
+using shifting. Finally we consider an example of applying these bounds to analyze the Hilbert
+function of the parity function.
+
+7
+
+3.1
+
+Bounding the Hilbert Function Using Shattered Sets
+
+The high-level idea of the proof of Theorem 2.2 is to define a vector space V with dim(V ) = |C|
+and prove that |sstr(C)| 6 dim(V ) 6 |str(C)|. We sandwich the dimension dim(V ) by finding a
+linearly independent set of size |sstr(C)| and a spanning set of size |str(C)|.
+We analyze the |C|-dimensional vector space {f : C → F}. Evaluation on C induces a natural
+mapping from P ∈ F[x1 , . . . , xn ] to the restriction P |C ∈ {f : C → F}. The following lemma
+provides the desired sets of spanning monomials and linearly independent monomials.
+Lemma 3.1. For all fields F and sets C ⊆ {0, 1}n the following two facts hold.
+Q
+1. The monomials i∈I xi for I ∈ str(C) span {f : C → F}.
+Q
+2. The monomials i∈I xi for I ∈ sstr(C) are linearly independent in {f : C → F}.
+Q
+Proof. For I ⊆ [n], let xY denote the monomial xI = i∈I xi . For the first item, we express every
+f : C → F as a linear combination of monomials (xI )|C where I ∈ str(C). It suffices to express the
+monomials (xI )|C for all I ⊆ [n]. We prove this by induction. For the base case, if I ∈ str(C), we
+are done. Otherwise, I is not shattered by C and there exists s ∈ {0, 1}I such that for all c ∈ C,
+we have c|I 6= s. Consider
+Y
+P =
+(xi − (1 − si )) .
+i∈I
+
+Note
+that P (c) = 0 for all c ∈ C and hence P |C = 0|C . Specifically, by expanding the product
+Q
+(x
+i − (1 − si )) we see
+i∈I
+0|C = P = (xI )|C + (Q)|C ,
+where the degree of Q is smaller than |I|. By induction, we can write Q as a combination of xI 0
+for I 0 ∈ str(C). Since (xI )|C = (−Q)|C we get that xI is in this span as well.
+We now prove the second item. Consider a linear combination
+X
+P =
+αI xI
+I∈sstr(C)
+
+such that not all αI are zero. We want to show that there is c ∈ C such that P (c) 6= 0. Let
+Z ∈ sstr(C) be a maximal set such that αZ 6= 0. Since Z is strongly shattered by C, there is
+some s̄ : ([n] \ Z) → {0, 1} such that all extensions of it in {0, 1}n are in C. Let Q(xi )i∈Z be the
+polynomial obtained by plugging in the values of s̄ in the variables of ([n] \ Z). By maximality of
+Z it follows that the coefficient of xZ in Q is αZ 6= 0, and so Q is not the 0 polynomial. Therefore
+there is s ∈ {0, 1}Z such such that Q(s) 6= 0. Pick c ∈ C such that
+(
+si i ∈ Z,
+ci =
+s̄i i ∈ ([n] \ Z).
+It follows that P (c) = Q(s) 6= 0, which finishes the proof.
+We use this lemma to prove bounds on the Hilbert function and interpolation degree.
+Proof of Theorem 2.2. For the upper bound on hd (C, F), the above proof shows how to express
+all monomials of degree d using monomials of equal or smaller degree. For the lower bound on
+hd (C, F), linear independence still holds after restricting set size.
+The upper bound on intdeg(C, F) is immediate. For the lower bound on intdeg(C, F), since
+sstr(C) is downward-closed, the linear independence of the monomials in sstr(C) implies any
+maximal degree monomial in {(xI )|C : I ∈ sstr(C)} cannot be expressed solely by lower degree
+monomials.
+8
+
+3.2
+
+Down-shifts, Downward-closed Bases, and the Hilbert Function
+
+We prove Theorem 2.3. We also use the theorem to analyze the Hilbert function for the parity
+function. Theorem 2.3 is a direct corollary of the following theorem.
+Theorem
+3.2. Let C ⊆ {0, 1}n and let D = Sn (Sn−1 (. . . S1 (C))). Then the set of monomials
+Q
+{ i∈I xi : I ∈ D} is a basis for the vector space of functions {f : C → F}.
+A theorem, equivalent in content, but expressed with respect to Gröbner bases, is proved in [Més09].
+For completeness we include an elementary proof in Appendix B.
+The lower bound given in Theorem 2.3 subsumes the lower bound in Theorem 2.2. This is a
+direct corollary of the following simple lemma.
+Lemma 3.3. Let C ⊆ {0, 1}n and let D = Sn (Sn−1 (. . . S1 (C))). We have that sstr(C) ⊆ D, where
+we associate {0, 1}n with subsets of [n] in the natural way.
+Proof. Since D is downward-closed, it follows that it is shattering extremal and therefore sstr(D) =
+D. So, it is enough to show that sstr(C) ⊆ sstr(D). To this end, it suffices to show that for every
+class C 0 , sstr(C 0 ) ⊆ sstr(Si (C 0 )). Let I ∈ sstr(C 0 ). Therefore C 0 contains a subcube B in coordinates
+I. During the down-shift, B is either shifted or stays in place, but in any case also Si (C 0 ) contains
+a subcube in coordinates I and therefore I ∈ sstr(Si (C 0 )).
+The Hilbert Function of Parity. A simple example which demonstrates an application of
+Theorem 2.3 is the parity function. Let P denote the set of all vectors of even hamming weight.
+Notice that P does not contain subcubes other than ∅. Therefore, sstr(P ) = {∅}. As a consequence,
+the lower bound on the Hilbert function in Theorem 2.2 reveals no information in this case. In
+contrast, shifting gives a better bound. If we down-shift P , say on the first coordinate, we get
+the set S1 (P ) = D = {v : v1 = 0}. Therefore, as D is downward closed, shifting it on other
+coordinates does
+change
+it. Thus, Sn (Sn−1
+ (. . . S1 (P ))) = D. By Theorem 2.3 we have that
+
+ notn−1
+n−1
+n−1
++
+.
+.
+.
++
++
+=
+hd (P, F) > n−1
+0 .
+d−1
+d
+6d
+This lower bound is tight when the field has characteristic two and d 6 n/2. It suffices to show
+every polynomial q of degree at most d canbe expressed by a polynomial of degree at most d that
+does not depend on x1 . Therefore the n−1
+6d multilinear monomials that do not depend on x1 span
+the space of degree at most d polynomials with domain P . Note that (x1 + . . . + xn )|P = 0, and
+therefore every appearance of x1 can be replaced by x2 +. . .+xn . This transforms q to a polynomial
+that does not depend on x1 without changing the represented function.
+
+4
+
+Linear Programming and Low-degree Polynomial Approximations
+
+We now prove Theorem 2.1. By the Razborov-Smolensky framework, it suffices to prove that fH
+cannot be approximated by a low-degree polynomial over any field.3
+Theorem 4.1. Let H be an arrangement of 2k + 1 hyperplanes in Rk that are in general position.
+For any any polynomial p ∈ F[x1 , . . . , x2k+1 ] we have
+Pr[p(s) 6= fH (s)] >
+s
+
+1 10 degF (p)
+− √
+,
+2
+2k + 1
+
+where s is uniform over {−1, 1}2k+1 .
+3
+
+We state the following theorem for {−1, 1} inputs to fH . This only makes sense for fields containing these
+elements. When F = F2 simply replace {−1, 1} with {0, 1} in the definition of fH .
+
+9
+
+3
+
+++ - - -
+
+2
+
+5
+
++- - -+
+
+4
+
+++ - - +
+
++++ - -
+
++++ - + ++ - ++
+
++ - - ++
+
++++++
+++++ -
+
++ - +++
+- ++++
+
+- ++ - - +++ -
+
+- - - ++
+
+1
+
+- - +++
+
+- - ++ -
+
+Figure 2: Five hyperplanes divide R2 into 16 cells. Cell labels in {−, +}5 correspond to oriented
+hyperplane feasibility. Notice that every two coordinates are strongly shattered, but no three
+coordinates are shattered. This provides a proof-by-picture of Proposition 4.2 for m = 5 and d = 2.
+
+The proof of Theorem 4.1 proceeds via a reduction to Corollary 2.5. Let
+SH = {s ∈ {−1, 1}n : fH (s) = 1}.
+To apply Corollary 2.5 on fH we will show |SH | = 22k and sstr(SH ) = {I ⊆ [2k + 1] : |I| 6 k}.
+We establish this by the following proposition. The facts we need about hyperplane arrangements
+follow from standard arguments [GW94, Sta04]. For intuition about the following proposition, see
+Figure 2 for a pictorial proof in R2 .
+Proposition 4.2. For any m hyperplanes H in Rd in general position
+sstr(SH ) = str(SH ) = {I ⊆ [m] : |I| 6 d}.
+Proof. The two lemmas in Appendix C characterize the shattered and strongly shattered sets of
+SH when H is in general position. The first lemma shows str(SH ) ⊆ {I ⊆ [m] : |I| 6 d}. The
+second lemma shows {I ⊆ [m] : |I| 6 d} ⊆ sstr(SH ). Since sstr(SH ) ⊆ str(SH ) these two lemmas
+combine to finish the proof.
+Proposition 4.2 implies Theorem 2.1. The equality sstr(SH ) = str(SH ) along with the Sandwich
+Theorem implies that |SH | = |sstr(SH )|. Let k be the ambient dimension in Theorem 2.1. The above
+proposition for m = 2k + 1 and d = k gives |SH | = 22k and also sstr(SH ) = {I ⊆ [2k + 1] : |Y | 6 k}.
+Thus fH satisfies the premises of Corollary 2.5, and Theorem 2.1 follows.
+
+10
+
+5
+
+Downward-closed Sets and Prescribed Intersections
+
+We prove Theorem 2.7. Let D ⊆ {0, 1}n be a downward-closed set. Fix φ : D → D with the
+property that φ(a) ⊆ a for all a ∈ D. We will show that there exists a bijection π : D → D
+satisfying the condition that a ∩ π(a) = φ(a) for all a ∈ D. We first prove two lemmas about the
+function space {f : D → GF (2)} and then use these to prove the existence of π. The first lemma
+holds for all subsets of the boolean cube.
+Lemma 5.1. Let C ⊆ {0, 1}n be a subset of the boolean hypercube. The monomials
+Y
+xi for a ∈ C
+i∈a
+
+form a basis for {f : C → GF (2)}.
+Proof. We proceed using induction onQ|C|. When C = {a} for a ∈ {0, 1}n the function space
+has dimension one and the monomial i∈a xi represent the constant “1” function in
+Q this space,
+which spans it. Let z ∈ C denote a maximal Hamming weight element in C. Notice i∈z xi is an
+indicator function in {f : C → Q
+GF (2)} for the input z. By the inductive hypothesis on (C \ {z}),
+we know
+the
+set
+of
+monomials
+i∈a xi for a ∈ (C \ {z}) form a basis for {f : (C \ {z}) → GF (2)}.
+Q
+Since i∈z xi is an indicator function, we may add it to the basis for {f : (C \ {z}) → GF (2)} and
+achieve a basis for {f : C → GF (2)}.
+We remark that if C is downward-closed, then it is shattering extremal, and the above lemma
+is a corollary of the Sandwich theorem. We prove the following stronger claim as well.
+Lemma 5.2. Let D ⊆ {0, 1}n be a downward-closed set. Fix any mapping φ : D → D with the
+property that φ(a) ⊆ a for all a ∈ D. The functions
+Y
+Y
+xi
+(1 + xi )
+i∈φ(a)
+
+i∈a\φ(a)
+
+for a ∈ D form a basis for {f : D → GF (2)}.
+Proof. Let B denote the set of polynomials that we wish to show is a basis. Since the cardinality
+of B is |D| it is enough to show that
+Q it is a spanning set. By Lemma 5.1, it is enough to show
+that every monomial of the form i∈a xi for a ∈ D can be expressed as a linear combination of
+polynomials in B. We proceed by induction on the size of a. The case of a = ∅ is trivial. For the
+induction step, let a ∈ D be non-empty. Expand the polynomial
+!
+Y
+Y
+Y
+xi
+(1 + xi ) =
+xi + r,
+i∈φ(a)
+
+i∈a
+
+i∈a\φ(a)
+
+Q
+where r is a linear combination of monomials i∈b xi for b ⊆ a and b 6= a. Since D is downward-closed,
+by induction hypothesis r is in the span of B. Thus,
+
+
+Y
+Y
+Y
+xi = 
+xi
+(1 + xi ) + r
+i∈a
+
+i∈φ(z)
+
+i∈a\φ(a)
+
+is also in the span of B, and we are done.
+11
+
+Proof of Theorem 2.7. We show there exists a bijection π : D → D such that a ∩ π(a) = φ(a) for
+all a ∈ D, for the given map φ. Consider the |D| × |D| boolean matrix M defined as follows. Index
+the rows and columns both by D, and define the element in location (a, b) ∈ D × D to be one if
+and only if a ∩ b = φ(a). We claim that M is nonsingular. Indeed, the rows of M correspond to
+the functions in Lemma 5.2. Since they form a basis, the row space of M is |D|-dimensional. This
+implies the determinant of M is nonzero. There must exist a permutation π : [n] → [n] such that
+Q|D|
+i=1 Mi,π(i) = 1. By the definition of M , we found the bijection π we were looking for.
+
+6
+
+Conclusion
+
+We exhibited a connection between algebra and combinatorics. We provided a general way to lower
+bound the Hilbert function. We showed a new family of functions cannot be approximated by
+low-degree polynomials. We provided a polynomial method proof of the Sandwich theorem and for
+a new theorem about prescribed intersections.
+
+6.1
+
+Open Directions
+
+Our work suggests that the interpolation degree is a useful complexity measure on subsets of the
+boolean hypercube. Therefore, an open direction is to better understand the structure of sets with
+low interpolation degree. As noted by Remscrim [Rem16], one can equivalently define interpolation
+degree in terms of the rank of a certain incidence matrix. The matrix corresponds to the monomials
+in our Lemma 5.1 with a cut-off on the degree. For the case of interpolation degree one, this
+characterization is particularly simple.
+Proposition 6.1. A set C ⊆ {0, 1}n has intdeg(C, F) = 1 if and only if the boolean vectors
+corresponding to C are affinely independent in Fn .
+We are curious if other properties of the vectors in C correspond to implications for the
+interpolation degree. Even for interpolation degree two, the algebraic/matrix description becomes
+more opaque and less intuitive than the characterization in the above proposition. Since
+intdeg(C, F) 6 VC(C),
+any combinatorial characterization may also shed new light on the structure of sets with VC
+dimension two, for which our understanding is lacking [AMY14, MSWY15].
+Acknowledgements. We thank Paul Beame, Eli Ben-Sasson, Yuval Filmus, Ariel Gabizon,
+Sivaramakrishnan Natarajan Ramamoorthy, Anup Rao, Mert Sağlam, and Amir Yehudayoff for
+helping us improve the presentation of the paper. We also thank the anonymous reviewers for their
+comments.
+
+References
+[ABFR94] J. Aspnes, R. Beigel, M. Furst, and S. Rudich.
+polynomials. Combinatorica, 14(2):135–148, 1994.
+[AFR85]
+
+The expressive power of voting
+
+Noga Alon, Peter Frankl, and Vojtech Rödl. Geometrical Realization of Set Systems
+and Probabilistic communication Complexity. In FOCS, pages 277–280. IEEE, 1985.
+
+12
+
+[Alo99]
+
+Noga Alon. Combinatorial Nullstellensatz. Combinatorics Probability and Computing,
+8(1):7–30, 1999.
+
+[AMY14]
+
+Noga Alon, Shay Moran, and Amir Yehudayoff. Sign rank, VC dimension and spectral
+gaps. Electronic Colloquium on Computational Complexity (ECCC), 21:135, 2014.
+
+[And88]
+
+Ian Anderson. Combinatorics of Finite sets. Bull. Amer. Math. Soc., 1988.
+
+[ARS02]
+
+Richard P. Anstee, Lajos Rónyai, and Attila Sali. Shattering news. Graphs and
+Combinatorics, 18(1):59–73, 2002.
+
+[BCDK06] Hans-Jürgen Bandelt, Victor Chepoi, Andreas W. M. Dress, and Jack H. Koolen.
+Combinatorics of lopsided sets. Eur. J. Comb., 27(5):669–689, 2006.
+[BE99]
+
+Anna Bernasconi and Lavinia Egidi. Hilbert Function and Complexity Lower Bounds
+for Symmetric Boolean Functions. Information and Computation, 153(1):1–25, 1999.
+
+[Bei93]
+
+Richard Beigel. The Polynomial Method in Circuit Complexity. In In Proceedings of
+the 8th IEEE Structure in Complexity Theory Conference. Citeseer, 1993.
+
+[Ber76]
+
+C Berge. A Theorem Related to the Chvátal conjecture. In Proceedings, 5th British
+Combinatorial Conference, 1976.
+
+[BF92]
+
+L Babai and P Frankl. Linear Algebra Methods in Combinatorics. University of
+Chicago, 1992.
+
+[BL96]
+
+Béla Bollobás and Imre Leader.
+162(1-3):31–48, 1996.
+
+[BL15]
+
+Abhishek Bhowmick and Shachar Lovett. Nonclassical Polynomials as a Barrier to
+Polynomial Lower Bounds. In 30th Conference on Computational Complexity, page 72,
+2015.
+
+[BR95]
+
+Béla Bollobás and A. J. Radcliffe. Defect sauer results. J. Comb. Theory, Ser. A,
+72(2):189–208, 1995.
+
+[BRI89]
+
+Béla Bollobás, A. J. Radcliffe, and Leader I. Reverse kleitman inequalities. Proc.
+London Math. Soc., Ser. A, (3) 58:153–168, 1989.
+
+[CK72]
+
+Vašek Chvátal and Donald Knuth. Selected Combinatorial Research Problems. Stanford
+University, 1972.
+
+[DR80]
+
+David P Dobkin and Steven P Reiss. The Complexity of Linear Programming.
+Theoretical Computer Science, 11:1–18, 1980.
+
+[Dre97]
+
+A.W.M. Dress. Towards a theory of holistic clustering. DIMACS Ser. Discrete Math.
+Theoret. Comput. Sci., 37 Amer. Math. Soc.:271–289, 1997.
+
+[Dvi09]
+
+Zeev Dvir. On the size of Kakeya sets in finite fields. Journal of the American
+Mathematical Society, 22(4):1093–1097, 2009.
+
+[Enf70]
+
+Per Enflo. On the nonexistence of uniform homeomorphisms betweenl p -spaces. Arkiv
+för Matematik, 8(2):103–105, 1970.
+
+Sums in the grid.
+
+13
+
+Discrete Mathematics,
+
+[GGL+ 00] Oded Goldreich, Shafi Goldwasser, Eric Lehman, Dana Ron, and Alex Samorodnitsky.
+Testing monotonicity. Combinatorica, 20(3):301–337, 2000.
+[GK15]
+
+Larry Guth and Nets Hawk Katz. On the Erdos Distinct Distances Problem in the
+Plane. Annals of Mathematics, 181(1):155–190, 2015.
+
+[GT09]
+
+Ben Joseph Green and Terence Tao. Freiman’s theorem in finite fields via extremal set
+theory. Combinatorics, Probability &amp; Computing, 18(3):335–355, 2009.
+
+[Gur97]
+
+Leonid Gurvits. Linear algebraic proofs of VC-dimension based inequalities.
+Computational Learning Theory, pages 238–250. Springer, 1997.
+
+[GW94]
+
+Bernd Gärtner and Emo Welzl. Vapnik-Chervonenkis dimension and (pseudo-)
+hyperplane arrangements. Discrete & Computational Geometry, 12(1):399–432, 1994.
+
+[Juk11]
+
+Stasys Jukna. Extremal Combinatorics: with Applications in Computer Science.
+Springer Science & Business Media, 2011.
+
+[Kle66]
+
+Daniel J. Kleitman. Families of non-disjoint subsets. Journal of Combinatorial Theory,
+1(1):153 – 155, 1966.
+
+[KM13]
+
+László Kozma and Shay Moran. Shattering, graph orientations, and connectivity.
+Electr. J. Comb., 20(3):P44, 2013.
+
+[Law83]
+
+J. Lawrence. Lopsided sets and orthant-intersection by convex sets. Pac. J. Math.,
+104(1):155–173, 1983.
+
+[Mat02]
+
+Jiřı́ Matoušek. Lectures on discrete geometry, volume 212. Springer New York, 2002.
+
+[Més09]
+
+Tamás Mészáros. S-extremal set systems and Gröbner Bases. Master’s thesis, Budapest
+University of Technology and Economics, 2009.
+
+[Mor12]
+
+S. Moran. Shattering Extremal Systems.
+Saarbrücken, Germany, 2012.
+
+[MR14]
+
+Tamás Mészáros and Lajos Rónyai. Shattering-extremal set systems of VC dimension
+at most 2. Electr. J. Comb., 21(4):P4.30, 2014.
+
+In
+
+Master’s thesis, Saarland University,
+
+[MSWY15] Shay Moran, Amir Shpilka, Avi Wigderson, and Amir Yehudayoff. Teaching and
+compressing for low vc-dimension. In FOCS, 2015.
+[MW15]
+
+Shay Moran and Manfred K. Warmuth. Labeled compression schemes for extremal
+classes. CoRR, abs/1506.00165, 2015.
+
+[Paj85]
+
+A. Pajor. Sous-espaces l1n des espaces de banach. Travaux en Cours. Hermann, Paris,
+1985.
+
+[Raz87]
+
+Alexander A Razborov. Lower bounds on the size of bounded depth circuits over a
+complete basis with logical addition. Mathematical Notes, 41(4):333–338, 1987.
+
+[Rem16]
+
+Zachary Remscrim. The Hilbert Function, Algebraic Extractors, and Recursive Fourier
+Sampling. ECCC Technical Report TR 16-020, 2016.
+
+14
+
+[Smo87]
+
+Roman Smolensky. Algebraic methods in the theory of lower bounds for Boolean circuit
+complexity. In Proceedings of the nineteenth annual ACM symposium on Theory of
+computing, pages 77–82. ACM, 1987.
+
+[Smo93]
+
+R. Smolensky. On Representations by Low-degree Polynomials. In FOCS, 1993.
+
+[Smo97]
+
+Roman Smolensky.
+Well-Known Bound for the VC-Dimension Made Easy.
+Computational Complexity, 6(4):299–300, 1997.
+
+[SSZ15]
+
+Micha Sharir, Adam Sheffer, and Joshua Zahl. Improved Bounds for Incidences Between
+Points and Circles. Combinatorics, Probability and Computing, 24(03):490–520, 2015.
+
+[Sta04]
+
+Richard P Stanley. Introduction to Hyperplane Arrangements. Lecture notes, IAS/Park
+City Mathematics Institute, 2004.
+
+[Tao14]
+
+Terence Tao.
+Algebraic Combinatorial Geometry: the Polynomial Method in
+Arithmetic Combinatorics, Incidence Combinatorics, and Number Theory. EMS
+Surveys in Mathematical Sciences, 1(1):1–46, 2014.
+
+15
+
+A
+
+Proof of Smolensky’s Lower bound
+
+For completeness, we provide a proof of Smolensky’s Theorem 2.4. We introduce the following
+notation that will be convenient. For any set C ⊆ {0, 1}n and degree d ∈ [n] let Ed,C denote the
+evaluation (or restriction) mapping
+Ed,C : F[x1 , . . . , xn ]6d → {f : C → F},
+where F[x1 , . . . , xn ]6d denotes polynomials with degree at most d over F. Note that Ed,C is a linear
+map and hd (C, F) = rkF (Ed,C ). Associate the map Ed,C with a matrix such that the rows correspond
+to elements of C, the columns correspond to degree d monomials, and entries are evaluations.
+
+A.1
+
+Proof of Theorem 2.4
+
+Smolensky’s Theorem follows from two lemmas. We assume all ranks are over F.
+Lemma A.1. For any S, T ⊆ {0, 1}n and any d ∈ [n] we have |S \ T | > hd (S, F) − hd (T, F).
+Proof. Notice that Ed,S and Ed,T have identical submatrices induced by the S ∩ T rows. Denote
+the submatrices as A = Ed,S∩T and B = Ed,S\T and C = Ed,T \S . We want to prove
+
+
+
+
+A
+A
+.
+(1)
+− rk
+rk(B) > rk
+C
+B
+Equation 1 actually holds for any three matrices, following from the bounds
+
+
+
+
+A
+A
+> rk(A).
+6 rk(A) + rk(B)
+and
+rk
+rk
+C
+B
+The fact that rk(B) = rk(Ed,S\T ) 6 |S \ T | concludes the proof.
+Lemma A.2 ([Smo93]). Let p : {0, 1}n → F and define P = {x : p(x) 6= 0}. If d < (n − deg(p))/2
+then
+rk(Ed,P ) 6 |P |/2.
+Proof. Assume for contradiction that rk(Ed,P ) = r > |P |/2. Let M1 be an r×r full-rank sub-matrix.
+Our goal is to find two degree d polynomials q1 and q2 such that the product q1 q2 is the indicator
+function for some row in M1 . Assume without loss of generality the matrix Ed,P looks like
+
+
+M1 · · ·
+.
+M2 · · ·
+Let Q1 and Q2 denote the rows corresponding to M1 and M2 , respectively. We start by constructing
+q2 to be zero on Q2 . Since the rank satisfies r > |P |/2, we know M2 has more columns than rows,
+and thus we can find a vector v2 such that Ed,P v2 is zero on Q2 . Since M1 has full-rank, we know
+that Ed,P v2 is nonzero on some point x∗ corresponding to a row in Q1 . Notice that for any v ∈ F|P |
+the vector Ed,P v corresponds to a degree d polynomial. Let q2 be the polynomial for v2 .
+Since M1 has full rank, we can find a vector v1 and corresponding polynomial q1 such that
+q1 q2 is the indicator function for x∗ . To conclude, notice that pq1 q2 interpreted as a function on
+{0, 1}n is nonzero on only a single point. By inspection this means deg(pq1 q2 ) > n, contradicting
+the assumption that its degree is at most 2d + deg(p) < n.
+
+16
+
+With the above lemmas in hand, we can prove Smolensky’s theorem.
+Proof of Theorem 2.4. Let F = f −1 (0) and P = {x : p(x) 6= 0} and d = (n − deg(p) − 1)/2. Notice
+Pr[p(x) 6= f (x)] > |F 4P |/2n .
+x
+
+We show |F 4P | > 2hd (F, F) − |F |. Indeed, this follows from the above two lemmas:
+|F \ P | > hd (F, F) − hd (P, F)
+|P |
+> hd (F, F) −
+2
+|F | + |P \ F | − |F \ P |
+.
+= hd (F, F) −
+2
+
+(By Lemma A.1)
+(Lemma A.2 implies hd (P, F) 6
+
+|P |
+2 )
+
+(|P | = |F | + |P \ F | − |F \ P |.)
+
+Therefore, by rearranging the above expressions, we see that
+|F |
+1
+|F 4P | > hd (F, F) −
+.
+2
+2
+
+B
+
+Downward-closed Bases from Shifting
+
+In this section, we prove Theorem 3.2, which says that {xI : I ∈ D} is a basis for the vector space of
+functions {f : C → F}, where D = Sn (Sn−1 (. . . S1 (C))). The proof of Theorem 3.2 is by induction
+on n. For the induction to work we prove a stronger statement. Consider the lexicographical order
+on the set of all multilinear monomials. That is, m1 < m2 if the smallest i such that xi appears in
+exactly one of m1 , m2 appears in m2 . For example, x1 > x2 x3 x4 . . . xn .
+We are now ready to state the stronger statement we will prove.
+Lemma B.1. Let p be a polynomial where xI is the leading monomial of p. Then
+p|C = 0 =⇒ I ∈
+/ D.
+The above lemma implies that there is no linear combination of monomials in {xI : I ∈ D} which
+represents the zero function on C (because the leading monomial in such a combination will be in
+D which contradicts the lemma). Since down-shifting C does not change its cardinality, it follows
+that |C| = |{xI : I ∈ D}| and therefore {xI : I ∈ D} is indeed a basis.
+In the proof we will use the following “locality” of down-shifts. For i ∈ [n] define the two sets
+Ci=0 = {c ∈ C : ci = 0},
+
+and
+
+Ci=1 = {c ∈ C : ci = 1}.
+
+For all i, j ∈ [n] with i 6= j, the shifting operator Sj satisfies
+Sj (C) = Sj (Ci=0 ) ∪ Sj (Ci=1 ).
+
+(2)
+
+Putting it differently: Ci=0 , Ci=1 are invariant under Sj when i 6= j.
+Proof of Lemma B.1. Let C0 = {c ∈ C : cn = 0}, and C1 = {c ∈ C : cn = 1}. By the locality of
+down-shifts (Equation 2):
+Sn−1 (Sn−2 (. . . S1 (C))) = Sn−1 (Sn−2 (. . . S1 (C0 ))) ∪ Sn−1 (Sn−2 (. . . S1 (C1 ))).
+17
+
+For b ∈ {0, 1}, let
+Db = {w|{1,2,...,n−1} : w ∈ Sn−1 (Sn−2 (. . . S1 (Cb )))}.
+By the induction hypothesis applied on Cb , there are no polynomials that represent the zero function
+on Cb whose leading monomial is xI where I ∈ Db .
+Assume towards contradiction some multilinear polynomial p represents the zero function on
+C and has leading monomial of xI with I ∈ D. A crucial observation which follows directly from
+the definition of the down-shift Sn is that if n ∈ I then (I \ {n}) belongs to D0 and to D1 , and if
+n∈
+/ I then I belongs to D0 or to D1 . Consider the expansion
+X
+p = αI xI +
+αJ xJ ,
+J<I
+
+where J < I in the lexicographical monomial ordering. We distinguish between two cases.
+(i) n ∈
+/ I. Assume that I ∈ D1 (the proof for I ∈ D0 is symmetric). Notice that since xI is the
+leading monomial, the monomial xI∪{n} does not appear in p. Therefore, the polynomial that is
+obtained by setting xn = 1 in p has leading monomial xI and represents the zero function on C1 ,
+contradicting the induction hypothesis.
+(ii) n ∈ I. Here we distinguish between two subcases. If αI\{n} + αI 6= 0 then the polynomial
+that is obtained by setting xn = 1 in p has leading monomial xI\{n} and represents the zero
+function on C1 , contradicting the induction hypothesis. If αI\{n} + αI = 0 then αI\{n} 6= 0 and the
+polynomial that is obtained by setting xn = 0 in p has leading monomial xI\{n} and represents the
+zero function on C0 , contradicting the induction hypothesis.
+
+C
+
+Hyperplane Arrangement Lemmas
+
+We now prove the two lemmas that we assumed in the proof of Proposition 4.2. Recall H is in
+general position if any k 6 d hyperplanes intersect in a (d − k)-dimensional affine subspace. This
+means (i) every d + 1 hyperplanes have an empty intersection, and (ii) every subset of d normal
+vectors are linearly independent. (if some d normal vectors are linearly dependent then their
+intersection is either empty or infinite but not 0 dimensional).
+Lemma C.1. Let H be an arrangement in Rd . If Y ⊆ [m] is shattered by SH then the hyperplanes
+hi for i ∈ Y have a non-empty intersection. In particular, if H is in general position then |Y | 6 d.
+Proof. Let MY be the matrix whose rows are the normals ~ni , i ∈ Y , and let ~bY be the vector (bi )i∈Y .
+Consider the affine transformation TY : Rd → RY defined by
+TY (~x) = MY · ~x − ~bY .
+We need to show that there is some ~x ∈ ∩i∈Y hi . Note that ~x ∈ ∩i∈Y if and only if TY (~x) = ~0.
+Thus, it is enough to show that ~0 is in the image of TY . Now, the fact that SH shatters Y amounts
+to that for every sign vector ~s ∈ {−1, 1}Y there exists ~x ∈ Rm such that sign(TY (~x)) = ~s. In other
+words, every orthant contains a vector u in the image of TY . Now, the convex hull, C, of these
+vectors is also contained in the image of TY (since the image of an affine transformation is convex).
+Also, since these vectors contain a vector in every orthant, it follows that ~0 ∈ C, and therefore ~0 is
+in the image of TY . Indeed, an exercise shows that any set of vectors containing a vector in each
+orthant also contains the origin in its convex hull.
+
+18
+
+Lemma C.2. Let H be an arrangement in Rd that is in general position. If the normals ~ni , i ∈ Y
+are linearly independent then Y is strongly shattered by SH . In particular, any subset of size at
+most d is strongly shattered by SH .
+Proof. It is enough to prove only for sets Y such that the normals ~ni , i ∈ Y form a basis to Rd
+(because every independent set can be extended to a basis and every subset of a strongly shattered
+set is strongly shattered). Let M = M[m] be the matrix whose rows are the normals ~ni , i ∈ [m],
+and let ~b = ~b[m] be the vector (bi )i∈[m] . Consider the affine transformation T : Rd → Rm defined by
+T (~x) = M · ~x − ~b.
+Since H is in general position, there is a unique ~x∗ that lies in the intersection ∩i∈Y hi . In other
+words, T (~x∗ )i = 0 for every i ∈ Y . Moreover, since every d + 1 hyperplanes have an empty
+intersection, it follows that for all j ∈
+/ Y : T (~x∗ )j 6= 0. We show that Y is strongly shattered by
+showing that for every sign pattern s ∈ {−1, 1}Y there exists ~u ∈ Rd such that for all i ∈ Y
+sign(T (~x∗ + ~u))i = ~si ,
+and for all j ∈
+/Y
+sign(T (~x∗ + ~u))j = sign(~x∗ )j .
+Indeed, since the normals ~ni , i ∈ Y are linearly independent, there is some w
+~ ∈ Rd such that
+(M · w)
+~ i = si . Therefore, for every ε > 0 and i ∈ Y
+sign(T (~x∗ + εw))
+~ i = si .
+Moreover, since for all j ∈
+/ Y T (~x∗ )j 6= 0 then the exists some ε0 > 0 such that for al j ∈
+/Y
+sign(T (~x∗ + ε0 w))
+~ j = sign(~x∗ )j .
+Thus, picking ~u = ε0 w
+~ finishes the proof.
+
+19
+
+

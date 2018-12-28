@@ -1,0 +1,1681 @@
+Facial Reduction and Partial Polyhedrality
+
+arXiv:1512.02549v4 [math.OC] 14 May 2018
+
+Bruno F. Lourenço
+
+∗
+
+Masakazu Muramatsu†
+
+Takashi Tsuchiya
+
+‡
+
+November 2015 (Revised: October 2016, April 2017, April 2018)
+
+Abstract
+We present FRA-Poly, a facial reduction algorithm (FRA) for conic linear programs that is sensitive
+to the presence of polyhedral faces in the cone. The main goals of FRA and FRA-Poly are the same, i.e.,
+finding the minimal face containing the feasible region and detecting infeasibility, but FRA-Poly treats
+polyhedral constraints separately. This reduces the number of iterations drastically when there are many
+linear inequality constraints. The worst case number of iterations for FRA-Poly is written in the terms of
+a “distance to polyhedrality” quantity and provides better bounds than FRA under mild conditions. In
+particular, in the case of the doubly nonnegative cone, FRA-Poly gives a worst case bound of n whereas
+the classical FRA is O(n2 ). Of possible independent interest, we prove a variant of Gordan-Stiemke’s
+Theorem and a proper separation theorem that takes into account partial polyhedrality. We provide a
+discussion on the optimal facial reduction strategy and an instance that forces FRAs to perform many
+steps. We also present a few applications. In particular, we will use FRA-Poly to improve the bounds
+recently obtained by Liu and Pataki on the dimension of certain affine subspaces which appear in weakly
+infeasible problems.
+
+1
+
+Introduction
+
+Consider the following pair of primal and dual conic linear programs (CLPs):
+inf
+x
+
+hc, xi
+
+sup hb, yi
+
+(P)
+
+(D)
+
+y
+
+subject to Ax = b
+x∈K
+
+subject to
+
+∗
+
+c − A∗y ∈ K,
+
+where K ⊆ Rn is a closed convex cone and K∗ is the dual cone {s ∈ Rn | hs, xi ≥ 0, ∀x ∈ K}. We have
+that A P
+: Rn → Rm is a linear map, b ∈ Rm , c ∈ Rn and A∗ denotes the adjoint map. We also have
+m
+∗
+A y = i=1 Ai yi , for certain elements Ai ∈ Rn . The inner product is denoted by h·, ·i. We will use θP
+and θD to denote the primal and dual optimal value, respectively. It is understood that θP = +∞ if (P) is
+infeasible and θD = −∞ if (D) is infeasible.
+In the absence of either a primal relative interior feasible solution or a dual relative interior slack, it is
+D
+possible that θP 6= θD . A possible way of correcting that is to let Fmin
+be the minimal face of K which
+s
+∗
+m
+D
+D ∗
+contains the feasible slacks FD = {c − A y ∈ K | y ∈ R }, then we substitute K by Fmin
+and K∗ by (Fmin
+) .
+∗ Department of Mathematical Informatics, Graduate School of Information Science & Technology, University of Tokyo, 7-3-1
+Hongo, Bunkyo-ku, Tokyo 113-8656, Japan. (Email: lourenco@mist.i.u-tokyo.ac.jp)
+† Department of Computer and Network Engineering, The University of Electro-Communications 1-5-1 Chofugaoka, Chofushi, Tokyo, 182-8585 Japan. (E-mail: MasakazuMuramatsu@uec.ac.jp)
+‡ National Graduate Institute for Policy Studies 7-22-1 Roppongi, Minato-ku, Tokyo 106-8677, Japan.
+(E-mail:
+tsuchiya@grips.ac.jp)
+M. Muramatsu and T. Tsuchiya are supported in part with Grant-in-Aid for Scientific Research (B)24310112 and (C) 26330025.
+M. Muramatsu is also partially supported by the Grant-in-Aid for Scientific Research (B)26280005. T. Tsuchiya is also partially
+supported by the Grant-in-Aid for Scientific Research (B)15H02968.
+
+1
+
+K
+K1 × . . . × Kr
+n
+n1
+× . . . × S+r2
+Qt1 × . . . × Qtr1 × S+
+Dn
+
+FRA
+Pr ℓK
+1 + i=1 (ℓKi − 1)
+P2
+1 + 2r1 + rj=1
+nj
+n(n+1)
+1+ 2
+
+FRA-Poly
+1P
++ ℓpoly (K)
+r
+1 + i=1 ℓpoly (Ki )
+P2
+1 + r1 + rj=1
+(nj − 1)
+n
+
+Table 1: Summary of the worst case number of reduction steps predicted by the classical FRA analysis and
+by FRA-Poly.
+With that, the new primal optimal value θP ′ will satisfy θP ′ = θD . This is precisely what facial reduction
+[4, 22, 29] approaches do.
+In this paper, we analyze how to take advantage of the presence of polyhedral faces in K when doing
+Facial Reduction. To do that, we introduce FRA-Poly, which is a facial reduction algorithm (FRA) that, in
+many cases, provides a better worst case complexity than the usual approach, especially when K is a direct
+product of several cones. The idea behind it is as follows. Facial reduction algorithms work by successively
+identifying what is called “reducing directions” {d1 , . . . , dℓ }. Starting with F1 = K, these directions define
+faces of K by the relation Fi+1 = Fi ∩ {di }⊥ . For feasible problems, di must be such that Fi+1 is a face of
+s
+s
+K containing FD
+. We then obtain a sequence F1 ⊇ . . . ⊇ Fℓ of faces of K such that Fi ⊇ FD
+for every i.
+D
+Usually, a FRA proceeds until Fmin is found.
+A key observation is that as soon as we reach a polyhedral face Fi , we can jump to the minimal face
+D
+Fmin
+in a single facial reduction step. In addition, when K is a direct product K = K1 × . . . × Kr , each Fi
+D
+is also a direct product Fi1 × . . . × Fir . In this case an even weaker condition is sufficient to jump to Fmin
+,
+j
+namely, if every block Fi is polyhedral or it is already equal to j-th block of the minimal face.
+Our proposed algorithm FRA-Poly works in two phases. In Phase 1, it proceeds until a face Fi satisfying
+D
+the condition above is reached or until a certificate of infeasibility is found. In Phase 2, Fmin
+is obtained
+D
+with single facial reduction step. One interesting point is that even if Fi 6= Fmin
+, if we substitute K for Fi
+in (D), then strong duality will hold. The theoretical backing for that is given by Proposition 2, which is
+a generalization of the classical strong duality theorem. In Section 4, we will give a generalization of the
+Gordan-Stiemke Theorem for the case when K is the direct product of a closed convex cone and a polyhedral
+cone, see Theorem 5. We also prove a proper separation theorem that will be the engine behind FRA-Poly,
+see Theorem 4.
+In order to analyze the number of facial reduction steps, we introduce a quantity called distance to
+polyhedrality ℓpoly (K). This is the length minus one of the longest strictly ascending chain of nonempty
+faces F1 ( . . . ( Fℓ for which F1 is polyhedral and Fi is not polyhedral
+all i > 1. If K is a direct product
+Pfor
+r
+of cones K1 × . . . × Kr , we prove that FRA-Poly stops in at most 1 + i=1 ℓpoly (Ki ) steps. This is no worse
+than the bound given by classical FRA and, provided that at least two of the cones Ki are not subspaces, it
+is strictly smaller. We also discuss whether our bounds are achieved by some problem instance, see Section
+5.4 and Proposition 24 (Appendix B).
+As an application, we give a nontrivial bound for the singularity degree of CLPs over cones that are
+intersections of two other cones. In particular, for the case of the doubly nonnegative cone Dn , we show that
+the longest chain of nonempty faces of Dn has length 1 + n(n+1)
+. Therefore, the classical analysis gives the
+2
+n(n+1)
+upper bound
+for the singularity degree of feasible problems over Dn . On the other hand, using our
+2
+technique, we show that the singularity degree of any problem over Dn is at most n. We also use FRA-Poly
+to improve bounds obtained by Liu and Pataki in Corollary 1 of [12] on the dimension of certain subspaces
+connected to weakly infeasible problems.
+Table 1 contains a summary of the bounds predicted by FRA and FRA-Poly for several cases. The
+notation ℓK indicates the length of the longest strictly ascending chain of nonempty faces of K. The first
+line corresponds to a single cone, the second to a product of r arbitrary closed convex cones and the third
+to the product of r1 Lorentz cones and r2 positive semidefinite cones, respectively. These results follow
+from Theorem 10 and Example 1. The last line contains the bounds for the doubly nonnegative cone, which
+follows from Proposition 21 and Corollary 20.
+2
+
+This work is divided as follows. In Section 2 we give some background on related notions. In Section 3, we
+review facial reduction. In Section 4 we prove versions of two classical theorems taking into account partial
+polyhedrality. In Section 5 we analyze FRA-Poly and in Section 6 we discuss two applications. Appendix A
+contains the proof of a strong duality criterion. Appendix B illustrates FRA-Poly and contains an example
+which generalizes an earlier worst case SDP instance by Tunçel.
+
+2
+
+Notation and Preliminaries
+
+In this section, we will define the notation used throughout this article and review a few concepts. More
+details can be found in [25, 21]. For C a closed convex set, we will denote by ri C and cl C the relative interior
+and the closure of C, respectively. If U is an arbitrary set, we denote by U ⊥ the subspace which contains the
+n
+elements orthogonal to it. We will denote by S+
+the cone of n × n symmetric positive semidefinite matrices
+n−1
+n
+| x0 ≥ kxk2 }, where k.k2 is the usual Euclidean norm. The
+and by Q the Lorentz cone {(x0 , x) ∈ R × R
+nonnegative orthant will be denoted by Rn+ .
+If K is a closed convex cone, we write K∗ for its dual cone. We write span K for its linear span and lin K
+for its lineality space, which is K ∩ −K. K is said to be pointed if lin K = {0}. We have lin (K∗ ) = K⊥ , see
+Theorem 14.6 in [25]. Also, if we select e ∈ ri K and x ∈ K∗ , then x ∈ K⊥ if and only if he, xi = 01 .
+s
+The conic linear program (D) can be in four different feasibility statuses: i) strongly feasible if FD
+∩ri K =
+6
+s
+s
+s
+∅; ii) weakly feasible if FD 6= ∅ but FD ∩ri K = ∅; iii) weakly infeasible if FD = ∅ but dist(c+range A∗, K) =
+0; iv) strongly infeasible if dist(c + range A∗, K) > 0. Note that (P) admits analogous definitions.
+The strong duality theorem states that if (D) is strongly feasible and θD < +∞, then θP = θD and θP
+is attained. On the other hand, if (P) is strongly feasible and θP > −∞, then θP = θD and θD is attained.
+We will also need a special version of the strong duality theorem. First, we need the following definition.
+Definition 1 (Partial Polyhedral Slater’s condition). Let K = K1 × K2 , where K1 ⊆ Rn1 , K2 ⊆ Rn2 are
+closed convex cones such that K2 is polyhedral. We say that (D) satisfies the Partial Polyhedral Slater’s
+(PPS) condition if there is a slack (s1 , s2 ) = c − A∗y, such that s1 ∈ ri K1 and s2 ∈ K2 . Similarly, we say
+that (P) satisfies the PPS condition, if there is a primal feasible solution x = (x1 , x2 ) for which x1 ∈ ri (K1 )∗ .
+The following is a strong duality theorem based on the PPS condition. As we could not find a precise
+reference for it, we give a proof in the Appendix A.
+Proposition 2 (PPS-Strong Duality). Let K = K1 × K2 , where K1 ⊆ Rn1 , K2 ⊆ Rn2 are closed convex
+cones such that K2 is polyhedral.
+(i) If θP is finite and (P) satisfies the PPS condition, then θP = θD and the dual optimal value is attained.
+(ii) If θD is finite and (D) satisfies the PPS condition, then θP = θD and the primal optimal value is
+attained.
+
+3
+
+Facial Reduction
+
+Facial Reduction was developed by Borwein and Wolkowicz to restore strong duality in convex optimization
+[3, 4]. Descriptions for the conic linear programming case have appeared, for instance, in Pataki [22] and in
+Waki and Muramatsu [29].
+Here, we will suppose that our main interest is in the dual problem (D). Facial Reduction hinges on
+the fact that strong feasibility fails if and only if there is d ∈ K∗ such that Ad = 0 and one of the two
+alternatives holds: (i) hc, di = 0 and d 6∈ K⊥ ; or (ii) hd, ci < 0, see Lemma 3.2 in [29]. If alternative (i)
+s
+holds, F = K ∩ {d}⊥ is a proper face of K containing FD
+. We then substitute K by F and repeat. If (ii)
+holds, (D) is infeasible. We write below a generic facial reduction algorithm similar to the one described in
+[29].
+1 Suppose he, xi = 0. Then, given y ∈ K we have αe + (1 − α)y ∈ K for some α > 1, due to Theorem 6.4 in [25]. Taking the
+inner product with x, we see that hy, xi must be zero.
+
+3
+
+[Generic Facial Reduction]
+Input: (D)
+D
+Output: A set of reducing directions {d1 , . . . , dℓ } and Fmin
+.
+1. F1 ← K, i ← 1
+2. Let di be an element in Fi∗ ∩ ker A such that either: i) di 6∈ Fi⊥ and hc, di i = 0; or ii) hc, di i < 0. If no
+D
+such di exists, let Fmin
+← Fi and stop.
+D
+3. If hc, di i < 0, let Fmin
+← ∅ and stop.
+
+4. If hc, di i = 0, let Fi+1 ← Fi ∩ {di }⊥ , i ← i + 1 and return to 2).
+We will refer to the directions satisfying di ∈ Fi∗ ∩ ker A and hc, di i ≤ 0 as reducing directions, so that
+the di in Step 2. are indeed reducing directions. An important issue when doing facial reduction is how
+to model the search for the reducing directions. It is sometimes said that doing facial reduction can be as
+hard as solving the original problem. However, an important difference is that the search for the di can
+be cast as a pair of primal and dual problems which are always strongly feasible. This was shown in the
+work by Cheung, Schurr and Wolkowicz [5] and in our previous work [13]. Recently, Permenter, Friberg and
+Andersen showed that di can also be obtained as by-products of self-dual homogeneous methods [23]. There
+are also approximate approaches such as the one described by Permenter and Parrilo [24], where the search
+D
+for the di is conducted in a more tractable cone at the cost of, perhaps, failing to identify Fmin
+, but still
+simplifying the problem nonetheless. See also the article by Frieberg [9], where conic constraints are dropped
+when searching for the reducing directions, making it easier to find the di but introducing representational
+issues.
+In this article, we will search for reducing directions by considering the pair (PK ) and (DK ) introduced
+in [13], which are parametrized by A, c, K, e, e∗ . In Phase 1 of FRA-Poly, we will always select e and e∗
+according to Lemma 3. Different choices will be discussed/used in Phase 2 of FRA-Poly and on Sections 5.2
+and 5.4.
+minimize
+x,t,w
+
+subject to
+
+maximize
+y1 ,y2 ,y3
+
+subject to
+
+t
+
+(PK )
+
+− hc, x − te∗ i + t − w
+
+=0
+
+(1)
+
+he, xi + w
+Ax − tAe∗
+
+=1
+=0
+
+(2)
+(3)
+
+(x, t, w) ∈ K∗ × R+ × R+
+y2
+
+(DK )
+
+cy1 − ey2 − A∗y3 ∈ K
+1 − y1 (1 + hc, e∗ i) + he∗ , A∗y3 i ≥ 0
+
+(4)
+(5)
+
+y1 − y2 ≥ 0
+(y1 , y2 , y3 ) ∈ R × R × Rm .
+
+(6)
+
+Recall that our goal is to find a point x ∈ ker A ∩ K satisfying hc, xi ≤ 0. The idea behind (PK ) is to shift
+the problem by −te∗ (Equations (1) and (3)) and add constraints to ensure the x stays in a bounded region
+(Equation (2)). These changes ensure that (PK ) and (DK ) satisfy the PPS condition when the parameters
+e, e∗ are chosen appropriately as in the next section.
+
+4
+
+Partial Polyhedrality Theorems
+
+We are now in position to present a choice of e, e∗ for (PK ) and (DK ) taking into account the PPS condition.
+Lemma 3. Let K = K1 × K2 be a closed convex cone, such that K2 is polyhedral. Consider the pair (PK )
+and (DK ) with e and e∗ such that e = (e1 , 0) ∈ (ri K1 ) × {0} and e∗ ∈ ri K∗ . The following properties hold.
+4
+
+(i) The following are solutions to (PK ) and (DK ) that satisfy the PPS condition:
+
+
+1
+1
+e∗
+,
+,
+(x, t, w) =
+he, e∗ i + 1 he, e∗ i + 1 he, e∗ i + 1
+(y1 , y2 , y3 ) = (0, −1, 0).
+In particular, θPK = θDK .
+Let (x∗ , t∗ , w∗ ) be any primal optimal solution and (y1∗ , y2∗ , y3∗ ) be any dual optimal solution.
+(ii) θPK = θDK = 0 if and only if one of the two alternatives below holds:
+s
+D
+(a) hc, x∗ i < 0 and FD
+= Fmin
+= ∅, or
+s
+(b) hc, x∗ i = 0, FD
+⊆ K ∩ {x∗ }⊥ ( K and x∗1 6∈ (K1 )⊥ = lin ((K1 )∗ ).
+y∗
+
+(iii) θPK = θDK > 0 if and only if the PPS condition is satisfied for (D). In this case, we have c − A∗ y3∗ ∈
+1
+(ri K1 ) × {0}. (In particular, it is feasible for (D))
+(i) Due to choice of e and e∗ , it is clear that the solutions meet the PPS condition.
+
+Proof.
+
+(ii) θPK = 0 ⇒ (a) or (b) holds. Suppose that θPK = 0 and let (x∗ , 0, w∗ ) be an optimal solution for (PK ).
+Due to the constraints in (PK ), we have
+Ax∗ = 0,
+
+−hc, x∗ i = w∗ ≥ 0,
+
+x∗ ∈ K∗ .
+
+D
+s
+Note that if hc, x∗ i < 0, then Fmin
+= FD
+= ∅. This is alternative (a).
+
+If hc, x∗ i = 0, then ((1)) implies w∗ = 0. Since Ax∗ = 0, we obtain
+s
+FD
+⊆ K ∩ {x∗ }⊥ .
+
+By (2), we have he, x∗ i = 1, so that x∗ = (x∗1 , x∗2 ) satisfies x∗1 6∈ (K1 )⊥ , due to the choice of e. Therefore,
+the inclusion K ∩ {x∗ }⊥ ⊆ K is strict, that is, K ∩ {x∗ }⊥ ( K. This is alternative (b).
+(a) or (b) holds ⇒ θPK = 0. First recall that t is constrained to be nonnegative, therefore θPK ≥ 0.
+Next, we will prove the following inequality
+he, x∗ i − hc, x∗ i > 0.
+
+(7)
+
+Since e ∈ K, x∗ ∈ K∗ , we have he, x∗ i ≥ 0. If (a) holds, then −hc, x∗ i > 0. In particular, (7) holds.
+Now, we consider the case where (b) holds. In this case, we have hc, x∗ i = 0. If he, x∗ i is also zero,
+then he1 , x∗1 i is zero and since e1 ∈ ri K1 , x∗1 must belong to (K1 )⊥ . However, this is not allowed since
+we assumed that x∗1 6∈ (K1 )⊥ . Therefore, we have he, x∗ i > 0 and, in particular, (7) also holds.
+Let
+α=
+
+1
+.
+he, x∗ i − hc, x∗ i
+
+Then α > 0 and (αx∗ , 0, −αhc, x∗ i) is a solution to (PK ) with value 0, so that θPK = 0.
+(iii)
+
+θDK > 0 ⇒ PPS holds for (D) From (4), we have
+cy1∗ − ey2∗ − A∗y3∗ ∈ K.
+Since y2∗ = θDK > 0, we have, due to (6), y1∗ > 0. Hence,
+c−e
+
+∗
+y2∗
+∗ y3
+−
+A
+∈ K.
+y1∗
+y1∗
+
+5
+
+We conclude that c − A∗y3∗ /y1∗ ∈ (K1 + y2∗ /y1∗ e1 ) × {0} ⊆ (ri K1 ) × {0}, due to the choice of e and the
+fact that y2∗ /y1∗ > 0.
+θDK = 0 ⇒ PPS does not hold for (D) If t∗ = 0 and (x∗ , 0, w∗ ) is an optimal solution for (PK ), then
+either (a) or (b) of item (ii) is satisfied. If (a) is satisfied, then (D) is infeasible and thus the PPS
+condition cannot hold. If (b) is satisfied, then hc, x∗ i = 0, Ax∗ = 0 and x∗1 6∈ (K1 )⊥ . If (s1 , s2 ) is a
+feasible slack for (D), we have hs1 , x∗1 i + hs2 , x∗2 i = 0, so that hs1 , x∗1 i = 0. As x∗1 6∈ (K1 )⊥ , we have
+that s1 6∈ ri K1 . This means that there is no feasible solution for (D) satisfying the PPS condition.
+We now prove a theorem that dualizes the criterion in Proposition 2.
+Theorem 4. Let c ∈ Rn , L ⊆ Rn be a subspace and K = K1 × K2 be a closed convex cone, such that K2 is
+polyhedral. Then (L + c) ∩ ((ri K1 ) × K2 ) = ∅ if and only if one of the conditions below holds:
+(a) there exists x ∈ K∗ ∩ L⊥ such that hc, xi < 0;
+(b) there exists x = (x1 , x2 ) ∈ K∗ ∩ L⊥ ∩ {c}⊥ such that x1 6∈ (K1 )⊥ .
+Proof. Select a linear map A such that L = range A∗ (therefore, L⊥ = ker A) and consider the problem (D)
+and the pair of problems (PK ) and (DK ). Note that (L + c) ∩ ((ri K1 ) × K2 ) = ∅ if and only if the PPS
+condition is not satisfied for (D). The result then follows from Lemma 3.
+One of the points of doing facial reduction is to solve problems that would not be solvable directly if,
+say, we fed them to an interior point method based solver. Therefore, it is natural to consider whether the
+problems (PK ), (DK ) are themselves solvable, with the choice of e, e∗ provided by Lemma 3. We note that
+due to item (i) of Lemma 3, the pair (PK ), (DK ) can be solved by infeasible interior-point methods in the
+case of semidefinite and second order cone programming, even though they might fail to be strongly feasible.
+This is because the convergence theory relies on the existence of optimal solutions affording zero duality gap,
+rather than strong feasibility. See, for instance, item 2. of Theorem 11 in the work by Nesterov, Todd and
+Ye [20].
+We remark that Theorem 4 implies a version of the Gordan-Stiemke’s Theorem that takes into account
+partial polyhedrality. It contains as a special case the classical version described in Corollary 2 in Luo, Sturm
+and Zhang [17].
+Corollary 5 (Partial Polyhedral Gordan-Stiemke’s Theorem). Let L be a subspace and K = K1 × K2 be a
+closed convex cone, such that K2 is polyhedral. Then:
+
+K∗ ∩ L⊥ ⊆ (lin ((K1 )∗ )) × (K2 )∗ ⇔ (ri (K1 )) × (K2 ) ∩ L 6= ∅.
+Proof. Take c = 0 in Theorem 4 and recall that lin ((K1 )∗ ) = (K1 )⊥ .
+
+For more results taking into account partial polyhedrality see Chapter 20 of [25] and Propositions 1 and
+2 of [15].
+
+5
+
+Distance to polyhedrality, FRA-Poly and tightness
+
+Here we will discuss FRA-Poly, which is a facial reduction algorithm divided into two phases. The first
+detects infeasibility and restores strong duality, while the second finds the minimal face. For an example
+illustrating FRA-Poly, see Appendix B.
+The idea behind the classical FRA is that whenever strong feasibility fails, we can obtain reducing
+directions until strong feasibility is satisfied again. Similarly, Phase 1 of FRA-Poly is based on the fact that
+whenever the PPS condition in Proposition 2 fails, we may also obtain reducing directions until the PPS
+condition is satisfied, thanks to Theorem 4. After that, a single extra facial reduction step is enough to go
+
+6
+
+to the minimal face. As the PPS condition is weaker than full-on strong feasibility, FRA-Poly has better
+worst case bounds in many cases.
+We now present a disclaimer of sorts. The theoretical results presented in this section and the next stand
+whether FRA-Poly is doable or not for a given K. If we wish to do facial reduction concretely (even if it
+is by hand!), we need to make a few assumptions on our computational capabilities and on our knowledge
+on the lattice of faces of K. First of all, we must be able to solve problems over faces of K such that both
+the primal and the dual satisfy the PPS condition and we must also be able to do basic linear algebraic
+operations. Also, for each face F of K we must know:
+1. span F ,
+2. at least one point e ∈ ri F ,
+3. at least one point e∗ ∈ ri F ∗ ,
+4. whether F is polyhedral or not.
+We remark that apart from knowledge about the polyhedral faces, our assumptions are not very different
+from what it is usually assumed implicitly in the FRA literature. For symmetric cones, which include direct
+n
+products of S+
+, Qn and Rn+ , they are reasonable since their lattice of faces is well-understood and every face
+is again a symmetric cone. So, for instance, e can be taken as the identity element for the corresponding
+Jordan algebra. On the other hand, if K is, say, the copositive cone C n , we might have some trouble fulfilling
+the requirements, inasmuch as our knowledge of the faces of C n is still lacking.
+
+5.1
+
+Distance to Polyhedrality
+
+Here we introduce the notion of distance to polyhedrality. In what follows, if we have a chain of faces
+F1 ( . . . ( Fℓ , the length of the chain is defined to be ℓ.
+Definition 6. Let K be a nonempty closed convex cone. The distance to polyhedrality ℓpoly (K) is the length
+minus one of the longest strictly ascending chain of nonempty faces F1 ( . . . ( Fℓ which satisfies:
+1. F1 is polyhedral;
+2. Fj is not polyhedral for j > 1.
+The distance to polyhedrality is a well-defined concept, because the lineality space of K is always a
+polyhedral face of K. Moreover, ℓpoly (K) counts the maximum number of facial reduction steps that can be
+taken before we reach a polyhedral face.
+n
+Example 1. See section 2 and examples 2.5 and 2.6 in [21] for more details on the facial structure of S+
+and
+n
+n
+n
+Q . For the positive semidefinite cone S+ , we have ℓpoly (S+ ) = n− 1. Liu and Pataki defined in [12] smooth
+cones as full-dimensional, pointed cones (i.e., K ∩ −K = {0}) such that any face that is not {0} nor K must
+be a half-line. For those cones we have ℓpoly (K) = 1, when the dimension of K is greater than 2. Examples
+of smooth cones include the Lorentz cone Qn and the p-cones, for 1 < p < ∞. For comparison, the longest
+n
+chain of nonempty faces of S+
+has length n + 1 and the one for any smooth cone with dimension greater
+n
+than 2 has length 3. Note that S+
+and Qn are examples of symmetric cones and we mention in passing that
+a discussion about the longest chain of faces of a general symmetric cone can be found in Section 5.3 of [10].
+
+5.2
+
+Strict complementarity in (PK ) and (DK )
+
+D
+The last ingredient we need is a discussion on the cases where jumping to Fmin
+with a single facial reduction
+∗
+∗
+n
+step is possible. Let x , y be any pair of optimal solutions to (P) and (D). Recall that if K is Rn+ , S+
+or
+n
+∗ ∗
+Q , then x , y are said to be strictly complementary if the following equivalent conditions hold:
+
+s∗ ∈ ri (K ∩ {x∗ }⊥ ) ⇔ x∗ ∈ ri (K∗ ∩ {s∗ }⊥ ) ⇔ hx∗ , s∗ i = 0 and x∗ + s∗ ∈ ri K,
+7
+
+where s∗ = c − A∗y ∗ . For general K, these equivalencies may not hold and we might need to distinguish
+between primal and dual strict complementarity, see for instance, Definition 3.4 and Remark 3.6 in the
+chapter by Pataki [21] and Equation (2.6) in Section 2 of the work by Tunçel and Wolkowicz [28]. Based on
+those references, we will say that (PK ) and (DK ) satisfies (dual) strict complementarity if θPK = θDK and
+there are optimal solutions (x∗ , t∗ , w∗ ), (y1∗ , y2∗ , y3∗ ) such that
+cy1∗ − ey2∗ − A∗y3∗ ∈ ri (K ∩ {x∗ }⊥ )
+∗
+
+t +1−
+
+y1∗ (1
+
+∗
+
+∗
+
++ hc, e i) + he
+w∗ +
+
+, A∗y3∗ i
+y1∗ − y2∗
+
+>0
+> 0.
+
+(8)
+(9)
+(10)
+
+Proposition 7. Suppose θPK = θDK = 0 and that we have optimal solutions to (PK ) and (DK ) satisfying
+D
+dual strict complementarity. If w∗ = 0, then Fmin
+= K ∩ {x∗ }⊥ .
+Proof. Since w∗ = 0, (10) implies that y1∗ > y2∗ . Then, θPK = θDK and θPK ≥ 0 implies that y2∗ ≥ 0, so that
+y∗
+y1∗ > 0 as well. Therefore, from (8) we obtain c − A∗ y3∗ ∈ ri (K ∩ {x∗ }⊥ ).
+1
+
+D
+Therefore, under strict complementarity, we can find Fmin
+with a single facial reduction step. Note that,
+∗
+here, we do not care about the choice of e, e . For semidefinite programming, a similar observation was made
+in Theorem 12.28 of [5], where reducing directions are found through an auxiliary problem (AP). There, the
+authors show that a single direction is needed if and only if their AP satisfy strict complementarity. Another
+characterization of when one direction is enough can be found in Theorem 4.1 of [7]. One small advantage
+of (PK ) and (DK ) is that only linear constraints are used in addition to the conic constraints induced by K.
+In contrast, AP also adds quadratic constraints.
+
+5.3
+
+FRA-Poly
+
+Henceforth, we will assume that K is the product of r cones and we will write K = K1 × . . . × Kr . Then,
+recall that if F is face of K, we can write F = F 1 × . . . × F r , where F i is a face of Ki for every i.
+Consider the following FRA variant, which we call FRA-Poly.
+[Facial Reduction Poly - Phase 1]
+Input: (D)
+Output: A set of reducing directions {d1 , . . . , dℓ }. If (D) is feasible, it outputs some face F ⊆ K for
+which the PPS condition holds, together with a dual slack s′ for which s′j ∈ ri F j for every j such that F j
+is nonpolyhedral. If (D) is infeasible, the directions form a certificate of infeasibility.
+1. F1 ← K, i ← 1
+2. Let (x∗ , t∗ , w∗ ) and (y1∗ , y2∗ , y3∗ ) be any pair of optimal solutions to (PK ) and (DK ) with
+• Fi in place of K, where Fi = Fi1 × . . . × Fir ,
+• any e∗ ∈ ri Fi∗ ,
+• any e such that ej = 0 if Fij is polyhedral and ej ∈ ri Fij , otherwise.
+D
+3. If t∗ = 0 and hc, x∗ i < 0, let Fmin
+← ∅ and stop. (D) is infeasible.
+
+4. If t∗ = 0 and hc, x∗ i = 0, let di ← x∗ , Fi+1 ← Fi ∩ {di }⊥ , i ← i + 1 and return to 2).
+y∗
+
+5. If t∗ > 0, s′ ← c − A∗ y3∗ , F ← Fi and stop. PPS condition is satisfied.
+1
+
+Note that Phase 1 of FRA-Poly might not end at the minimal face, but still, due to Proposition 2, strong
+duality will be satisfied. First, we will prove the correctness of Phase 1, which essentially follows from Lemma
+3.
+Proposition 8. The following hold.
+8
+
+D
+(i) if (D) is feasible, then the output face F satisfies Fmin
+⊆ F . Moreover, s′ is a dual feasible slack such
+′
+j
+j
+that sj ∈ ri F for every j such that F is nonpolyhedral, i.e., the PPS condition is satisfied for F .
+P
+In this case, Phase 1 stops after finding at most ri=1 ℓpoly (Ki ) directions.
+
+(ii) (D) P
+is infeasible if and only if Step 3 is reached. In this case, Phase 1 stops after finding at most
+r
+1 + i=1 ℓpoly (Ki ) directions.
+
+Proof. We will focus on the statements about the bounds, since the other statements are direct consequences
+of Lemma 3. Note that whenever Step 4 is reached, we have Fi+1 ( Fi , since x∗j 6∈ (Fij )⊥ for at least one
+nonpolyhedral cone Fij , due to item (ii)-(b) of Lemma 3. Therefore, whenever a new (proper) face is found,
+it is because we are making progressPtowards a polyhedral face for at least one nonpolyhedral cone.
+By definition, after finding ℓ̂ = ri=1 (ℓpoly (Ki )) directions, Fℓ̂+1 is polyhedral. We now consider what
+happens if the algorithm has not stopped after all these directions were found. In this case, when it is time
+to build (PK ) and (DK ) with Fl+1 in place of K at Step 2, Phase 1 selects e = 0 and e∗ ∈ (Fℓ̂+1 )∗ .
+s
+. Since e = 0, (α, α, αy) is
+First, suppose that (D) is feasible and let y be such that c − A∗y ∈ FD
+a feasible solution for (DK ), when α > 0 is sufficiently small. It follows that θDK > 0 and that Phase 1
+eventually reaches Step 5. This gives item (i).
+Finally, suppose that (D) is infeasible. By Lemma 3, θDK = 0. Since e = 0, (2) implies that every optimal
+solution of (PK ) will be a triple of the form (x∗ , 0, 1), which implies that Step 3 will be reached and a single
+new direction will be added. This gives item (ii).
+Remark. Let ℓ be the number of directions found in Phase 1. When (D) is feasible, ℓ + 1 is the total number
+of times the pair of problems (PK ), (DK ) are solved during Phase 1. After solving (PK ), (DK ) ℓ times, a
+face F of K satisfying the PPS condition is computed. However, it is necessary to solve (PK ), (DK ) one
+extra time to reach the stopping criteria in Step 5 and obtain s′ , which is a certificate that F indeed satisfies
+the PPS condition. When (D) is infeasible, ℓ coincides with the number of times problems (PK ), (DK ) are
+solved during Phase 1.
+If we merely want a face of K satisfying the PPS condition, we can stop at Phase 1. In any case, we will
+now show that is possible to jump directly to the minimal face in a single facial reduction step.
+[Facial Reduction Poly - Phase 2]
+Input: (D), the output of Phase 1: F and s′ , with F =
+6 ∅.
+D
+D
+Output: Fmin
+, a dual feasible slack ŝ ∈ ri Fmin
+and, perhaps, an extra reducing direction d.
+1. Let K̂ = K̂1 × . . . × K̂r such that K̂j = F j if F j is polyhedral and K̂j = span F j otherwise.
+2. Let (x∗ , t∗ , w∗ ) and (y1∗ , y2∗ , y3∗ ) be any pair of strictly complementary optimal solutions to (PK ) and
+(DK ) with
+• K̂ in place of K,
+• any e ∈ ri K̂,
+• any e∗ ∈ ri K̂∗ .
+y∗
+
+D
+3. If t∗ = 0, let d ← x∗ , Fmin
+← F ∩ {x∗ }⊥ . Let s̃ be c − A∗ y3∗ . Then, we let ŝ be a convex combination
+1
+
+D
+of s̃ and s′ such that ŝ ∈ ri Fmin
+and stop.2
+y∗
+
+D
+4. If t∗ > 0, Fmin
+← F . Let s̃ be c − A∗ y3∗ . Then, we let ŝ be a convex combination of s̃ and s′ such that
+D
+ŝ ∈ ri Fmin
+and stop.2
+
+1
+
+2 In Proposition 9 it is shown that if z = βs′ +(1−β)s̃ is such that β ∈ (0, 1) and β is sufficiently close to 1 then z ∈ ri F D .
+β
+β
+min
+D , ŝ can be found through a simple search procedure, e.g., the bisection method.
+Therefore, after determining Fmin
+
+9
+
+Note that in Phase 2, the cone K̂ is polyhedral, therefore, both (DK ) and (PK ) are polyhedral problems.
+Therefore, strictly complementary solutions are ensured to exist, which is a consequence of Goldman-Tucker
+Theorem and also follows from the results of McLinden [18] and Akgül [1]. We also remark that a strictly
+complementary solution of a polyhedral problem can be found by solving a single linear program, see, for
+instance, the article by Freund, Roundy and Todd [8] and the related work by Mehrotra and Ye [19].
+We now try to motivate the next proposition. At Phase 2, a single facial reduction iteration is performed.
+In the usual facial reduction approach, we would build the problems (DK ) and (PK ) using K = F and seek
+a reducing direction belonging to F ∗ . The subtle point in Phase 2 is that we use K̂ in place of F , which
+is potentially larger since the nonpolyhedral blocks were relaxed to their span. This restricts our search for
+reducing directions to K̂∗ , which is potentially smaller than F ∗ . However, the proof in Proposition 9 will
+show that, at this stage, any reducing direction must be already confined to K̂∗ .
+D
+Proposition 9. The output face of Phase 2 is Fmin
+and there exists ŝ as in Steps 3. and 4.
+D
+Proof. Suppose that the output face F of Phase 1 satisfies F =
+6 Fmin
+. By Lemma 3.2 in [29], there is a
+reducing direction x such that x ∈ F ∗ ∩ ker A ∩ {c}⊥ and x 6∈ F ⊥ . Due to Proposition 8, any such reducing
+direction x satisfies hx, s′ i = 0, which implies that xj ∈ (F j )⊥ = (span F j )⊥ for every j such that F j is
+not polyhedral, since s′j ∈ ri F j for those j. Therefore, the possible reducing directions are confined to the
+polyhedral cone K̂∗ , where K̂ is the cone in Step 1. of Phase 2.
+Since K̂ is polyhedral, the problems (PK ) and (DK ) are polyhedral and they admit strictly complementary
+optimal solutions (x∗ , t∗ , w∗ ), (y1∗ , y2∗ , y3∗ ). The fact that x 6∈ F ⊥ implies that he, xi 6= 0 so that (x/he, xi, 0, 0)
+is an optimal solution to (PK ). Therefore, t∗ = y2∗ = 0. Moreover, since (D) is feasible, we have w∗ = 0. By
+y∗
+Proposition 7, we have c − A∗ y3∗ ∈ ri (K̂ ∩ {x∗ }⊥ ).
+y∗
+
+1
+
+s
+Let s̃ = c − A∗ y3∗ . Note that F ∩ {x∗ }⊥ is a face of F containing FD
+, since we argued that x∗ must be
+1
+
+D
+a reducing direction. We will prove that Fmin
+= F ∩ {x∗ }⊥ by showing that some convex combination of s′
+and s̃ lies in ri (F ∩ {x∗ }⊥ ).
+Let zβ = βs′ + (1 − β)s̃. For all β ∈ (0, 1) and all j such that F j is polyhedral, we have (zβ )j ∈
+ri (F j ∩{x∗j }⊥ ), because s̃j ∈ ri (F j ∩{xj }⊥ ) and s′ is feasible. If F j is not polyhedral, then F j ∩{x∗j }⊥ = F j ,
+since xj ∈ (F j )⊥ . Because s̃j ∈ span F j and s′j ∈ ri F j , for all β sufficiently close to 1 we have (zβ )j ∈ ri F j .
+Therefore, it is possible to select β ∈ (0, 1) such that (zβ )j ∈ ri (F j ∩ {xj }⊥ ) for all j. This shows that
+D
+Fmin
+= F ∩ {x∗ }⊥ .
+If F was already the minimal face to begin with, then t∗ > 0. We can then proceed in a similar fashion.
+y∗
+The only difference is that due to (4), we will have that s̃ = c − A∗ y3∗ satisfies s̃j ∈ ri (F j ) for every j
+1
+such that F j is polyhedral. And as before, we can select a convex combination of s′ and s̃ belonging to the
+D
+relative interior of Fmin
+.
+
+We then arrive at the main result of this section.
+D
+Theorem 10. Let K = K1 × .P
+. . × Kr . The minimum face Fmin
+that contains the feasible region of (D) can
+r
+i
+be found in no more than 1 + i=1 ℓpoly (K ) facial reduction steps.
+
+D
+Proof. If (D) is infeasible, then Fmin
+= ∅ and the resultPfollows from Proposition 8. So suppose now that
+r
+(D) is feasible. Then Phase 1 ends after finding at most i=1 ℓpoly (Ki ) directions. Due to Proposition 9, at
+most one extra direction is needed to jump to the minimal face.
+
+Recall that ℓK is the length of the longest chain of strictly ascending nonempty faces of K. If one uses the
+“classical” facial reduction approach, it takes no more than ℓK − 1 facial reduction steps to find the minimal
+face, when (D) is feasible. See, for instance, Theorem
+1 in [22] or Corollary 3.1 in [29]. When K is a direct
+P
+product of several cones, we have ℓK = 1 + ri=1 (ℓKi − 1). We will end this subsection by showing that,
+under the relatively weak hypothesis that Ki is not a subspace, we have ℓpoly (Ki ) < ℓKi − 1. This means
+that FRA-Poly compares favorably to the classical FRA analysis and the difference between the two bounds
+grows at least linearly with the number of cones.
+
+10
+
+Theorem 11. If K is not a subspace then 1 + ℓpoly (K) ≤ ℓK − 1. In particular, if K is the direct product of
+r closed convex cones that are not subspaces we have:
+1+r+
+
+r
+X
+
+ℓpoly (Ki ) ≤ 1 +
+
+r
+X
+
+(ℓKi − 1).
+
+i=1
+
+i=1
+
+Proof. Let U = lin K. Then we have K = (K ∩ U ⊥ ) + U . If we let K̂ = K ∩ (U ⊥ ), we have that lin (K̂) = {0}
+so that K̂ is pointed and K̂ 6= {0} if K is not a subspace. Recall that the minimal nonzero face of any nonzero
+pointed cone must be an extreme ray, i.e., an one dimensional face. Therefore, the first two faces of any
+longest chain of faces of K̂ must be {0} and some extreme ray. Therefore, we have 1 + ℓpoly (K̂) ≤ ℓK̂ − 1.
+Note that there is a bijection between the faces of K and the set {F + U | F is a face of K̂}. A similar
+correspondence holds between the polyhedral faces of K and the set {F + U | F is a polyhedral face of K̂}.
+Therefore, ℓK = ℓK̂ and ℓpoly (K) = ℓpoly (K̂). ThisPshows that 1 + ℓpoly (K) ≤ ℓK − 1. To conclude, note that
+if K is a direct product of r cones then ℓK = 1 + ri=1 (ℓKi − 1), so the result follows from applying what we
+have done so far to each Ki .
+
+5.4
+
+Tightness of the bound
+
+It is reasonable to consider whether there are instances that actually need the amount of steps predicted by
+Theorem 10. In this section we will take a look at this issue. The following notion will be helpful.
+Definition 12 (Singularity degree). Consider the set of possible outputs {d1 , . . . , dℓ } of the Generic Facial
+Reduction algorithm in Section 3. The singularity degree of (D) is the minimum ℓ among all the possible
+outputs and is denoted by d(D).
+D
+That is, the singularity degree is the minimum number of facial reduction steps before Fmin
+is found.
+In the recent work by Liu and Pataki [12], there is also an equivalent definition of singularity degree for
+feasible problems, see Definition 6 therein. As far as we know, the expression “singularity degree” in this
+context is due to Sturm in [26], where he showed the connection between the singularity degree of a positive
+semidefinite program and error bounds, see also [16].
+The singularity degree of (D) is a quantity that depends on c, A and K. The classical facial reduction
+strategy gives the bounds d(D) ≤ ℓP
+K − 1 when (D) is feasible and d(D) ≤ ℓK when (D) is infeasible. Theorem
+r
+10 readily implies that d(D) ≤ 1 + i=1 ℓpoly (Ki ), no matter
+Prwhether (D) is feasible or not. Due to Theorem
+11, this bound is likely to compare favorably to ℓK − 1 = i=1 (ℓKi − 1).
+Tunçel constructed an SDP instance with singularity degree d(D) = n − 1 = ℓS+n − 2, see Section 2.6 in
+n
+n1
+[27] or the section “Worst case instance” in [5]. Now, let K = Qt1 × . . . × Qtr1 × S+
+× . . . × S+r2 be the
+direct product of r1 second orderP
+(Lorentz) cones and r2 positive semidefinite cones. In this case, Theorem
+2
+10 implies that d(D) ≤ 1 + r1 + rj=1
+(nj − 1). In Appendix B we extend Tunçel’s example and show that
+P r2
+(nj − 1), thus showing the worst
+for every such K there is a feasible instance for which d(D) = r1 + j=1
+case bound in Theorem 10 is off by at most one.
+This type of K was also studied
+Pr2 by Luo and Sturm in [16], where they discussed a regularization procedure
+(nj − 1) steps, see Theorem 7.4.1 therein. However, their definition of
+which ends in at most r1 + j=1
+regularity does not imply strong feasibility, so similarly to Phase 1 of FRA-Poly, an additional step is
+necessary (akin to a facial reduction step) before the minimal face is reached, see Lemma 7.3.3. In total we
+get the same bound predicted by Theorem 10.
+Pr2
+We remark that we were unable to construct a feasible instance with singularity degree 1+r1 + j=1
+(nj −
+n
+1). Note that if K = S+
+, since each facial reduction step reduces the possible ranks of feasible matrices,
+s
+s
+if we need n steps it is because FD
+= {0}. But if FD
+= {0}, then c ∈ range A∗ and Gordan-Stiemke’s
+∗
+D
+Theorem implies the existence of d ∈ (ri K ) ∩ ker A. Therefore, we can go to Fmin
+with a single step, since
+⊥
+K ∩ {d} = {0}. So, in fact, we never need more than n − 1 steps for feasible SDPs and Tunçel’s example is
+indeed the worse that could happen in this case. A similar argument holds when K = Qn , where we never
+need more than a single step if we select the directions optimally. But when we have direct products, the
+
+11
+
+possible interactions between the blocks makes it hard to argue that the +1 is unnecessary, although the
+partial polyhedral Gordan-Stiemke theorem (Corollary 5) helps rule out a few cases.
+We will now take a look at what could be done to ensure that a facial reduction algorithm never takes
+D
+more steps than the necessary to find Fmin
+. Consider the Generic Facial Reduction algorithm in Section
+3. All the directions, with the possible exception of the last, belong to Fi∗ ∩ ker A ∩ {c}⊥ . In particular,
+the FRAs considered in [26, 16] and the FRA-CE variant in [29] always select the most interior direction
+possible. In our context, this means that whenever step 2.i) is reached the following choice is made:
+di ∈ ri (Fi∗ ∩ ker A ∩ {c}⊥ ).
+
+(11)
+
+In fact, the singularity degree was originally defined not as in Definition 12, but as the number of steps that
+their particular algorithms take to find the minimal face3 . Although intuitive, it is not entirely obvious that
+the choice in (11) minimizes the number of directions, so let us take a look at this issue.
+Proposition 13. Suppose that (D) is feasible and that at each step of the Generic Facial Reduction algorithm
+di is selected as in (11). Then, the algorithm will output exactly d(D) directions.
+Proof. Suppose d(D) > 0 and let (d1 , . . . , dℓ ) be a sequence of reducing directions such that ℓ = d(D) and
+D
+the last face is Fmin
+. Let d∗1 ∈ ri (K∗ ∩ ker A ∩ {c}⊥ ).
+∗
+Since d1 is a relative interior point, there is α > 1 such that αd∗1 + (1 − α)d1 ∈ K∗ ∩ ker A ∩ {c}⊥ , see
+Theorem 6.4 in [25]. Now, let x ∈ K ∩ {d∗1 }⊥ . We must have
+hx, αd∗1 + (1 − α)d1 i ≥ 0.
+Since hx, d∗1 i = 0 and (1 − α) < 0, we have hx, d1 i = 0 as well. That is, we have
+K ∩ {d∗1 }⊥ ⊆ K ∩ {d1 }⊥ .
+
+(12)
+
+(Note that this shows that if d1 6∈ K⊥ then d∗1 6∈ K⊥ as well.) Since taking the dual cone inverts the
+containment, we have
+(K ∩ {d∗1 }⊥ ∩ · · · ∩ {di }⊥ )∗ ⊇ (K ∩ {d1 }⊥ ∩ · · · ∩ {di }⊥ )∗ ,
+for every i. Therefore, (d∗1 , . . . , dℓ ) is still a valid sequence of reducing directions for (D) and the corresponding
+chain of faces still ends in the minimal face, due to (12). Likewise, we substitute d2 by d∗2 following (11) with
+F2 = K ∩ {d∗1 }⊥ and proceed inductively. This shows that selecting according to (11) does indeed produce
+the least number of directions.
+We remark that the argument that leads to (12) also shows that if d1 was already chosen according to
+(11), we would have in fact K ∩ {d∗1 }⊥ = K ∩ {d1 }⊥ . So that if we use the choice in (11) the resulting chain
+of faces is unique even if the directions themselves are not.
+For some cases, we can expect to implement the choice in (11). If (D) and (P) are both strongly feasible
+n
+and K = S+
+, then it is known that the central path converges to a solution that is a relative interior point
+of the set of optimal solutions [6] and the facial reduction approach in [23] uses this fact in an essential way.
+Therefore, the choice in (11) might be implementable in the context of interior point methods although it
+is not known whether for other algorithms, say augmented Lagrangian methods, a similar property holds.
+Still, as interior point methods are very revelant to conic linear programming, one of the referees prompted
+us to prove the following.
+Proposition 14. Let e ∈ K, e∗ ∈ K and let Ω denote the optimal solution set of (PK ). Let (x∗ , t∗ , w∗ ) ∈ ri Ω.
+If t∗ = w∗ = 0, then
+x∗ ∈ ri (K∗ ∩ ker A ∩ {c}⊥ ).
+3 There is a minor incompatibility between the two definitions. Sturm considered that a problem with F s = {0} has
+D
+singularity degree 0, see Step 1 in Procedure 1 in [26]. According to the definition in [12] and our own, such a problem would
+have singularity degree 1.
+
+12
+
+Proof. Let Px be the linear map that takes (x, t, w) ∈ Rn × R × R to x. Since at optimality we have
+t∗ = w∗ = 0∗ , Equation (2) implies that we have
+Ωx = K∗ ∩ ker A ∩ {c}⊥ ∩ H,
+where Ωx = Px (Ω) and H = {x ∈ Rn | he, xi = 1}. As Px is linear, we have Px (ri Ω) = ri Ωx , see Theorem
+6.6 in [25]. Therefore, (x∗ , t∗ , w∗ ) ∈ ri Ω implies x∗ ∈ ri Ωx .
+Let C = K∗ ∩ ker A ∩ {c}⊥ , so that Ωx = C ∩ H. Note that the proposition will be proved if we show
+that ri Ωx = (ri (C)) ∩ H.
+First, observe that since H is an affine space, we have ri H = H. Then, by Theorem 6.5 in [25], a sufficient
+condition for (ri (C)) ∩ H = ri (C ∩ H) to hold is that (ri (C)) ∩ H 6= ∅. We will now construct a point in
+(ri (C)) ∩ H.
+Let z ∈ ri (C). Note that x∗ ∈ C as well, so there is α > 1 such that αz + (1 − α)x∗ ∈ C, by Theorem
+6.4 in [25]. Then, he, αz + (1 − α)x∗ i ≥ 0 together with (1 − α) < 0 and he, x∗ i = 1 implies that he, zi > 0.
+z
+∈ (ri (C)) ∩ H. This shows that ri Ωx = (ri (C)) ∩ H.
+Therefore, he,zi
+
+6
+
+Applications of FRA-Poly
+
+In this section, we discuss applications of FRA-Poly. In the first one, we sharpen a result proven by Liu
+and Pataki [12] on the geometry of weakly infeasible problems. In the second, we show that the singularity
+degree of problems over the doubly nonnegative cone is at most n.
+As mentioned before, the singularity degree only depends on c, A and K. Finding the minimal face
+D
+Fmin
+ensures that no matter which b we select, as long as θD is finite, there will be zero duality gap and
+primal attainment. This suggests the following definition that also depends on b and, thus, produce a less
+conservative quantity.
+Definition 15 (Distance to strong duality). The distance to strong duality dstr (D) is the minimum number
+of facial reduction steps (at (D)) needed to ensure θP̂ = θD , where (P̂ ) is the problem inf{hc, xi | Ax = b, x ∈
+∗
+Fℓ+1
+} and Fℓ+1 is a face obtained after a sequence of ℓ facial reduction steps. If −∞ < θD < +∞, we also
+require attainment of θP̂ .
+Similarly, we define dstr (P ) as the minimum number of facial reduction steps needed to ensure that
+θP = θD̂ and that θD̂ is attained when −∞ < θP < +∞, where (D̂) is the problem in dual standard form
+arising after some sequence of facial reduction steps is done at (P).
+Clearly, we have dstr (D) ≤ d(D). However, since Phase 1 ofPFRA-Poly restores strong duality in the
+r
+sense of Definition 15, we obtain the nontrivial bound dstr (D) ≤ i=1 ℓpoly (Ki ).
+
+6.1
+
+Weak infeasibility
+
+Let V denote the affine space c + range A∗ and let the tuple (V, K) denote the feasibility problem of seeking
+s
+n
+an element in the intersection V ∩ K = FD
+. In [14], we showed that if K = S+
+and (D) is weakly infeasible,
+then there is an affine subspace V ′ contained in V of dimension at most n − 1 such that (V ′ , K) is also weakly
+infeasible. This can be interpreted as saying that “we need at most n − 1 directions to approach the positive
+semidefinite cone”. In [12], Liu and Pataki generalized this result and proved that those affine spaces always
+exist and ℓK∗ − 1 is an upper bound for the dimension of V ′ , see Corollary 1 therein. We proved a bound
+of r for the direct product of r Lorentz cones [15], which is tighter than the one in [12]. Here we will refine
+these results. Consider the following pair of problems.
+inf
+x
+
+subject to
+
+hc, xi
+
+(Pfeas )
+
+sup 0
+y
+
+Ax = 0
+x ∈ K∗
+
+subject to
+
+13
+
+c − A∗y ∈ K.
+
+(Dfeas )
+
+Recall that strong infeasibility of (D) is equivalent to the existence of x such that x ∈ K∗ ∩ ker A and
+hc, xi < 0, see Lemma 5 in [17]. Therefore, θPfeas = −∞ if and only if (D) is strongly infeasible. It follows
+that (D) is weakly infeasible if and only if θPfeas is zero and θDfeas = −∞.
+When θPfeas = 0 and we restore strong duality to (Pfeas ) in the sense of Definition 15, a feasible solution
+will appear at the dual side. Even if that solution is not feasible for the original problem (D), it will give us
+some information about (D) and this is the motivation behind Theorem 17 below.
+We first need an auxiliary result that shows that if (D) is strongly infeasible and we try to regularize
+(Pfeas ), then (Dfeas ) (and, therefore, (D)) will stay strongly infeasible.
+Lemma 16. Let d be a reducing direction for (Pfeas ), i.e., d ∈ (range A∗) ∩ K. Let K̂ = (K∗ ∩ {d}⊥ )∗ . Then
+(Dfeas ) is strongly infeasible if and only if (D̂feas ) is strongly infeasible, where (D̂feas ) is the problem with K̂
+in place of K.
+Proof. (⇐) This part is clear, since K ⊆ K̂.
+(⇒) Strong infeasibility of (Dfeas ) is equivalent to the existence of x such that x ∈ K∗ ∩ ker A and
+hc, xi < 0. Since d ∈ range A∗, we have hx, di = 0. By the same principle, x induces strong infeasibility for
+(D̂feas ) as well.
+Theorem 17.
+(i) (D) is not strongly infeasible if and only if there are:
+(a) a sequence of reducing directions {d1 , . . . , dℓ } for (Pfeas ) restoring strong duality in the sense of
+Definition 15 with ℓ = dstr (Pfeas ) and
+(b) ŷ such that c − A∗ŷ ∈ (K∗ ∩ {d1 }⊥ ∩ · · · ∩ {dℓ }⊥ )∗ .
+(ii) If (D) is not strongly infeasible, there is an affine subspace V ′ ⊆ c − range A∗ such that (V ′ , K) is not
+strongly infeasible and the dimension of V ′ satisfies
+dim (V ′ ) ≤ dstr (P ′ ) ≤
+
+r
+X
+
+ℓpoly ((Ki )∗ ).
+
+i=1
+
+In particular, if (D) is weakly infeasible, then (V ′ , K) is weakly infeasible.
+Proof.
+(i) (⇒) Due to the assumption that (D) is not strongly infeasible, we have θPfeas = 0. Now,
+let {d1 , . . . , dℓ } be a sequence of reducing directions for (Pfeas ) that restores strong duality in the sense of
+Definition 15 with ℓ = dstr (Pfeas ). Let F̂ℓ+1 = K∗ ∩ {d1 }⊥ ∩ · · · ∩ {dℓ }⊥ .
+Now, (Pfeas ) shares the same feasible region with the problem
+inf {hc, xi | Ax = 0, x ∈ F̂ℓ+1 }.
+
+(P̂)
+
+Since facial reduction preserves the optimal value, we have θP̂ = θPfeas = 0. Because the reducing directions
+∗
+restore strong duality, we have θD̂ = {0 | c − A∗y ∈ F̂ℓ+1
+} and θD̂ is attained. In particular, there is ŷ such
+∗
+∗
+that c − A ŷ ∈ Fℓ+1 .
+∗
+}, where F̂ℓ+1 = K∗ ∩ {d1 }⊥ ∩ · · · ∩ {dℓ }⊥ . Due to (b),
+(⇐) By (a), θPfeas = θD̂ = {0 | c − A∗y ∈ F̂ℓ+1
+θPfeas = θD̂ = 0. Therefore, (D) is not strongly infeasible.
+
+(ii) Let {d1 , . . . , dℓ }, ŷ and F̂ℓ+1 = K∗ ∩ {d1 }⊥ ∩ · · · ∩ {dℓ }⊥ be as in item (i). Let V ′ be the affine space
+ŝ + L′ , where L′ is spanned by the directions {d1 , . . . , dℓ } and ŝ = c − A∗ŷ. Since ℓ = dstr (Pfeas ), we have
+dim V ′ ≤ dstr (Pfeas ). Suppose for the sake of contradiction that (V ′ , K) is strongly infeasible. Then, we can
+use {d1 , . . . , dℓ } as reducing directions for inf{hŝ, xi | x ∈ L′⊥ , x ∈ K∗ }. However, Lemma 16 implies that
+∗
+sup{0 | s ∈ (ŝ + L′ ) ∩ F̂ℓ+1
+} is strongly infeasible, which contradicts the fact that ŝ is a feasible solution.
+Since the P
+number steps required for Phase 1 of FRA-Poly gives an upper bound for dstr (Pfeas ), we obtain
+r
+dstr (Pfeas ) ≤ i=1 ℓpoly ((Ki )∗ ).
+14
+
+When (D) is weakly infeasible, since V ′ ⊆ c − range A∗ and (V ′ , K) is not strongly infeasible, it must be
+the case that (V ′ , K) is weakly infeasible.
+Due to Theorem 11, the bound in Theorem 17 will usually compare favorably to ℓK∗ − 1. Moreover, it
+also recovers the bounds described in [14, 15].
+
+6.2
+
+An application to the intersection of cones
+
+In this subsection, we discuss the case where K = K1 ∩ K2 . We can rewrite (D) as a problem over K1 × K2
+by duplicating the entries.
+inf
+
+x1 ,x2
+
+subject to
+
+hc, x1 + x2 i
+
+(Pdup )
+
+y
+
+A(x1 + x2 ) = 0
+1
+
+2
+
+(x , x ) ∈ K
+
+1∗
+
+×K
+
+sup hb, yi
+subject to
+
+2∗
+
+(Ddup )
+
+(c − A∗y, c − A∗y) ∈ K1 × K2
+
+If we apply FRA-Poly to (Ddup ), we will obtain a face F 1 × F 2 of K1 × K2 , so that F 1 ∩ F 2 will be a
+s
+face of K containing FD
+. Doing facial reduction using the formulation (Ddup ) might be more convenient,
+since we need to search for reducing directions in (K1 )∗ × (K2 )∗ instead of cl ((K1 )∗ + (K2 ))∗ and deciding
+membership in (K1 )∗ × (K2 )∗ could be more straightforward than doing the same for cl ((K1 )∗ + (K2 ))∗ .
+Before we proceed we need an auxiliary result. If K = K1 ∩ K2 , it is always true that the intersection
+of a face of K1 with a face of K2 results in a face of K. However, it is not obvious that every face of K
+arises as an intersection of faces of K1 and K2 , so we remark that as a proposition although it is probably a
+well-known result.
+Proposition 18. Let F be a nonempty face of K1 ∩ K2 . Let F 1 and F 2 be the minimal faces of K1 and K2 ,
+respectively, containing F . Then F = F 1 ∩ F 2 and F ∗ = (F 1 )∗ + (F 2 )∗ .
+Proof. Since F 1 ∩ F 2 is a face of K1 ∩ K2 , in order to prove that F 1 ∩ F 2 = F it is enough to show that their
+relative interiors intersect, which we will do next. By the choice of F 1 and F 2 , we have ri (F ) ⊆ ri (F 1 ) and
+ri (F ) ⊆ ri (F 2 ), see item (iii) of Proposition 2.2 in [21]4 . In particular, this implies that ri (F 1 ) ∩ ri (F 2 ) 6= ∅.
+Therefore, ri (F 1 ∩ F 2 ) = ri (F 1 ) ∩ ri (F 2 ), by Theorem 6.5 in [25]. We conclude that ri (F ) ∩ ri (F 1 ∩ F 2 ) =
+ri (F ) ∩ ri (F 1 ) ∩ ri (F 2 ) 6= ∅. It follows that F = F 1 ∩ F 2 .
+Because ri (F 1 ) ∩ ri (F 2 ) 6= ∅, the sum (F 1 )∗ + (F 2 )∗ is closed (see Corollary 16.4.2 in [25]), so that
+∗
+F = cl ((F 1 )∗ + (F 2 )∗ ) = (F 1 )∗ + (F 2 )∗ .
+In what follows, we will need two well-known equalities. Let K1 , K2 be closed convex cones and d1 ∈
+(K ) , d2 ∈ (K2 )∗ . Then:
+
+
+(13)
+(K1 × K2 ) ∩ {(d1 , d2 )}⊥ = K1 ∩ {d1 }⊥ × K2 ∩ {d2 }⊥
+1 ∗
+
+K1 ∩ K2 ∩ {d11 }⊥ ∩ {d21 }⊥ = K1 ∩ K2 ∩ {d11 + d21 }⊥ .
+
+(14)
+
+Theorem 19. Let K = K1 ∩ K2 .
+(D
+
+)
+
+(i) Let Fmindup = F 1 × F 2 be the minimal face of K1 × K2 containing the set of feasible slacks of (Ddup ).
+D
+Then, Fmin
+= F 1 ∩ F 2.
+(ii) The singularity degree and the distance to strong duality of (D) satisfy
+d(D) ≤d(Ddup ) ≤
+dstr (D) ≤dstr (Ddup ) ≤
+
+1 + ℓpoly (K1 ) + ℓpoly (K2 )
+ℓpoly (K1 ) + ℓpoly (K2 )
+
+4 Proposition 2.2 ensures that ri (F ) intersects ri (F 1 ). However, given that F contains F , this is enough for the containment
+1
+ri (F ) ⊆ ri (F 1 ), due to Corollary 6.5.2 in [25]. The same goes for F2 .
+
+15
+
+s
+Proof. (i) F 1 must be the minimal face of K1 containing FD
+= {c − A∗y ∈ K}. Otherwise, if some proper
+1
+2
+e
+e
+face F of F is minimal, then F × F contains the feasible slacks of (Ddup ), which contradicts the minimality
+D
+of F̂ . The same must hold for F 2 . Then Proposition 18 implies Fmin
+= F 1 ∩ F 2.
+(ii) To prove the bounds we first show that given ℓ reducing directions for (Ddup ) we can also construct ℓ
+reducing directions for (D) and that there are relations between the faces defined by both sets of directions.
+Suppose that {(d11 , d21 ), . . . , (d1ℓ , d2ℓ )} are reducing directions for (Ddup ). Define
+
+F11 × F12 := K1 × K2
+1
+Fi+1
+
+×
+
+2
+Fi+1
+
+:=
+
+(Fi1
+
+×
+
+(15)
+
+Fi2 )
+
+∩
+
+{(d1i , d2i )}⊥
+
+1 < i ≤ ℓ.
+
+(16)
+
+We will show by induction on i that {d11 + d21 , . . . , d1ℓ + d2ℓ } are reducing directions for (D) and that
+1
+2
+Fi+1
+∩ Fi+1
+= K1 ∩ K2 ∩ {d11 + d21 }⊥ ∩ · · · ∩ {d1i + d2i }⊥ .
+
+(17)
+
+If i = 1 , because (d11 , d21 ) is a reducing direction for (Ddup ), it satisfies
+A(d11 + d21 ) = 0,
+
+∗
+
+hc, d11 + d21 i ≤ 0,
+
+∗
+
+(d11 , d21 ) ∈ K1 × K2 .
+
+(18)
+
+Our goal is to show that d11 + d12 is a reducing direction for (D), that is
+A(d11 + d21 ) = 0,
+
+hc, d11 + d21 i ≤ 0,
+
+∗
+
+∗
+
+d11 + d21 ∈ cl (K1 + K2 )
+
+(19)
+
+and that (17) holds when i = 1. Note that (19) follows directly from (18). From (15), (16) and (13) we have:
+
+
+F21 × F22 = (K1 × K2 ) ∩ {(d11 , d21 )}⊥ = K1 ∩ {d11 }⊥ × K2 ∩ {d21 }⊥ .
+
+By (14), we conclude that F21 ∩ F22 = K1 ∩ K2 ∩ {d11 }⊥ ∩ {d21 }⊥ = K1 ∩ K2 ∩ {d11 + d21 }⊥ .
+If i > 1 , by induction, we have that (17) holds up to i−1. By hypothesis, (d1i , d2i ) is a reducing direction,
+so that
+∗
+∗
+A(d1i + d2i ) = 0,
+hc, d1i + d2i i ≤ 0,
+(d1i , d2i ) ∈ Fi1 × Fi2 .
+(20)
+We have to show that (17) holds and that
+A(d1i + d2i ) = 0,
+
+hc, d1i + d2i i ≤ 0,
+
+∗
+
+∗
+
+d1i + d2i ∈ cl (Fi1 + Fi2 ).
+
+(21)
+
+As before, (21) follows directly from (20). From (16), (20) and (13) we obtain
+1
+2
+Fi+1
+× Fi+1
+= (Fi1 ∩ {d1i }⊥ ) × (Fi2 ∩ {d2i }⊥ ).
+
+We conclude that:
+1
+2
+Fi+1
+∩ Fi+1
+= Fi1 ∩ Fi2 ∩ {d1i + d2i }⊥
+
+= K1 ∩ K2 ∩ {d11 + d21 }⊥ ∩ · · · ∩ {d1i + d2i }⊥ ,
+where the first equality follows from (14) and the second follows from the induction hypothesis. This
+concludes the induction.
+)
+(D
+1
+2
+D
+1
+2
+× Fℓ+1
+, then (i) implies Fmin
+= Fℓ+1
+∩ Fℓ+1
+. Similarly, if substituting
+Finally, if Fmindup = Fℓ+1
+1
+2
+1
+2
+K × K in (Ddup ) for Fℓ+1 × Fℓ+1 restores strong duality, then the same holds for (D) if we substitute K
+1
+2
+for Fℓ+1
+∩ Fℓ+1
+. This shows that d(D) ≤ d(Ddup ) and dstr (D) ≤ dstr (Ddup ), respectively. The other bounds
+follow from Propositions 8 and 9.
+n
+We now consider the case where K is the doubly nonnegative cone Dn = S+
+∩ N n , where N n is the cone
+of n × n symmetric matrices with nonnegative entries. This cone is important because it can be used as a
+relatively tractable relaxation for the cone of completely positive matrices, see [30, 11, 2].
+
+16
+
+Corollary 20. When K = Dn , we have d(D) ≤ n and dstr (D) ≤ n − 1.
+n
+Proof. Follows from Theorem 19 since ℓpoly (S+
+) = n − 1 and ℓpoly (N n ) = 0.
+
+We will compare the bound in Corollary 20 with the one predicted by the classical FRA. To do that, we
+need to compute ℓDn .
+Proposition 21. The longest chain of nonempty faces in Dn has length
+possible for a cone contained in S n .
+
+n(n+1)
+2
+
++ 1, which is the maximum
+
+and that if we have two faces
+Proof. Maximality follows from the fact that the dimension of S n is n(n+1)
+2
+such that F ( F̂ then dim (F ) < dim (F̂ ).
+Let G be any set of tuples (i, j) with i, j ∈ {1, . . . , n} and let N n (G) be the face of N n which corresponds
+to the matrices x such that the only entries xi,j that are allowed to be nonzero are the ones for which
+either (i, j) ∈ G or (j, i) ∈ G. We will first define two chains of faces of N n . First, let G0 = ∅ and define
+Gi = Gi−1 ∪ {(i, i)} for i ∈ {1, . . . , n}. We now consider the following construction written in pseudocode.
+k ← 1, H0 ← Gn
+For i ← 1, i ≤ n do
+For j ← 1, j < i do
+Hk ← Hk−1 ∪ {i, j}
+k ←k+1
+j ← j + 1.
+i ← i + 1.
+The idea is to add one non-diagonal entry per iteration, so that N n (Hk ) ( N n (Hk+1 ). First (2, 1) will be
+added, then (3, 1), (3, 2) and so on. We have
+n
+n
+n
+n
+∩ N n (H n(n−1) )
+∩ N n (G0 ) ( . . . ( S+
+∩ N n (Gn ) ( S+
+∩ N n (H1 ) ( . . . ( S+
+S+
+2
+
+n
+and all inclusions are indeed strict. The first n inclusions are strict because S+
+∩ N n (Gi ) = N n (Gi ) and it is
+n
+n
+clear that N (Gi ) ( N (Gi+1 ). Now, let In denote the n × n identity matrix. If k > 0 and x ∈ ri N n (Hk )
+then xi,j > 0 for some (i, j) entry such that neither (i, j) nor (j, i) belong to Hk−1 . For α > 0 sufficiently
+n
+n
+large, we have x + αIn ∈ S+
+∩ N n (Hk ) and x + αIn 6∈ S+
+∩ N n (Hk−1 ). This shows the remainder of the
+containments and concludes the proof, since the chain has length n(n+1)
++ 1.
+2
+
+For feasible problems, the classical FRA analysis gives either the bound ℓDn − 1 = n(n+1)
+or, using
+2
+n(n+1)
+n
+Theorem 19, the bound ℓS+ − 1 + ℓN n − 1 = n + 2 . Both bounds are quadratic in n in opposition to
+the linear bound obtained in Corollary 20.
+
+Acknowledgements
+We thank the referees and the associate editor for the detailed feedback we were given. The article benefited greatly
+from it and, in particular, the 2nd referee motivated the discussion in Section 5.4 and suggested the first instance in
+Appendix B, for which we are grateful.
+
+17
+
+References
+[1] Mustafa Akgül. On polyhedral extension of some LP theorems. Mathematical Programming, 30(1):112–120,
+1984.
+[2] Naohiko Arima, Sunyoung Kim, Masakazu Kojima, and Kim-Chuan Toh. Lagrangian-conic relaxations, part i:
+A unified framework and its applications to quadratic optimization problems. Technical Report B-475, Tokyo
+Institute of Technology, 2014.
+[3] Jonathan M. Borwein and Henry Wolkowicz. Facial reduction for a cone-convex programming problem. Journal
+of the Australian Mathematical Society (Series A), 30(03):369–380, 1981.
+[4] Jonathan M. Borwein and Henry Wolkowicz. Regularizing the abstract convex program. Journal of Mathematical
+Analysis and Applications, 83(2):495 – 530, 1981.
+[5] Yuen-Lam Cheung, Simon Schurr, and Henry Wolkowicz. Preprocessing and regularization for degenerate
+semidefinite programs. In Computational and Analytical Mathematics, volume 50 of Springer Proceedings in
+Mathematics & Statistics, pages 251–303. Springer New York, 2013.
+[6] E. de Klerk, C. Roos, and T. Terlaky. Initialization in semidefinite programming via a self-dual skew-symmetric
+embedding. Operations Research Letters, 20(5):213–221, 1997.
+[7] Dmitriy Drusvyatskiy, Gábor Pataki, and Henry Wolkowicz. Coordinate shadows of semidefinite and euclidean
+distance matrices. SIAM Journal on Optimization, 25(2):1160–1178, 2015.
+[8] Robert M. Freund, Robin Roundy, and Michael Todd. Identifying the set of always-active constraints in a system
+of linear inequalities by a single linear program. Working papers 1674-85., Massachusetts Institute of Technology
+(MIT), Sloan School of Management, 1985. URL: http://EconPapers.repec.org/RePEc:mit:sloanp:2111.
+[9] Henrik A. Friberg. A relaxed-certificate facial reduction algorithm based on subspace intersection. Operations
+Research Letters, 44(6):718 – 722, 2016.
+[10] Masaru Ito and Bruno F. Lourenço. A bound on the Carathéodory number. Linear Algebra and its Applications,
+532:347 – 363, 2017.
+[11] Sunyoung Kim, Masakazu Kojima, and Kim-Chuan Toh. A Lagrangian–DNN relaxation: a fast method for
+computing tight lower bounds for a class of quadratic optimization problems. Mathematical Programming,
+156(1):161–187, Mar 2016.
+[12] Minghui Liu and Gábor Pataki. Exact duals and short certificates of infeasibility and weak infeasibility in conic
+linear programming. Mathematical Programming, 2017. doi:10.1007/s10107-017-1136-5.
+[13] Bruno F. Lourenço, Masakazu Muramatsu, and Takashi Tsuchiya. Solving SDP completely with an interior
+point oracle, July 2015. arXiv:1507.08065.
+[14] Bruno F. Lourenço, Masakazu Muramatsu, and Takashi Tsuchiya. A structural geometrical analysis of weakly
+infeasible SDPs. Journal of the Operations Research Society of Japan, 59(3):241–257, 2016.
+[15] Bruno F. Lourenço, Masakazu Muramatsu, and Takashi Tsuchiya. Weak infeasibility in second order cone
+programming. Optimization Letters, 10(8):1743–1755, 2016.
+[16] Z. Luo and J. F. Sturm. Error analysis. In Henry Wolkowicz, Romesh Saigal, and Lieven Vandenberghe, editors,
+Handbook of semidefinite programming: theory, algorithms, and applications. Kluwer Academic Publishers, 2000.
+[17] Z. Luo, J. F. Sturm, and S. Zhang. Duality results for conic convex programming. Technical report, Econometric
+Institute, Erasmus University Rotterdam, The Netherlands, 1997.
+[18] L. McLinden. Polyhedral extensions of some theorems of linear programming. Mathematical Programming,
+24(1):162–176, 1982.
+[19] Sanjay Mehrotra and Yinyu Ye. Finding an interior point in the optimal face of linear programs. Mathematical
+Programming, 62(1-3):497–515, 1993.
+[20] Y. Nesterov, M. J. Todd, and Y. Ye. Infeasible-start primal-dual methods and infeasibility detectors for nonlinear
+programming problems. Mathematical Programming, 84(2):227–267, 1999. doi:10.1007/s10107980009a.
+[21] Gábor Pataki. The geometry of semidefinite programming. In Henry Wolkowicz, Romesh Saigal, and Lieven
+Vandenberghe, editors, Handbook of semidefinite programming: theory, algorithms, and applications. Kluwer
+Academic Publishers, online version at http://www.unc.edu/~ pataki/papers/chapter.pdf, 2000.
+
+18
+
+[22] Gábor Pataki. Strong duality in conic linear programming: Facial reduction and extended duals. In Computational and Analytical Mathematics, volume 50, pages 613–634. Springer New York, 2013.
+[23] Frank Permenter, Henrik A. Friberg, and Erling D. Andersen. Solving conic optimization problems via self-dual
+embedding and facial reduction: A unified approach. SIAM Journal on Optimization, 27(3):1257–1282, 2017.
+[24] Frank Permenter and Pablo Parrilo. Partial facial reduction: simplified, equivalent SDPs via approximations of
+the PSD cone. Mathematical Programming, Jun 2017. doi:10.1007/s10107-017-1169-9.
+[25] R. T. Rockafellar. Convex Analysis . Princeton University Press, 1997.
+[26] Jos F. Sturm. Error bounds for linear matrix inequalities. SIAM Journal on Optimization, 10(4):1228–1248,
+January 2000. doi:10.1137/S1052623498338606.
+[27] Levent Tunçel. Polyhedral and Semidefinite Programming Methods in Combinatorial Optimization. American
+Mathematical Society, Providence, R.I. : Toronto, Ont, November 2010.
+[28] Levent Tunçel and Henry Wolkowicz. Strong duality and minimal representations for cone optimization. Computational Optimization and Applications, 53(2):619–648, 2012.
+[29] Hayato Waki and Masakazu Muramatsu. Facial reduction algorithms for conic optimization problems. Journal
+of Optimization Theory and Applications, 158(1):188–215, 2013.
+[30] A. Yoshise and Y. Matsukawa. On optimization over the doubly nonnegative cone. In Computer-Aided Control
+System Design (CACSD), 2010 IEEE International Symposium on, pages 13–18, Sept 2010.
+
+A
+
+Partial Polyhedrality and Slater’s condition
+
+Let f : Rn → R ∪ {−∞, +∞} be a convex function. We denote the domain of f by dom f = {x ∈ Rn | f (x) < ∞}.
+If dom f 6= ∅ and f is never −∞, then f is said to be proper. Its conjugate will be denoted by f ∗ and it satisfies
+f ∗ (s) = supx hs, xi − f (x). If the epigraph of f is a polyhedral set, then f is said to be a polyhedral function. We
+recall Theorem 20.1 from [25].
+Theorem 22 (Rockafellar). Let f1 , . . . , fm be proper convex functions and let fk+1 , . . . , fm be polyhedral functions.
+Suppose also that
+ri (dom f1 ) ∩ · · · ∩ ri (dom fk ) ∩ dom fk+1 ∩ · · · ∩ dom fm 6= ∅.
+Then the following holds:
+∗
+(f1 + · · · + fm )∗ (s) = inf{f1∗ (s1 ) + · · · + fm
+(sm ) | s1 + · · · + sm = s},
+
+where for each s the infimum is attained whenever it is finite.
+Proposition 23. Let K = K1 × K2 , where K1 ⊆ Rn1 , K2 ⊆ Rn2 are closed convex cones such that K2 is polyhedral.
+(i) If θP is finite and (P) satisfies the PPS condition, then θP = θD and the dual optimal value is attained.
+(ii) If θD is finite and (D) satisfies the PPS condition, then θP = θD and the primal optimal value is attained.
+Proof. We will prove (i) first. Let f1 be such that f1 (x) = hc, xi if Ax = b and +∞ otherwise. Let f2 be the indicator
+function of Rn1 × (K2 )∗ and f3 be the indicator function of (K1 )∗ × Rn2 . Since there is a primal feasible solution
+x = (x1 , x2 ) such that x1 ∈ ri (K1 )∗ , we have that dom f1 ∩ dom f2 ∩ ri (dom f3 ) is nonempty. In addition, f1 and f2
+are polyhedral functions. Let us now observe that:
+
+hb, yi
+if there is y with s − c = A∗y
+f1∗ (s) =
++∞
+otherwise
+Note that, due to feasibility, for fixed s, hb, yi does not depend on the choice of y, as long as c + A∗y = s. This is
+because since there is x such that Ax = b, we have hb, yi = hx, s − ci. The conjugate f2∗ is the indicator function of
+−{0} × K2 and f3∗ is the indicator function of −K1 × {0}. Applying Theorem 22 with s = 0, we have:
+
+	
+(f1 + f2 + f3 )∗ (0) = inf hb, yi | c + A∗y = s1 , s1 − (s3 , s2 ) = 0, s2 ∈ K2 , s3 ∈ K1
+
+	
+= inf hb, yi | c + A∗y = s1 , s1 ∈ K1 × K2
+
+	
+= − sup hb, yi | c − A∗y = s1 , s1 ∈ K1 × K2 ,
+
+19
+
+where the sup in the last equation is attained. So, there is some dual feasible y such that (f1 + f2 + f3 )∗ (0) = hb, yi.
+However, using the definition of conjugate, we also have:
+(f1 + f2 + f3 )∗ (0) = − inf{hc, xi | Ax = b, x ∈ K1 × K2 } = −θP .
+It follows that θP = θD and the dual is attained at y. To prove (ii), let g1 = f1∗ , and let g2 and g3 be the indicator
+functions of Rn1 × K2 and K1 × Rn2 , respectively. Again, it is enough to compute (g1 + g2 + g3 )∗ (0) using both the
+definition of conjugate function and using Theorem 22.
+
+B
+
+Examples
+
+Example 2. We will apply FRA-Poly to the following problem.
+find
+subject to
+
+y
+(y1 , −y1 ) ×
+
+
+
+y1
+y2
+
+y2
+y3
+
+
+
+2
+∈ R2+ × S+
+.
+
+2
+At the first step we have F1 = R2+ × S+
+and we build (PK ) and (DK ) using e = 0 × I2 and e∗ = (1, 1) × I2 , where I2
+is the 2 × 2 identity matrix. Solving (PK ) and (DK ), suppose that we have found the reducing direction
+
+
+1 0
+.
+d1 = (1, 2) ×
+0 0
+
+Then F2 = K ∩ {d1 }⊥ = {0} × F̂, where the matrices in F̂ have zeros in all entries except in the (2, 2) entry. Note
+that F2 is polyhedral, so when it is time to build (PK ) and (DK ) again, we will take e = 0 and since the PPS condition
+is satisfied, we will have θPK > 0. Note that this is a case where Phase 1 ends at the minimal face and there is no
+D
+need to proceed further, although we might want to solve the problem in Phase 2 in order to obtain a point in ri Fmin
+.
+Note that if the first block of d1 were (0, 1) instead of (1, 2), then we would have F2 = R+ × {0} × F̂, so we
+D
+would need a Phase 2 iteration to find a reducing direction d2 such that Fmin
+= F2 ∩ {d2 }⊥ . Still, if we are able
+to implement the choice in (11) we will never need to go for a second direction, since we will always take the most
+interior direction possible.
+nr
+
+n1
+× . . . × S+ 2 . We will assume that r1 + r2 > 0, tj ≥ 3 and nj ≥ 3 for every j.
+Let K = Qt1 × . . . × Qtr1 × S+
+j
+Given x, we will use xi,k to denote the (i, k) entry of the j-th matrix block and xji to denote the i-entry of the j-th
+vector block. We will also use the same notation to single out a few special elements. For j ∈ [1, r2 ], aji,k ∈ K is such
+n
+that all its blocks are zero except for the block corresponding to S+j . In that block aji,k contains the nj × nj matrix
+that has one at the (i, k) and (k, i) entries and zero elsewhere. Similarly, for j ∈ [1, r1 ], aji ∈ K is such that all its
+blocks are zero except for the block corresponding to Qtj , where aji corresponds to the i-th unit vector.
+Recall that if d = (d0 , d) and x = (x0 , x) are points of Qn with d0 , x0 ∈ R and d, x ∈ Rn−1 , then hd, xi = 0 implies
+d0 x + x0 d = 0. In particular, if d is a nonzero boundary point of Qn , then the face Qn ∩ {d}⊥ is equal to the half-line
+hd′ = {αd′ | α ≥ 0} where d′ = (d0 , −d). We also have h∗d′ = {x | hx, d′ i ≥ 0}.
+Let L⊥ be the space spanned by the following vectors:
+
+1. a11 + a12 and {aj−1
++ aj1 + aj2 | 1 < j ≤ r1 },
+3
+2. ar31 + a11,1 and {a1i,i + a1i−1,i+1 | 1 < i < n1 } (if r1 = 0, use a11,1 instead of ar31 + a11,1 ),
+j
+j
+j
+3. aj−1
+nj ,nj−1 + a1,1 and {ai,i + ai−1,i+1 | 1 < i < nj }, for 1 < j ≤ r2 .
+
+Remark. It will be helpful to keep in mind the case where r1 = r2 = 2, n1 =
+spanned by elements having the following format
+    
+ 
+y3 0 y4
+y2
+y1
+y5 0
+y1  × y2  ×  0 y4 y5  ×  0 y6
+y4 y5 0
+y3
+y2
+y6 0
+
+n2 = t1 = t2 = 3. In this case, L⊥ is
+
+y6
+0 .
+0
+
+∗
+⊥
+Proposition 24. Consider the problem
+Pr2(D) with c = 0 and A such that range A = L, where L is the subspace
+constructed above. Then d(D) = r1 + j=1 (nj − 1).
+
+20
+
+Proof. First, suppose that r1 > 0. The first reducing direction must be some x ∈ (K ∩ L⊥ ) \ K⊥ . However, if x ∈ L⊥ ,
+then x11 = x12 . Then, because x1 ∈ Qt1 , we have x1i = 0 for all i ≥ 3. Therefore, the coefficient of a13 + a21 + a22
+appearing in x must be zero as well. It follows that all blocks of x are zero, except for x1 . We conclude that x must
+be a positive multiple of a11 + a12 . So let d1 = a11 + a12 , we then have
+nr
+
+n1
+× . . . × S+ 2 ,
+F2 = K ∩ {d1 }⊥ = hd′1 × Qt2 × . . . × Qtr1 × S+
+
+where hd′1 is contained in Qt1 and is the half-line along the direction defined by the nonzero part of a11 − a12 . At the
+next step, it turns out that only the positive multiples of a13 + a21 + a22 belong to (F2∗ ∩ L⊥ ) \ F2⊥ . This means that
+facial reduction must proceed by successively selecting positive multiples of:
+1. d1 = a11 + a12 and dj = aj−1
++ aj1 + aj2 , for 1 < j ≤ r1 .
+3
+After r1 steps, all the Lorentz cone blocks will be transformed to half-lines and we will have Fr1 +1 = hd′1 × . . . ×
+nr
+n1
+× . . . × S+ 2 , where for every 1 < j ≤ r1 , hd′j is the half-line in Qtj along the direction defined by the
+hd′r × S+
+1
+
+nonzero part of aj1 − aj2 . If r2 = 0, we are done. Otherwise, we have (Fr∗1 +1 ∩ L⊥ ) \ Fr⊥1 +1 = {t(ar31 + a11,1 ) | t > 0}.
+Again, we must proceed “one row at time” and select positive multiples of a1i,i + a1i−1,i+1 for 1 < i < n1 as the
+reducing directions. In total, we find n1 − 1 directions
+P 2before we can move to the next block. For each block nj − 1
+directions will be found, so in total we obtain r1 + rj=1
+(nj − 1) directions. The case r1 = 0 follows similarly.
+
+21
+
+
