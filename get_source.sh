@@ -1,4 +1,4 @@
-# Given that there is a file url_6.html in source/url,
+# Given that there is a file url_10-14.html in source/url,
 #  which is a saved page of an ArXiv search result;
 #  saves all pdf-files and sources for papers from this page
 #  in ./source
@@ -45,7 +45,11 @@ rename_tex()
 #  extract all papers' reference numbers in url/reference_numbers.txt
 
 
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_6.html | cut  -d: -f 2 > source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_10.html | cut  -d: -f 2 > source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_11.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_12.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_13.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_14.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
 
 # Get source:
 # For each TeX-file num.pdf, we create either dir_num or num.tex
@@ -61,6 +65,10 @@ while read num; do
     fi
 done <source/url/reference_numbers.txt
 
+unpack_gz
+unpack_tar
+unpack_gz
+unpack_tar
 unpack_gz
 unpack_tar
 unpack_gz

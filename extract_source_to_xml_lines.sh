@@ -38,7 +38,7 @@ for paper in source/*pdf; do
 	    echo "  Fatal error!"
 	    echo "########################   $num\n" >> source_extraction/results/fatal_error.txt
 	    cat  source_extraction/results/$num.log >> source_extraction/results/fatal_error.txt
-	elif [ -e source_extraction/results_pdf_xml/$num".pdf" ]; then
+	elif [ -e source_extraction/results/$num".pdf" ]; then
 	     mv source_extraction/results/$num".pdf" source_extraction/results_pdf_xml/$num".pdf"	
 	fi	
 
