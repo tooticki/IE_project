@@ -40,15 +40,13 @@ rename_tex()
 }
 
 # Get reference numbers:
-# Given that there is a file url_5.html in source/url,
+# Given that there is a file url_*.html in source/url,
 #  which is a saved page of an ArXiv search result;
 #  extract all papers' reference numbers in url/reference_numbers.txt
 
 for html_page in source/url/*html; do
     grep -oP "arXiv:[0-9]+\.[0-9]+" "$html_page" | cut  -d: -f 2 >> source/url/reference_numbers.txt
 done
-
-
 
 # Get source:
 # For each TeX-file num.pdf, we create either dir_num or num.tex
@@ -64,6 +62,7 @@ while read num; do
     fi
 done <source/url/reference_numbers.txt
 
+# You never know how many layers await
 unpack_gz
 unpack_tar
 unpack_gz

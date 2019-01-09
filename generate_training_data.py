@@ -200,7 +200,7 @@ def lines_similarity(k,l):
     matches_num = sum(is_word_in_line(w, k) for w in l)
     return 1.*matches_num/max(len(k),len(l))
 
-# Bounds on lines similarity for considering two line equal or similar
+# Bounds on lines similarity for considering two lines equal or similar
 # TODO: test more and adjust the equality constant
 equality_limit = 0.7
 similarity_limit = 0.3
@@ -263,9 +263,7 @@ def fonts_list(input_file):
 columns_names = ["words_num", "awerage_word_length", "italicness", "formuleness", "heading_first_word", "proof_first_word", "boldness_first_word", "is_capital_first_letter", "type"]
 features_num = len(columns_names)
 
-
-
-# Used for debuging:
+# Used for debug:
 bad_papers = 0            # papers where matching with results didn't suceed
 good_papers = 0           # did suceed
 invalid_input_papers = 0  # results input file is invalid
@@ -274,13 +272,11 @@ invalid_input_papers = 0  # results input file is invalid
 def add_training_vector(fulltext_lines, training_vectors, fi, type):
     """ Allows replacing any type with anything but text """
     line = fulltext_lines[fi]
-#    if ignored_line(line):
-#        training_vectors[fi] = line_to_vector(line) + [None]
     if  training_vectors[fi][0] is None  or (training_vectors[fi][features_num-1] != "heading" and type != "text"):
         training_vectors[fi] = line_to_vector(line) + [type]
 
 
-# TODO: make another function which would remove body in the middle of nothing....
+# DONE: make another function which would remove bodies in the middle of nothing....
 def correct_oddities(vectors, fulltext_lines):
     #TODO: more ?
     type=features_num-1
@@ -334,15 +330,11 @@ def restart_if_you_can(ri, fi, restarted_current_line):
         else proceed for the next result.
         Returns new ri, fi, restarted_current_line, and if it could restart or not
     """
-    #DEBUG: change it back!
     if restarted_current_line == False:
         return (ri, 0, True, True)
     else:
         return (ri + 1, fi, False, False)
 
-# TODO: remove all ignored lines ?        
-
-#TODO: new function removes text afterbody
 
 def data_from_xmls(fulltext_xml, results_xml):
     fulltext_lines = []
@@ -379,7 +371,6 @@ def data_from_xmls(fulltext_xml, results_xml):
             (ri, restarted_current_line) = next_result(ri)
             heading = True
             continue
-        #TODO: if a line is heading and afterbody????
         
         if heading: # if the line is heading
             # look for this heading in the text
@@ -405,7 +396,7 @@ def data_from_xmls(fulltext_xml, results_xml):
 
         # -3 for the case when lines are exchanged
         fi = max(0,heading_fi-12)
-        #print line_to_string(result_line)[:45] + " |||| " + line_to_string(fulltext_lines[fi])
+        
         #ignore empty lines
         limit = fn
         if ignored_line(result_line): #don't look for too small lines backwards
@@ -434,13 +425,10 @@ def data_from_xmls(fulltext_xml, results_xml):
         add_training_vector(fulltext_lines, training_vectors, fi, "text")
         fi += 1
 
-
-    #TODO: remove bugs and then all this debug code
+    #TODO: remove bugs and then --- remove all this debug code
 
     fill_empty_vectors(training_vectors, fulltext_lines)
     correct_oddities(training_vectors, fulltext_lines)
-    
-    # TODO: add another function, removing illogical parts.
 
     # For debug:
     vectors_with_text = [[None] * (features_num + 1)] * fn
@@ -471,14 +459,12 @@ def generate_csv_documents():
     # fonts = []
     
     for file in os.listdir("source_extraction/results_pdf_xml"):
-        #
         if file.endswith("_xml.xml"):
             training_vectors=[]            
             print "Treating " + file            
             fulltext_xml = os.path.join("source_extraction/results_pdf_xml", file)
             results_xml = fulltext_xml[:-7]+"res"+fulltext_xml[-7:]
             training_file_prefix = 'training_data/'+file[:-7]
-
             
             if os.path.exists(results_xml) and not os.path.exists(training_file_prefix+'training.csv'):
                 (training_vectors, is_good, vt) = data_from_xmls(fulltext_xml, results_xml)
@@ -499,7 +485,7 @@ def generate_csv_documents():
             else:
                 print "Training file already exists or no results file was found"
                 
-    # Font analysis
+    # Font analysis:
     # counts = dict()
     # for i in fonts:
     #     counts[i] = counts.get(i, 0) + 1
@@ -514,12 +500,11 @@ def generate_csv_documents():
     print str(good_papers)+" of papers succeeded in matching"
     print str(invalid_input_papers)+" of papers got invalid input"
         
-    # For debug
+    # For debug:
     print "Failed papers: "
     for f in failed_papers:
         print f
 
-
-#        
+        
 generate_csv_documents()
 
