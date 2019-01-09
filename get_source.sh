@@ -45,11 +45,8 @@ rename_tex()
 #  extract all papers' reference numbers in url/reference_numbers.txt
 
 
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_10.html | cut  -d: -f 2 > source/url/reference_numbers.txt
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_11.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_12.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_13.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_14.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_15.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_16.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
 
 # Get source:
 # For each TeX-file num.pdf, we create either dir_num or num.tex
