@@ -274,13 +274,28 @@ invalid_input_papers = 0  # results input file is invalid
 def add_training_vector(fulltext_lines, training_vectors, fi, type):
     """ Allows replacing any type with anything but text """
     line = fulltext_lines[fi]
-    if ignored_line(line):
-        training_vectors[fi] = line_to_vector(line) + [None]
-    elif type != "text" or training_vectors[fi][0] is None:
+#    if ignored_line(line):
+#        training_vectors[fi] = line_to_vector(line) + [None]
+    if  training_vectors[fi][0] is None  or (training_vectors[fi][features_num-1] != "heading" and type != "text"):
         training_vectors[fi] = line_to_vector(line) + [type]
 
 
 # TODO: make another function which would remove body in the middle of nothing....
+def correct_oddities(vectors, fulltext_lines):
+    #TODO: more ?
+    type=features_num-1
+    for fi in range(1, len(vectors)-1):
+        tl = vectors[fi-1][type]
+        t =  vectors[fi][type]
+        tr = vectors[fi+1][type]
+        if tl == tr == "body" and t == "text":
+            vectors[fi][type] = "body"
+        if tl == tr == "text" and (t == "body" or t == "after_body"):
+            vectors[fi][type] = "text"
+        if tl == "body" and tr == "text":
+            vectors[fi][type] = "after_body"   
+
+
 def fill_empty_vectors(vectors, fulltext_lines):
     """the main procedure leaves some vectors empty (the ignored ones:
         empty lines, digits etc). This function fills them according
@@ -319,13 +334,16 @@ def restart_if_you_can(ri, fi, restarted_current_line):
         else proceed for the next result.
         Returns new ri, fi, restarted_current_line, and if it could restart or not
     """
+    #DEBUG: change it back!
     if restarted_current_line == False:
         return (ri, 0, True, True)
     else:
         return (ri + 1, fi, False, False)
 
 # TODO: remove all ignored lines ?        
-        
+
+#TODO: new function removes text afterbody
+
 def data_from_xmls(fulltext_xml, results_xml):
     fulltext_lines = []
     results_lines = []
@@ -349,13 +367,10 @@ def data_from_xmls(fulltext_xml, results_xml):
             
     while ri < rn:
         result_line = results_lines[ri]
-        #ignore empty lines
-        if ignored_line(result_line):
-            (ri, restarted_current_line) = next_result(ri)
-            continue
         if fi >= fn:
             (ri, fi, restarted_current_line, _) = restart_if_you_can(ri, fi, restarted_current_line)
-            continue              
+            fi = 0
+            continue
         if stars_line(result_line): # stars line -> the next is heading
             stars_exist = True
             if fi>0:
@@ -375,24 +390,37 @@ def data_from_xmls(fulltext_xml, results_xml):
                 (ri, fi, restarted_current_line, restart) = restart_if_you_can(ri, fi, restarted_current_line)
                 if not restart:
                     heading = False
+                    fi = heading_fi # forget this line, start searching the next line from the last heading
             else:
-                heading_fi = fi
-                add_training_vector(fulltext_lines, training_vectors, fi, "heading")
-                fi += 1
+                if is_proof_first_word(result_line): # if a proof is included in a result, ignore everything until the next result
+                    while(ri < rn and not stars_line (results_lines[ri])):
+                        (ri, restarted_current_line) = next_result(ri)
+                else:
+                    heading_fi = fi
+                    add_training_vector(fulltext_lines, training_vectors, fi, "heading")
+                    fi += 1
+                    (ri, restarted_current_line) = next_result(ri)
                 heading = False
-                (ri, restarted_current_line) = next_result(ri)
             continue
 
         # -3 for the case when lines are exchanged
-        fi = max(0,heading_fi-3)
-        while fi < fn and not equal_lines(result_line, fulltext_lines[fi]):
+        fi = max(0,heading_fi-12)
+        #print line_to_string(result_line)[:45] + " |||| " + line_to_string(fulltext_lines[fi])
+        #ignore empty lines
+        limit = fn
+        if ignored_line(result_line): #don't look for too small lines backwards
+            restarted_current_line = True
+            limit = min(fn, fi+8)
+            #(ri, restarted_current_line) = next_result(ri)
+            #continue
+        while fi < limit and not equal_lines(result_line, fulltext_lines[fi]):
             fi += 1
-        if fi >= fn:
+        if fi >= limit:
             (ri, fi, restarted_current_line, restart) = restart_if_you_can(ri, fi, restarted_current_line)
             if restart:
                 continue
-            else:
-                heading_fi = 0
+        #    else:
+        #        heading_fi = 0
         else:
             if is_proof_first_word(result_line): # if a proof is included in a result, ignore everything until the next result
                 while(ri < rn and not stars_line (results_lines[ri])):
@@ -409,8 +437,9 @@ def data_from_xmls(fulltext_xml, results_xml):
 
     #TODO: remove bugs and then all this debug code
 
-    #fill_empty_vectors(training_vectors, fulltext_lines)
-
+    fill_empty_vectors(training_vectors, fulltext_lines)
+    correct_oddities(training_vectors, fulltext_lines)
+    
     # TODO: add another function, removing illogical parts.
 
     # For debug:
@@ -427,7 +456,7 @@ def data_from_xmls(fulltext_xml, results_xml):
         print "invalid input results!"
         return (training_vectors, False, [])
     else:
-        if ri/max(1,rn)  < .8 :
+        if ri/max(1,rn)  < .7 :
             bad_papers+=1
             print "!!!!DID NOT SUCEED!!!!"
             return (training_vectors, False, [])
