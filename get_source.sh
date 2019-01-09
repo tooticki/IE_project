@@ -44,9 +44,11 @@ rename_tex()
 #  which is a saved page of an ArXiv search result;
 #  extract all papers' reference numbers in url/reference_numbers.txt
 
+for html_page in source/url/*html; do
+    grep -oP "arXiv:[0-9]+\.[0-9]+" "$html_page" | cut  -d: -f 2 >> source/url/reference_numbers.txt
+done
 
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_15.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
-grep -oP "arXiv:[0-9]+\.[0-9]+" source/url/url_16.html | cut  -d: -f 2 >> source/url/reference_numbers.txt
+
 
 # Get source:
 # For each TeX-file num.pdf, we create either dir_num or num.tex
@@ -62,8 +64,6 @@ while read num; do
     fi
 done <source/url/reference_numbers.txt
 
-unpack_gz
-unpack_tar
 unpack_gz
 unpack_tar
 unpack_gz
