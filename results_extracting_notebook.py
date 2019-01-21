@@ -8,7 +8,7 @@
 # * ## [Conditional Random Fields 3](#crf3): looking for better c1,c2
 # 
 
-# In[2]:
+# In[1]:
 
 
 import pandas as pd
@@ -21,14 +21,22 @@ for doc in os.listdir("training_data"):
     if doc.endswith("ing.csv"):
         documents.append(pd.read_csv("training_data/"+doc))
 
+# Changing size of training data: 200, 400, 600 documents        
+documents_604 = documents[:604]   
+documents_400 = documents[:400] 
+documents_200 = documents[:200]
+
+#documents = documents_200
+
 all_vectors = pd.concat(documents)
 len(documents), len(all_vectors)
 
-#Last (81, 110525) : 81 docs :/
-#Current (125, 174927)
+#Last (81, 110525) 
+#Last (125, 174927)
+#Current (598, 780720)
 
 
-# In[3]:
+# In[2]:
 
 
 # Place features in X and types in Y
@@ -55,7 +63,7 @@ y_doc_list = [ pd_type_column_to_string_list(get_types(doc)) for doc in document
 X_doc_list[0][52], y_doc_list[0][52]
 
 
-# In[3]:
+# In[12]:
 
 
 # Plot palette
@@ -63,7 +71,7 @@ col_list = ["pink", "lightblue", "lightgreen", "yellow"]
 sns.palplot(sns.xkcd_palette(col_list))
 
 
-# In[ ]:
+# In[13]:
 
 
 # Plot
@@ -79,18 +87,44 @@ plot._legend.get_title().set_fontsize(45)
 plot
 
 
-# In[ ]:
+# In[14]:
 
 
 # Save plot
-plot.savefig("plots/lines_plot_28.png")
+plot.savefig("plots/lines_plot_30_604.png")
+
+
+# <a id='naivealgo'></a>
+# # Naive Handmade Algorithm
+# 
+
+# In[5]:
+
+
+from tag_text import *
+from sklearn.model_selection import train_test_split
+
+y_model=data_to_tags()
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+
+# Works only with all vectors (y_pd)
+
+#print len(y_model), len(y_pd)
+
+print "Handmade algorithm"
+print classification_report(y_pd, y_model, digits=2)
+#y_pd.merge(y_model, left_on='type', right_on='type', how='outer')
+#res=pd.concat([y_pd, y_model], axis=1)
+#y_pd, y_model
 
 
 # <a id='naive'></a>
 # # Naive Bayes Classification
 # 
 
-# In[55]:
+# In[45]:
 
 
 # Separating data to training and test for all_vectors
@@ -106,16 +140,16 @@ y_model_train = model.predict(X_train)
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 
-#print "Test data"
-#print classification_report(y_test, y_model, digits=2)
-print "Training data"
-print classification_report(y_train, y_model_train, digits=2)
+print "Test data"
+print classification_report(y_test, y_model, digits=2)
+#print "Training data"
+#print classification_report(y_train, y_model_train, digits=2)
 
 
 # <a id='crf1'></a>
 # # Conditional Random Fields 1
 
-# In[53]:
+# In[6]:
 
 
 # Conditional Random Fields 1.1
@@ -150,7 +184,7 @@ trainer.set_params({
 trainer.train('crf_models/crf.model')
 
 
-# In[54]:
+# In[7]:
 
 
 # Conditional Random Fields 1.2
@@ -159,7 +193,7 @@ tagger.open('crf_models/crf.model')
 y_pred = [tagger.tag(xseq) for xseq in X_test]
 
 # Create a mapping of labels to indices
-labels = {"heading": 0, "body": 1, "after_body": 2, "text": 3}
+labels = {"heading": 2, "body": 1, "after_body": 0, "text": 3}
 
 import numpy as np
 from sklearn.metrics import classification_report
@@ -170,13 +204,13 @@ truths = np.array([labels[tag] for row in y_test for tag in row])
 
 # Print out the classification report
 print(classification_report(
-    truths, predictions, target_names=["heading", "body", "after_body", "text"]))
+    truths, predictions, target_names=[ "after_body", "body", "heading","text"]))
 
 
 # <a id='crf2'></a>
 # # Conditional Random Fields 2
 
-# In[51]:
+# In[9]:
 
 
 #Conditional Random Fields 2.1
@@ -210,13 +244,13 @@ crf.fit(X_train, y_train)
 y_pred_train = crf.predict(X_train)
 y_pred_test = crf.predict(X_test)
 
-print("Training on the training part")
-print(metrics.flat_classification_report(y_train, y_pred_train, digits=2))
-# print("Training on the test part")
-# print(metrics.flat_classification_report(y_test, y_pred_test, digits=2))
+#print("Training on the training part")
+#print(metrics.flat_classification_report(y_train, y_pred_train, digits=2))
+print("CRF")
+print(metrics.flat_classification_report(y_test, y_pred_test, digits=2))
 
 
-# In[28]:
+# In[10]:
 
 
 # Conditional Random Fields 2.2
@@ -235,7 +269,7 @@ print("\nTop negative:")
 print_state_features(Counter(crf.state_features_).most_common()[-30:])
 
 
-# In[30]:
+# In[11]:
 
 
 # Conditional Random Fields 2.4
@@ -252,7 +286,7 @@ print("\nTop unlikely transitions:")
 print_transitions(Counter(crf.transition_features_).most_common()[-20:])
 
 
-# In[29]:
+# In[20]:
 
 
 # Conditional Random Fields 2.3
@@ -283,7 +317,7 @@ print("Dark blue => {:0.4}, dark red => {:0.4}".format(min(_c), max(_c)))
 # <a id='crf3'></a>
 # # Conditional Random Fields 3
 
-# In[46]:
+# In[21]:
 
 
 # Conditional Random Fields 3.1

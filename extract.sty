@@ -6,12 +6,13 @@
 % Version generating only pdfs!
 
 % ! Uncomment if writing to file
-% \AtBeginDocument{
-%   \newwrite\extractedfile
-%   \immediate\openout\extractedfile="\jobname_source_text.txt"
-% }
+ % \AtBeginDocument{
+ %   \newwrite\extractedfile
+ %   \immediate\openout\extractedfile="\jobname_source_text.txt"
+ % }
 
 \newcounter{propcounter}
+
 
 % To remove \hbox in output
 \def\@setref#1#2#3{%
@@ -26,11 +27,14 @@
 
 \let\oldnewtheorem\newtheorem
 \def\newtheorem{%
-  \@ifstar\newtheoremstar\newtheoremnostar}
+  \@ifstar\newtheoremstar\newtheoremnostar
+}
 \def\newtheoremstar#1#2{%
   \oldnewtheorem*{#1}{#2}%
   \definemytheorem{#1}{#2}%
 }
+
+
 \newcommand\newtheoremnostar[1]{%
   \@oparg{\newtheoremnostarinternal{#1}}[]%
 }
@@ -51,7 +55,12 @@
 }
 
 \newsavebox{\mybox}
-    
+
+    % \def\@tempb{Proposition}%
+    % \@onelevel@sanitize\@tempd
+    % \def\@tempb{Corollary}%
+    % \@onelevel@sanitize\@tempe
+
 \newcommand{\definemytheorem}[2]{%
   \expandafter\let\expandafter\temp\csname #1\endcsname %\let\temp"#1"
   \expandafter\global\expandafter\let\csname old#1\endcsname\temp % \global\let\"old#1"\temp
@@ -62,21 +71,71 @@
   \expandafter\let\csname #1\endcsname\undefined % undefine #1 and end#1
   \expandafter\let\csname end#1\endcsname\undefined
 
-  \NewEnviron{#1}{%
-    \addtocounter{propcounter}{1}%
-    \savebox{\mybox}{\parbox{\linewidth}{*** \expandafter\immediate\csname old#1\endcsname\label{propcounter@\roman{propcounter}}\BODY\expandafter\immediate\csname endold#1\endcsname}}% %\begin{old#1}\label{propcounter@\roman{propcounter}}\BODY\end{old#1}}}%
-    \usebox{\mybox}%
-    \preview\usebox{\mybox}\endpreview%
+  \begingroup
+    \def\@tempa{#2}%
+    \@onelevel@sanitize\@tempa
+    \def\@tempb{Theorem}%
+    \@onelevel@sanitize\@tempb
+    \ifx\@tempa\@tempb
+        \aftergroup\@firstoftwo
+    \else
+         \def\@tempc{Lemma}%
+         \@onelevel@sanitize\@tempc
+         \ifx\@tempa\@tempc
+             \aftergroup\@firstoftwo
+         \else
+             \def\@tempd{Proposition}%
+             \@onelevel@sanitize\@tempd
+             \ifx\@tempa\@tempd
+                 \aftergroup\@firstoftwo
+             \else
+                 \def\@tempe{Corollary}%
+                 \@onelevel@sanitize\@tempe
+                 \ifx\@tempa\@tempe
+                     \aftergroup\@firstoftwo
+                 \else
+                     \def\@tempf{Claim}%
+                     \@onelevel@sanitize\@tempf
+                     \ifx\@tempa\@tempf
+                         \aftergroup\@firstoftwo
+                     \else
+                         \def\@tempg{Fact}%
+                         \@onelevel@sanitize\@tempg
+                         \ifx\@tempa\@tempg
+                             \aftergroup\@firstoftwo
+                         \else
+                             \aftergroup\@secondoftwo
+                         \fi
+                     \fi
+                 \fi
+             \fi
+         \fi
+    \fi
+  \endgroup
+  {
+    \NewEnviron{#1}{%
+      \addtocounter{propcounter}{1}%
+      \savebox{\mybox}{\parbox{\linewidth}{*** \expandafter\immediate\csname old#1\endcsname\label{propcounter@\roman{propcounter}}\BODY\expandafter\immediate\csname endold#1\endcsname}}% %\begin{old#1}\label{propcounter@\roman{propcounter}}\BODY\end{old#1}}}%
+      \usebox{\mybox}%
+      \preview\usebox{\mybox}\endpreview%}
+    }
+  }
+  {
+    \NewEnviron{#1}{%
+      \addtocounter{propcounter}{1}%
+      \savebox{\mybox}{\parbox{\linewidth}{*** \expandafter\immediate\csname old#1\endcsname\label{propcounter@\roman{propcounter}}\BODY\expandafter\immediate\csname endold#1\endcsname}}% %\begin{old#1}\label{propcounter@\roman{propcounter}}\BODY\end{old#1}}}%
+      \usebox{\mybox}%
+      
+    }
+  }
     
     % ! Uncomment if writing to file
-    % \immediate\write\extractedfile{%
-    %   BEGIN \unexpanded{#2} \expandafter\ref{propcounter@\roman{propcounter}}
-    %   ^^J
-    %   \unexpanded\expandafter{\BODY}%
-    %   ^^JEND \unexpanded{#2}^^J
-    % }
-    
-  }
+  % \immediate\write\extractedfile{%
+  %   BEGIN \unexpanded{#1} \expandafter\ref{propcounter@\roman{propcounter}}
+  %   ^^J
+  %   \unexpanded\expandafter{\BODY}%
+  %   ^^JEND \unexpanded{#1}^^J
+  % }   
 }
 
 \let\oldproof\proof
